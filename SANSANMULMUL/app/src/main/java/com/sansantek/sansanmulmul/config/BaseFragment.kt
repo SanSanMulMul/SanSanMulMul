@@ -16,14 +16,7 @@ abstract class BaseFragment<B : ViewBinding>(
     @LayoutRes layoutResId: Int
 ) : Fragment(layoutResId) {
     private var _binding: B? = null
-    protected lateinit var activityContext: Context
     protected val binding get() = _binding!!
-
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        activityContext = context
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

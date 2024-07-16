@@ -55,6 +55,7 @@
     
     + <img src="/img/Fiama.png"  width="30" height="30"/>[WireFrame](https://www.figma.com/design/p9QVBiLHZrebHPqpGt4sly/Wireframe?t=JOOE26FbI7fbxCuL-0)
         > <img src="/img/WireFramePreview.png"  width="90%" height="45%"/>
+    + <img src="/img/Fiama.png"  width="30" height="30"/>[ProtoType](https://www.figma.com/design/gAoSFIFu7YtqJvNz50waCD/Prototype?t=urpxt2hfen2dCOTo-0)
     + <img src="/img/Jira.png"  width="30" height="30"/>[Jira](https://ssafy.atlassian.net/jira/software/c/projects/S11P12D111/boards/7062?assignee=unassigned&assignee=712020%3A5730f3a2-c4cb-41f5-b48b-bcc6e9c5a67c)
     + <img src="/img/Erdcloud.png"  width="30" height="30"/>[ERDCloud](https://www.erdcloud.com/d/xbCpx4Atcj3twdwqi)
     + [GitLab](https://lab.ssafy.com/s11-webmobile4-sub2/S11P12D111)

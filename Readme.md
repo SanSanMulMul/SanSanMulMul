@@ -9,7 +9,7 @@
     |윤가희|노나현|박태우|신영민|정민선|곽대건|
     |:---:|:---:|:---:|:---:|:---:|:---:|
     |**Team Leader / BE**|**BE / CI,CD**|**BE**|**FE**|**FE / UI,UX**|**FE**|
-    |![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>yungahee99@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>hyunstu16@gmail.com|![Naver](https://img.shields.io/badge/naver-03C75A?style=for-the-badge&logo=naver&logoColor=white)<br>myxodn12@naver.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>2525sym@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>alstjs1516@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>eorjs7578@gmail.com|
+    |![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>yungahee99@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>hyunstu16@gmail.com|!![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>twey163@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>2525sym@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>alstjs1516@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>eorjs7578@gmail.com|
 + ## Stack
   + ### Back Tech Stack
     ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)

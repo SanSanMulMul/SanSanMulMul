@@ -10,6 +10,11 @@
     |:---:|:---:|:---:|:---:|:---:|:---:|
     |**Team Leader / BE**|**BE / CI,CD**|**BE**|**FE**|**FE / UI,UX**|**FE**|
     |![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>yungahee99@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>hyunstu16@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>twey163@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>2525sym@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>alstjs1516@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>eorjs7578@gmail.com|
+
+<br>
+
++ ## Milestone
+  ![image](/uploads/702902745bbf0045b218720e976c716e/image.png)
 + ## Stack
   + ### Back Tech Stack
     ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/extra_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        tools:context=".MainActivity">
+
+        <TextView
+            android:id="@+id/profile_text"
+            android:text="프로필 사진"
+            android:textColor="@color/green"
+            android:textSize="28dp"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_marginTop="100dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/profile_text_choose"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            />
+
+        <TextView
+            android:id="@+id/profile_text_choose"
+            android:text="도 골라주세요!"
+            android:textColor="@color/black"
+            android:textSize="28dp"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_marginTop="100dp"
+            app:layout_constraintStart_toEndOf="@id/profile_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <FrameLayout
+            android:id="@+id/profile_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/register_profile_tiger"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="150dp"
+                android:layout_gravity="center"
+
+                />
+            <ImageView
+                android:layout_width="270dp"
+                android:layout_height="270dp"
+                android:layout_marginTop="90dp"
+                android:layout_marginBottom="50dp"
+                android:layout_gravity="center"
+                android:elevation="8dp"
+                android:background="@drawable/circle_white"
+                />
+            <ImageButton
+                android:text=""
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:src="@drawable/edit"
+                android:background="@drawable/circle_green"
+                android:layout_gravity="bottom|end"
+
+
+                android:layout_marginEnd="80dp"
+                android:layout_marginBottom="40dp"
+                android:elevation="8dp"
+                />
+
+        </FrameLayout>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</FrameLayout>

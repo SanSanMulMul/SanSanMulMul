@@ -44,6 +44,8 @@ android {
 
 dependencies {
 
+    implementation(libs.dotsindicator)
+
     //framework ktx dependency 추가
     implementation (libs.androidx.fragment.ktx)
 

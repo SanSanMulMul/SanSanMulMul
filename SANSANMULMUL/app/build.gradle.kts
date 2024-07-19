@@ -70,7 +70,7 @@ dependencies {
     implementation (libs.androidx.core.ktx)
 
     // RecyclerView
-    implementation (libs.androidx.recyclerview)
+    implementation (libs.androidx.recyclervie   w)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

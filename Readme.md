@@ -63,7 +63,7 @@
     
 
   + ### Flow
-    Other => Front/Back => Develop => Master
+    **Other** => **Front/Back** => **Develop** => **Master**
     
     
 + ## External Link

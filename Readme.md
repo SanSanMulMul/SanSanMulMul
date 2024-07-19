@@ -21,7 +21,6 @@
     ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
     ![MYSQL](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)
     ![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white)
-    ![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white)
 
   + ### Front Tech Stack
     ![Kotlin](https://img.shields.io/badge/Kotlin-0095D5?&style=for-the-badge&logo=kotlin&logoColor=white)
@@ -52,7 +51,24 @@
       ![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)
 
     
++ ## Git Branch Strategy
+  + #### 종류
+    + ### Master
+      검증 완료 및 최종 배포 브랜치
+    + ### Develop
+      개발 완료 및 검증 미완료 브랜치
+    + ### Front
+      Front(Android) 코드 브랜치
+    + ### Back
+      Back-end 코드 브랜치
+    + ### Other(기능 별 별도의 이름의 Branch)
+      Front, Back 각각의 세부 기능들을 나눈 Branch
 
+      ex:) A라는 기능의 Branch면 A branch
+    
+
+  + ### Flow
+    **Other** => **Front/Back** => **Develop** => **Master**
     
     
 + ## External Link

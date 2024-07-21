@@ -5,6 +5,7 @@
     android:id="@+id/extra_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/extra_info_gradient"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tiger2"
-            android:src="@drawable/tiger2"
+            android:src="@drawable/signup_finish_tiger"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -36,7 +37,7 @@
             android:id="@+id/welcomeText1"
             android:layout_marginTop="20dp"
             android:textSize="28dp"
-            android:textColor="@color/green"
+            android:textColor="@color/white"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/tiger2"
             app:layout_constraintStart_toStartOf="parent"

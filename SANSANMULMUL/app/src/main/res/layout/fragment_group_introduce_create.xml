@@ -15,7 +15,7 @@
         android:id="@+id/group_create_top"
         android:layout_width="match_parent"
         android:layout_height="254dp"
-        android:background="@color/green"
+        android:background="@drawable/extra_info_gradient"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

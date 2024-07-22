@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="grouptab_style_spinner_menu_array">
+        <item>스타일 무관</item>
         <item>등산도 식후경</item>
         <item>등산에만 집중!</item>
         <item>남는건 사진이야~</item>

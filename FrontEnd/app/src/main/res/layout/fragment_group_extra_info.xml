@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.view.creategroup.GroupExtraInfoFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/group_extra"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/group_extra_top"
+            android:layout_width="match_parent"
+            android:layout_height="254dp"
+            android:background="@drawable/extra_info_gradient"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/group_extra_tiger"
+                android:layout_width="99dp"
+                android:layout_height="99dp"
+                android:src="@drawable/group_extra_tiger"
+                app:layout_constraintBottom_toBottomOf="@id/group_extra_top"
+                app:layout_constraintEnd_toEndOf="@id/group_extra_top"
+                app:layout_constraintStart_toEndOf="@id/group_extra_texts" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/group_extra_texts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@id/group_extra_tiger"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                >
+
+                <TextView
+                    android:id="@+id/group_extra_text_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="그룹의"
+                    android:textColor="@color/white"
+                    android:textSize="28dp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/group_extra_text_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="추가 조건들"
+                    android:textColor="@color/black"
+                    android:textSize="28dp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/group_extra_text_4"
+                    app:layout_constraintStart_toStartOf="@id/group_extra_text_1"
+                    app:layout_constraintTop_toBottomOf="@id/group_extra_text_1" />
+
+                <TextView
+                    android:id="@+id/group_extra_text_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="을"
+                    android:textColor="@color/white"
+                    android:textSize="28dp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@id/group_extra_text_1"
+                    app:layout_constraintStart_toEndOf="@id/group_extra_text_2"
+                    app:layout_constraintBottom_toTopOf="@id/group_extra_text_4"
+                     />
+
+                <TextView
+                    android:id="@+id/group_extra_text_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="설정해주세요:)"
+                    android:textColor="@color/white"
+                    android:textSize="28dp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/group_extra_text_1"
+                    app:layout_constraintTop_toBottomOf="@id/group_extra_text_3" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/group_extra_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/group_extra_top">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/group_people_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="group_people_gender"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/group_people_number_text"
+                    android:text="그룹의 최대 인원수를 입력해주세요."
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/green"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/group_people_number_blank"
+                    />
+
+                <EditText
+                    android:id="@+id/group_people_number_blank"
+                    android:layout_width="159dp"
+                    android:layout_height="50dp"
+                    android:hint="1 - 10명 사이"
+                    android:inputType="text"
+                    android:paddingStart="20dp"
+                    android:background="@drawable/rounded_box"
+                    app:layout_constraintTop_toBottomOf="@id/group_people_number_text"
+                    app:layout_constraintStart_toStartOf="@id/group_people_number_text"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/group_people_number_text_2"
+                    android:text="명"
+                    android:textSize="16dp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:paddingStart="10dp"
+                    app:layout_constraintTop_toBottomOf="@id/group_people_number_text"
+                    app:layout_constraintStart_toEndOf="@id/group_people_number_blank"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/group_people_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/group_people_age"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/group_people_number">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/group_gender_text"
+                    android:text="성별"
+                    android:textSize="16dp"
+                    android:textColor="@color/green"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/Group_Gender_RadioGroup"
+                    />
+
+                <RadioGroup
+                    android:id="@+id/Group_Gender_RadioGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="50dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    >
+
+                    <RadioButton
+                        android:id="@+id/anybody_Button"
+                        android:layout_width="100dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/radio_button_background"
+                        android:buttonTint="@drawable/radio_button_selector"
+                        android:text="무관"
+                        android:gravity="center"
+                        android:button="@null"
+                        android:textColor="@drawable/radio_button_text_color"
+                        android:textStyle="bold"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/maleButton"
+                        android:layout_width="100dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/radio_button_background"
+                        android:buttonTint="@drawable/radio_button_selector"
+                        android:text="남자만"
+                        android:gravity="center"
+                        android:button="@null"
+                        android:textColor="@drawable/radio_button_text_color"
+                        android:textStyle="bold"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/femaleButton"
+                        android:layout_width="100dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/radio_button_background"
+                        android:text="여자만"
+                        android:gravity="center"
+                        android:buttonTint="@drawable/radio_button_selector"
+                        android:button="@null"
+                        android:textColor="@drawable/radio_button_text_color"
+                        android:textStyle="bold"
+                        />
+
+                </RadioGroup>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/group_people_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="group_people_gender">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/group_age_text"
+                    android:text="연령대"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/green"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+
+                    />
+
+                <LinearLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <SeekBar
+                        android:id="@+id/ageRangeSeekBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="100"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/startThumb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="@id/ageRangeSeekBar"
+                        app:layout_constraintStart_toStartOf="@id/ageRangeSeekBar" />
+
+                    <ImageView
+                        android:id="@+id/endThumb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="@id/ageRangeSeekBar"
+                        app:layout_constraintEnd_toEndOf="@id/ageRangeSeekBar" />
+
+                    <TextView
+                        android:id="@+id/selectedAgeRangeTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0 - 100"
+                        app:layout_constraintTop_toBottomOf="@id/ageRangeSeekBar"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                </LinearLayout>
+
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</FrameLayout>

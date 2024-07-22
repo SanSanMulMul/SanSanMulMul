@@ -44,6 +44,8 @@ android {
 
 dependencies {
 
+    implementation(libs.dotsindicator)
+
     //framework ktx dependency 추가
     implementation (libs.androidx.fragment.ktx)
 
@@ -70,7 +72,7 @@ dependencies {
     implementation (libs.androidx.core.ktx)
 
     // RecyclerView
-    implementation (libs.androidx.recyclervie   w)
+    implementation (libs.androidx.recyclerview)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

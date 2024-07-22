@@ -1,87 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <!-- ViewPager -->
+  <androidx.viewpager2.widget.ViewPager2
+    android:id="@+id/viewPager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/progress_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+    app:layout_constraintBottom_toTopOf="@id/progress_button"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/progress_button"
-        android:paddingBottom="5dp"
-        android:clipToPadding="false"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginHorizontal="38dp"
-        android:layout_marginBottom="40dp"
-        app:layout_constraintTop_toBottomOf="@id/viewPager"
-        app:layout_constraintBottom_toTopOf="@id/spring_dots_indicator"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/progress_button"
-        >
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/prev_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/arrow_back"
-            android:adjustViewBounds="true"
-            android:padding="15dp"
-            android:background="@drawable/gray_border_rounded_box"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            />
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/progress_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="40dp"
+    android:layout_marginBottom="40dp"
+    android:clipToPadding="false"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/home_button"
-            android:text="홈으로 이동"
-            android:textColor="@color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_button"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/prev_button"
-            app:layout_constraintEnd_toStartOf="@id/next_button"
-            />
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/next_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/arrow_forward"
-            android:adjustViewBounds="true"
-            android:padding="15dp"
-            android:background="@drawable/gray_border_rounded_box"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- 이전 버튼 -->
+    <androidx.appcompat.widget.AppCompatImageButton
+      android:id="@+id/prev_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:adjustViewBounds="true"
+      android:background="@drawable/gray_border_rounded_box"
+      android:padding="15dp"
+      android:src="@drawable/arrow_back"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- 홈으로 이동 버튼 -->
+    <androidx.appcompat.widget.AppCompatButton
+      android:id="@+id/home_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@drawable/rounded_button"
+      android:paddingHorizontal="20dp"
+      android:text="앱 사용하러 가기"
+      android:textColor="@color/white"
+      app:layout_constraintBottom_toBottomOf="@id/prev_button"
+      app:layout_constraintEnd_toStartOf="@id/next_button"
+      app:layout_constraintStart_toEndOf="@id/prev_button"
+      app:layout_constraintTop_toTopOf="@id/prev_button" />
+
+    <!-- 다음 버튼 -->
+    <androidx.appcompat.widget.AppCompatImageButton
+      android:id="@+id/next_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:adjustViewBounds="true"
+      android:background="@drawable/gray_border_rounded_box"
+      android:padding="15dp"
+      android:src="@drawable/arrow_forward"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 인디케이터 -->
     <com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator
-        android:id="@+id/spring_dots_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        app:dampingRatio="0.5"
-        app:dotsColor="@color/green"
-        app:dotsCornerRadius="100dp"
+      android:id="@+id/spring_dots_indicator"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      app:dampingRatio="0.5"
+      app:dotsColor="@color/green"
+      app:dotsCornerRadius="100dp"
+      app:dotsSize="12dp"
+      app:dotsSpacing="6dp"
+      app:dotsStrokeWidth="2dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/prev_button"
+      app:stiffness="300" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
-        app:dotsSize="12dp"
-        app:dotsSpacing="6dp"
-        app:dotsStrokeWidth="2dp"
-        app:stiffness="300"
-        app:layout_constraintTop_toBottomOf="@id/progress_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

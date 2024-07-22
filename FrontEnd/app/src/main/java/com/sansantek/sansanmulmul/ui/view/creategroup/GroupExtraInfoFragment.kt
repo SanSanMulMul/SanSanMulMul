@@ -11,6 +11,7 @@ import com.sansantek.sansanmulmul.databinding.FragmentGroupExtraInfoBinding
 
 class GroupExtraInfoFragment : Fragment() {
 
+    private lateinit var binding: FragmentGroupExtraInfoBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,8 +21,23 @@ class GroupExtraInfoFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-        val binding = FragmentGroupExtraInfoBinding.inflate(layoutInflater)
+        binding = FragmentGroupExtraInfoBinding.inflate(layoutInflater)
+
+        val ageRangeSlider = binding.ageRangeSlider
+        val minageblank = binding.minAgeBlank
+        val maxageblank = binding.maxAgeBlank
+
+        ageRangeSlider.addOnChangeListener { slider, value, fromUser ->
+            val values = ageRangeSlider.values
+            val minAge = values[0].toInt()
+            val maxAge = values[1].toInt()
+
+            // 나이 5단위로 끊기
+            ageRangeSlider.stepSize = 1f
+            minageblank.setText(minAge.toString())
+            maxageblank.setText(maxAge.toString())
+        }
+
         return binding.root
     }
 }

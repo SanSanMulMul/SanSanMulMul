@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -75,7 +74,7 @@
                     app:layout_constraintTop_toBottomOf="@id/group_extra_text_1"
                     app:layout_constraintStart_toEndOf="@id/group_extra_text_2"
                     app:layout_constraintBottom_toTopOf="@id/group_extra_text_4"
-                     />
+                    />
 
                 <TextView
                     android:id="@+id/group_extra_text_4"
@@ -97,6 +96,8 @@
             android:id="@+id/group_extra_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -104,9 +105,11 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/group_people_number"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="group_people_gender"
+                android:layout_marginEnd="70dp"
+                android:layout_marginBottom="30dp"
+                app:layout_constraintBottom_toTopOf="@id/group_people_gender"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -115,6 +118,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/group_people_number_text"
                     android:text="그룹의 최대 인원수를 입력해주세요."
+                    android:paddingBottom="10dp"
                     android:textSize="16dp"
                     android:textStyle="bold"
                     android:textColor="@color/green"
@@ -154,11 +158,11 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/group_people_gender"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
                 app:layout_constraintBottom_toTopOf="@id/group_people_age"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/group_people_number"
                 app:layout_constraintTop_toBottomOf="@id/group_people_number">
                 <TextView
                     android:layout_width="wrap_content"
@@ -166,11 +170,11 @@
                     android:id="@+id/group_gender_text"
                     android:text="성별"
                     android:textSize="16dp"
+                    android:paddingBottom="10dp"
                     android:textColor="@color/green"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/Group_Gender_RadioGroup"
                     />
 
@@ -233,76 +237,116 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/group_people_age"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="group_people_gender">
 
-                <TextView
+                app:layout_constraintStart_toStartOf="@id/group_people_number"
+                app:layout_constraintTop_toBottomOf="@id/group_people_gender">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/age_range_slider_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/group_age_text"
-                    android:text="연령대"
-                    android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:textColor="@color/green"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/age_range_radio_group"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-
-                    />
-
-                <LinearLayout
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <SeekBar
-                        android:id="@+id/ageRangeSeekBar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:max="100"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/startThumb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="@id/ageRangeSeekBar"
-                        app:layout_constraintStart_toStartOf="@id/ageRangeSeekBar" />
-
-                    <ImageView
-                        android:id="@+id/endThumb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="@id/ageRangeSeekBar"
-                        app:layout_constraintEnd_toEndOf="@id/ageRangeSeekBar" />
+                    app:layout_constraintEnd_toEndOf="parent">
 
                     <TextView
-                        android:id="@+id/selectedAgeRangeTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:id="@+id/group_age_text"
+                        android:text="연령대"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:textColor="@color/green"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/age_range_slider"
+                        tools:ignore="NotSibling" />
+
+                    <com.google.android.material.slider.RangeSlider
+                        android:id="@+id/age_range_slider"
+                        style="@style/RangeSliderStyle"
+                        android:layout_width="275dp"
+                        android:layout_height="wrap_content"
+                        android:valueFrom="0"
+                        android:valueTo="100"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/group_age_text"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:values="@array/initial_slider_values" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/age_range_radio_group"
+                    android:layout_width="275dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/age_range_slider_group"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    >
+
+                    <EditText
+                        android:id="@+id/min_age_blank"
+                        android:layout_width="80dp"
+                        android:layout_height="50dp"
+                        android:hint="최소 나이"
+                        android:inputType="number"
+                        android:textSize="16dp"
+                        android:gravity="center"
+                        android:background="@drawable/rounded_box"
+                        app:layout_constraintEnd_toStartOf="@id/max_age_blank"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0 - 100"
-                        app:layout_constraintTop_toBottomOf="@id/ageRangeSeekBar"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                        android:id="@+id/min_age_text"
+                        android:text="세 ~"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/min_age_blank"
+                        app:layout_constraintEnd_toStartOf="@id/max_age_blank"
+                        />
 
-                </LinearLayout>
+                    <EditText
+                        android:id="@+id/max_age_blank"
+                        android:layout_width="80dp"
+                        android:layout_height="50dp"
+                        android:hint="최대 나이"
+                        android:inputType="number"
+                        android:gravity="center"
+                        android:textSize="16dp"
+                        android:background="@drawable/rounded_box"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/min_age_blank"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
 
-
-
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/max_age_text"
+                        android:text="세"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/max_age_blank"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

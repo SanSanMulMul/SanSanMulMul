@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="RangeSliderStyle" parent="Widget.MaterialComponents.Slider">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Slider</item>
+        <item name="thumbColor">@color/green</item>
+        <item name="trackColorActive">@color/green</item>
+        <item name="trackColorInactive">@color/lightgray</item>
+    </style>
+
+    <style name="ThemeOverlay.Slider" parent="">
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnBackground">@android:color/white</item>
+        <item name="colorSurface">@color/green</item>
+    </style>
+
+
+</resources>

@@ -6,4 +6,6 @@
     <color name="button_text_color">#FFFFFFFF</color>
     <color name="green">#A1CCA8</color>
     <color name="purple">#D6B7FF</color>
+    <color name="gradientStartColor">#FFA1CCA8</color>
+    <color name="gradientEndColor">#FFD6B7FF</color>
 </resources>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:title="홈"
+        android:icon="@drawable/home"
+        android:background="@drawable/nav_item_background"
+        />
+    <item
+        android:id="@+id/map"
+        android:title="지도"
+        android:icon="@drawable/map"
+        android:background="@drawable/nav_item_background"
+        />
+    <item
+        android:id="@+id/mountain"
+        android:title="등산기록"
+        android:icon="@drawable/mountain"
+        android:background="@drawable/nav_item_background"
+        />
+    <item
+        android:id="@+id/group"
+        android:title="그룹"
+        android:icon="@drawable/group"
+        android:background="@drawable/nav_item_background"
+        />
+    <item
+        android:id="@+id/mypage"
+        android:title="마이페이지"
+        android:icon="@drawable/mypage"
+        android:background="@drawable/nav_item_background"
+        />
+</menu>

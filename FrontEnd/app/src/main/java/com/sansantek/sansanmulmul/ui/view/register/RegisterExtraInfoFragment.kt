@@ -1,5 +1,7 @@
 package com.sansantek.sansanmulmul.ui.view.register
 
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +9,10 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
+import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.databinding.FragmentRegisterExtraInfoBinding
 
 
@@ -17,16 +22,28 @@ class RegisterExtraInfoFragment : Fragment() {
         FragmentRegisterExtraInfoBinding.inflate(layoutInflater)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         setupSpinners()
+        setGradient(binding.extraInfoText1)
+        setGradient(binding.extraInfoText2)
         return binding.root
+    }
+
+    private fun setGradient(textView: TextView){
+        val paint = textView.paint
+        val width = paint.measureText(textView.text.toString())
+
+        val textShader = LinearGradient(
+            0f, 0f, width, textView.textSize,
+            intArrayOf(
+                getColor(requireActivity(), R.color.gradientStartColor),
+                getColor(requireActivity(), R.color.gradientEndColor)
+            ), arrayOf(0f, 1f).toFloatArray(), Shader.TileMode.CLAMP
+        )
+        textView.paint.shader = textShader
     }
 
 

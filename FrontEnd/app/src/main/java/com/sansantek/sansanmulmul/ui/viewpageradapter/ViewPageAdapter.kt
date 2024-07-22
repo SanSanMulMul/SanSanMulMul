@@ -3,6 +3,7 @@ package com.sansantek.sansanmulmul.ui.viewpageradapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.sansantek.sansanmulmul.ui.view.creategroup.GroupIntroduceCreateFragment
 import com.sansantek.sansanmulmul.ui.view.register.RegisterExtraInfoFragment
 import com.sansantek.sansanmulmul.ui.view.register.RegisterFinishFragment
 import com.sansantek.sansanmulmul.ui.view.register.RegisterProfileFragment
@@ -12,14 +13,12 @@ import com.sansantek.sansanmulmul.ui.view.register.RegisterProfileFragment
 class ViewPageAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(fragmentActivity) {
 
     // 페이지 갯수 설정
-    override fun getItemCount(): Int = 3
+    override fun getItemCount(): Int = 1
 
     // 불러올 Fragment 정의
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> RegisterExtraInfoFragment()
-            1 -> RegisterProfileFragment()
-            2 -> RegisterFinishFragment()
+            0 -> GroupIntroduceCreateFragment()
             else -> throw IllegalArgumentException("Invalid position $position")
         }
     }

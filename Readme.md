@@ -52,14 +52,22 @@
       검증 완료 및 최종 배포 브랜치
     + ### Develop
       개발 완료 및 검증 미완료 브랜치
-    + ### Front
+    + ### FrontEnd
       Front(Android) 코드 브랜치
     + ### Back
       Back-end 코드 브랜치
     + ### Other(기능 별 별도의 이름의 Branch)
       Front, Back 각각의 세부 기능들을 나눈 Branch
 
-      ex:) A라는 기능의 Branch면 A branch
+      + ### FE/~
+        Front End의 Feature별 브랜치
+      + ### BE/~
+        Back End의 Feature별 브랜치
+
+      ex:) Front의 A라는 기능의 Branch면 FE/A branch
+
+  **브랜치 이름은 대소문자를 구분하지 않음**
+  => FrontEnd == frontend
     
 
   + ### Flow

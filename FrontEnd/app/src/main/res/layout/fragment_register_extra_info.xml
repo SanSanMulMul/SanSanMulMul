@@ -1,184 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/extra_info"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/extra_info"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <!-- 상단 타이틀 -->
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/layout_title"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="wrap_content"
+    android:layout_marginTop="100dp"
+    app:layout_constraintBottom_toTopOf="@id/layout_input"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
+    <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/extra_info_text1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:fontFamily="@font/gothic_bold"
+      android:text="저희 앱을 이용하시려면"
+      android:textSize="28sp"
+      app:layout_constraintBottom_toTopOf="@id/extra_info_text2"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/extra_info_text2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:fontFamily="@font/gothic_bold"
+      android:text="추가 정보가 필요해요!"
+      android:textSize="28sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/extra_info_text1" />
+
+    <TextView
+      android:id="@+id/textView2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="40dp"
+      android:text="아래 정보들을 채워주세요:)"
+      android:textSize="14sp"
+      android:textStyle="bold"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/extra_info_text2" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+  <!-- 입력 부분 -->
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/layout_input"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="50dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/layout_title">
+
+    <!-- 닉네임 -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/textGroup1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        app:layout_constraintStart_toStartOf="parent"
+      android:id="@+id/layout_nickname"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:layout_marginHorizontal="40dp"
+      android:background="@drawable/rounded_box"
+      app:layout_constraintBottom_toTopOf="@id/radio_group_gender"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="layout"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <TextView
+        android:id="@+id/tv_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center"
+        android:text="닉네임"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@id/et_nickname"
+        app:layout_constraintStart_toStartOf="parent" />
+
+      <EditText
+        android:id="@+id/et_nickname"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="20dp"
+        android:background="@null"
+        android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/inputValue"
-
-        >
-        <TextView
-            android:id="@+id/extra_info_text1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="저희 앱을 이용하시려면"
-            android:textSize="28dp"
-            android:textStyle="bold"
-            android:gravity="center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/extra_info_text2"
-            />
-
-        <TextView
-            android:id="@+id/extra_info_text2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="추가 정보가 필요해요!"
-            android:textSize="28dp"
-            android:textStyle="bold"
-            android:gravity="center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/extra_info_text1"
-            />
-        
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="170dp"
-            android:layout_height="18dp"
-            android:text="아래 정보들을 채워주세요:)"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/extra_info_text2"
-            android:layout_marginTop="40dp"
-
-            />
-
-
-
+        app:layout_constraintStart_toEndOf="@id/tv_nickname" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/inputValue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textGroup1">
+    <!-- 성별 -->
+    <RadioGroup
+      android:id="@+id/radio_group_gender"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      android:gravity="center"
+      android:orientation="horizontal"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="@id/layout_nickname"
+      app:layout_constraintStart_toStartOf="@id/layout_nickname"
+      app:layout_constraintTop_toBottomOf="@id/layout_nickname">
+
+      <RadioButton
+        android:id="@+id/maleButton"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/radio_button_background"
+        android:button="@null"
+        android:buttonTint="@drawable/radio_button_selector"
+        android:gravity="center"
+        android:text="남"
+        android:textColor="@drawable/radio_button_text_color"
+        android:textStyle="bold" />
+
+      <RadioButton
+        android:id="@+id/femaleButton"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:background="@drawable/radio_button_background"
+        android:button="@null"
+        android:buttonTint="@drawable/radio_button_selector"
+        android:gravity="center"
+        android:text="여"
+        android:textColor="@drawable/radio_button_text_color"
+        android:textStyle="bold" />
+
+    </RadioGroup>
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <EditText
-            android:id="@+id/nicknameEditText"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:hint="닉네임"
-            android:inputType="text"
-            android:paddingStart="15dp"
-            android:background="@drawable/rounded_box"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/genderRadioGroup"/>
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/birthdateGroup"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/layout_input">
 
-        <RadioGroup
-            android:id="@+id/genderRadioGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="50dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/nicknameEditText">
+    <TextView
+      android:id="@+id/birthdate_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginRight="225dp"
+      android:paddingBottom="20dp"
+      android:text="생년월일"
+      android:textSize="20dp"
+      android:textStyle="bold"
+      app:layout_constraintBottom_toTopOf="@id/birthdate_Spinner"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
 
-            <RadioButton
-                android:id="@+id/maleButton"
-                android:layout_width="130dp"
-                android:layout_height="50dp"
-                android:layout_marginEnd="40dp"
-                android:background="@drawable/radio_button_background"
-                android:buttonTint="@drawable/radio_button_selector"
-                android:text="남"
-                android:gravity="center"
-                android:button="@null"
-                android:textColor="@drawable/radio_button_text_color"
-                android:textStyle="bold"
-                />
+    <LinearLayout
+      android:id="@+id/birthdate_Spinner"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/birthdate_text"
 
-            <RadioButton
-                android:id="@+id/femaleButton"
-                android:layout_width="130dp"
-                android:layout_height="50dp"
-                android:background="@drawable/radio_button_background"
-                android:text="여"
-                android:gravity="center"
-                android:buttonTint="@drawable/radio_button_selector"
-                android:button="@null"
-                android:textColor="@drawable/radio_button_text_color"
-                android:textStyle="bold"
-                />
+      >
 
-        </RadioGroup>
+      <Spinner
+        android:id="@+id/yearSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+      <Spinner
+        android:id="@+id/monthSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp" />
 
+      <Spinner
+        android:id="@+id/daySpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/birthdateGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/inputValue"
-        app:layout_constraintBottom_toBottomOf="parent" >
-
-        <TextView
-            android:id="@+id/birthdate_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="생년월일"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:layout_marginRight="225dp"
-            android:paddingBottom="20dp"
-            app:layout_constraintBottom_toTopOf="@id/birthdate_Spinner"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            />
-
-        <LinearLayout
-            android:id="@+id/birthdate_Spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/birthdate_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-
-            >
-
-            <Spinner
-                android:id="@+id/yearSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp" />
-
-            <Spinner
-                android:id="@+id/monthSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp" />
-
-            <Spinner
-                android:id="@+id/daySpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp" />
-
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

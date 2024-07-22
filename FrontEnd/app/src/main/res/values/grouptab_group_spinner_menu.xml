@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="grouptab_group_spinner_menu_array">
+        <item>진행 중인 그룹</item>
+        <item>완료된 그룹</item>
+    </string-array>
+</resources>

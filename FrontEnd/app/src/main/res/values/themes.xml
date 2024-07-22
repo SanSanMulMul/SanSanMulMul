@@ -6,4 +6,32 @@
     </style>
 
     <style name="Theme.SANSANMULMUL" parent="Base.Theme.SANSANMULMUL" />
+
+    <style name="CustomSearchSpinnerStyle" parent="Widget.AppCompat.Spinner">
+        <item name="android:overlapAnchor">false</item>
+        <item name="android:spinnerMode">dropdown</item>
+        <item name="android:background">@drawable/spinner_search_background</item>
+        <item name="android:popupBackground">@drawable/spinner_search_popup_background</item>
+        <item name="android:popupElevation">0dp</item>
+        <item name="android:dropDownVerticalOffset">3dp</item>
+    </style>
+
+    <style name="CustomFilterSpinnerStyle" parent="Widget.AppCompat.Spinner">
+        <item name="android:overlapAnchor">false</item>
+        <item name="android:spinnerMode">dropdown</item>
+        <item name="android:background">@drawable/spinner_filter_background</item>
+        <item name="android:popupBackground">@drawable/spinner_filter_popup_background</item>
+        <item name="android:popupElevation">0dp</item>
+        <item name="android:dropDownVerticalOffset">3dp</item>
+    </style>
+
+    <style name="CustomGroupSpinnerStyle" parent="Widget.AppCompat.Spinner">
+        <item name="android:overlapAnchor">false</item>
+        <item name="android:spinnerMode">dropdown</item>
+<!--        <item name="android:background">@drawable/spinner_filter_background</item>-->
+        <item name="android:popupBackground">@drawable/spinner_group_popup_background</item>
+        <item name="android:popupElevation">0dp</item>
+        <item name="android:dropDownVerticalOffset">3dp</item>
+    </style>
+
 </resources>

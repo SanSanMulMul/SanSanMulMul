@@ -7,4 +7,12 @@
     <color name="green">#A1CCA8</color>
     <color name="purple">#D6B7FF</color>
     <color name="nav_background">#F7FCF4</color>
+    <color name="red">#FF0000</color>
+
+    <color name="grey">#666666</color>
+    <color name="light_grey">#F3F3F3</color>
+
+    <color name="group_tab_info_list_green">#97AF9A</color>
+
+
 </resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="grouptab_style_spinner_menu_array">
+        <item>등산도 식후경</item>
+        <item>등산에만 집중!</item>
+        <item>남는건 사진이야~</item>
+        <item>엄홍길 유망주</item>
+        <item>어쩌구 저쩌구</item>
+    </string-array>
+</resources>

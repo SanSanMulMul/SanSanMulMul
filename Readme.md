@@ -54,7 +54,7 @@
       개발 완료 및 검증 미완료 브랜치
     + ### FrontEnd
       Front(Android) 코드 브랜치
-    + ### Back
+    + ### BackEnd
       Back-end 코드 브랜치
     + ### Other(기능 별 별도의 이름의 Branch)
       Front, Back 각각의 세부 기능들을 나눈 Branch

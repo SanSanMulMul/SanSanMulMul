@@ -5,6 +5,10 @@
     <color name="button_color">#94B299</color>
     <color name="button_text_color">#FFFFFFFF</color>
     <color name="green">#A1CCA8</color>
-    <color name="purple">#D6B7FF</color>
+    <color name="purple">#D3BEEF</color>
     <color name="lightgray">#F0F0F0</color>
+    <color name="yellow">#EDE7AE</color>
+    <color name="blue">#9CD5DC</color>
+    <color name="pink">#F4ADC1</color>
+    <color name="lightgreen">#C3F0CA</color>
 </resources>

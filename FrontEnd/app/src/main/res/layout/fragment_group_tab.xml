@@ -101,6 +101,7 @@
                     style="@style/CustomSearchSpinnerStyle"
                     />
                 <EditText
+                    android:id="@+id/search_input_text"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:drawableStart="@drawable/search"

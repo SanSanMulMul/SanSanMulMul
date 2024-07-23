@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.sansantek.sansanmulmul.databinding.FragmentRegisterProfileBinding
+import com.sansantek.sansanmulmul.ui.view.grouptab.ShowGroupPreviewDialog
 
 class RegisterProfileFragment : Fragment() {
 
@@ -16,7 +17,7 @@ class RegisterProfileFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         val binding = FragmentRegisterProfileBinding.inflate(layoutInflater)
-
+        ShowGroupPreviewDialog().show(requireActivity().supportFragmentManager, "dialog")
 
 
         return binding.root

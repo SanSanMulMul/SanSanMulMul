@@ -46,6 +46,8 @@ android {
 
 dependencies {
 
+    implementation (libs.google.flexbox)
+
     implementation (libs.android.segmented)
 
 

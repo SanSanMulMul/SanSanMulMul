@@ -14,18 +14,16 @@ import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.sansantek.sansanmulmul.databinding.DialogGroupPreviewBinding
-import com.sansantek.sansanmulmul.databinding.DialogGroupRegisterBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupHikingStyleListAdapter
+import com.sansantek.sansanmulmul.ui.adapter.layoutmanager.CustomLayoutmanager
 
 class ShowGroupPreviewDialog : DialogFragment() {
     // 뷰 바인딩 정의
     private var _binding: DialogGroupPreviewBinding? = null
     private val binding get() = _binding!!
     private val styleList = mutableListOf("#등산도 식후경", "#등산에 집중","#어쩌구", "#저쩌구")
-    private lateinit var adapter: GroupHikingStyleListAdapter
+    private lateinit var groupHikingStyleListAdapter: GroupHikingStyleListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,13 +33,14 @@ class ShowGroupPreviewDialog : DialogFragment() {
         _binding = DialogGroupPreviewBinding.inflate(inflater, container, false)
         binding.ivGroupPreview.setColorFilter(Color.parseColor("#99000000"), PorterDuff.Mode.SRC_OVER)
 
-        adapter = GroupHikingStyleListAdapter()
-        binding.rvGridHikingStyle.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        binding.rvGridHikingStyle.adapter = adapter
-        adapter.submitList(styleList)
+        groupHikingStyleListAdapter = GroupHikingStyleListAdapter()
 
+        binding.rvGridHikingStyle.apply {
+            layoutManager = CustomLayoutmanager(requireContext(), 2)
+            adapter = groupHikingStyleListAdapter
+            groupHikingStyleListAdapter.submitList(styleList)
+        }
         val view = binding.root
-
 
         // 레이아웃 배경을 투명하게 해줌, 필수 아님
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

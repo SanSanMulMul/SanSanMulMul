@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center_horizontal"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@drawable/rounded_circle_box"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/layout_image"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal|bottom"
+        android:layout_width="match_parent">
+        <ImageView
+            android:adjustViewBounds="true"
+            android:id="@+id/iv_cant_register_tiger"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_height="wrap_content"
+            android:layout_width="160dp"
+            android:src="@drawable/cant_register_group_tiger" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@drawable/rounded_circle_gradient_box"
+        android:id="@+id/layout_alert_info"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_cant_register_tiger">
+
+        <TextView
+            android:id="@+id/tv_alert"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="해당 날짜에 이미 예정된 그룹이 있습니다"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/btn_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_close"
+            android:background="@drawable/rounded_circle_box"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="닫기"
+            android:textColor="@color/group_tab_register_alert_grey"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_alert"
+
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

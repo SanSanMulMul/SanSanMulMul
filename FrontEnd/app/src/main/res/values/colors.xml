@@ -11,8 +11,12 @@
 
     <color name="grey">#666666</color>
     <color name="light_grey">#F3F3F3</color>
+    <color name="group_tab_register_wait_grey">#A9A9A9</color>
 
     <color name="group_tab_info_list_green">#97AF9A</color>
+
+
+    <color name="group_tab_register_alert_grey">#929292</color>
 
 
 </resources>

@@ -62,7 +62,7 @@
                     segmentedgroup:sc_corner_radius="50dp">
 
                     <RadioButton
-                        android:id="@+id/button21"
+                        android:id="@+id/radio_my_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
@@ -71,7 +71,7 @@
                         style="@style/RadioButton" />
 
                     <RadioButton
-                        android:id="@+id/button22"
+                        android:id="@+id/radio_all_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="ALL"
@@ -104,6 +104,8 @@
                     android:id="@+id/search_input_text"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:singleLine="true"
+                    android:maxLines="1"
                     android:drawableStart="@drawable/search"
                     android:drawableTint="@color/green"
                     android:drawablePadding="10dp"
@@ -184,7 +186,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
             <LinearLayout
-                android:id="@+id/my_group_spinner_layout"
+                android:id="@+id/group_info_title_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -199,7 +201,19 @@
                     style="@style/CustomGroupSpinnerStyle"
                     />
                 <TextView
-                    android:id="@+id/spinner_choice_info"
+                    android:id="@+id/all_group_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginVertical="10dp"
+                    android:text="전체그룹"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textAlignment="viewStart"
+                    />
+                <TextView
+                    android:id="@+id/choice_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="현재 등산이 진행 중이거나 예정인 그룹만 보여드릴게요!"
@@ -213,7 +227,7 @@
                 android:layout_marginTop="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/my_group_spinner_layout"
+                app:layout_constraintTop_toBottomOf="@id/group_info_title_layout"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,19 +11,19 @@
         android:src="@drawable/signup_finish_tiger"
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/group_info"
+        app:layout_constraintEnd_toStartOf="@id/layout_group_info"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
     <LinearLayout
-        android:id="@+id/group_info"
+        android:id="@+id/layout_group_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/group_image"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_register_group"
         android:orientation="vertical"
         >
         <TextView
@@ -34,7 +34,7 @@
             android:text="24.07.15 13:00 - 24.07.15 14:00"
             android:textSize="11sp"
             />
-
+        <!--그룹 이름, 사람, 날짜 정보 -->
         <TextView
             android:id="@+id/group_title"
             android:layout_width="wrap_content"
@@ -47,6 +47,7 @@
             android:textStyle="bold"
             />
 
+        <!-- 인원수 -->
         <TextView
             android:id="@+id/group_person_info"
             android:drawableLeft="@drawable/mypage"
@@ -56,6 +57,17 @@
             android:layout_height="wrap_content"
             />
     </LinearLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_register_group"
+        android:layout_marginStart="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/layout_group_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        style="@style/GroupRegisterEnableBtnStyle"
+        />
 
 
 

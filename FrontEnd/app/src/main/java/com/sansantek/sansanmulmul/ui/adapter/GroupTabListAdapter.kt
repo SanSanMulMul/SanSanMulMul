@@ -2,19 +2,21 @@ package com.sansantek.sansanmulmul.ui.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Visibility
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.data.model.GroupListInfo
 import com.sansantek.sansanmulmul.databinding.ListGroupBinding
 import com.sansantek.sansanmulmul.ui.util.Util.byteArrayToBitmap
 
 private const val TAG = "GroupTabListAdapter_싸피"
-class GroupTabListAdapter():
+class GroupTabListAdapter(private val isAllGroupLayout:Boolean):
     ListAdapter<GroupListInfo, GroupTabListAdapter.GroupInfoListHolder>(Comparator) {
 
     companion object Comparator : DiffUtil.ItemCallback<GroupListInfo>() {
@@ -31,6 +33,9 @@ class GroupTabListAdapter():
         RecyclerView.ViewHolder(binding.root) {
 
         fun bindInfo(position: Int) {
+            if(!isAllGroupLayout){
+                binding.btnRegisterGroup.visibility = View.GONE
+            }
             val item = getItem(position)
             Log.d(TAG, "bindInfo: $item")
             val img = if(item.imageByte == null){
@@ -49,9 +54,9 @@ class GroupTabListAdapter():
             binding.groupSchedule.text = "24.07.15 13:00 - 24.07.15 14:00"
             binding.groupPersonInfo.text = "3 / 10명"
 
-//            binding.btnDelete.setOnClickListener {
-//                itemClickListener.onDelete(position)
-//            }
+            binding.btnRegisterGroup.setOnClickListener {
+                itemClickListener.onClick(position)
+            }
         }
     }
 
@@ -71,7 +76,7 @@ class GroupTabListAdapter():
 
 
     interface ItemClickListener {
-        fun onDelete(position: Int) {
+        fun onClick(position: Int) {
         }
     }
 

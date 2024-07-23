@@ -1,9 +1,11 @@
 package com.sansantek.sansanmulmul.ui.viewpageradapter
 
+import GroupHikingStyleFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.sansantek.sansanmulmul.ui.view.creategroup.GroupExtraInfoFragment
+
 import com.sansantek.sansanmulmul.ui.view.creategroup.GroupIntroduceCreateFragment
 import com.sansantek.sansanmulmul.ui.view.register.RegisterExtraInfoFragment
 import com.sansantek.sansanmulmul.ui.view.register.RegisterFinishFragment
@@ -14,13 +16,14 @@ import com.sansantek.sansanmulmul.ui.view.register.RegisterProfileFragment
 class ViewPageAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(fragmentActivity) {
 
     // 페이지 갯수 설정
-    override fun getItemCount(): Int = 2
+    override fun getItemCount(): Int = 3
 
     // 불러올 Fragment 정의
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> GroupIntroduceCreateFragment()
             1 -> GroupExtraInfoFragment()
+            2 -> GroupHikingStyleFragment()
             else -> throw IllegalArgumentException("Invalid position $position")
         }
     }

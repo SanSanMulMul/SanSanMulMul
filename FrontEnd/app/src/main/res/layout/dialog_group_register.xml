@@ -4,13 +4,14 @@
     android:layout_gravity="center_horizontal"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@drawable/rounded_circle_box"
+    android:background="@drawable/rounded_transparent_circle_box"
     android:orientation="vertical">
     <LinearLayout
         android:id="@+id/layout_image"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal"
+        android:background="@android:color/transparent"
         android:gravity="center_horizontal|bottom"
         android:layout_width="match_parent">
         <ImageView
@@ -27,19 +28,20 @@
         android:background="@drawable/rounded_circle_gradient_box"
         android:id="@+id/layout_alert_info"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.3"
         android:layout_width="match_parent"
         app:layout_constraintTop_toBottomOf="@id/iv_cant_register_tiger">
 
         <TextView
             android:id="@+id/tv_alert"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:text="해당 날짜에 이미 예정된 그룹이 있습니다"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:layout_marginHorizontal="30dp"
             app:layout_constraintBottom_toTopOf="@id/btn_close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

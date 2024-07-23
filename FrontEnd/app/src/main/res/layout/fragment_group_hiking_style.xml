@@ -6,12 +6,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/group_extra"
+        android:id="@+id/group_course_search_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/group_style_top"
+            android:id="@+id/layout_group_course_top"
             android:layout_width="match_parent"
             android:layout_height="254dp"
             android:background="@drawable/extra_info_gradient"
@@ -20,26 +20,26 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/group_style_tiger"
+                android:id="@+id/iv_group_course_tiger"
                 android:layout_width="99dp"
                 android:layout_height="99dp"
                 android:src="@drawable/group_extra_tiger"
-                app:layout_constraintBottom_toBottomOf="@id/group_style_top"
-                app:layout_constraintEnd_toEndOf="@id/group_style_top"
-                app:layout_constraintStart_toEndOf="@id/group_style_texts" />
+                app:layout_constraintBottom_toBottomOf="@id/layout_group_course_top"
+                app:layout_constraintEnd_toEndOf="@id/layout_group_course_top"
+                app:layout_constraintStart_toEndOf="@id/layout_group_course_texts" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/group_style_texts"
+                android:id="@+id/layout_group_course_texts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@id/group_style_tiger"
+                app:layout_constraintEnd_toStartOf="@id/iv_group_course_tiger"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 >
 
                 <TextView
-                    android:id="@+id/group_style_text_1"
+                    android:id="@+id/tv_group_course_search_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="그룹의"
@@ -59,8 +59,8 @@
                     android:textSize="28dp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/group_style_text_4"
-                    app:layout_constraintStart_toStartOf="@id/group_style_text_1"
-                    app:layout_constraintTop_toBottomOf="@id/group_style_text_1" />
+                    app:layout_constraintStart_toStartOf="@id/tv_group_course_search_text"
+                    app:layout_constraintTop_toBottomOf="@id/tv_group_course_search_text" />
 
                 <TextView
                     android:id="@+id/group_style_text_3"
@@ -70,7 +70,7 @@
                     android:textColor="@color/white"
                     android:textSize="28dp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/group_style_text_1"
+                    app:layout_constraintTop_toBottomOf="@id/tv_group_course_search_text"
                     app:layout_constraintStart_toEndOf="@id/group_style_text_2"
                     app:layout_constraintBottom_toTopOf="@id/group_style_text_4"
                     />
@@ -84,7 +84,7 @@
                     android:textSize="28dp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/group_style_text_1"
+                    app:layout_constraintStart_toStartOf="@id/tv_group_course_search_text"
                     app:layout_constraintTop_toBottomOf="@id/group_style_text_3" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -95,7 +95,7 @@
             android:id="@+id/layout_group_style_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/group_style_top"
+            app:layout_constraintTop_toBottomOf="@id/layout_group_course_top"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

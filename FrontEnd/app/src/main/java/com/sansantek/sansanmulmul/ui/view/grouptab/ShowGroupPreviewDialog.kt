@@ -36,7 +36,7 @@ class ShowGroupPreviewDialog : DialogFragment() {
         binding.ivGroupPreview.setColorFilter(Color.parseColor("#99000000"), PorterDuff.Mode.SRC_OVER)
 
         adapter = GroupHikingStyleListAdapter()
-        binding.rvGridHikingStyle.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
+        binding.rvGridHikingStyle.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         binding.rvGridHikingStyle.adapter = adapter
         adapter.submitList(styleList)
 

@@ -1,11 +1,26 @@
 <resources>
-  <!-- Base application theme. -->
-  <style name="Base.Theme.SANSANMULMUL" parent="Theme.AppCompat.Light.NoActionBar">
-    <!-- Customize your light theme here. -->
-    <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-    <item name="android:fontFamily">@font/gothic_regular</item>
-  </style>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.SANSANMULMUL" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="background">@color/white</item>
 
-  <style name="Theme.SANSANMULMUL" parent="Base.Theme.SANSANMULMUL" />
+        <item name="android:fontFamily">@font/gothic_regular</item>
+        <item name="android:textColor">@color/black</item>
+
+    </style>
+
+    <style name="Theme.SANSANMULMUL" parent="Base.Theme.SANSANMULMUL" />
+
+
+    <!-- Number Picker -->
+    <style name="AppTheme.NumberPicker" parent="Base.Theme.SANSANMULMUL">
+        <item name="android:textColorPrimary">@color/sansanmulmul_green</item>
+        <item name="android:textColorHighlight">@color/sansanmulmul_green</item>
+        <item name="android:textSize">16sp</item>
+        <item name="selectableItemBackground">@color/sansanmulmul_green</item>
+        <item name="colorControlNormal">@color/sansanmulmul_light_gray</item>
+    </style>
 
 </resources>

@@ -1,22 +1,18 @@
 package com.sansantek.sansanmulmul.ui.view.register
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentRegisterStartBinding
 
-class RegisterStartFragment : Fragment() {
+class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
+    FragmentRegisterStartBinding::bind,
+    R.layout.fragment_register_start
+) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
-        val binding = FragmentRegisterStartBinding.inflate(layoutInflater)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.button.setOnClickListener {
             requireActivity()
                 .supportFragmentManager
@@ -25,6 +21,5 @@ class RegisterStartFragment : Fragment() {
                 .addToBackStack(null).commit()
         }
 
-        return binding.root
     }
 }

@@ -1,15 +1,11 @@
 package com.sansantek.sansanmulmul.data.model
 
-import com.sansantek.sansanmulmul.R
-import com.sansantek.sansanmulmul.ui.util.Util
-import com.sansantek.sansanmulmul.ui.util.Util.pngToByteArray
-
-data class GroupListInfo(val title: String, var imageByte: ByteArray? = null) {
+data class Group(val title: kotlin.String, var imageByte: ByteArray? = null) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as GroupListInfo
+        other as Group
 
         if (title != other.title) return false
         if (!imageByte.contentEquals(other.imageByte)) return false

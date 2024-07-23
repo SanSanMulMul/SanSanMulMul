@@ -9,7 +9,7 @@ import android.widget.LinearLayout.VERTICAL
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
-import com.sansantek.sansanmulmul.data.model.GroupListInfo
+import com.sansantek.sansanmulmul.data.model.Group
 import com.sansantek.sansanmulmul.databinding.FragmentGroupTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupTabListAdapter
 
@@ -18,7 +18,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
     FragmentGroupTabBinding::bind,
     R.layout.fragment_group_tab
 ) {
-    private val groupListInfoList = mutableListOf<GroupListInfo>()
+    private val groupListInfoList = mutableListOf<Group>()
     private lateinit var groupTabListAdapter: GroupTabListAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -112,7 +112,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
 
     private fun initRecyclerViewData(){
         for (i in 1..15) {
-            groupListInfoList.add(GroupListInfo("가야산을 사랑하는 한사랑 산악회의 소모임입니다"))
+            groupListInfoList.add(Group("가야산을 사랑하는 한사랑 산악회의 소모임입니다"))
         }
 
         groupTabListAdapter = GroupTabListAdapter(isAllGroupLayout()).apply {

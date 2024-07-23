@@ -18,5 +18,14 @@
 
     <color name="group_tab_register_alert_grey">#929292</color>
 
+    <color name="pink">#F8A9A9</color>
+    <color name="light_green">#C5D275</color>
+    <color name="light_blue">#BEDDFA</color>
+    <color name="light_purple">#D5BEFA</color>
+
+
+
+
+
 
 </resources>

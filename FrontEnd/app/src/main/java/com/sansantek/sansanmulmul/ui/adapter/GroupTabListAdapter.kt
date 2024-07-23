@@ -9,22 +9,21 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Visibility
 import com.sansantek.sansanmulmul.R
-import com.sansantek.sansanmulmul.data.model.GroupListInfo
+import com.sansantek.sansanmulmul.data.model.Group
 import com.sansantek.sansanmulmul.databinding.ListGroupBinding
 import com.sansantek.sansanmulmul.ui.util.Util.byteArrayToBitmap
 
 private const val TAG = "GroupTabListAdapter_싸피"
 class GroupTabListAdapter(private val isAllGroupLayout:Boolean):
-    ListAdapter<GroupListInfo, GroupTabListAdapter.GroupInfoListHolder>(Comparator) {
+    ListAdapter<Group, GroupTabListAdapter.GroupInfoListHolder>(Comparator) {
 
-    companion object Comparator : DiffUtil.ItemCallback<GroupListInfo>() {
-        override fun areItemsTheSame(oldItem: GroupListInfo, newItem: GroupListInfo): Boolean {
+    companion object Comparator : DiffUtil.ItemCallback<Group>() {
+        override fun areItemsTheSame(oldItem: Group, newItem: Group): Boolean {
             return System.identityHashCode(oldItem) == System.identityHashCode(newItem)
         }
 
-        override fun areContentsTheSame(oldItem: GroupListInfo, newItem: GroupListInfo): Boolean {
+        override fun areContentsTheSame(oldItem: Group, newItem: Group): Boolean {
             return oldItem == newItem
         }
     }

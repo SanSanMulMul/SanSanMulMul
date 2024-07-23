@@ -17,7 +17,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:cardCornerRadius="20dp"
+                app:cardCornerRadius="30dp"
                 android:elevation="0dp"
                 app:cardElevation="0dp"
                 >
@@ -146,9 +146,8 @@
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_grid_hiking_style"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/layout_group"
                             app:spanCount="2"

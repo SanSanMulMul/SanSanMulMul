@@ -1,98 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/extra_info"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/extra_info"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
-        tools:context=".MainActivity">
+    <!-- 타이틀 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_profile_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/layout_profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4"
+        app:layout_constraintVertical_chainStyle="packed">
 
         <TextView
             android:id="@+id/profile_text"
-            android:text="프로필 사진"
-            android:textColor="@color/green"
-            android:textSize="28dp"
             android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/gothic_bold"
+            android:text="프로필 사진"
+            android:textColor="@color/sansanmulmul_green"
+            android:textSize="@dimen/textSize_26"
             android:textStyle="bold"
-            android:layout_marginTop="100dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/profile_text_choose"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/profile_text_choose"
-            android:text="도 골라주세요!"
-            android:textColor="@color/black"
-            android:textSize="28dp"
             android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:layout_marginTop="100dp"
-            app:layout_constraintStart_toEndOf="@id/profile_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
-
-        <FrameLayout
-            android:id="@+id/profile_layout"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:fontFamily="@font/gothic_bold"
+            android:text="도 골라주세요!"
+            android:textColor="@color/sansanmulmul_dark_gray"
+            android:textSize="@dimen/textSize_26"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/profile_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profile_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-
-            >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/register_profile_tiger"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="150dp"
-                android:layout_gravity="center"
-
-                />
-            <ImageView
-                android:layout_width="270dp"
-                android:layout_height="270dp"
-                android:layout_marginTop="90dp"
-                android:layout_marginBottom="50dp"
-                android:layout_gravity="center"
-                android:elevation="8dp"
-                android:background="@drawable/circle_white"
-                />
-            <ImageButton
-                android:text=""
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:src="@drawable/edit"
-                android:background="@drawable/circle_green"
-                android:layout_gravity="bottom|end"
-
-
-                android:layout_marginEnd="80dp"
-                android:layout_marginBottom="40dp"
-                android:elevation="8dp"
-                />
-
-        </FrameLayout>
-
-
-
+            app:layout_constraintStart_toEndOf="@id/profile_text"
+            app:layout_constraintTop_toTopOf="@id/profile_text" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- 프로필 영역 -->
+    <FrameLayout
+        android:id="@+id/layout_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_profile_title">
 
-</FrameLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="150dp"
+            android:src="@drawable/register_profile_tiger" />
+
+        <ImageView
+            android:layout_width="270dp"
+            android:layout_height="270dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="90dp"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/circle_white"
+            android:elevation="8dp" />
+
+        <ImageButton
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="80dp"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/circle_green"
+            android:elevation="8dp"
+            android:src="@drawable/edit"
+            android:text="" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

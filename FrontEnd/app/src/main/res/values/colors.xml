@@ -8,4 +8,9 @@
     <color name="purple">#D6B7FF</color>
     <color name="gradientStartColor">#51D767</color>
     <color name="gradientEndColor">#B690E9</color>
+
+    <!-- -->
+    <color name="sansanmulmul_green">#A1CCA8</color>
+    <color name="sansanmulmul_light_gray">#DBDBDB</color>
+    <color name="sansanmulmul_dark_gray">#242424</color>
 </resources>

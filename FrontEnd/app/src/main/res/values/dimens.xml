@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="editTextSize_20">20sp</dimen>
+    <dimen name="textSize_26">26sp</dimen>
+    <dimen name="textSize_20">20sp</dimen>
+    <dimen name="textSize_16">16sp</dimen>
+    <dimen name="textSize_14">14sp</dimen>
+    <dimen name="textSize_12">12sp</dimen>
+    <dimen name="textSize_11">11sp</dimen>
+    <dimen name="textSize_10">10sp</dimen>
+
+    <dimen name="height_50">50dp</dimen>
+    <dimen name="height_55">55dp</dimen>
+    <dimen name="height_60">60dp</dimen>
+
+
+</resources>

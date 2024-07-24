@@ -36,7 +36,7 @@
         android:id="@+id/button"
         android:layout_width="257dp"
         android:layout_height="62dp"
-        android:background="@drawable/rounded_button"
+        android:background="@drawable/rounded_button_green_200"
         android:text="카카오톡으로 회원가입하기"
         android:textColor="@color/button_text_color"
 

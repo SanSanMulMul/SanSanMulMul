@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.sansantek.sansanmulmul.ui.view.hometab.CarouselCustomView
+        android:id="@+id/v1"
+        android:layout_width="320dp"
+        android:layout_height="140dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:newsImg="@drawable/dummy1"
+        app:newsTitle="뉴스1" />
+
+    <com.sansantek.sansanmulmul.ui.view.hometab.CarouselCustomView
+        android:id="@+id/v2"
+        android:layout_width="320dp"
+        android:layout_height="140dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:newsImg="@drawable/dummy1"
+        app:newsTitle="뉴스2" />
+
+    <com.sansantek.sansanmulmul.ui.view.hometab.CarouselCustomView
+        android:id="@+id/v3"
+        android:layout_width="320dp"
+        android:layout_height="140dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:newsImg="@drawable/dummy1"
+        app:newsTitle="뉴스3" />
+
+</merge>

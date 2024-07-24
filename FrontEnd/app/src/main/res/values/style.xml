@@ -21,4 +21,67 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="GroupDetailMemberApproveBtnStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:text">수락</item>
+        <item name="android:textColor">@color/group_detail_group_positive_btn</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="marginHorizontal">5dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@drawable/group_detail_round_green_radius_20_rectangle</item>
+    </style>
+
+    <style name="GroupDetailMemberDeclineBtnStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:text">거절</item>
+        <item name="android:textColor">@color/group_detail_group_negative_btn</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="marginHorizontal">5dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@drawable/group_detail_round_red_radius_20_rectangle</item>
+    </style>
+
+
+    <style name="GroupDetailMemberDelegateAdminBtnStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:text">위임</item>
+        <item name="android:textColor">@color/group_detail_group_positive_btn</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="marginHorizontal">5dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@drawable/group_detail_round_green_radius_20_rectangle</item>
+    </style>
+
+    <style name="GroupDetailMemberKickMemberBtnStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:text">강퇴</item>
+        <item name="android:textColor">@color/group_detail_group_negative_btn</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="marginHorizontal">5dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@drawable/group_detail_round_red_radius_20_rectangle</item>
+    </style>
+
+    <style name="popup_window_animation">
+        <item name="android:windowEnterAnimation">@anim/popup_anim</item>
+        <item name="android:windowExitAnimation">@anim/popdown_anim</item>
+    </style>
+
+
 </resources>

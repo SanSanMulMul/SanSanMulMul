@@ -3,22 +3,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.view.creategroup.CourseChoiceDialog">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/layout_course_dialog_top"
         >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tv_up_course_choice_text_1"
+            android:text="상행 코스"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/green"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_up_course_choice_text_2"
             />
-
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tv_up_course_choice_text_2"
+            android:text=" 선택"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_up_course_choice_text_1"
             />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ib_course_cancel"
+            android:src="@drawable/button_cancel"
+            android:background="@drawable/rounded_circle_box"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_up_course_choice_text_2"
+
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="@color/grey"
+            app:layout_constraintBottom_toBottomOf="parent"
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -27,9 +62,20 @@
         android:layout_height="wrap_content"
         android:id="@+id/layout_course_dialog_mid"
         >
-        <LinearLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="쉬움"
+            android:background=
+
+
+        <LinearLayout
+            android:id="@+id/layout_up_course_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+
             >
 
         </LinearLayout>
@@ -41,8 +87,13 @@
         android:id="@+id/layout_course_dialog_bot"
         >
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="다음"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_button"
+            android:layout_marginHorizontal="130dp"
+            app:layout_constraintTop_toBottomOf="@id/layout_course_dialog_mid"
             >
 
         </Button>

@@ -28,6 +28,7 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
 
         // 데이터를 어댑터에 전달
         adapter.submitList(dataList)
+
     }
 
     private fun initSearchView() {
@@ -62,7 +63,7 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
                 val filteredList = if (newText.isNullOrEmpty()) {
                     dataList // Show all if query is empty
                 } else {
-                    dataList.filter { it.contains(newText, ignoreCase = true) } // Filter the list
+                    dataList + newText // Filter the list
                 }
                 adapter.submitList(filteredList) // Submit the filtered list to adapter
                 dataList = filteredList
@@ -71,3 +72,4 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
         })
     }
 }
+

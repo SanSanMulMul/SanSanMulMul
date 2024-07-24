@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="grouptab_gender_spinner_menu_array">
+        <item>성별무관</item>
+        <item>남자만</item>
+        <item>여자만</item>
+    </string-array>
+</resources>

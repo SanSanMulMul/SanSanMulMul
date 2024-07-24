@@ -6,8 +6,6 @@
     <color name="button_text_color">#FFFFFFFF</color>
     <color name="green">#A1CCA8</color>
     <color name="purple">#D6B7FF</color>
-<<<<<<< Updated upstream
-=======
     <color name="nav_background">#F7FCF4</color>
     <color name="hiking_style_purple">#D3BEEF</color>
     <color name="lightgray">#F0F0F0</color>
@@ -35,5 +33,4 @@
     <color name="tab_background_unselected">#FFFFFF</color>
     <color name="tab_divider_color">#E9E9E9</color>
     <color name="group_detail_group_description_title">#A1CCA8</color>
->>>>>>> Stashed changes
 </resources>

@@ -1,6 +1,8 @@
 [versions]
 agp = "8.5.0"
+androidSegmented = "1.0.6"
 dotsindicator = "5.0"
+flexboxVersion = "3.0.0"
 fragmentKtx = "1.8.1"
 gson = "2.10.1"
 kotlin = "1.9.0"
@@ -19,12 +21,14 @@ retrofit = "2.9.0"
 viewbinding = "8.5.1"
 
 [libraries]
+android-segmented = { module = "info.hoang8f:android-segmented", version.ref = "androidSegmented" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
 dotsindicator = { module = "com.tbuonomo:dotsindicator", version.ref = "dotsindicator" }
+google-flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexboxVersion" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

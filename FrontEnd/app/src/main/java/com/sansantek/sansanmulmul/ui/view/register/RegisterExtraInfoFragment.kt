@@ -1,110 +1,110 @@
 package com.sansantek.sansanmulmul.ui.view.register
 
+import android.graphics.LinearGradient
+import android.graphics.Shader
+import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import androidx.fragment.app.Fragment
+import android.widget.NumberPicker
+import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.getColor
+import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentRegisterExtraInfoBinding
+import java.time.LocalDate
+import java.util.Calendar
 
+private const val TAG = "산산물물_RegisterExtraInfoFragment"
 
-class RegisterExtraInfoFragment : Fragment() {
+class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>(
+    FragmentRegisterExtraInfoBinding::bind,
+    R.layout.fragment_register_extra_info
+) {
 
-    val binding by lazy {
-        FragmentRegisterExtraInfoBinding.inflate(layoutInflater)
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setGradient(binding.extraInfoText1)
+        setGradient(binding.extraInfoText2)
+        setSpinner()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private fun setGradient(textView: TextView) {
+        val paint = textView.paint
+        val width = paint.measureText(textView.text.toString())
+
+        val textShader = LinearGradient(
+            0f, 0f, width, textView.textSize,
+            intArrayOf(
+                getColor(requireActivity(), R.color.gradientStartColor),
+                getColor(requireActivity(), R.color.gradientEndColor)
+            ), arrayOf(0f, 1f).toFloatArray(), Shader.TileMode.CLAMP
+        )
+        textView.paint.shader = textShader
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        setupSpinners()
-        return binding.root
-    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setSpinner() {
+        val year: NumberPicker = binding.npYear
+        val month: NumberPicker = binding.npMonth
+        val day: NumberPicker = binding.npDay
+        val currentDate = getCurrentDate()
 
+        Log.d(
+            TAG,
+            "setSpinner: ${currentDate.year}, ${currentDate.monthValue}, ${currentDate.dayOfMonth}"
+        )
+        initNumberPicker(year, 1900, maxVal = currentDate.year)
+        initNumberPicker(month, minVal = 1, maxVal = 12)
+        initNumberPicker(day, minVal = 1, maxVal = 31)
 
-    private fun setupSpinners() {
+        year.value = currentDate.year
+        month.value = currentDate.monthValue
+        day.value = currentDate.dayOfMonth
 
-        val yearSpinner: Spinner = binding.yearSpinner
-        val monthSpinner: Spinner = binding.monthSpinner
-        val daySpinner: Spinner = binding.daySpinner
-
-        // 년도 Spinner
-        val years = (1923..2023).toList()
-        val yearAdapter =
-            ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, years)
-        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        yearSpinner.adapter = yearAdapter
-        yearSpinner.setSelection(77, true) // 2000으로 설정
-
-        // 월 Spinner
-        val months = (1..12).toList()
-        val monthAdapter =
-            ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, months)
-        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        monthSpinner.adapter = monthAdapter
-
-        // 날짜 Spinner 초기화
-        updateDays(daySpinner, yearSpinner.selectedItem as Int, monthSpinner.selectedItem as Int)
-
-        // 년도 선택 이벤트 처리
-        yearSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                updateDays(
-                    daySpinner,
-                    yearSpinner.selectedItem as Int,
-                    monthSpinner.selectedItem as Int
-                )
-                if (position == 0) {
-                    yearSpinner.setSelection(77, true) // 2000으로 설정
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        year.setOnValueChangedListener { _, _, newVal ->
+            day.maxValue = updateDayPicker(newVal, month.value)
         }
-
-        // 월 선택 이벤트 처리
-        monthSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                updateDays(
-                    daySpinner,
-                    yearSpinner.selectedItem as Int,
-                    monthSpinner.selectedItem as Int
-                )
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        month.setOnValueChangedListener { _, _, newVal ->
+            day.maxValue = updateDayPicker(year.value, newVal)
         }
     }
 
-    // 월별 날짜 수, 윤년 고려해서 2월 날짜 수
-    private fun updateDays(daySpinner: Spinner, year: Int, month: Int) {
-        val daysInMonth = when (month) {
-            1, 3, 5, 7, 8, 10, 12 -> 31
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getCurrentDate(): LocalDate {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDate.now()
+        } else {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH) + 1
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            LocalDate.of(year, month, day)
+        }
+    }
+
+    private fun initNumberPicker(
+        numberPicker: NumberPicker,
+        minVal: Int,
+        maxVal: Int
+    ) {
+        with(numberPicker) {
+            wrapSelectorWheel = false
+            descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
+            minValue = minVal
+            maxValue = maxVal
+        }
+    }
+
+    private fun updateDayPicker(year: Int, month: Int): Int {
+        return when (month) {
             4, 6, 9, 11 -> 30
-            2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+            2 -> if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) 29 else 28
             else -> 31
         }
-        val days = (1..daysInMonth).toList()
-        val dayAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, days)
-        dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        daySpinner.adapter = dayAdapter
     }
+
 }

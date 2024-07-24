@@ -11,17 +11,18 @@ import com.sansantek.sansanmulmul.ui.view.register.RegisterFinishFragment
 import com.sansantek.sansanmulmul.ui.view.register.RegisterStartFragment
 
 private const val TAG = "MainActivity 싸피"
+
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: ")
-
         setContentView(binding.root)
         initBottomNav()
 
 
 
-        supportFragmentManager.beginTransaction().replace(binding.fragmentView.id, RegisterStartFragment()).commit()
+        supportFragmentManager.beginTransaction()
+            .replace(binding.fragmentView.id, RegisterStartFragment()).commit()
     }
     private fun initBottomNav() {
 

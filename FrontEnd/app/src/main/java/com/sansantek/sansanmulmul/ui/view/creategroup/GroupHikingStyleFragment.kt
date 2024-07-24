@@ -1,36 +1,25 @@
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.CompoundButton
+import androidx.core.content.ContextCompat
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentGroupHikingStyleBinding
-import com.sansantek.sansanmulmul.ui.util.Util.dp
 import com.sansantek.sansanmulmul.ui.util.Util.dpToPx
 
-class GroupHikingStyleFragment : Fragment() {
+class GroupHikingStyleFragment : BaseFragment<FragmentGroupHikingStyleBinding>(FragmentGroupHikingStyleBinding::bind, R.layout.fragment_group_hiking_style) {
 
-    private lateinit var binding: FragmentGroupHikingStyleBinding
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentGroupHikingStyleBinding.inflate(inflater, container, false)
-
-        // Set listeners for each CheckBox
         binding.cbHikingStyle1.setOnCheckedChangeListener(onCheckedChangeListener(R.color.purple))
         binding.cbHikingStyle2.setOnCheckedChangeListener(onCheckedChangeListener(R.color.lightgreen))
         binding.cbHikingStyle3.setOnCheckedChangeListener(onCheckedChangeListener(R.color.blue))
         binding.cbHikingStyle4.setOnCheckedChangeListener(onCheckedChangeListener(R.color.pink))
         binding.cbHikingStyle5.setOnCheckedChangeListener(onCheckedChangeListener(R.color.yellow))
-
-        return binding.root
     }
 
     private fun onCheckedChangeListener(color: Int): CompoundButton.OnCheckedChangeListener {

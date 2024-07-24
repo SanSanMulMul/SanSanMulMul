@@ -71,6 +71,12 @@ dependencies {
     // https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor
     implementation (libs.logging.interceptor)
 
+    // androidx.appcompat:appcompat:1.6.1
+    implementation(libs.androidx.appcompat.v161)
+
+    // com.google.android.material:material:1.13.0-alpha04
+    implementation(libs.material.v1130alpha04)
+
     // gson
     implementation (libs.gson)
 
@@ -87,8 +93,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.viewbinding)
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.13.0-alpha04")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

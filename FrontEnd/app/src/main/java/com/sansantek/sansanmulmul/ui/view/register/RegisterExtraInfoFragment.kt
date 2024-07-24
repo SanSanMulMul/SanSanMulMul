@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat.getColor
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentRegisterExtraInfoBinding
+import com.sansantek.sansanmulmul.ui.view.grouptab.ShowGroupRegisterSuccessDialog
 import java.time.LocalDate
 import java.util.Calendar
 
@@ -29,6 +30,7 @@ class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>
         setGradient(binding.extraInfoText1)
         setGradient(binding.extraInfoText2)
         setSpinner()
+        ShowGroupRegisterSuccessDialog().show(requireActivity().supportFragmentManager, "dialog")
     }
 
     private fun setGradient(textView: TextView) {

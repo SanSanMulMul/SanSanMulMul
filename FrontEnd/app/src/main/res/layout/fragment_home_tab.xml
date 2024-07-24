@@ -1,174 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".ui.view.hometab.HomeTabFragment">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.view.hometab.HomeTabFragment">
+    android:layout_height="wrap_content">
 
+    <!-- 로고 -->
+    <ImageView
+      android:id="@+id/iv_logo"
+      android:layout_width="@dimen/height_20"
+      android:layout_height="@dimen/height_20"
+      android:layout_marginStart="22dp"
+      android:layout_marginTop="20dp"
+      android:src="@drawable/animalogo"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 앱이름 -->
+    <TextView
+      android:id="@+id/tv_app_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="10dp"
+      android:text="@string/app_name"
+      android:textColor="#B3B3B3"
+      android:textSize="16sp"
+      android:textStyle="bold"
+      app:layout_constraintBottom_toBottomOf="@+id/iv_logo"
+      app:layout_constraintStart_toEndOf="@+id/iv_logo"
+      app:layout_constraintTop_toTopOf="@+id/iv_logo" />
+
+    <!-- 검색 -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+      android:id="@+id/layout_search"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="15dp"
+      android:layout_marginEnd="20dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/iv_logo"
+      app:layout_constraintTop_toBottomOf="@id/tv_app_name">
 
-        <!-- 로고 -->
-        <ImageView
-            android:id="@+id/iv_logo"
-            android:layout_width="@dimen/height_20"
-            android:layout_height="@dimen/height_20"
-            android:layout_marginStart="22dp"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/animalogo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- 앱이름 -->
-        <TextView
-            android:id="@+id/tv_app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="@string/app_name"
-            android:textColor="#B3B3B3"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_logo"
-            app:layout_constraintStart_toEndOf="@+id/iv_logo"
-            app:layout_constraintTop_toTopOf="@+id/iv_logo" />
-
-        <!-- 검색 -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_search"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/iv_logo"
-            app:layout_constraintTop_toBottomOf="@id/tv_app_name">
-
-            <include layout="@layout/component_search" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- 인사말 -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_greeting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            app:layout_constraintStart_toStartOf="@id/iv_logo"
-            app:layout_constraintTop_toBottomOf="@id/layout_search">
-
-            <TextView
-                android:id="@+id/tv_greeting1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/gothic_bold"
-                android:text="좋은 "
-                android:textSize="@dimen/textSize_26"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_greeting2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/gothic_bold"
-                android:text="아침"
-                android:textSize="@dimen/textSize_26"
-                app:layout_constraintStart_toEndOf="@id/tv_greeting1"
-                app:layout_constraintTop_toTopOf="@id/tv_greeting1" />
-
-            <TextView
-                android:id="@+id/tv_greeting3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/gothic_bold"
-                android:text="이에요,"
-                android:textSize="@dimen/textSize_26"
-                app:layout_constraintStart_toEndOf="@id/tv_greeting2"
-                app:layout_constraintTop_toTopOf="@id/tv_greeting1" />
-
-            <TextView
-                android:id="@+id/tv_greeting4_nickname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:fontFamily="@font/gothic_bold"
-                android:text="박태우스"
-                android:textColor="@color/sansanmulmul_green"
-                android:textSize="@dimen/textSize_26"
-                app:layout_constraintStart_toStartOf="@id/tv_greeting1"
-                app:layout_constraintTop_toBottomOf="@id/tv_greeting1" />
-
-            <TextView
-                android:id="@+id/tv_greeting5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/gothic_bold"
-                android:text=" 님 :)"
-                android:textSize="@dimen/textSize_26"
-                app:layout_constraintStart_toEndOf="@id/tv_greeting4_nickname"
-                app:layout_constraintTop_toTopOf="@id/tv_greeting4_nickname" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- 뉴스 -->
-        <androidx.constraintlayout.motion.widget.MotionLayout
-            android:id="@+id/layout_carousel_news"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            app:layoutDescription="@xml/motion_scene_1"
-            app:layout_constraintTop_toBottomOf="@id/layout_greeting">
-
-            <include layout="@layout/carousel_views" />
-        </androidx.constraintlayout.motion.widget.MotionLayout>
-
-        <!-- 구분선 -->
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:background="@color/light_grey"
-            app:layout_constraintTop_toBottomOf="@id/layout_carousel_news" />
-
-        <!-- 산 추천1 -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@id/layout_search"
-            app:layout_constraintStart_toStartOf="@id/iv_logo"
-            app:layout_constraintTop_toBottomOf="@id/divider">
-
-            <TextView
-                android:id="@+id/tv_nickname2"
-                style="@style/HomeTabRecommendationTitleStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="박태우스"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_nickname2_detail"
-                style="@style/HomeTabRecommendationTitleStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="님과 비슷한 유저가 많이 간 산"
-                app:layout_constraintBottom_toBottomOf="@id/tv_nickname2"
-                app:layout_constraintStart_toEndOf="@id/tv_nickname2"
-                app:layout_constraintTop_toTopOf="@id/tv_nickname2" />
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/vp_recommendation1"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/tv_nickname2" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+      <include layout="@layout/component_search" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 인사말 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/layout_greeting"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="25dp"
+      app:layout_constraintStart_toStartOf="@id/iv_logo"
+      app:layout_constraintTop_toBottomOf="@id/layout_search">
+
+      <TextView
+        android:id="@+id/tv_greeting1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/gothic_bold"
+        android:text="좋은 "
+        android:textSize="@dimen/textSize_26"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <TextView
+        android:id="@+id/tv_greeting2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/gothic_bold"
+        android:text="아침"
+        android:textSize="@dimen/textSize_26"
+        app:layout_constraintStart_toEndOf="@id/tv_greeting1"
+        app:layout_constraintTop_toTopOf="@id/tv_greeting1" />
+
+      <TextView
+        android:id="@+id/tv_greeting3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/gothic_bold"
+        android:text="이에요,"
+        android:textSize="@dimen/textSize_26"
+        app:layout_constraintStart_toEndOf="@id/tv_greeting2"
+        app:layout_constraintTop_toTopOf="@id/tv_greeting1" />
+
+      <TextView
+        android:id="@+id/tv_greeting4_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/gothic_bold"
+        android:text="박태우스"
+        android:textColor="@color/sansanmulmul_green"
+        android:textSize="@dimen/textSize_26"
+        app:layout_constraintStart_toStartOf="@id/tv_greeting1"
+        app:layout_constraintTop_toBottomOf="@id/tv_greeting1" />
+
+      <TextView
+        android:id="@+id/tv_greeting5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/gothic_bold"
+        android:text=" 님 :)"
+        android:textSize="@dimen/textSize_26"
+        app:layout_constraintStart_toEndOf="@id/tv_greeting4_nickname"
+        app:layout_constraintTop_toTopOf="@id/tv_greeting4_nickname" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 뉴스 -->
+    <androidx.constraintlayout.motion.widget.MotionLayout
+      android:id="@+id/layout_carousel_news"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      app:layoutDescription="@xml/motion_scene_1"
+      app:layout_constraintTop_toBottomOf="@id/layout_greeting">
+
+      <include layout="@layout/carousel_views" />
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+
+    <!-- 구분선 -->
+    <View
+      android:id="@+id/divider"
+      android:layout_width="match_parent"
+      android:layout_height="8dp"
+      android:layout_marginTop="20dp"
+      android:background="@color/light_grey"
+      app:layout_constraintTop_toBottomOf="@id/layout_carousel_news" />
+
+    <!-- 산 추천1 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="@id/layout_search"
+      app:layout_constraintStart_toStartOf="@id/iv_logo"
+      app:layout_constraintTop_toBottomOf="@id/divider">
+
+      <TextView
+        android:id="@+id/tv_nickname2"
+        style="@style/HomeTabRecommendationTitleStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="박태우스"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <TextView
+        android:id="@+id/tv_nickname2_detail"
+        style="@style/HomeTabRecommendationTitleStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="님과 비슷한 유저가 많이 간 산"
+        app:layout_constraintBottom_toBottomOf="@id/tv_nickname2"
+        app:layout_constraintStart_toEndOf="@id/tv_nickname2"
+        app:layout_constraintTop_toTopOf="@id/tv_nickname2" />
+
+      <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp_recommendation1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/tv_nickname2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

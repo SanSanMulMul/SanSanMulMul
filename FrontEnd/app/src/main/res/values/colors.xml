@@ -7,4 +7,10 @@
     <color name="green">#A1CCA8</color>
     <color name="purple">#D6B7FF</color>
     <color name="nav_background">#F7FCF4</color>
+    <color name="hiking_style_purple">#D3BEEF</color>
+    <color name="lightgray">#F0F0F0</color>
+    <color name="yellow">#EDE7AE</color>
+    <color name="blue">#9CD5DC</color>
+    <color name="pink">#F4ADC1</color>
+    <color name="lightgreen">#C3F0CA</color>
 </resources>

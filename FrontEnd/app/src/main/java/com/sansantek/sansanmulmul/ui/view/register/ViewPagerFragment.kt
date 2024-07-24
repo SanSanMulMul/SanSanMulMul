@@ -1,12 +1,15 @@
 package com.sansantek.sansanmulmul.ui.view.register
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentViewPagerBinding
+import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.viewpageradapter.ViewPageAdapter
+
 
 private const val TAG = "ViewPagerFragment 싸피"
 
@@ -32,6 +35,13 @@ class ViewPagerFragment : BaseFragment<FragmentViewPagerBinding>(
         binding.prevButton.setOnClickListener {
             binding.viewPager.currentItem -= 1
             checkViewPageLimit()
+        }
+
+        binding.homeButton.setOnClickListener {
+            val intent = Intent(requireActivity(), MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            activity?.finish()
         }
     }
 

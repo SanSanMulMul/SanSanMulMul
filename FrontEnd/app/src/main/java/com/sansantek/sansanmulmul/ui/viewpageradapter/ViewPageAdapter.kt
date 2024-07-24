@@ -3,6 +3,7 @@ package com.sansantek.sansanmulmul.ui.viewpageradapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.sansantek.sansanmulmul.ui.view.groupdetail.GroupDetailFragment
 import com.sansantek.sansanmulmul.ui.view.register.RegisterExtraInfoFragment
 import com.sansantek.sansanmulmul.ui.view.register.RegisterFinishFragment
 import com.sansantek.sansanmulmul.ui.view.register.RegisterProfileFragment
@@ -17,7 +18,7 @@ class ViewPageAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(
     // 불러올 Fragment 정의
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> RegisterExtraInfoFragment()
+            0 -> GroupDetailFragment()
             1 -> RegisterProfileFragment()
             2 -> RegisterFinishFragment()
             else -> throw IllegalArgumentException("Invalid position $position")

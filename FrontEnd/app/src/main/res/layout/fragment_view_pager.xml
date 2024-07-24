@@ -43,7 +43,7 @@
             android:id="@+id/home_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/rounded_button_green_200"
             android:paddingHorizontal="20dp"
             android:text="앱 사용하러 가기"
             android:textColor="@color/white"

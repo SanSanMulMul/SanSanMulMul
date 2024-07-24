@@ -1,6 +1,5 @@
-package com.sansantek.sansanmulmul.ui.viewpageradapter
+package com.sansantek.sansanmulmul.ui.adapter
 
-import GroupHikingStyleFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -11,7 +10,8 @@ import com.sansantek.sansanmulmul.ui.view.register.RegisterProfileFragment
 
 // 3개의 화면을 구성한다고 가정
 // OneFragment, TwoFragment, ThreeFragment
-class ViewPageAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
+class LoginViewPagerAdapter(fragmentActivity: FragmentActivity) :
+    FragmentStateAdapter(fragmentActivity) {
 
     // 페이지 갯수 설정
     override fun getItemCount(): Int = 4

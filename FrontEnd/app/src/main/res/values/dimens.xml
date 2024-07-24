@@ -3,15 +3,25 @@
     <dimen name="editTextSize_20">20sp</dimen>
     <dimen name="textSize_26">26sp</dimen>
     <dimen name="textSize_20">20sp</dimen>
+    <dimen name="textSize_18">18sp</dimen>
+    <dimen name="textSize_17">17sp</dimen>
     <dimen name="textSize_16">16sp</dimen>
+    <dimen name="textSize_15">15sp</dimen>
     <dimen name="textSize_14">14sp</dimen>
     <dimen name="textSize_12">12sp</dimen>
     <dimen name="textSize_11">11sp</dimen>
     <dimen name="textSize_10">10sp</dimen>
 
+    <dimen name="height_20">20dp</dimen>
     <dimen name="height_50">50dp</dimen>
     <dimen name="height_55">55dp</dimen>
     <dimen name="height_60">60dp</dimen>
 
+    <dimen name="carousel_width">280dp</dimen>
+    <dimen name="carousel_width_minus">-280dp</dimen>
+    <dimen name="carousel_width_twice">540dp</dimen>
+    <dimen name="carousel_width_twice_minus">-540dp</dimen>
+    <dimen name="carousel_height">20</dimen>
+    <dimen name="carousel_height_minus">-20</dimen>
 
 </resources>

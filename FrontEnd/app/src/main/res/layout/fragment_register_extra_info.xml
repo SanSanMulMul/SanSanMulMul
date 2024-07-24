@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_55"
             android:layout_marginHorizontal="40dp"
-            android:background="@drawable/rounded_box"
+            android:background="@drawable/rounded_rectangle_white_grey_10"
             app:layout_constraintBottom_toTopOf="@id/rg_gender"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

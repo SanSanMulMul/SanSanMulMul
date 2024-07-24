@@ -6,6 +6,7 @@ import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseActivity
 import com.sansantek.sansanmulmul.databinding.ActivityMainBinding
 import com.sansantek.sansanmulmul.ui.view.grouptab.GroupTabFragment
+import com.sansantek.sansanmulmul.ui.view.hometab.HomeTabFragment
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,6 +14,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         setContentView(binding.root)
 
         initBottomNav()
+        changeFragment(HomeTabFragment())
 
     }
 
@@ -23,6 +25,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 //            Log.d(TAG, "initBottomNav: ${it.itemId}")
             when (it.itemId) {
                 R.id.home -> {
+                    changeFragment(HomeTabFragment())
                 }
 
                 R.id.map -> {
@@ -49,5 +52,4 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     private fun changeFragment(view: Fragment) {
         supportFragmentManager.beginTransaction().replace(binding.fragmentView.id, view).commit()
     }
-
 }

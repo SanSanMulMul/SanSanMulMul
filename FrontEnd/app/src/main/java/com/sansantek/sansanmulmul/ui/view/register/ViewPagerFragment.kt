@@ -7,8 +7,8 @@ import android.view.View
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentViewPagerBinding
+import com.sansantek.sansanmulmul.ui.adapter.LoginViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.view.MainActivity
-import com.sansantek.sansanmulmul.ui.viewpageradapter.ViewPageAdapter
 
 
 private const val TAG = "ViewPagerFragment 싸피"
@@ -21,7 +21,7 @@ class ViewPagerFragment : BaseFragment<FragmentViewPagerBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = ViewPageAdapter(requireActivity())
+        val adapter = LoginViewPagerAdapter(requireActivity())
         binding.viewPager.adapter = adapter
         binding.viewPager.isUserInputEnabled = false
         binding.springDotsIndicator.attachTo(binding.viewPager)

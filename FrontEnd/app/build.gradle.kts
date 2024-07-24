@@ -1,3 +1,5 @@
+import java.util.regex.Pattern.compile
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -43,6 +45,11 @@ android {
 }
 
 dependencies {
+
+    implementation (libs.google.flexbox)
+
+    implementation (libs.android.segmented)
+
 
     implementation(libs.dotsindicator)
 

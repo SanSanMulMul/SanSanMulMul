@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseActivity
 import com.sansantek.sansanmulmul.databinding.ActivityMainBinding
+import com.sansantek.sansanmulmul.ui.view.grouptab.GroupTabFragment
 import com.sansantek.sansanmulmul.ui.view.register.RegisterFinishFragment
 import com.sansantek.sansanmulmul.ui.view.register.RegisterStartFragment
 
@@ -39,7 +40,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 }
 
                 R.id.group -> {
-
+                    changeFragment(GroupTabFragment())
                 }
 
                 R.id.mypage -> {

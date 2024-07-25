@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="editTextSize_20">20sp</dimen>
+    <dimen name="textSize_28">28sp</dimen>
     <dimen name="textSize_26">26sp</dimen>
     <dimen name="textSize_20">20sp</dimen>
     <dimen name="textSize_18">18sp</dimen>

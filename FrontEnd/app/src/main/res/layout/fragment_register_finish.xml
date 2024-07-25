@@ -7,14 +7,13 @@
     android:background="@drawable/extra_info_gradient">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/WelcomeGroup"
+        android:id="@+id/layout_welcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/tiger2"
@@ -30,10 +29,10 @@
             android:id="@+id/welcomeText1"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:text="가입 완료!"
             android:textColor="@color/white"
-            android:textSize="@dimen/textSize_26"
+            android:textSize="@dimen/textSize_28"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            app:layout_constraintBottom_toBottomOf="@id/WelcomeGroup"
+            app:layout_constraintBottom_toBottomOf="@id/layout_welcome"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/welcomeText1">
@@ -56,13 +55,12 @@
                 android:text="환영해요, "
                 android:textColor="@color/white"
                 android:textSize="@dimen/textSize_16"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/welcomeText3"
+                app:layout_constraintEnd_toStartOf="@id/tv_shared"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/welcomeText3"
+                android:id="@+id/tv_shared"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="머건이"
@@ -81,15 +79,26 @@
                 android:text="님 :)"
                 android:textColor="@color/white"
                 android:textSize="@dimen/textSize_16"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/welcomeText2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/welcomeText3"
+                app:layout_constraintStart_toEndOf="@id/tv_shared"
                 app:layout_constraintTop_toTopOf="@id/welcomeText2" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 홈으로 이동 버튼 -->
+    <TextView
+        android:id="@+id/home_button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom|center"
+        android:paddingHorizontal="60dp"
+        android:paddingBottom="120dp"
+        android:text="아무 곳이나 클릭하여 시작하세요"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

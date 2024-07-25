@@ -38,7 +38,7 @@ class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>
         val textShader = LinearGradient(
             0f, 0f, width, textView.textSize,
             intArrayOf(
-                getColor(requireActivity(), R.color.gradientStartColor),
+                getColor(requireActivity(), R.color.sansanmulmul_green),
                 getColor(requireActivity(), R.color.gradientEndColor)
             ), arrayOf(0f, 1f).toFloatArray(), Shader.TileMode.CLAMP
         )

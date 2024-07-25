@@ -19,7 +19,7 @@ class CarouselCustomView(context: Context, attrs: AttributeSet) : ConstraintLayo
     }
 
     private fun init() {
-        val view = LayoutInflater.from(context).inflate(R.layout.carousel_custom_view, this, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_news, this, false)
         addView(view)
         ivNewsImg = findViewById(R.id.iv_news_img)
         tvNewsTitle = findViewById(R.id.tv_news_title)

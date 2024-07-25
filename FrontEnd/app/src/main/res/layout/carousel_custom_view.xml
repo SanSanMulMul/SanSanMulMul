@@ -10,9 +10,9 @@
         android:id="@+id/layout_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_rectangle_white_grey_10"
+        android:background="@drawable/rounded_rectangle_white_10"
         android:elevation="10dp"
-        android:outlineSpotShadowColor="#A9A9A9"
+        android:outlineSpotShadowColor="#B3B3B3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
         <!-- 뉴스 이미지 -->

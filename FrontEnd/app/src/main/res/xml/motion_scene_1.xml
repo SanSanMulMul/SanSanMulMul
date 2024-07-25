@@ -1,109 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/tools"
-  xmlns:motion="http://schemas.android.com/apk/res-auto"
-  app:ignore="NamespaceTypo">
+    xmlns:app="http://schemas.android.com/tools"
+    xmlns:motion="http://schemas.android.com/apk/res-auto"
+    app:ignore="NamespaceTypo">
 
-  <Transition
-    android:id="@+id/slide_transition"
-    app:constraintSetEnd="@id/end"
-    app:constraintSetStart="@id/start"
-    app:duration="300">
-    <OnSwipe
-      app:dragDirection="dragUp"
-      app:touchAnchorId="@id/image1"
-      app:touchAnchorSide="top" />
-  </Transition>
+    <!-- 1 to 2 transition -->
+    <Transition
+        android:id="@+id/transition_1_to_2"
+        motion:constraintSetEnd="@id/s2"
+        motion:constraintSetStart="@id/s1"
+        motion:duration="700" />
 
-  <ConstraintSet android:id="@id/start">
-    <!-- 시작 상태의 제약 조건들 -->
-  </ConstraintSet>
+    <!-- 2 to 1 transition -->
+    <Transition
+        android:id="@+id/transition_2_to_1"
+        motion:constraintSetEnd="@id/s1"
+        motion:constraintSetStart="@id/s2"
+        motion:duration="700" />
 
-  <ConstraintSet android:id="@id/end">
-    <!-- 끝 상태의 제약 조건들 -->
-  </ConstraintSet>
+    <!-- 2 to 3 transition -->
+    <Transition
+        android:id="@+id/transition_2_to_3"
+        motion:constraintSetEnd="@id/s3"
+        motion:constraintSetStart="@id/s2"
+        motion:duration="700" />
 
-  //1 to 2 transition
-  <Transition
-    motion:constraintSetEnd="@id/s2"
-    motion:constraintSetStart="@id/s1"
-    motion:duration="700" />
+    <!-- 3 to 2 transition -->
+    <Transition
+        android:id="@+id/transition_3_to_2"
+        motion:constraintSetEnd="@id/s2"
+        motion:constraintSetStart="@id/s3"
+        motion:duration="700" />
 
-  //2 to 1 transition
-  <Transition
-    motion:constraintSetEnd="@id/s1"
-    motion:constraintSetStart="@id/s2"
-    motion:duration="700" />
+    <!-- States -->
+    <ConstraintSet android:id="@+id/s1">
+        <Constraint android:id="@+id/v1">
+            <Transform android:translationX="0dp" />
+        </Constraint>
+        <Constraint android:id="@+id/v2">
+            <Transform
+                android:rotationY="@dimen/carousel_height_minus"
+                android:translationX="@dimen/carousel_width" />
+        </Constraint>
+        <Constraint android:id="@+id/v3">
+            <Transform
+                android:rotationY="@dimen/carousel_height_minus"
+                android:translationX="@dimen/carousel_width_twice" />
+        </Constraint>
+    </ConstraintSet>
 
-  //2 to 3 transition
-  <Transition
-    motion:constraintSetEnd="@id/s3"
-    motion:constraintSetStart="@id/s2"
-    motion:duration="700" />
+    <ConstraintSet android:id="@+id/s2">
+        <Constraint android:id="@+id/v1">
+            <Transform
+                android:rotationY="@dimen/carousel_height"
+                android:translationX="@dimen/carousel_width_minus" />
+        </Constraint>
+        <Constraint android:id="@+id/v2">
+            <Transform
+                android:rotationY="0"
+                android:translationX="0dp" />
+        </Constraint>
+        <Constraint android:id="@+id/v3">
+            <Transform
+                android:rotationY="@dimen/carousel_height_minus"
+                android:translationX="@dimen/carousel_width" />
+        </Constraint>
+    </ConstraintSet>
 
-  //3 to 2 transition
-  <Transition
-    motion:constraintSetEnd="@id/s2"
-    motion:constraintSetStart="@id/s3"
-    motion:duration="700" />
-
-  //states
-  <ConstraintSet android:id="@+id/s1">
-    <Constraint android:id="@+id/v1">
-      <Transform android:translationX="0dp" />
-    </Constraint>
-
-    <Constraint android:id="@+id/v2">
-      <Transform
-        android:rotationY="@dimen/carousel_height_minus"
-        android:translationX="@dimen/carousel_width" />
-    </Constraint>
-
-    <Constraint android:id="@+id/v3">
-      <Transform
-        android:rotationY="@dimen/carousel_height_minus"
-        android:translationX="@dimen/carousel_width_twice" />
-    </Constraint>
-  </ConstraintSet>
-
-  <ConstraintSet android:id="@+id/s2">
-    <Constraint android:id="@+id/v1">
-      <Transform
-        android:rotationY="@dimen/carousel_height"
-        android:translationX="@dimen/carousel_width_minus" />
-    </Constraint>
-
-    <Constraint android:id="@+id/v2">
-      <Transform
-        android:rotationY="0"
-        android:translationX="0dp" />
-    </Constraint>
-
-    <Constraint android:id="@+id/v3">
-      <Transform
-        android:rotationY="@dimen/carousel_height_minus"
-        android:translationX="@dimen/carousel_width" />
-    </Constraint>
-  </ConstraintSet>
-
-  <ConstraintSet android:id="@+id/s3">
-    <Constraint android:id="@+id/v1">
-      <Transform
-        android:rotationY="@dimen/carousel_height"
-        android:translationX="@dimen/carousel_width_twice_minus" />
-    </Constraint>
-
-    <Constraint android:id="@+id/v2">
-      <Transform
-        android:rotationY="@dimen/carousel_height"
-        android:translationX="@dimen/carousel_width_minus" />
-    </Constraint>
-
-    <Constraint android:id="@+id/v3">
-      <Transform
-        android:rotationY="0"
-        android:translationX="0dp" />
-    </Constraint>
-  </ConstraintSet>
+    <ConstraintSet android:id="@+id/s3">
+        <Constraint android:id="@+id/v1">
+            <Transform
+                android:rotationY="@dimen/carousel_height"
+                android:translationX="@dimen/carousel_width_twice_minus" />
+        </Constraint>
+        <Constraint android:id="@+id/v2">
+            <Transform
+                android:rotationY="@dimen/carousel_height"
+                android:translationX="@dimen/carousel_width_minus" />
+        </Constraint>
+        <Constraint android:id="@+id/v3">
+            <Transform
+                android:rotationY="0"
+                android:translationX="0dp" />
+        </Constraint>
+    </ConstraintSet>
 
 </MotionScene>

@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.data.model.Recommendation
 
-class FirstRecommendationViewPagerAdapter(val items: List<Recommendation>) :
-    RecyclerView.Adapter<FirstRecommendationViewPagerAdapter.RecommendationViewHolder>() {
+class SecondRecommendationViewPagerAdapter(val items: List<Recommendation>) :
+    RecyclerView.Adapter<SecondRecommendationViewPagerAdapter.RecommendationViewHolder>() {
 
     class RecommendationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvMountainName: TextView = view.findViewById(R.id.tv_mountain_name)
@@ -27,7 +27,6 @@ class FirstRecommendationViewPagerAdapter(val items: List<Recommendation>) :
 
     override fun onBindViewHolder(holder: RecommendationViewHolder, position: Int) {
         val actualPosition = position % items.size
-//        holder.bind(items[actualPosition])
         val item = items[actualPosition]
         holder.tvMountainName.text = item.mountainName
         holder.tvMountainDifficulty.text = item.mountainDifficulty

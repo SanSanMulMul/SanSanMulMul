@@ -1,21 +1,19 @@
 package com.sansantek.sansanmulmul.ui.view.register
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
-import com.sansantek.sansanmulmul.databinding.FragmentViewPagerBinding
+import com.sansantek.sansanmulmul.databinding.FragmentLoginViewPagerBinding
 import com.sansantek.sansanmulmul.ui.adapter.LoginViewPagerAdapter
-import com.sansantek.sansanmulmul.ui.view.MainActivity
 
 
 private const val TAG = "ViewPagerFragment 싸피"
 
-class ViewPagerFragment : BaseFragment<FragmentViewPagerBinding>(
-    FragmentViewPagerBinding::bind,
-    R.layout.fragment_view_pager
+class ViewPagerFragment : BaseFragment<FragmentLoginViewPagerBinding>(
+    FragmentLoginViewPagerBinding::bind,
+    R.layout.fragment_login_view_pager
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,12 +35,7 @@ class ViewPagerFragment : BaseFragment<FragmentViewPagerBinding>(
             checkViewPageLimit()
         }
 
-        binding.homeButton.setOnClickListener {
-            val intent = Intent(requireActivity(), MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-            activity?.finish()
-        }
+
     }
 
     private fun checkViewPageLimit() {
@@ -50,15 +43,13 @@ class ViewPagerFragment : BaseFragment<FragmentViewPagerBinding>(
         Log.d(TAG, "checkViewPageLimit: ${binding.viewPager.childCount}")
         if (binding.viewPager.currentItem == itemCount - 1) {
             binding.nextButton.visibility = View.INVISIBLE
-            binding.homeButton.visibility = View.VISIBLE
-
-        } else {
+            binding.prevButton.visibility = View.INVISIBLE
+            binding.progressButton.visibility = View.INVISIBLE
+        } else if (binding.viewPager.currentItem == 0) {
             binding.nextButton.visibility = View.VISIBLE
-            binding.homeButton.visibility = View.INVISIBLE
-        }
-        if (binding.viewPager.currentItem == 0) {
             binding.prevButton.visibility = View.INVISIBLE
         } else {
+            binding.nextButton.visibility = View.VISIBLE
             binding.prevButton.visibility = View.VISIBLE
         }
     }

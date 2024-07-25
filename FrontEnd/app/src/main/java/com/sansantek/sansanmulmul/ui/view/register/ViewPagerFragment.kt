@@ -21,7 +21,7 @@ class ViewPagerFragment : BaseFragment<FragmentViewPagerBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = ViewPageAdapter(requireActivity())
+        val adapter = ViewPageAdapter(requireActivity().supportFragmentManager, lifecycle)
         binding.viewPager.adapter = adapter
         binding.viewPager.isUserInputEnabled = false
         binding.springDotsIndicator.attachTo(binding.viewPager)

@@ -1,19 +1,17 @@
 package com.sansantek.sansanmulmul.ui.view.groupdetail
 
 import android.content.Context
-import android.drm.DrmStore.ConstraintsColumns
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.LinearLayout
 import android.widget.PopupWindow
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
@@ -51,19 +49,20 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
             Log.d(TAG, "onViewCreated: $screenHeight , $screenWidth")
             val layoutInflater = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-            val bbinding = PopupGroupDetailNotiBinding.inflate(layoutInflater)
+            val popupBinding = PopupGroupDetailNotiBinding.inflate(layoutInflater)
             val popup = PopupWindow(requireContext()).apply {
-                contentView = bbinding.root
-                val newWidth = (screenWidth * 0.8).toInt()
-                val newHeight = (screenHeight * 0.8).toInt()
+                contentView = popupBinding.root
+                val newWidth = (screenWidth * 0.7).toInt()
+                val newHeight = (screenWidth * 0.9).toInt()
                 width = newWidth
                 height = newHeight
                 animationStyle = R.style.popup_window_animation
 
             }
-            bbinding.closeBtn.setOnClickListener{
+            popupBinding.closeBtn.setOnClickListener{
                 popup.dismiss()
             }
+            popup.setBackgroundDrawable(ColorDrawable())
 
 //            val binding = PopupLayoutBinding.inflate(layoutInflater)
 //            val popUp = PopupWindow(context)
@@ -74,9 +73,8 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
 //
 //            val x = 200
 //            val y = 60
-//            popUp.setBackgroundDrawable(ColorDrawable())
-//            popUp.animationStyle = R.style.popup_window_animation
-//            popUp.showAtLocation(binding.root, Gravity.NO_GRAVITY, p.x + x, p.y + y)
+            Log.d(TAG, "onViewCreated: noti 버튼 정보 ${binding.ibNoti.height},${binding.ibNoti.measuredHeight}")
+                binding.ibNoti.measuredHeight
 
 //
 
@@ -87,7 +85,9 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
 //            popuplayoutParams.width = newWidth
 //            popuplayoutParams.height = newHeight
 //            popup.contentView.layoutParams = popuplayoutParams
-            popup.showAsDropDown(binding.layoutChatBtn)
+//            popup.showAsDropDown(binding.layoutChatBtn)
+
+              popup.showAtLocation(binding.root, Gravity.NO_GRAVITY, 0, 0)
 
         }
     }

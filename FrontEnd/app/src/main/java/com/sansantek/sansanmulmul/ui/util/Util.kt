@@ -4,10 +4,16 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.TypedValue
+import com.sansantek.sansanmulmul.R
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
+private const val TAG = "Util 싸피"
 object Util {
         val Float.dp: Int
             get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
@@ -46,4 +52,70 @@ object Util {
 
         return byteBuffer.toByteArray()
     }
+
+    // ~님이 ~요청했습니다! 까지 초록색으로 바꾸는 코드
+    fun extractJoinRequests( context: Context, text: String): SpannableString? {
+        val regex = "(.*?) 님이 그룹 가입을 요청했습니다!".toRegex()
+        val spannableString = SpannableString(text)
+        var check = false
+        regex.findAll(text).forEach { matchResult ->
+            check = true
+            val start = matchResult.range.first
+            val end = matchResult.range.last + 1
+            spannableString.setSpan(
+                ForegroundColorSpan(context.getColor(R.color.group_detail_alarm_green_btn)),
+                    start,
+                    end,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        return if(check) spannableString else{ null }
+    }
+
+    // 등산 일정이 ~ 로 변경되었습니다에서 ~에 해당하는 부분을 초록색으로 바꾸는 코드
+    fun extractHikingSchedule(context: Context, text: String): SpannableString? {
+        val regex = "등산 일정이 (.*?)로 변경되었습니다".toRegex()
+        val spannableString = SpannableString(text)
+        var check = false
+        regex.findAll(text).forEach { matchResult ->
+            check = true
+            val start = matchResult.range.first
+            val end = matchResult.range.last
+            val courseStart = matchResult.groups[1]?.range?.first ?: start
+            val courseEnd = matchResult.groups[1]?.range?.last?.plus(1) ?: end
+            Log.d(TAG, "extractHikingCourse: $courseStart, $courseEnd")
+            spannableString.setSpan(
+                ForegroundColorSpan(context.getColor(R.color.group_detail_alarm_green_btn)),
+                courseStart,
+                courseEnd,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        return if(check) spannableString else{ null }
+    }
+
+    // 등산 코스가 ~ 로 변경되었습니다에서 ~에 해당하는 부분을 초록색으로 바꾸는 코드
+    fun extractHikingCourse(context: Context, text: String): SpannableString? {
+        Log.d(TAG, "extractHikingCourse: ")
+        val regex = "등산 코스가 (.*?)로 변경되었습니다".toRegex()
+        val spannableString = SpannableString(text)
+        var check = false
+        regex.findAll(text).forEach { matchResult ->
+            check = true
+            val start = matchResult.range.first
+            val end = matchResult.range.last
+            val courseStart = matchResult.groups[1]?.range?.first ?: start
+            val courseEnd = matchResult.groups[1]?.range?.last?.plus(1) ?: end
+            Log.d(TAG, "extractHikingCourse: $courseStart, $courseEnd")
+            spannableString.setSpan(
+                ForegroundColorSpan(context.getColor(R.color.group_detail_alarm_green_btn)),
+                courseStart,
+                courseEnd,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        Log.d(TAG, "extractHikingSchedule: 등상 코스 변경으로 감지")
+        return if(check) spannableString else{ null }
+    }
+
 }

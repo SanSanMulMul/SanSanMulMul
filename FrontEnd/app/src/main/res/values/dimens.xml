@@ -24,5 +24,6 @@
     <dimen name="carousel_width_twice_minus">-540dp</dimen>
     <dimen name="carousel_height">20</dimen>
     <dimen name="carousel_height_minus">-20</dimen>
+    <dimen name="carousel_margin">20dp</dimen>
 
 </resources>

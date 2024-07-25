@@ -63,7 +63,7 @@
                 android:id="@+id/tv_greeting1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/gothic_bold"
+                android:fontFamily="@font/mulish_bold"
                 android:text="좋은 "
                 android:textSize="@dimen/textSize_26"
                 app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +73,7 @@
                 android:id="@+id/tv_greeting2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/gothic_bold"
+                android:fontFamily="@font/mulish_bold"
                 android:text="아침"
                 android:textSize="@dimen/textSize_26"
                 app:layout_constraintStart_toEndOf="@id/tv_greeting1"
@@ -83,7 +83,7 @@
                 android:id="@+id/tv_greeting3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/gothic_bold"
+                android:fontFamily="@font/mulish_bold"
                 android:text="이에요,"
                 android:textSize="@dimen/textSize_26"
                 app:layout_constraintStart_toEndOf="@id/tv_greeting2"
@@ -94,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:fontFamily="@font/gothic_bold"
+                android:fontFamily="@font/mulish_bold"
                 android:text="박태우스"
                 android:textColor="@color/sansanmulmul_green"
                 android:textSize="@dimen/textSize_26"
@@ -106,7 +106,7 @@
                 android:id="@+id/tv_greeting5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/gothic_bold"
+                android:fontFamily="@font/mulish_bold"
                 android:text=" 님 :)"
                 android:textSize="@dimen/textSize_26"
                 app:layout_constraintStart_toEndOf="@id/tv_shared"
@@ -114,41 +114,38 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- 뉴스 -->
-        <androidx.constraintlayout.motion.widget.MotionLayout
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/layout_carousel_news"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            app:layoutDescription="@xml/motion_scene_1"
-            app:layout_constraintTop_toBottomOf="@id/layout_greeting">
+            android:layout_marginTop="40dp"
+            android:clipChildren="false"
+            app:layout_constraintTop_toBottomOf="@id/layout_greeting" />
 
-            <include layout="@layout/carousel_views" />
-        </androidx.constraintlayout.motion.widget.MotionLayout>
-
-        <!-- 구분선 -->
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_marginTop="20dp"
-            android:background="@color/light_grey"
-            app:layout_constraintTop_toBottomOf="@id/layout_carousel_news" />
+        <!--        &lt;!&ndash; 구분선 &ndash;&gt;-->
+        <!--        <View-->
+        <!--            android:id="@+id/divider"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="8dp"-->
+        <!--            android:layout_marginTop="20dp"-->
+        <!--            android:background="@color/light_grey"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/layout_carousel_news" />-->
 
         <!-- 산 추천1 -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_recommendation1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
             app:layout_constraintEnd_toEndOf="@id/layout_search"
             app:layout_constraintStart_toStartOf="@id/iv_logo"
-            app:layout_constraintTop_toBottomOf="@id/divider">
+            app:layout_constraintTop_toBottomOf="@id/layout_carousel_news">
 
             <TextView
                 android:id="@+id/tv_nickname2"
                 style="@style/HomeTabRecommendationTitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:text="박태우스"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -219,6 +216,7 @@
             android:id="@+id/layout_recommendation3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="@id/layout_search"
             app:layout_constraintStart_toStartOf="@id/iv_logo"
             app:layout_constraintTop_toBottomOf="@id/layout_recommendation2">

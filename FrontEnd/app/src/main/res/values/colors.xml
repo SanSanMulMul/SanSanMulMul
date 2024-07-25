@@ -37,6 +37,9 @@
     <color name="group_detail_group_positive_btn">#A1CCA8</color>
     <color name="group_detail_group_negative_btn">#EAA0C4</color>
     <color name="group_detail_alarm_green_btn">#A1CCA8</color>
+    <color name="group_detail_alarm_black_btn">#616161</color>
+    <color name="group_detail_alarm_divider">#E0E0E0</color>
+
 
 
 </resources>

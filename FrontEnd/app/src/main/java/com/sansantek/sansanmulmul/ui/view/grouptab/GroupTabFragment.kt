@@ -13,6 +13,7 @@ import com.sansantek.sansanmulmul.data.model.Group
 import com.sansantek.sansanmulmul.databinding.FragmentGroupTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupTabListAdapter
 import com.sansantek.sansanmulmul.ui.view.MainActivity
+import com.sansantek.sansanmulmul.ui.view.creategroup.GroupIntroduceCreateFragment
 import com.sansantek.sansanmulmul.ui.view.groupdetail.GroupDetailFragment
 
 private const val TAG = "GroupTabFragment 싸피"
@@ -48,6 +49,11 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
 
         radioButtonClickListener()
         initRecyclerViewData()
+
+        binding.btnFloating.setOnClickListener{
+            val activity = requireActivity() as MainActivity
+            activity.changeAddToBackstackFragment(GroupIntroduceCreateFragment())
+        }
 
         binding.myGroupSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(

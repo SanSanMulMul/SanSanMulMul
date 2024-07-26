@@ -23,14 +23,6 @@
     <item name="android:textSize">14sp</item>
   </style>
 
-    <style name="tab_selected_text" parent="@android:style/TextAppearance.Widget.TabWidget">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-    <style name="tab_unselected_text" parent="@android:style/TextAppearance.Widget.TabWidget">
-        <item name="android:textSize">14sp</item>
-    </style>
-
     <style name="GroupDetailMemberApproveBtnStyle" parent="Widget.AppCompat.TextView">
         <item name="android:text">수락</item>
         <item name="android:textColor">@color/group_detail_group_positive_btn</item>

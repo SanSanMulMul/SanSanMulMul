@@ -21,10 +21,11 @@ import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.Alarm
 import com.sansantek.sansanmulmul.databinding.FragmentGroupDetailBinding
+import com.sansantek.sansanmulmul.databinding.PopupGroupDetailDrawerBinding
 import com.sansantek.sansanmulmul.databinding.PopupGroupDetailNotiBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupDetailAlarmListAdapter
+import com.sansantek.sansanmulmul.ui.adapter.GroupDetailDrawerListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.DividerItemDecorator
-import com.sansantek.sansanmulmul.ui.view.MainActivity
 import kotlinx.coroutines.launch
 
 private const val TAG = "GroupTabFragment 싸피"
@@ -33,7 +34,9 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
     R.layout.fragment_group_detail
 ) {
     private var popupShow = false
-    private lateinit var popup : PopupWindow
+    private var drawerShow = false
+    private lateinit var popUp : PopupWindow
+    private lateinit var drawerUp : PopupWindow
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         popupShow = false
@@ -51,11 +54,62 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
             }
         })
 
+        binding.ibDrawer.setOnClickListener{
+            lifecycleScope.launch {
+                if(drawerShow){
+                    drawerUp.dismiss()
+                    drawerShow = !drawerShow
+                }
+                else{
+                    val screenWidth = getScreenWidth(requireContext())
+                    val newWidth = (screenWidth * 0.3).toInt()
+                    val newHeight = (screenWidth * 0.25).toInt()
+                    val layoutInflater =
+                        requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                    val location = IntArray(2)
+                    val point = Point()
+                    val drawerMenuList = mutableListOf(
+                        Pair(R.drawable.link_copy, "그룹 링크 복사"),
+                        Pair(R.drawable.remove_group, "그룹 삭제"),
+                        )
+
+                    val windowupBinding = PopupGroupDetailDrawerBinding.inflate(layoutInflater)
+                    drawerUp = PopupWindow(requireContext()).apply {
+                        contentView = windowupBinding.root
+                        width = newWidth
+                        height = newHeight
+                        animationStyle = R.style.popup_window_animation
+                        setBackgroundDrawable(ColorDrawable())
+                    }
+
+                    val windowDrawerListAdapter = GroupDetailDrawerListAdapter()
+
+                    binding.layoutChatBtn.getLocationOnScreen(location)
+                    point.x = location[0]
+                    point.y = location[1]
+
+                    drawerUp.showAtLocation(
+                        windowupBinding.root,
+                        Gravity.NO_GRAVITY,
+                        screenWidth - (screenWidth - newWidth) / 2,
+                        point.y + binding.ibDrawer.height + 20
+                    )
+
+                    windowupBinding.rvGroupDetailDrawerList.apply{
+                        adapter = windowDrawerListAdapter.apply { submitList(drawerMenuList) }
+                        layoutManager = LinearLayoutManager(requireContext())
+                        addItemDecoration(DividerItemDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.divider)!!))
+                    }
+                    drawerShow = !drawerShow
+                }
+            }
+        }
+
         binding.ibNoti.setOnClickListener {
             lifecycleScope.launch {
 
                 if (popupShow) {
-                    popup.dismiss()
+                    popUp.dismiss()
                     popupShow = !popupShow
                 } else {
                     val screenWidth = getScreenWidth(requireContext())
@@ -69,7 +123,7 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
                     val point = Point()
 
                     val popupBinding = PopupGroupDetailNotiBinding.inflate(layoutInflater)
-                    popup = PopupWindow(requireContext()).apply {
+                    popUp = PopupWindow(requireContext()).apply {
                         contentView = popupBinding.root
                         width = newWidth
                         height = newHeight
@@ -77,14 +131,14 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
                         setBackgroundDrawable(ColorDrawable())
                     }
                     popupBinding.btnRemovePopup.setOnClickListener {
-                        popup.dismiss()
+                        popUp.dismiss()
                         popupShow = !popupShow
                     }
 
                     binding.layoutChatBtn.getLocationOnScreen(location)
                     point.x = location[0]
                     point.y = location[1]
-                    popup.showAtLocation(
+                    popUp.showAtLocation(
                         popupBinding.root,
                         Gravity.NO_GRAVITY,
                         (screenWidth - newWidth) / 2,
@@ -96,7 +150,6 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
                         adapter = popUpAlramListAdapter.apply { submitList(popUpList) }
                         layoutManager = LinearLayoutManager(requireContext())
                         addItemDecoration(DividerItemDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.divider)!!))
-//                        addItemDecoration(DividerItemDecoration(requireContext(), LinearLayout.VERTICAL))
                     }
 
                     Log.d(TAG, "onViewCreated: 팝업 리사이클러 뷰 실행 후")
@@ -113,8 +166,12 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
 
     override fun onPause() {
         if(popupShow){
-            popup.dismiss()
+            popUp.dismiss()
             popupShow = !popupShow
+        }
+        if(drawerShow){
+            drawerUp.dismiss()
+            drawerShow = !drawerShow
         }
         super.onPause()
     }

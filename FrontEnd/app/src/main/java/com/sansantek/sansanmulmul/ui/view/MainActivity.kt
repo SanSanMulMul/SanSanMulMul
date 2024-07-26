@@ -49,7 +49,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
     }
 
-    private fun changeFragment(view: Fragment) {
+    fun changeFragment(view: Fragment) {
         supportFragmentManager.beginTransaction().replace(binding.fragmentView.id, view).commit()
     }
+    fun changeAddToBackstackFragment(view: Fragment) {
+        supportFragmentManager.beginTransaction().replace(binding.fragmentView.id, view).addToBackStack(null).commit()
+    }
+
 }

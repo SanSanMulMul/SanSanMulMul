@@ -42,5 +42,7 @@
     <color name="group_detail_alarm_black_btn">#616161</color>
     <color name="group_detail_alarm_divider">#E0E0E0</color>
 
+    <color name="group_detail_drawer_grey">#6B6B6B</color>
+    <color name="group_detail_drawer_black">#414141</color>
 
 </resources>

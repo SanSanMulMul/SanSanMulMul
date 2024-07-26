@@ -12,6 +12,8 @@ import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.Group
 import com.sansantek.sansanmulmul.databinding.FragmentGroupTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupTabListAdapter
+import com.sansantek.sansanmulmul.ui.view.MainActivity
+import com.sansantek.sansanmulmul.ui.view.groupdetail.GroupDetailFragment
 
 private const val TAG = "GroupTabFragment 싸피"
 class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
@@ -49,12 +51,12 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
 
         binding.myGroupSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View,
+                parent: AdapterView<*>?,
+                view: View?,
                 position: Int,
                 id: Long
             ) {
-
+                Log.d(TAG, "myGroupSpinner: myGroupSpinner item selected Listener 작동")
                 //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
                 when (position) {
                     0 -> {
@@ -75,10 +77,92 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
             }
         }
 
+        binding.ageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+
+                //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
+                when (position) {
+                    0 -> {
+
+                    }
+
+                    1 -> {
+
+                    }
+                    //...
+                    else -> {
+
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+
         binding.searchSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View,
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                Log.d(TAG, "myGroupSpinner: myGroupSpinner item selected Listener 작동")
+                //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
+                when (position) {
+                    0 -> {
+
+                    }
+
+                    1 -> {
+
+                    }
+                    //...
+                    else -> {
+
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+        binding.genderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+
+                //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
+                when (position) {
+                    0 -> {
+
+                    }
+
+                    1 -> {
+
+                    }
+                    //...
+                    else -> {
+
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+        binding.styleSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
                 position: Int,
                 id: Long
             ) {
@@ -120,6 +204,11 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 override fun onClick(position: Int) {
                     AlertRegisterGroupDialog().show(requireActivity().supportFragmentManager, "dialog")
                 }
+
+                override fun onGroupClick(position: Int) {
+                    val activity = requireActivity() as MainActivity
+                    activity.changeAddToBackstackFragment(GroupDetailFragment())
+                }
             })
         }
 
@@ -141,6 +230,9 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                     setItemClickListener(object : GroupTabListAdapter.ItemClickListener{
                         override fun onClick(position: Int) {
                             AlertRegisterGroupDialog().show(requireActivity().supportFragmentManager, "dialog")
+                        }
+
+                        override fun onGroupClick(position: Int) {
                         }
                     })
                     submitList(groupListInfoList)

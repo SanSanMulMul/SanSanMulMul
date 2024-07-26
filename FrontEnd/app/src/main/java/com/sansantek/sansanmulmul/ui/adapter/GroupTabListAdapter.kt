@@ -34,6 +34,9 @@ class GroupTabListAdapter(private val isAllGroupLayout:Boolean):
         fun bindInfo(position: Int) {
             if(!isAllGroupLayout){
                 binding.btnRegisterGroup.visibility = View.GONE
+                binding.root.setOnClickListener{
+                    itemClickListener.onGroupClick(position)
+                }
             }
             val item = getItem(position)
             Log.d(TAG, "bindInfo: $item")
@@ -75,8 +78,8 @@ class GroupTabListAdapter(private val isAllGroupLayout:Boolean):
 
 
     interface ItemClickListener {
-        fun onClick(position: Int) {
-        }
+        fun onClick(position: Int)
+        fun onGroupClick(position: Int)
     }
 
     private lateinit var itemClickListener: ItemClickListener

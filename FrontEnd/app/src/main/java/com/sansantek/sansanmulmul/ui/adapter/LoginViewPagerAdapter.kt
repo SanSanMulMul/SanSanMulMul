@@ -20,10 +20,9 @@ import com.sansantek.sansanmulmul.ui.view.register.RegisterStartFragment
 // OneFragment, TwoFragment, ThreeFragment
 class LoginViewPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
-class ViewPageAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     // 페이지 갯수 설정
-    override fun getItemCount(): Int = 5
+    override fun getItemCount(): Int = 4
 
     // 불러올 Fragment 정의
     override fun createFragment(position: Int): Fragment {

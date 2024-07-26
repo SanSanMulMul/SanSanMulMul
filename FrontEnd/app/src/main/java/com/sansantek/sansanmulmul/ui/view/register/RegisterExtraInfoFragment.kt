@@ -30,7 +30,6 @@ class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>
         setGradient(binding.extraInfoText1)
         setGradient(binding.extraInfoText2)
         setSpinner()
-        ShowGroupRegisterSuccessDialog().show(requireActivity().supportFragmentManager, "dialog")
     }
 
     private fun setGradient(textView: TextView) {

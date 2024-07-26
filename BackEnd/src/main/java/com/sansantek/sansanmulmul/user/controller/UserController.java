@@ -1,10 +1,13 @@
 package com.sansantek.sansanmulmul.user.controller;
 
 import com.sansantek.sansanmulmul.config.JwtTokenProvider;
+import com.sansantek.sansanmulmul.exception.InvalidTokenException;
+import com.sansantek.sansanmulmul.exception.UserNotFoundException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.dto.request.SignUpUserRequest;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserRequest;
 import com.sansantek.sansanmulmul.user.dto.response.KakaoUserInfoResponse;
+import com.sansantek.sansanmulmul.user.service.BadgeService;
 import com.sansantek.sansanmulmul.user.service.KakaoService;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import com.sansantek.sansanmulmul.util.JWTUtil;
@@ -18,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -27,8 +31,12 @@ import java.util.Map;
 @Tag(name = "회원 컨트롤러", description = "회원의 관한 모든 기능 수행")
 public class UserController {
 
+    // service
     private final UserService userService;
     private final KakaoService kakaoService;
+    private final BadgeService badgeService;
+
+    // JWT
     private final JWTUtil jwtUtil;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -119,6 +127,7 @@ public class UserController {
 
         } catch (Exception e) {
             log.error("회원가입 실패");
+            log.debug("sign-up user : {}", request);
             status = HttpStatus.BAD_REQUEST;
         }
 
@@ -236,5 +245,4 @@ public class UserController {
         }
         return new ResponseEntity<>(resultMap, status);
     }
-
 }

@@ -1,9 +1,13 @@
 package com.sansantek.sansanmulmul.user.domain;
 
+import com.sansantek.sansanmulmul.user.domain.badge.UserBadge;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -29,8 +33,8 @@ public class User {
     @Column(name = "user_name", nullable = false)
     private String userName;
 
-    @Column(name = "user_nickname", nullable = false)
-    private String userNickname;
+    @Column(name = "user_nickname", nullable = false, unique = true)
+    private String userNickname; // 중복 허용 X
 
     @Column(name = "user_gender", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -59,6 +63,9 @@ public class User {
 
     @Column(name = "user_stone_count", nullable = false)
     private int userStoneCount;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserBadge> userBadges = new ArrayList<>();
 
     public User(String userProviderId, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth, long userTotalLength, double userTotalElevation, long userTotalSteps, long userTotalKcal, long userTotalHiking, int userStoneCount) {
         this.userProviderId = userProviderId;

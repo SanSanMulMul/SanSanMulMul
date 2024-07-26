@@ -33,8 +33,8 @@
 
             <TextView
                 android:id="@+id/group_create_text"
-                android:layout_width="176dp"
-                android:layout_height="80dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
                 android:layout_marginRight="40dp"
                 android:text="그룹을 \n생성해 볼까요?"

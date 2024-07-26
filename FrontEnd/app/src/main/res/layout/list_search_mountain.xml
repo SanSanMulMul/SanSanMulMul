@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_list_search_mountain"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <ImageView
+        android:id="@+id/mountain_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/gayamountain"
+        android:background="@drawable/rounded_box"
+        android:adjustViewBounds="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/layout_mountain_search_info"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <LinearLayout
+        android:id="@+id/layout_mountain_search_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/mountain_image"
+        app:layout_constraintEnd_toStartOf="@id/btn_favorite_mountain"
+        android:orientation="vertical"
+        >
+
+        <!-- 산 이름 -->
+        <TextView
+            android:id="@+id/mountain_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="가야산"
+            android:maxLines="1"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:ellipsize="end"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/layout_course_all_mount_text"
+            >
+            <ImageView
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:id="@+id/iv_course_dot"
+                android:src="@drawable/dot"
+                android:paddingEnd="3dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/group_course_number_text"
+                />
+
+            <TextView
+                android:id="@+id/group_course_number_text"
+                android:drawableTint="@color/group_tab_info_list_green"
+                android:text="코스 총 6개"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/iv_course_dot"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+    <ImageButton
+        android:id="@+id/btn_favorite_mountain"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/layout_mountain_search_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/star_favorite_selector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

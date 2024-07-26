@@ -250,6 +250,17 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 binding.allGroupTitle.visibility = View.GONE
 
                 groupTabListAdapter = GroupTabListAdapter(isAllGroupLayout()).apply {
+
+                    setItemClickListener(object : GroupTabListAdapter.ItemClickListener{
+                        override fun onClick(position: Int) {
+                        }
+
+                        override fun onGroupClick(position: Int) {
+                            val activity = requireActivity() as MainActivity
+                            activity.changeAddToBackstackFragment(GroupDetailFragment())
+                        }
+                    })
+
                     submitList(groupListInfoList)
                 }
                 binding.groupList.adapter = groupTabListAdapter

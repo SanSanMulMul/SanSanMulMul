@@ -8,7 +8,7 @@ import com.sansantek.sansanmulmul.databinding.FragmentGroupDetailTabSecondHiking
 
 class GroupDetailTabSecondHikingInfoFragment() : BaseFragment<FragmentGroupDetailTabSecondHikingInfoFragmentBinding>(
     FragmentGroupDetailTabSecondHikingInfoFragmentBinding::bind,
-    R.layout.fragment_group_detail_tab_first_info_fragment
+    R.layout.fragment_group_detail_tab_second_hiking_info_fragment
 ) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

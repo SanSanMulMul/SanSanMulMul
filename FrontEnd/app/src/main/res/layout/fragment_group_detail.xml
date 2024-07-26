@@ -208,7 +208,6 @@
                 android:layout_height="wrap_content"
                 android:text="갤러리"
                 />
-
         </com.google.android.material.tabs.TabLayout>
 
         <androidx.fragment.app.FragmentContainerView

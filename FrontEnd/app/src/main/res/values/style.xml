@@ -94,5 +94,10 @@
         <item name="android:windowExitAnimation">@anim/popdown_anim</item>
     </style>
 
+    <style name="GroupDetailSecondTabTextAppeareance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 
 </resources>

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 
 
-class DiviiderItemDecorator(private val mDivider: Drawable) : ItemDecoration() {
+class DividerItemDecorator(private val mDivider: Drawable) : ItemDecoration() {
     override fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         val dividerLeft = parent.paddingLeft
         val dividerRight = parent.width - parent.paddingRight

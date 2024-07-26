@@ -43,14 +43,33 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
         requireActivity().supportFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, GroupDetailTabFirstInfoFragment()).commit()
         binding.layoutTab.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                Log.d(TAG, "onTabSelected: $tab")
-                requireActivity().supportFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, GroupDetailTabFirstInfoFragment()).commit()
+                Log.d(TAG, "onTabSelected: ${tab?.position}")
+                when (tab?.position) {
+                     0 -> {
+                        Log.d(TAG, "onTabSelected: groupInfoTab")
+                        requireActivity().supportFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, GroupDetailTabFirstInfoFragment()).commit()
+                    }
+                    1 -> {
+                        Log.d(TAG, "onTabSelected: hikingInfoTab")
+                        requireActivity().supportFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, GroupDetailTabSecondHikingInfoFragment()).commit()
+                    }
+                    2 -> {
+                        Log.d(TAG, "onTabSelected: galleryTab")
+                        requireActivity().supportFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, GroupDetailTabFirstInfoFragment()).commit()
+                    }
+                    else -> {
+                        Log.d(TAG, "onTabSelected: else")
+                        requireActivity().supportFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, GroupDetailTabFirstInfoFragment()).commit()
+                    }
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
+
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
+
             }
         })
 

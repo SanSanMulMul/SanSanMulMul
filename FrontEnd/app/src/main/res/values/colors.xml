@@ -45,4 +45,12 @@
     <color name="group_detail_drawer_grey">#6B6B6B</color>
     <color name="group_detail_drawer_black">#414141</color>
 
+    <color name="group_detail_second_tab_tabbar_green">#A1CCA8</color>
+    <color name="group_detail_second_tab_mountain_name">#CCD2CD</color>
+    <color name="group_detail_second_tab_course_name">#606060</color>
+
+    <color name="group_detail_second_tab_difficulty_hard">#C81F1F</color>
+    <color name="group_detail_second_tab_course_change_btn">#5F5F5F</color>
+
+
 </resources>

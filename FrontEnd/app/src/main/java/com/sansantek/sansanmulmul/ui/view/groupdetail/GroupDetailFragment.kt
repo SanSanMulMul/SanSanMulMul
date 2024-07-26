@@ -24,6 +24,7 @@ import com.sansantek.sansanmulmul.databinding.FragmentGroupDetailBinding
 import com.sansantek.sansanmulmul.databinding.PopupGroupDetailNotiBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupDetailAlarmListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.DividerItemDecorator
+import com.sansantek.sansanmulmul.ui.view.MainActivity
 import kotlinx.coroutines.launch
 
 private const val TAG = "GroupTabFragment 싸피"
@@ -103,6 +104,10 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
                     popupShow = !popupShow
                 }
             }
+        }
+
+        binding.ibBackBtn.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
         }
     }
 

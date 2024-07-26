@@ -34,7 +34,7 @@
                 android:layout_height="match_parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layout_group_member_info"
+                    android:id="@+id/layout_success_dialog"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginHorizontal="25dp"
@@ -164,7 +164,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/rounded_rectangle_white_30_left_bottom"
+                        android:background="@drawable/rounded_bottom_left_button"
                         android:text="닫기"
                         android:textColor="@color/group_tab_register_alert_grey" />
 
@@ -172,7 +172,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
-                        android:background="@drawable/rounded_rectangle_green_30_right_bottom"
+                        android:background="@drawable/rounded_bottom_right_button"
                         android:text="그룹에 가입 신청하기"
                         android:textColor="@color/white" />
                 </LinearLayout>

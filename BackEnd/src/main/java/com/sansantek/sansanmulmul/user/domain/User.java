@@ -47,6 +47,10 @@ public class User {
     @Column(name = "user_birth", nullable = false)
     private LocalDate userBirth;
 
+    @Column(name = "user_static_badge", nullable = false)
+    @ColumnDefault("1")
+    private int userStaticBadge;
+
     @Column(name = "user_total_length", nullable = false)
     @ColumnDefault("0.0")
     private double userTotalLength;
@@ -74,20 +78,20 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserBadge> userBadges = new ArrayList<>();
 
-    public User(String userProviderId, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth, long userTotalLength, double userTotalElevation, long userTotalSteps, long userTotalKcal, long userTotalHiking, int userStoneCount) {
-        this.userProviderId = userProviderId;
-        this.userName = userName;
-        this.userNickname = userNickname;
-        this.userGender = userGender;
-        this.userProfileImg = userProfileImg;
-        this.userBirth = userBirth;
-        this.userTotalLength = userTotalLength;
-        this.userTotalElevation = userTotalElevation;
-        this.userTotalSteps = userTotalSteps;
-        this.userTotalKcal = userTotalKcal;
-        this.userTotalHiking = userTotalHiking;
-        this.userStoneCount = userStoneCount;
-    }
+//    public User(String userProviderId, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth, long userTotalLength, double userTotalElevation, long userTotalSteps, long userTotalKcal, long userTotalHiking, int userStoneCount) {
+//        this.userProviderId = userProviderId;
+//        this.userName = userName;
+//        this.userNickname = userNickname;
+//        this.userGender = userGender;
+//        this.userProfileImg = userProfileImg;
+//        this.userBirth = userBirth;
+//        this.userTotalLength = userTotalLength;
+//        this.userTotalElevation = userTotalElevation;
+//        this.userTotalSteps = userTotalSteps;
+//        this.userTotalKcal = userTotalKcal;
+//        this.userTotalHiking = userTotalHiking;
+//        this.userStoneCount = userStoneCount;
+//    }
 
     public User(String userProviderId, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth) {
         this.userProviderId = userProviderId;

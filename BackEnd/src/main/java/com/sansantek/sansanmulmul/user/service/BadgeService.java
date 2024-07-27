@@ -6,6 +6,7 @@ import com.sansantek.sansanmulmul.user.domain.badge.UserBadge;
 import com.sansantek.sansanmulmul.user.repository.BadgeRepository;
 import com.sansantek.sansanmulmul.user.repository.UserBadgeRepository;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,9 @@ import java.util.List;
 @Slf4j
 public class BadgeService {
 
-    private final UserBadgeRepository userBadgeRepository;
-    private final BadgeRepository badgeRepository;
     private final UserRepository userRepository;
+    private final BadgeRepository badgeRepository;
+    private final UserBadgeRepository userBadgeRepository;
 
     // 회원가입 시 기본 칭호 지정
     public void setBasicBadge(int userId) {
@@ -53,13 +54,25 @@ public class BadgeService {
     public List<String> getBadgeList(int userId) {
         List<String> badgeList = new ArrayList<>();
 
-        // userId에 해당하는 UserBadge 목록을 조회
+        // userId에 해당하는 userBadge 리스트 조회
         List<UserBadge> userBadges = userBadgeRepository.findByUser_UserId(userId);
 
-        // 각 UserBadge의 Badge 이름을 badgeList에 추가
+        // userBadge 리스트에서 badgeName 추출하여 badgeList에 저장
         for (UserBadge userBadge : userBadges)
             badgeList.add(userBadge.getBadge().getBadgeName());
 
         return badgeList;
+    }
+
+    // 해당 회원의 칭호 수정
+    public void updateBadList(int userId, int badgeId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        // 회원의 고정 칭호 정보만 업데이트
+        user.setUserStaticBadge(badgeId);
+
+        // 업데이트한 회원 저장
+        userRepository.save(user);
     }
 }

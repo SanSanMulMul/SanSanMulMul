@@ -19,7 +19,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-@Tag(name = "회원 컨트롤러", description = "회원 정보관련 기능 수행")
+@Tag(name = "회원 정보 컨트롤러", description = "회원 정보관련 기능 수행")
 public class UserController {
 
     // service
@@ -47,7 +47,6 @@ public class UserController {
                 // 해당 사용자 정보 조회
                 User user = userService.getUser(userProviderId);
                 String userNickname = user.getUserNickname();
-                log.debug("userInfo : {}", userNickname);
 
                 // 사용자 닉네임 중복 확인
                 if (userService.isExistsUserNickname(userNickname)) {
@@ -56,7 +55,8 @@ public class UserController {
                     resultMap.put("message", "해당 닉네임을 가진 사용자가 존재합니다.");
                     status = HttpStatus.CONFLICT; // 409
                 } else {
-                    resultMap.put("userInfo", user);
+                    resultMap.put("userNickname", userNickname);
+                    resultMap.put("message", "사용가능한 닉네임입니다.");
                     status = HttpStatus.OK; // 200
                 }
 

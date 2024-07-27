@@ -23,11 +23,16 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
 ) {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    init()
 
     initNewsViewPager(binding.layoutCarouselNews)
     initRecommendationViewPager(binding.vpRecommendation1, 3000)
     initRecommendationViewPager(binding.vpRecommendation2, 3500)
     initRecommendationViewPager(binding.vpRecommendation3, 4000)
+  }
+
+  private fun init() {
+    activity?.let { hideBottomNav(it.findViewById(R.id.main_layout_bottom_navigation), false) }
   }
 
   private fun initNewsViewPager(viewPager: ViewPager2) {
@@ -47,8 +52,6 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
       page.scaleY = 0.85f + 0.15f * scale
     }
     autoScroll(viewPager, 3000)
-
-
   }
 
   private fun initRecommendationViewPager(viewPager: ViewPager2, autoScrollDelay: Long) {

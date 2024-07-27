@@ -10,7 +10,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByUserProviderId(String userProviderId);
     Optional<User> findByUserRefreshToken(String userRefreshToken);
     Optional<String> findUserRefreshTokenByUserProviderId(String userProviderId);
+    String findUserProviderIdByUserId(int userId);
 
     boolean existsByUserProviderId(String userProviderId);
     boolean existsByUserNickname(String userNickname);
+
+    User save(User user);
 }

@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.config;
+package com.sansantek.sansanmulmul.config.swagger;
 
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;

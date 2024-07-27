@@ -33,6 +33,7 @@ public class UserService {
     }
 
     // 회원가입 진행
+    @Transactional
     public User signUpUser(SignUpUserRequest signUpUserRequest) {
         User user = new User(
                 signUpUserRequest.getUserProviderId(),
@@ -41,32 +42,9 @@ public class UserService {
                 signUpUserRequest.getUserGender(),
                 signUpUserRequest.getUserProfileImg(),
                 signUpUserRequest.getUserBirth()
-//                signUpUserRequest.getUserTotalLength(),
-//                signUpUserRequest.getUserTotalElevation(),
-//                signUpUserRequest.getUserTotalSteps(),
-//                signUpUserRequest.getUserTotalKcal(),
-//                signUpUserRequest.getUserTotalHiking(),
-//                signUpUserRequest.getUserStoneCount()
         );
+
         return userRepository.save(user);
-    }
-
-    // refreshToken 업데이트
-    @Transactional
-    public void saveRefreshToken(String userProviderId, String newRefreshToken) {
-        User user = userRepository.findByUserProviderId(userProviderId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-        // 기존 객체의 리프레시 토큰만 업데이트
-        user.setUserRefreshToken(newRefreshToken);
-
-        // 업데이트한 회원 저장
-        userRepository.save(user);
-    }
-
-    // refreshToken 조회
-    public String getRefreshToken(String userProviderId) {
-        return userRepository.findUserRefreshTokenByUserProviderId(userProviderId).orElse(null);
     }
 
     // DB에 저장되어 있는 회원 닉네임 확인

@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.util;
+package com.sansantek.sansanmulmul.config.jwt;
 
 import com.sansantek.sansanmulmul.exception.UnAuthorizedException;
 import io.jsonwebtoken.Claims;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Component
 @Slf4j
-public class JWTUtil {
+public class JwtTokenProvider {
 
     @Value("${jwt.salt}")
     private String salt;
@@ -26,22 +26,25 @@ public class JWTUtil {
     @Value("${jwt.refresh-token.expiretime}")
     private long refreshTokenExpireTime;
 
+    // AccessToken 생성
+    // 유효기간을 짧게 설정해 생성
     public String createAccessToken(String userProviderId) {
         return create(userProviderId, "access-token", accessTokenExpireTime);
     }
 
-    //	AccessToken에 비해 유효기간을 길게 설정.
+    // RefreshToken 생성
+    // AccessToken에 비해 유효기간을 길게 설정
     public String createRefreshToken(String userProviderId) {
         return create(userProviderId, "refresh-token", refreshTokenExpireTime);
     }
 
     //	Token 발급
+    private String create(String userProviderId, String subject, long expireTime) {
 //		key : Claim에 셋팅될 key 값
 //		value : Claim에 셋팅 될 data 값
 //		subject : payload에 sub의 value로 들어갈 subject값
 //		expire : 토큰 유효기간 설정을 위한 값
 //		jwt 토큰의 구성 : header + payload + signature
-    private String create(String userProviderId, String subject, long expireTime) {
 //		Payload 설정 : 생성일 (IssuedAt), 유효기간 (Expiration),
 //		토큰 제목 (Subject), 데이터 (Claim) 등 정보 세팅.
         Claims claims = Jwts.claims().setSubject(subject) // 토큰 제목 설정 ex) access-token, refresh-token
@@ -61,7 +64,7 @@ public class JWTUtil {
         return jwt;
     }
 
-    //	Signature 설정에 들어갈 key 생성.
+    //	Signature 설정에 들어갈 key 생성
     private byte[] generateKey() {
         byte[] key = null;
         try {
@@ -77,7 +80,7 @@ public class JWTUtil {
         return key;
     }
 
-    //	전달 받은 토큰이 제대로 생성된 것인지 확인 하고 문제가 있다면 UnauthorizedException 발생.
+    //	전달 받은 토큰이 제대로 생성된 것인지 확인 하고 문제가 있다면 UnauthorizedException 발생
     public boolean checkToken(String token) {
         try {
 //			Json Web Signature? 서버에서 인증을 근거로 인증 정보를 서버의 private key 서명 한것을 토큰화 한것
@@ -93,6 +96,7 @@ public class JWTUtil {
         }
     }
 
+    // 전달 받은 토큰을 기반으로 회원 정보 UserProviderId 가져오기
     public String getUserProviderId(String authorization) {
         Jws<Claims> claims = null;
         try {

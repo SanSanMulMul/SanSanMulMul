@@ -1,11 +1,10 @@
 package com.sansantek.sansanmulmul.user.controller;
 
-import com.sansantek.sansanmulmul.config.JwtTokenProvider;
 import com.sansantek.sansanmulmul.exception.InvalidTokenException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.service.BadgeService;
 import com.sansantek.sansanmulmul.user.service.UserService;
-import com.sansantek.sansanmulmul.util.JWTUtil;
+import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ public class BadgeController {
     private final BadgeService badgeService;
 
     // JWT
-    private final JWTUtil jwtUtil;
     private final JwtTokenProvider jwtTokenProvider;
 
     //@GetMapping("/badge")
@@ -96,8 +94,8 @@ public class BadgeController {
             String token = accessToken.substring(7);
 
             // 액세스 토큰 유효성 검증
-            if (jwtTokenProvider.validateToken(token)) {
-                String userProviderId = jwtTokenProvider.getUserIdFromToken(token);
+            if (jwtTokenProvider.checkToken(token)) {
+                String userProviderId = jwtTokenProvider.getUserProviderId(token);
 
                 // 해당 사용자 가져오기
                 User user = userService.getUser(userProviderId);

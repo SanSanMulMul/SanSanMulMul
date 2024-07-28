@@ -5,6 +5,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:layout_margin="25dp"
+  android:scrollbars="none"
   tools:context=".ui.view.mountaindetail.MountainDetailTabFirstInfoFragment">
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,8 +17,7 @@
       android:id="@+id/tv_mountain_detail"
       android:layout_width="match_parent"
       android:layout_height="150dp"
-      android:fadeScrollbars="false"
-      android:scrollbarFadeDuration="0"
+      android:fadeScrollbars="true"
       android:scrollbars="vertical"
       android:text="남부내륙 산간지역에 위치한 명산으로 1972년 국립공원 제 9호로 지정되었다. 가야산은 예부터 해동(海東)의 10승지 또는 조선 팔경의 하나로 이름이 높았다.\n
 주봉인 상왕봉(1,430m)이 소의 머리를 닮았다 해서 우두봉(牛頭峯)으로 불리기도 하며, 가야산에는 회장암으로 이뤄진 산악경관과 화강암으로 이뤄진 하천경관이 공존하고 있다. \n남부내륙 산간지역에 위치한 명산으로 1972년 국립공원 제 9호로 지정되었다. 가야산은 예부터 해동(海東)의 10승지 또는 조선 팔경의 하나로 이름이 높았다.\n

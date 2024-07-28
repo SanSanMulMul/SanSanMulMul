@@ -36,6 +36,11 @@ class GroupDetailDrawerListAdapter():
             Log.d(TAG, "bindInfo: $item")
             binding.ivDrawerIcon.setImageResource(item.first)
             binding.tvDrawerMenu.text = item.second
+            binding.tvDrawerMenu.setOnClickListener {
+                if(binding.tvDrawerMenu.text == "그룹 삭제"){
+                    itemClickListener.onExitGroupClick()
+                }
+            }
         }
     }
 
@@ -55,8 +60,8 @@ class GroupDetailDrawerListAdapter():
 
 
     interface ItemClickListener {
-        fun onClick(position: Int) {
-        }
+        fun onLinkCopyClick()
+        fun onExitGroupClick()
     }
 
     private lateinit var itemClickListener: ItemClickListener

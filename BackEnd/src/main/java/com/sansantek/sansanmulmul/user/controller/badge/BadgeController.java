@@ -1,8 +1,8 @@
-package com.sansantek.sansanmulmul.user.controller;
+package com.sansantek.sansanmulmul.user.controller.badge;
 
 import com.sansantek.sansanmulmul.exception.InvalidTokenException;
 import com.sansantek.sansanmulmul.user.domain.User;
-import com.sansantek.sansanmulmul.user.service.BadgeService;
+import com.sansantek.sansanmulmul.user.service.badge.BadgeService;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;

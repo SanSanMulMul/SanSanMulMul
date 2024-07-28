@@ -1,10 +1,10 @@
-package com.sansantek.sansanmulmul.user.service;
+package com.sansantek.sansanmulmul.user.service.badge;
 
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.domain.badge.Badge;
 import com.sansantek.sansanmulmul.user.domain.badge.UserBadge;
-import com.sansantek.sansanmulmul.user.repository.BadgeRepository;
-import com.sansantek.sansanmulmul.user.repository.UserBadgeRepository;
+import com.sansantek.sansanmulmul.user.repository.badge.BadgeRepository;
+import com.sansantek.sansanmulmul.user.repository.badge.UserBadgeRepository;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

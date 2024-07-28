@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.user.controller;
+package com.sansantek.sansanmulmul.user.controller.login;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Value;

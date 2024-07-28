@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.user.domain;
 
 import com.sansantek.sansanmulmul.user.domain.badge.UserBadge;
+import com.sansantek.sansanmulmul.user.domain.summitstone.UserSummitstone;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -77,6 +78,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserBadge> userBadges = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserSummitstone> userSummitstones = new ArrayList<>();
 
 //    public User(String userProviderId, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth, long userTotalLength, double userTotalElevation, long userTotalSteps, long userTotalKcal, long userTotalHiking, int userStoneCount) {
 //        this.userProviderId = userProviderId;

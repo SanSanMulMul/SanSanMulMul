@@ -3,10 +3,13 @@ package com.sansantek.sansanmulmul.mountain.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
-@Data
+@Getter
+@Setter
 public class Mountain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +29,9 @@ public class Mountain {
     private String mountain_img;
 
     private String mountain_weather;
+
+    private double mountain_lat; //위도
+    
+    private double mountain_lon; //경도
 
 }

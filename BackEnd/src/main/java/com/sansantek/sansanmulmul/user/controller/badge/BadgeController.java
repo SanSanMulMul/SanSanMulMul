@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.user.controller.badge;
 
 import com.sansantek.sansanmulmul.exception.InvalidTokenException;
 import com.sansantek.sansanmulmul.user.domain.User;
+import com.sansantek.sansanmulmul.user.domain.badge.Badge;
 import com.sansantek.sansanmulmul.user.service.badge.BadgeService;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
@@ -48,7 +49,7 @@ public class BadgeController {
             if (jwtTokenProvider.checkToken(token)) {
                 String userProviderId = jwtTokenProvider.getUserProviderId(token);
 
-                // 해당 사용자 가져오기
+            // 해당 사용자 가져오기
             User user = userService.getUser(userProviderId);
 
             // 사용자 칭호 조회
@@ -71,6 +72,54 @@ public class BadgeController {
             log.error("회원 칭호 조회 실패: {}", e.getMessage());
             resultMap.put("error", "An unexpected error occurred");
             status = HttpStatus.INTERNAL_SERVER_ERROR; // 500
+        }
+
+        return new ResponseEntity<>(resultMap, status);
+    }
+
+    @PostMapping
+    @Operation(summary = "회원 칭호 추가", description = "액세스 토큰을 사용해 회원 칭호 추가")
+    public ResponseEntity<Map<String, Object>> addBadge
+            (@RequestHeader("Authorization") String accessToken,
+             @RequestParam("badgeId") int badgeId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        log.debug("user accessToken: {}", accessToken);
+
+        try {
+            // Authorization 헤더에서 "Bearer " 접두사를 제거
+            String token = accessToken.substring(7);
+
+            // 액세스 토큰 유효성 검증
+            if (jwtTokenProvider.checkToken(token)) {
+                String userProviderId = jwtTokenProvider.getUserProviderId(token);
+
+                // 해당 사용자 가져오기
+                User user = userService.getUser(userProviderId);
+
+                // 사용자 인증 칭호 추가
+                badgeService.addBadge(user.getUserId(), badgeId);
+
+                // JSON으로 결과 전송
+                resultMap.put("userId: ", user.getUserId());
+                resultMap.put("userProviderId: ", user.getUserProviderId());
+                resultMap.put("add Badge Id: ", badgeId);
+
+                status = HttpStatus.OK; // 200
+
+            } else {
+                throw new Exception("Invalid Token");
+            }
+
+        } catch (InvalidTokenException e) {
+            log.error("토큰 유효성 검사 실패: {}", e.getMessage());
+            resultMap.put("error", "Invalid or expired token");
+            status = HttpStatus.UNAUTHORIZED; // 401
+        } catch (Exception e) {
+            log.error("회원 정상석 추가 실패: {}", e.getMessage());
+            resultMap.put("error", "An unexpected error occurred");
+            status = HttpStatus.BAD_REQUEST; // 400
         }
 
         return new ResponseEntity<>(resultMap, status);
@@ -114,4 +163,5 @@ public class BadgeController {
 
         return new ResponseEntity<>(resultMap, status);
     }
+
 }

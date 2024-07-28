@@ -41,7 +41,7 @@ public class SummitstoneService {
 
     }
 
-    // 해당 회원 인증 장상석 추가
+    // 해당 회원 인증 정상석 추가
     public void addStone(int userId, int stoneId) {
         // 해당 회원 확인
         User user = userRepository.findByUserId(userId)

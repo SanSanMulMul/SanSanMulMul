@@ -6,8 +6,7 @@
   android:layout_height="match_parent"
   tools:context=".ui.view.mountaindetail.MountainDetailFragment">
 
-
-  <!-- 백그라운드 사진 레이아웃 -->
+  <!-- 산 사진 -->
   <com.google.android.material.appbar.AppBarLayout
     android:id="@+id/layout_appbar"
     android:layout_width="match_parent"
@@ -68,7 +67,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
   </com.google.android.material.appbar.AppBarLayout>
 
-  <!-- 정보, 코스 탭바-->
+  <!-- 정보, 코스 탭 -->
   <com.google.android.material.tabs.TabLayout
     android:id="@+id/layout_tab"
     android:layout_width="match_parent"
@@ -93,19 +92,12 @@
 
   </com.google.android.material.tabs.TabLayout>
 
-  <ScrollView
+  <androidx.fragment.app.FragmentContainerView
+    android:id="@+id/mountain_detail_fragment_view"
     android:layout_width="match_parent"
     android:layout_height="0dp"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/layout_tab">
-
-    <androidx.fragment.app.FragmentContainerView
-      android:id="@+id/mountain_detail_fragment_view"
-      android:layout_width="match_parent"
-      android:layout_height="0dp" />
-  </ScrollView>
+    app:layout_constraintTop_toBottomOf="@id/layout_tab" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

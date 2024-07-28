@@ -64,6 +64,31 @@ public class BadgeService {
         return badgeList;
     }
 
+    // 해당 회원의 인증 칭호 추가
+    public void addBadge(int userId, int badgeId) {
+        // 해당 회원 확인
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));
+        log.debug("user: {}", user);
+
+        // 해당 칭호 확인
+        Badge badge = badgeRepository.findByBadgeId(badgeId)
+                .orElseThrow(() -> new RuntimeException("기본 칭호를 찾을 수 없습니다."));
+        log.debug("badge: {}", badge);
+
+        // userId와 badgeId 컬럼 생성하기
+        UserBadge userBadge = UserBadge.builder()
+                .user(user)
+                .badge(badge)
+                .build();
+
+        // User의 userBadge리스트에 추가
+        user.getUserBadges().add(userBadge);
+
+        // User엔티티를 저장해 userBadges연관 관계 반영
+        userRepository.save(user);
+    }
+
     // 해당 회원의 칭호 수정
     public void updateBadList(int userId, int badgeId) {
         User user = userRepository.findByUserId(userId)

@@ -9,6 +9,7 @@ import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.Course
 import com.sansantek.sansanmulmul.databinding.FragmentMountainDetailTabSecondCourseBinding
 import com.sansantek.sansanmulmul.ui.adapter.MountainDetailCourseListAdapter
+import com.sansantek.sansanmulmul.ui.view.coursedetail.CourseDetailFragment
 
 class MountainDetailTabSecondCourseFragment :
   BaseFragment<FragmentMountainDetailTabSecondCourseBinding>(
@@ -22,7 +23,15 @@ class MountainDetailTabSecondCourseFragment :
   private fun init() {
     val courseList = initCourseData()
     val courseRecyclerView = binding.rvMountainDetailCourses
-    val courseListAdapter = MountainDetailCourseListAdapter(courseList)
+    val courseListAdapter = MountainDetailCourseListAdapter(
+      courseList,
+      object : MountainDetailCourseListAdapter.OnItemClickListener {
+        override fun onItemClick(course: Course) {
+          requireActivity().supportFragmentManager.beginTransaction()
+            .addToBackStack(null)
+            .replace(R.id.fragment_view, CourseDetailFragment()).commit()
+        }
+      })
 
     courseRecyclerView.layoutManager = LinearLayoutManager(context)
     courseRecyclerView.adapter = courseListAdapter

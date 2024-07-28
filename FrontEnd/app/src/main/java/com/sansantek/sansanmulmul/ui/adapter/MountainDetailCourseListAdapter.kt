@@ -7,8 +7,15 @@ import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.data.model.Course
 import com.sansantek.sansanmulmul.databinding.ItemMountainDetailCourseBinding
 
-class MountainDetailCourseListAdapter(private val courseList: List<Course>) :
+class MountainDetailCourseListAdapter(
+  private val courseList: List<Course>,
+  private val itemClickListener: OnItemClickListener
+) :
   RecyclerView.Adapter<MountainDetailCourseListAdapter.MountainDetailCourseViewHolder>() {
+
+  interface OnItemClickListener {
+    fun onItemClick(course: Course)
+  }
 
   inner class MountainDetailCourseViewHolder(private val binding: ItemMountainDetailCourseBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -29,6 +36,7 @@ class MountainDetailCourseListAdapter(private val courseList: List<Course>) :
           it.setBackgroundResource(R.drawable.rounded_difficulty_easy_circle)
         }
       }
+      binding.root.setOnClickListener { itemClickListener.onItemClick(item) }
     }
   }
 

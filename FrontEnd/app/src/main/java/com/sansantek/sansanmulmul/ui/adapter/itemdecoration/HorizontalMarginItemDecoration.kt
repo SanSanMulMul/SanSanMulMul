@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.ui.view.hometab
+package com.sansantek.sansanmulmul.ui.adapter.itemdecoration
 
 import android.content.res.Resources
 import android.graphics.Rect

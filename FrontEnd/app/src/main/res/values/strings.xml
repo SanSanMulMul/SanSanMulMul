@@ -1,6 +1,4 @@
 <resources>
   <string name="app_name">산산물물</string>
   <string name="hint_search_mountain">궁금한 산을 검색해보세요!</string>
-  <!-- TODO: Remove or change this placeholder text -->
-  <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

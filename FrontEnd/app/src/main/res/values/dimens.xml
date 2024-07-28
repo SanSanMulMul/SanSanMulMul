@@ -1,29 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="editTextSize_20">20sp</dimen>
-    <dimen name="textSize_28">28sp</dimen>
-    <dimen name="textSize_26">26sp</dimen>
-    <dimen name="textSize_20">20sp</dimen>
-    <dimen name="textSize_18">18sp</dimen>
-    <dimen name="textSize_17">17sp</dimen>
-    <dimen name="textSize_16">16sp</dimen>
-    <dimen name="textSize_15">15sp</dimen>
-    <dimen name="textSize_14">14sp</dimen>
-    <dimen name="textSize_12">12sp</dimen>
-    <dimen name="textSize_11">11sp</dimen>
-    <dimen name="textSize_10">10sp</dimen>
+  <dimen name="editTextSize_20">20sp</dimen>
+  <dimen name="textSize_28">28sp</dimen>
+  <dimen name="textSize_26">26sp</dimen>
+  <dimen name="textSize_20">20sp</dimen>
+  <dimen name="textSize_18">18sp</dimen>
+  <dimen name="textSize_17">17sp</dimen>
+  <dimen name="textSize_16">16sp</dimen>
+  <dimen name="textSize_15">15sp</dimen>
+  <dimen name="textSize_14">14sp</dimen>
+  <dimen name="textSize_12">12sp</dimen>
+  <dimen name="textSize_11">11sp</dimen>
+  <dimen name="textSize_10">10sp</dimen>
 
-    <dimen name="height_20">20dp</dimen>
-    <dimen name="height_50">50dp</dimen>
-    <dimen name="height_55">55dp</dimen>
-    <dimen name="height_60">60dp</dimen>
+  <dimen name="height_20">20dp</dimen>
+  <dimen name="height_50">50dp</dimen>
+  <dimen name="height_55">55dp</dimen>
+  <dimen name="height_60">60dp</dimen>
 
-    <dimen name="carousel_width">280dp</dimen>
-    <dimen name="carousel_width_minus">-280dp</dimen>
-    <dimen name="carousel_width_twice">540dp</dimen>
-    <dimen name="carousel_width_twice_minus">-540dp</dimen>
-    <dimen name="carousel_height">20</dimen>
-    <dimen name="carousel_height_minus">-20</dimen>
-    <dimen name="carousel_margin">20dp</dimen>
+  <dimen name="carousel_width">280dp</dimen>
+  <dimen name="carousel_width_minus">-280dp</dimen>
+  <dimen name="carousel_width_twice">540dp</dimen>
+  <dimen name="carousel_width_twice_minus">-540dp</dimen>
+  <dimen name="carousel_height">20</dimen>
+  <dimen name="carousel_height_minus">-20</dimen>
+  <dimen name="carousel_margin">20dp</dimen>
+
+  <dimen name="mountain_detail_card_height_110">110dp</dimen>
+  <dimen name="mountain_detail_small_title_textSize_11">11sp</dimen>
+  <dimen name="mountain_detail_content_textSize_24">24sp</dimen>
+  <dimen name="mountain_detail_divider_horizontal_margin_10">10dp</dimen>
+  <dimen name="mountain_detail_course_difficulty_chip_textSize_13">13sp</dimen>
 
 </resources>

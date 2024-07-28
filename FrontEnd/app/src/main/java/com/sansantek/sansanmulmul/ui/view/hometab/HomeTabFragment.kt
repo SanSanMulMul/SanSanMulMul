@@ -13,6 +13,7 @@ import com.sansantek.sansanmulmul.data.model.Recommendation
 import com.sansantek.sansanmulmul.databinding.FragmentHomeTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.FirstRecommendationViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.NewsViewPagerAdapter
+import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.HorizontalMarginItemDecoration
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
 import kotlin.math.abs
 

@@ -7,53 +7,56 @@ import com.sansantek.sansanmulmul.config.BaseActivity
 import com.sansantek.sansanmulmul.databinding.ActivityMainBinding
 import com.sansantek.sansanmulmul.ui.view.grouptab.GroupTabFragment
 import com.sansantek.sansanmulmul.ui.view.hometab.HomeTabFragment
+import com.sansantek.sansanmulmul.ui.view.maptab.MapTabFragment
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(binding.root)
 
-        initBottomNav()
-        changeFragment(HomeTabFragment())
+    initBottomNav()
+    changeFragment(HomeTabFragment())
 
-    }
+  }
 
 
-    private fun initBottomNav() {
+  private fun initBottomNav() {
 
-        binding.mainLayoutBottomNavigation.setOnItemSelectedListener {
+    binding.mainLayoutBottomNavigation.setOnItemSelectedListener {
 //            Log.d(TAG, "initBottomNav: ${it.itemId}")
-            when (it.itemId) {
-                R.id.home -> {
-                    changeFragment(HomeTabFragment())
-                }
-
-                R.id.map -> {
-
-                }
-
-                R.id.mountain -> {
-
-                }
-
-                R.id.group -> {
-                    changeFragment(GroupTabFragment())
-                }
-
-                R.id.mypage -> {
-
-                }
-
-            }
-            return@setOnItemSelectedListener true
+      when (it.itemId) {
+        R.id.home -> {
+          changeFragment(HomeTabFragment())
         }
-    }
 
-    fun changeFragment(view: Fragment) {
-        supportFragmentManager.beginTransaction().replace(binding.fragmentView.id, view).commit()
+        R.id.map -> {
+          changeFragment(MapTabFragment())
+        }
+
+        R.id.mountain -> {
+
+        }
+
+        R.id.group -> {
+          changeFragment(GroupTabFragment())
+        }
+
+        R.id.mypage -> {
+
+        }
+
+      }
+      return@setOnItemSelectedListener true
     }
-    fun changeAddToBackstackFragment(view: Fragment) {
-        supportFragmentManager.beginTransaction().replace(binding.fragmentView.id, view).addToBackStack(null).commit()
-    }
+  }
+
+  fun changeFragment(view: Fragment) {
+    supportFragmentManager.beginTransaction().replace(binding.fragmentView.id, view).commit()
+  }
+
+  fun changeAddToBackstackFragment(view: Fragment) {
+    supportFragmentManager.beginTransaction().replace(binding.fragmentView.id, view)
+      .addToBackStack(null).commit()
+  }
 
 }

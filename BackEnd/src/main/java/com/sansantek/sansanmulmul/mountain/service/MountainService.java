@@ -21,4 +21,5 @@ public class MountainService {
     public Mountain getMountainDetail(Long mountain_id){
         return mountainRepository.findById(mountain_id).orElse(null);
     }
+
 }

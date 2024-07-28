@@ -15,8 +15,9 @@ data class CourseItem(
 )
 
 private const val TAG = "GroupCourceSearchListAd 싸피"
-class GroupCourceSearchListAdapter :
-    ListAdapter<String, GroupCourceSearchListAdapter.GroupCourseSearchListHolder>(Comparator) {
+class GroupCourceSearchListAdapter(
+    private val itemClickListener: (String) -> Unit // 클릭 리스너 추가
+) : ListAdapter<String, GroupCourceSearchListAdapter.GroupCourseSearchListHolder>(Comparator) {
 
     companion object Comparator : DiffUtil.ItemCallback<String>() {
         override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
@@ -36,8 +37,6 @@ class GroupCourceSearchListAdapter :
             binding.mountainTitle.text = item.name
             binding.groupCourseNumberText.text = "코스 총 6개"
 
-
-
             // 버튼 클릭 시 즐겨찾기 상태 토글
             binding.btnFavoriteMountain.setOnClickListener {
                 item.isFavorite = !item.isFavorite // Toggle the favorite state
@@ -47,6 +46,11 @@ class GroupCourceSearchListAdapter :
                     if (item.isFavorite) R.drawable.star_filled_favorite
                     else R.drawable.star_empty_favorite
                 )
+            }
+
+            // 리스트 아이템 클릭 리스너 설정
+            itemView.setOnClickListener {
+                itemClickListener(item.name)
             }
         }
     }
@@ -68,4 +72,3 @@ class GroupCourceSearchListAdapter :
         holder.bindInfo(CourseItem(item)) // 바인딩 메서드 호출
     }
 }
-

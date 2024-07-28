@@ -5,11 +5,11 @@ import android.view.View
 import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
-import com.sansantek.sansanmulmul.databinding.FragmentMountainDetailBinding
+import com.sansantek.sansanmulmul.databinding.FragmentMountainDetailTabBinding
 
-class MountainDetailFragment : BaseFragment<FragmentMountainDetailBinding>(
-  FragmentMountainDetailBinding::bind,
-  R.layout.fragment_mountain_detail
+class MountainDetailFragment : BaseFragment<FragmentMountainDetailTabBinding>(
+  FragmentMountainDetailTabBinding::bind,
+  R.layout.fragment_mountain_detail_tab
 ) {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -71,14 +71,14 @@ dependencies {
 
   // gson
   implementation(libs.gson)
-    // androidx.appcompat:appcompat:1.6.1
-    implementation(libs.androidx.appcompat.v161)
+  // androidx.appcompat:appcompat:1.6.1
+  implementation(libs.androidx.appcompat.v161)
 
-    // com.google.android.material:material:1.13.0-alpha04
-    implementation(libs.material.v1130alpha04)
+  // com.google.android.material:material:1.13.0-alpha04
+  implementation(libs.material.v1130alpha04)
 
-    // gson
-    implementation (libs.gson)
+  // gson
+  implementation(libs.gson)
 
   implementation(libs.androidx.constraintlayout)
 
@@ -86,6 +86,8 @@ dependencies {
 
   // RecyclerView
   implementation(libs.androidx.recyclerview)
+
+  implementation(libs.material.v140)
 
 
   implementation(libs.androidx.core.ktx)
@@ -99,14 +101,14 @@ dependencies {
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)
   androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.viewbinding)
+  implementation(libs.androidx.core.ktx)
+  implementation(libs.androidx.appcompat)
+  implementation(libs.material)
+  implementation(libs.androidx.activity)
+  implementation(libs.androidx.constraintlayout)
+  implementation(libs.androidx.viewbinding)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+  testImplementation(libs.junit)
+  androidTestImplementation(libs.androidx.junit)
+  androidTestImplementation(libs.androidx.espresso.core)
 }

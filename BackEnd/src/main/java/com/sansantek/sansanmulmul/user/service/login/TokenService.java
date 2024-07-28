@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.user.service;
+package com.sansantek.sansanmulmul.user.service.login;
 
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;

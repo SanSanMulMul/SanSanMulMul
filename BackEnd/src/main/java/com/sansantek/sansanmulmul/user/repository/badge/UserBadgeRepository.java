@@ -1,7 +1,6 @@
-package com.sansantek.sansanmulmul.user.repository;
+package com.sansantek.sansanmulmul.user.repository.badge;
 
 import com.sansantek.sansanmulmul.user.domain.badge.UserBadge;
-import com.sansantek.sansanmulmul.user.domain.badge.UserBadgeId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

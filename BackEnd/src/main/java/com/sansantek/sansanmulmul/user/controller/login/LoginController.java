@@ -1,12 +1,11 @@
-package com.sansantek.sansanmulmul.user.controller;
+package com.sansantek.sansanmulmul.user.controller.login;
 
 import com.sansantek.sansanmulmul.user.domain.User;
-import com.sansantek.sansanmulmul.user.domain.badge.UserBadge;
 import com.sansantek.sansanmulmul.user.dto.request.SignUpUserRequest;
 import com.sansantek.sansanmulmul.user.dto.response.KakaoUserInfoResponse;
-import com.sansantek.sansanmulmul.user.service.BadgeService;
-import com.sansantek.sansanmulmul.user.service.KakaoService;
-import com.sansantek.sansanmulmul.user.service.TokenService;
+import com.sansantek.sansanmulmul.user.service.badge.BadgeService;
+import com.sansantek.sansanmulmul.user.service.login.KakaoService;
+import com.sansantek.sansanmulmul.user.service.login.TokenService;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;

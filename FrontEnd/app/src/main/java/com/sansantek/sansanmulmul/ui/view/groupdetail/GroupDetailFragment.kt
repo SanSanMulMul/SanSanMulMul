@@ -14,6 +14,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
@@ -40,26 +41,26 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         popupShow = false
-        requireActivity().supportFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, GroupDetailTabFirstInfoFragment()).commit()
+        changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment())
         binding.layoutTab.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 Log.d(TAG, "onTabSelected: ${tab?.position}")
                 when (tab?.position) {
                      0 -> {
                         Log.d(TAG, "onTabSelected: groupInfoTab")
-                        requireActivity().supportFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, GroupDetailTabFirstInfoFragment()).commit()
+                         changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment())
                     }
                     1 -> {
                         Log.d(TAG, "onTabSelected: hikingInfoTab")
-                        requireActivity().supportFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, GroupDetailTabSecondHikingInfoFragment()).commit()
+                        changeGroupDetailFragmentView(GroupDetailTabSecondHikingInfoFragment())
                     }
                     2 -> {
                         Log.d(TAG, "onTabSelected: galleryTab")
-                        requireActivity().supportFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, GroupDetailTabFirstInfoFragment()).commit()
+                        changeGroupDetailFragmentView(GroupDetailTabThirdGalleryInfoFragment())
                     }
                     else -> {
                         Log.d(TAG, "onTabSelected: else")
-                        requireActivity().supportFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, GroupDetailTabFirstInfoFragment()).commit()
+                        changeGroupDetailFragmentView(GroupDetailTabThirdGalleryInfoFragment())
                     }
                 }
             }
@@ -115,7 +116,18 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
                     )
 
                     windowupBinding.rvGroupDetailDrawerList.apply{
-                        adapter = windowDrawerListAdapter.apply { submitList(drawerMenuList) }
+                        adapter = windowDrawerListAdapter.apply { submitList(drawerMenuList)
+                            setItemClickListener(object:GroupDetailDrawerListAdapter.ItemClickListener{
+                                override fun onLinkCopyClick() {
+
+                                }
+
+                                override fun onExitGroupClick() {
+                                    AlertExitGroupDialog().show(childFragmentManager, "dialog")
+                                }
+
+                            })
+                        }
                         layoutManager = LinearLayoutManager(requireContext())
                         addItemDecoration(DividerItemDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.divider)!!))
                     }
@@ -135,7 +147,7 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
                     val newWidth = (screenWidth * 0.8).toInt()
                     val newHeight = (screenWidth * 0.95).toInt()
                     val popUpList = mutableListOf(Alarm("등산 일정 변경", "등산 일정이 24.07.18(목) 13:00 - 24.07.19(금) 14:00로 변경되었습니다"), Alarm("그룹 가입 요청", "nickname 님이 그룹 가입을 요청했습니다! 멤버 목록에서 수락 또는 거절할 수 있습니다"), Alarm("등산 코스 변경", "등산 코스가 가야산 / 가야산국립공원남산제일봉2코스로 변경되었습니다"), Alarm("그룹 가입 요청", "박태우 님이 그룹 가입을 요청했습니다! 멤버 목록에서 수락 또는 거절할 수 있습니다"),)
-                    val popUpAlramListAdapter = GroupDetailAlarmListAdapter()
+                    val popUpAlarmListAdapter = GroupDetailAlarmListAdapter()
                     val layoutInflater =
                         requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                     val location = IntArray(2)
@@ -166,7 +178,7 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
 
                     Log.d(TAG, "onViewCreated: 팝업 리사이클러 뷰 실행 직전")
                     popupBinding.rvAlarmList.apply{
-                        adapter = popUpAlramListAdapter.apply { submitList(popUpList) }
+                        adapter = popUpAlarmListAdapter.apply { submitList(popUpList) }
                         layoutManager = LinearLayoutManager(requireContext())
                         addItemDecoration(DividerItemDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.divider)!!))
                     }
@@ -193,6 +205,17 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
             drawerShow = !drawerShow
         }
         super.onPause()
+    }
+    fun changeGroupDetailFragmentView(view: Fragment){
+        this.childFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, view).commit()
+    }
+
+    fun changeAddToBackStackGroupDetailFragmentView(view: Fragment){
+        this.childFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, view).addToBackStack(null).commit()
+    }
+
+    fun popBackStackGroupDetailFragmentView(){
+        this.childFragmentManager.popBackStack()
     }
 
     private fun getScreenWidth(context: Context): Int {

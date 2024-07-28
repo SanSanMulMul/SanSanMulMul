@@ -87,8 +87,6 @@ dependencies {
   // RecyclerView
   implementation(libs.androidx.recyclerview)
 
-  implementation(libs.material.v140)
-
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)

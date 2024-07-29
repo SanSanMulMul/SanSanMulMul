@@ -43,7 +43,8 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/webjars/**"),
                                 new AntPathRequestMatcher("/swagger-ui.html"),
                                 new AntPathRequestMatcher("/user/**"),
-                                new AntPathRequestMatcher("/mountain/**")
+                                new AntPathRequestMatcher("/mountain/**"),
+                                new AntPathRequestMatcher("**")
                         ).permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin

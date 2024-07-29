@@ -1,6 +1,6 @@
 package com.sansantek.sansanmulmul.user.controller.badge;
 
-import com.sansantek.sansanmulmul.exception.InvalidTokenException;
+import com.sansantek.sansanmulmul.exception.auth.InvalidTokenException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.service.badge.BadgeService;
 import com.sansantek.sansanmulmul.user.service.UserService;

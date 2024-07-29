@@ -46,5 +46,30 @@
   <color name="difficulty_medium">#FFD234</color>
   <color name="difficulty_hard">#D70E0E</color>
 
+    <color name="group_detail_drawer_grey">#6B6B6B</color>
+    <color name="group_detail_drawer_black">#414141</color>
+
+    <color name="group_detail_second_tab_tabbar_green">#A1CCA8</color>
+    <color name="group_detail_second_tab_tabbar_divider">#E0E0E0</color>
+    <color name="group_detail_second_tab_mountain_name">#CCD2CD</color>
+    <color name="group_detail_second_tab_course_name">#606060</color>
+
+    <color name="group_detail_second_tab_difficulty_hard">#C81F1F</color>
+    <color name="group_detail_second_tab_course_change_btn">#5F5F5F</color>
+
+    <color name="group_detail_second_tab_map_overlay_btn">#29000000</color>
+
+    <color name="group_detail_second_tab_dot_title_color">#424242</color>
+
+    <color name="group_detail_second_tab_border_color">#767676</color>
+
+    <color name="group_detail_second_tab_distance_data_color">#232323</color>
+
+    <color name="group_detail_second_tab_temperature_max_color">#AA1919</color>
+
+    <color name="group_detail_second_tab_temperature_min_color">#266EDA</color>
+
+    <color name="group_detail_second_tab_weather_black_color">#000000</color>
+
 
 </resources>

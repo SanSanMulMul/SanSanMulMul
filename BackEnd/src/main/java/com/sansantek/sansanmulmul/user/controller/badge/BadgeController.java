@@ -2,7 +2,6 @@ package com.sansantek.sansanmulmul.user.controller.badge;
 
 import com.sansantek.sansanmulmul.exception.InvalidTokenException;
 import com.sansantek.sansanmulmul.user.domain.User;
-import com.sansantek.sansanmulmul.user.domain.badge.Badge;
 import com.sansantek.sansanmulmul.user.service.badge.BadgeService;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
@@ -46,7 +45,7 @@ public class BadgeController {
             String token = accessToken.substring(7);
 
             // 액세스 토큰 유효성 검증
-            if (jwtTokenProvider.checkToken(token)) {
+            if (jwtTokenProvider.validateToken(token)) {
                 String userProviderId = jwtTokenProvider.getUserProviderId(token);
 
             // 해당 사용자 가져오기
@@ -92,7 +91,7 @@ public class BadgeController {
             String token = accessToken.substring(7);
 
             // 액세스 토큰 유효성 검증
-            if (jwtTokenProvider.checkToken(token)) {
+            if (jwtTokenProvider.validateToken(token)) {
                 String userProviderId = jwtTokenProvider.getUserProviderId(token);
 
                 // 해당 사용자 가져오기
@@ -140,7 +139,7 @@ public class BadgeController {
             String token = accessToken.substring(7);
 
             // 액세스 토큰 유효성 검증
-            if (jwtTokenProvider.checkToken(token)) {
+            if (jwtTokenProvider.validateToken(token)) {
                 String userProviderId = jwtTokenProvider.getUserProviderId(token);
 
                 // 해당 사용자 가져오기

@@ -42,7 +42,7 @@ public class UserController {
             String token = accessToken.substring(7);
 
             // 액세스 토큰 유효성 검증
-            if (jwtTokenProvider.checkToken(token)) {
+            if (jwtTokenProvider.validateToken(token)) {
                 String userProviderId = jwtTokenProvider.getUserProviderId(token);
                 // 해당 사용자 정보 조회
                 User user = userService.getUser(userProviderId);
@@ -84,7 +84,7 @@ public class UserController {
             String token = accessToken.substring(7);
 
             // 액세스 토큰 유효성 검증
-            if (jwtTokenProvider.checkToken(token)) {
+            if (jwtTokenProvider.validateToken(token)) {
                 String userProviderId = jwtTokenProvider.getUserProviderId(token);
                 // 해당 사용자 정보 조회
                 User user = userService.getUser(userProviderId);
@@ -119,7 +119,7 @@ public class UserController {
             String token = accessToken.substring(7);
 
             // 액세스 토큰 유효성 검증
-            if (jwtTokenProvider.checkToken(token)) {
+            if (jwtTokenProvider.validateToken(token)) {
                 String userProviderId = jwtTokenProvider.getUserProviderId(token);
 
                 // 해당 사용자 정보 수정

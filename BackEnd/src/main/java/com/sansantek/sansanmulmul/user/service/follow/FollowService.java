@@ -1,7 +1,7 @@
 package com.sansantek.sansanmulmul.user.service.follow;
 
-import com.sansantek.sansanmulmul.exception.AlreadyFollowingException;
-import com.sansantek.sansanmulmul.exception.FollowNotFoundException;
+import com.sansantek.sansanmulmul.exception.follow.AlreadyFollowingException;
+import com.sansantek.sansanmulmul.exception.follow.FollowNotFoundException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.domain.follow.Follow;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
@@ -106,7 +106,6 @@ public class FollowService {
         if (existingFollow.isEmpty())
             // 팔로우 중이 아닌 경우 처리
             throw new FollowNotFoundException();
-
 
         // Follow 객체 삭제
         followRepository.delete(existingFollow.get());

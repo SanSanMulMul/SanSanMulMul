@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.exception;
+package com.sansantek.sansanmulmul.exception.follow;
 
 public class AlreadyFollowingException extends RuntimeException {
 

@@ -1,7 +1,7 @@
 package com.sansantek.sansanmulmul.user.controller.summitstone;
 
 import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
-import com.sansantek.sansanmulmul.exception.InvalidTokenException;
+import com.sansantek.sansanmulmul.exception.auth.InvalidTokenException;
 import com.sansantek.sansanmulmul.user.service.summitstone.SummitstoneService;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.service.UserService;

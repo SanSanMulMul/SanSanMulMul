@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.user.domain;
 
 import com.sansantek.sansanmulmul.user.domain.badge.UserBadge;
 import com.sansantek.sansanmulmul.user.domain.follow.Follow;
+import com.sansantek.sansanmulmul.user.domain.style.UserHikingStyle;
 import com.sansantek.sansanmulmul.user.domain.summitstone.UserSummitstone;
 import jakarta.persistence.*;
 import lombok.*;
@@ -92,6 +93,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follow> followers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserHikingStyle> userStyles = new ArrayList<>();
 
     public User(String userProviderId, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth) {
         this.userProviderId = userProviderId;

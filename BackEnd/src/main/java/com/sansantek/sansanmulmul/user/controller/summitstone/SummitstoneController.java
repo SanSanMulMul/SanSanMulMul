@@ -45,7 +45,7 @@ public class SummitstoneController {
             String token = accessToken.substring(7);
 
             // 액세스 토큰 유효성 검증
-            if (jwtTokenProvider.checkToken(token)) {
+            if (jwtTokenProvider.validateToken(token)) {
                 String userProviderId = jwtTokenProvider.getUserProviderId(token);
 
                 // 해당 사용자 가져오기
@@ -95,7 +95,7 @@ public class SummitstoneController {
             String token = accessToken.substring(7);
 
             // 액세스 토큰 유효성 검증
-            if (jwtTokenProvider.checkToken(token)) {
+            if (jwtTokenProvider.validateToken(token)) {
                 String userProviderId = jwtTokenProvider.getUserProviderId(token);
 
             // 해당 사용자 가져오기

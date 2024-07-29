@@ -1,6 +1,6 @@
 package com.sansantek.sansanmulmul.config.jwt;
 
-import com.sansantek.sansanmulmul.exception.UnAuthorizedException;
+import com.sansantek.sansanmulmul.exception.auth.UnAuthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

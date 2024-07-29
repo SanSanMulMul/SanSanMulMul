@@ -8,6 +8,7 @@ import com.sansantek.sansanmulmul.databinding.ActivityMainBinding
 import com.sansantek.sansanmulmul.ui.view.grouptab.GroupTabFragment
 import com.sansantek.sansanmulmul.ui.view.hometab.HomeTabFragment
 import com.sansantek.sansanmulmul.ui.view.maptab.MapTabFragment
+import com.sansantek.sansanmulmul.ui.view.mypagetab.MyPageTabFragment
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +43,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
 
         R.id.mypage -> {
-
+          changeFragment(MyPageTabFragment())
         }
 
       }

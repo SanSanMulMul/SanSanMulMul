@@ -9,17 +9,14 @@ import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentGroupCourseSearchBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupCourceSearchListAdapter
 
-class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>(
-  FragmentGroupCourseSearchBinding::bind,
-  R.layout.fragment_group_course_search
-) {
-  // 예시 데이터 리스트
-  private var dataList = listOf("가야산", "가야산", "가야산", "가야산")
+class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>(FragmentGroupCourseSearchBinding::bind, R.layout.fragment_group_course_search) {
+    // 예시 데이터 리스트
+    private var dataList = listOf("가야산", "가야산", "가야산", "가야산")
 
-  private lateinit var adapter: GroupCourceSearchListAdapter
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-  }
+    private lateinit var adapter: GroupCourceSearchListAdapter
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
@@ -49,6 +46,16 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
           // 검색어가 데이터 리스트에 존재하는지 확인
           val isFound = dataList.contains(query)
 
+    private fun initSearchView() {
+        // SearchView 초기화
+        val searchView = requireView().findViewById<SearchView>(R.id.sv_mountain_searchbar)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // 검색어가 null이 아니고 비어있지 않은 경우
+                if (!query.isNullOrEmpty()) {
+                    // 검색어가 데이터 리스트에 존재하는지 확인
+                    val isFound = dataList.contains(query)
+
           // 검색어가 리스트에 있을 경우
           if (isFound) {
             // 검색어에 해당하는 항목만 필터링하여 어댑터에 제출
@@ -66,18 +73,22 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
         return true
       }
 
-      override fun onQueryTextChange(newText: String?): Boolean {
-        // Filter the data based on the search query
-        val filteredList = if (newText.isNullOrEmpty()) {
-          dataList // Show all if query is empty
-        } else {
-          dataList + newText // Filter the list
-        }
-        adapter.submitList(filteredList) // Submit the filtered list to adapter
-        dataList = filteredList
-        return true
-      }
-    })
-  }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Filter the data based on the search query
+                val filteredList = if (newText.isNullOrEmpty()) {
+                    dataList // Show all if query is empty
+                } else {
+                    dataList + newText // Filter the list
+                }
+                adapter.submitList(filteredList) // Submit the filtered list to adapter
+                dataList = filteredList
+                return true
+            }
+        })
+    }
+    private fun showUpCourseChoiceDialog(course: String) {
+        val dialog = UpCourseChoiceDialog()
+        dialog.show(parentFragmentManager, "UpCourseChoiceDialog")
+    }
 }
 

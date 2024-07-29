@@ -15,6 +15,7 @@ import com.sansantek.sansanmulmul.ui.adapter.GroupTabListAdapter
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.view.creategroup.GroupIntroduceCreateFragment
 import com.sansantek.sansanmulmul.ui.view.groupdetail.GroupDetailFragment
+import com.sansantek.sansanmulmul.ui.view.register.GroupCreateViewPagerFragment
 
 private const val TAG = "GroupTabFragment 싸피"
 
@@ -55,7 +56,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
 
     binding.btnFloating.setOnClickListener {
       val activity = requireActivity() as MainActivity
-      activity.changeAddToBackstackFragment(GroupIntroduceCreateFragment())
+      activity.changeAddToBackstackFragment(GroupCreateViewPagerFragment())
     }
 
     binding.myGroupSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

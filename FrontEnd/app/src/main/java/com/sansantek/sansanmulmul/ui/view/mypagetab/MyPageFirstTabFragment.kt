@@ -67,6 +67,12 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
             historyMountainAdapter = MyPageFirstTabHistoryMountainListAdapter()
             historyMountainAdapter.apply {
                 submitList(historyMountainList)
+                setItemClickListener(object : MyPageFirstTabHistoryMountainListAdapter.ItemClickListener{
+                    override fun onHistoryClick(position: Int) {
+                        ShowMyPageHistoryDialog().show(childFragmentManager, null)
+                    }
+
+                })
             }
             adapter = historyMountainAdapter
             addItemDecoration(SpaceItemDecoration(30))

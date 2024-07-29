@@ -43,6 +43,9 @@ class MyPageFirstTabHistoryMountainListAdapter():
             }
             binding.tvMountainTitle.text = item.mountainName
             binding.tvHistoryDate.text = formatDate(item.date)
+            binding.root.setOnClickListener {
+                itemClickListener.onHistoryClick(position)
+            }
         }
     }
 
@@ -64,5 +67,15 @@ class MyPageFirstTabHistoryMountainListAdapter():
         // SimpleDateFormat을 이용하여 "MM/dd" 형식으로 포맷팅
         val dateFormat = SimpleDateFormat("YYYY.MM.dd")
         return dateFormat.format(date)
+    }
+
+    interface ItemClickListener {
+        fun onHistoryClick(position: Int)
+    }
+
+    private lateinit var itemClickListener: ItemClickListener
+
+    fun setItemClickListener(itemClickListener: ItemClickListener) {
+        this.itemClickListener = itemClickListener
     }
 }

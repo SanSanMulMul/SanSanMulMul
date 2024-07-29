@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.ui.adapter
 
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -42,10 +43,12 @@ class GroupDetailFirstTabMemberListAdapter():
                 binding.btnApprove.visibility = View.GONE
             }
             Log.d(TAG, "bindInfo: $item")
-            val img = if(item.imageByte == null){
+            val img = if(item.imageUri == null){
                 ContextCompat.getDrawable(binding.root.context, R.drawable.leader_picture)!!.toBitmap()
             }else{
-                Util.byteArrayToBitmap(item.imageByte!!)
+                binding.root.context.contentResolver.openInputStream(item.imageUri!!)?.use { inputStream ->
+                    BitmapFactory.decodeStream(inputStream)
+                }
             }
 
             binding.ivMemberImage.setImageBitmap(img)

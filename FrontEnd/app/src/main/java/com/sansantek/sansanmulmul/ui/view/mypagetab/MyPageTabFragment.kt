@@ -1,7 +1,9 @@
 package com.sansantek.sansanmulmul.ui.view.mypagetab
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
@@ -10,6 +12,7 @@ import com.sansantek.sansanmulmul.ui.adapter.GroupHikingStyleListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.MyPageHikingStyleListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.layoutmanager.CustomLayoutmanager
 
+private const val TAG = "MyPageTabFragment_싸피"
 class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
     FragmentMyPageTabBinding::bind,
     R.layout.fragment_my_page_tab
@@ -25,14 +28,17 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
             layoutManager = CustomLayoutmanager(requireContext(), 2)
         }
 
+        replaceFragment(MyPageFirstTabFragment())
+
         binding.tlTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                Log.d(TAG, "onTabSelected: ${tab?.position}")
                 when(tab?.position){
                     0 -> {
-                        childFragmentManager.beginTransaction().replace(binding.myPageFragmentView.id, MyPageFirstTabFragment()).commit()
+                        replaceFragment(MyPageFirstTabFragment())
                     }
                     else -> {
-                        childFragmentManager.beginTransaction().replace(binding.myPageFragmentView.id, MyPageFirstTabFragment()).commit()
+                        replaceFragment(MyPageSecondTabFragment())
                     }
                 }
             }
@@ -46,5 +52,9 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
         })
 
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    fun replaceFragment(view: Fragment){
+        childFragmentManager.beginTransaction().replace(binding.myPageFragmentView.id, view).commit()
     }
 }

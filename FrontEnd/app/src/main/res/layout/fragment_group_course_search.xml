@@ -72,6 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 app:queryHint="산 검색하기!"
+                android:layout_marginTop="30dp"
                 android:background="@drawable/check_box_background"
                 app:iconifiedByDefault="false"
                 app:layout_constraintBottom_toBottomOf="parent"

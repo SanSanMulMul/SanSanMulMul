@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.ui.viewpageradapter
+package com.sansantek.sansanmulmul.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

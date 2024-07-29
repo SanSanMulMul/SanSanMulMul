@@ -7,6 +7,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginHorizontal="35dp"
         >
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_favorite"
@@ -22,6 +23,7 @@
                 android:text="즐겨찾기"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:textColor="@color/my_page_first_tab_title_text_color"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -47,6 +49,11 @@
             android:id="@+id/rv_favorite_mountain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="22dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_favorite"
             app:layout_constraintBottom_toTopOf="@id/layout_mountain_history"
             />
@@ -65,6 +72,7 @@
                 android:text="등산 히스토리"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:textColor="@color/my_page_first_tab_title_text_color"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +97,11 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_mountain_history"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_mountain_history"
             app:layout_constraintBottom_toBottomOf="parent"
             />

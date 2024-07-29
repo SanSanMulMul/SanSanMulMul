@@ -27,7 +27,14 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
 
         binding.tlTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
-
+                when(tab?.position){
+                    0 -> {
+                        childFragmentManager.beginTransaction().replace(binding.myPageFragmentView.id, MyPageFirstTabFragment()).commit()
+                    }
+                    else -> {
+                        childFragmentManager.beginTransaction().replace(binding.myPageFragmentView.id, MyPageFirstTabFragment()).commit()
+                    }
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {

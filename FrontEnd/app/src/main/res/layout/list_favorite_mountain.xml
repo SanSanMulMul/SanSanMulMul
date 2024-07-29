@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_list_search_mountain"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_mountain_image"
+        android:layout_width="62dp"
+        android:layout_height="62dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/mountain_title"
+        app:layout_constraintDimensionRatio="1:1"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="20dp"
+        >
+    <ImageView
+        android:id="@+id/mountain_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/gayamountain"
+        android:background="@drawable/rounded_box"
+        android:scaleType="centerCrop"
+        />
+    </androidx.cardview.widget.CardView>
+    <!-- 산 이름 -->
+    <TextView
+        android:id="@+id/mountain_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="가야산"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/cv_mountain_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/cv_mountain_image"
+        app:layout_constraintEnd_toEndOf="@id/cv_mountain_image"
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

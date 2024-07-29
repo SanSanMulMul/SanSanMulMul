@@ -74,5 +74,10 @@
   <color name="my_page_more_button_stroke_color">#989898</color>
   <color name="my_page_more_button_text_color">#797979</color>
 
+  <color name="my_page_first_tab_title_text_color">#555555</color>
+
+
+
+
 
 </resources>

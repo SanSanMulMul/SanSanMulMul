@@ -5,14 +5,17 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -46,9 +49,9 @@ public class SunriseSunsetService {
 
         BufferedReader rd;
         if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
         } else {
-            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8));
         }
 
         StringBuilder sb = new StringBuilder();
@@ -66,7 +69,7 @@ public class SunriseSunsetService {
         Map<String, String> times = new HashMap<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(new java.io.ByteArrayInputStream(xml.getBytes()));
+        Document doc = builder.parse(new InputSource(new StringReader(xml)));
 
         NodeList itemList = doc.getElementsByTagName("item");
         if (itemList.getLength() > 0) {

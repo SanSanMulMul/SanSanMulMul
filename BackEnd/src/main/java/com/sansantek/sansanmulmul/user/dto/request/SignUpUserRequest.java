@@ -20,12 +20,5 @@ public class SignUpUserRequest {
     private String userProfileImg; // nullable
     private LocalDate userBirth;
     // 등산 스타일
-    
-    // default 값으로 설정
-//    private long userTotalLength;
-//    private double userTotalElevation;
-//    private long userTotalSteps;
-//    private long userTotalKcal;
-//    private long userTotalHiking;
-//    private int userStoneCount;
+
 }

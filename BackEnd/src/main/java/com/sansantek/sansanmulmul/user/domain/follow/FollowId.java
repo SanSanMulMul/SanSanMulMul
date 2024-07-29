@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.user.domain.badge;
+package com.sansantek.sansanmulmul.user.domain.follow;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -8,20 +8,20 @@ import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBadgeId implements Serializable {
-    private int user;
-    private int badge;
+public class FollowId implements Serializable {
+    private int follower;
+    private int following;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserBadgeId that = (UserBadgeId) o;
-        return Objects.equals(user, that.user) && Objects.equals(badge, that.badge);
+        FollowId that = (FollowId) o;
+        return Objects.equals(follower, that.follower) && Objects.equals(following, that.following);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, badge);
+        return Objects.hash(follower, following);
     }
 }

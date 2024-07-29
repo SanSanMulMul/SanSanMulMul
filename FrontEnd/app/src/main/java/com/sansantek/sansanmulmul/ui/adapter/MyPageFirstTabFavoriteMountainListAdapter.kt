@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.databinding.ListFavoriteMountainBinding
 
-private const val TAG = "MyPageFirstTabFavoriteMountainListAdapter_싸피"
 class MyPageFirstTabFavoriteMountainListAdapter():
     ListAdapter<Mountain, MyPageFirstTabFavoriteMountainListAdapter.MyPageFavoriteMountainListHolder>(Comparator) {
 
@@ -30,8 +29,6 @@ class MyPageFirstTabFavoriteMountainListAdapter():
         
         fun bindInfo(position: Int) {
             val item = getItem(position)
-            Log.d(TAG, "bindInfo: $itemCount")
-            Log.d(TAG, "bindInfo: $item")
             binding.mountainImage.setImageBitmap(ContextCompat.getDrawable(binding.root.context, item.mountainImg)!!.toBitmap())
             binding.mountainTitle.text = item.mountainName
         }

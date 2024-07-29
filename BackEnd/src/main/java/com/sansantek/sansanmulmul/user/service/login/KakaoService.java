@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.user.service;
+package com.sansantek.sansanmulmul.user.service.login;
 
 import com.sansantek.sansanmulmul.user.dto.response.KakaoAuthResponse;
 import com.sansantek.sansanmulmul.user.dto.response.KakaoTokenResponse;

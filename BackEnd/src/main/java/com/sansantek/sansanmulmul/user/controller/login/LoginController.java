@@ -64,7 +64,8 @@ public class LoginController {
             String refreshToken = tokens.get(1);
 
             // JSON 으로 token 전달
-            resultMap.put("userInfo", loginUser);
+            resultMap.put("userProviderId: ", id);
+            resultMap.put("userNickName: ", loginUser.getUserNickname());
             resultMap.put("access-token", accessToken);
             resultMap.put("refresh-token", refreshToken);
 
@@ -74,8 +75,8 @@ public class LoginController {
         } else { // DB에 저장되어 있지 않은 회원인 경우
 
             // 카카오에서 제공받은 아이디와 닉네임을 JSON으로 프론트에게 전달
-            resultMap.put("userProviderId", id);
-            resultMap.put("userName", nickName);
+            resultMap.put("userProviderId: ", id);
+            resultMap.put("userName: ", nickName);
             resultMap.put("message", "userProviderId와 userName을 사용해서 다른 정보들도 함께 /signup으로 POST요청 해주세요 !");
 
             // 상태 변경

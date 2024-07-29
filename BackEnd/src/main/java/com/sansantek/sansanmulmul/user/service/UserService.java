@@ -24,9 +24,17 @@ public class UserService {
         return userRepository.existsByUserProviderId(userProviderId);
     }
 
-    // DB에 저장되어 있는 회원 찾기
+    // DB에 저장되어 있는 회원 찾기(userProviderId을 사용)
     public User getUser(String userProviderId) {
         User user = userRepository.findByUserProviderId(userProviderId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return user;
+    }
+
+    // DB에 저장되어 있는 회원 찾기(userId을 사용)
+    public User getUser(int userId) {
+        User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         return user;

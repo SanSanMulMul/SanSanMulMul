@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.exception;
+package com.sansantek.sansanmulmul.exception.auth;
 
 public class UnAuthorizedException extends RuntimeException {
 

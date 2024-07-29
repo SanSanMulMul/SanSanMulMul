@@ -1,9 +1,9 @@
 package com.sansantek.sansanmulmul.user.controller.follow;
 
 import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
-import com.sansantek.sansanmulmul.exception.AlreadyFollowingException;
-import com.sansantek.sansanmulmul.exception.FollowNotFoundException;
-import com.sansantek.sansanmulmul.exception.InvalidTokenException;
+import com.sansantek.sansanmulmul.exception.follow.AlreadyFollowingException;
+import com.sansantek.sansanmulmul.exception.follow.FollowNotFoundException;
+import com.sansantek.sansanmulmul.exception.auth.InvalidTokenException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import com.sansantek.sansanmulmul.user.service.follow.FollowService;
@@ -57,9 +57,9 @@ public class FollowController {
             List<User> followers = followService.getFollowers(user.getUserId());
 
             // JSON으로 결과 전송
-            resultMap.put("FollowersList size: ", followers.size());
+            resultMap.put("FollowersList size", followers.size());
             for (int i = 0; i < followers.size(); i++)
-                resultMap.put("Follower (" +  (i + 1)  + ") userId: ", followers.get(i).getUserId());
+                resultMap.put("Follower userId " +  (i + 1), followers.get(i).getUserId());
 
             status = HttpStatus.OK; // 200
 
@@ -103,9 +103,9 @@ public class FollowController {
             List<User> followings = followService.getFollowings(user.getUserId());
 
             // JSON으로 결과 전송
-            resultMap.put("FollowingsList size: ", followings.size());
+            resultMap.put("FollowingsList size", followings.size());
             for (int i = 0; i < followings.size(); i++)
-                resultMap.put("Following (" + (i + 1) + ") userId: ", followings.get(i).getUserId());
+                resultMap.put("Following userId "+ (i + 1), followings.get(i).getUserId());
 
 
             status = HttpStatus.OK; // 200
@@ -152,8 +152,8 @@ public class FollowController {
             followService.addFollow(user.getUserId(), followUserId);
 
             // JSON으로 결과 전송
-            resultMap.put("Follower User Info(userId): ", user.getUserId());
-            resultMap.put("Following user Info(userId)", followUserId);
+            resultMap.put("Follower userId", user.getUserId());
+            resultMap.put("Following userId", followUserId);
 
             status = HttpStatus.OK; // 200
 
@@ -202,8 +202,8 @@ public class FollowController {
             followService.deleteFollow(user.getUserId(), followUserId);
 
             // JSON으로 결과 전송
-            resultMap.put("unFollower User Info(userId): ", user.getUserId());
-            resultMap.put("unFollowing user Info(userId)", followUserId);
+            resultMap.put("unFollower userId", user.getUserId());
+            resultMap.put("unFollowing userId", followUserId);
 
             status = HttpStatus.OK; // 200
 

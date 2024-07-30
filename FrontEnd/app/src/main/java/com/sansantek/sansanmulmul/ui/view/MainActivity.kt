@@ -53,6 +53,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
   }
 
   fun changeFragment(view: Fragment) {
+    for (i in 0 until supportFragmentManager.backStackEntryCount) {
+      supportFragmentManager.popBackStack()
+    }
     supportFragmentManager.beginTransaction().replace(binding.fragmentView.id, view).commit()
   }
 

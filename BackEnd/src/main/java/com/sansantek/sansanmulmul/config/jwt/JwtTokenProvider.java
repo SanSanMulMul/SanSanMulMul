@@ -1,29 +1,30 @@
 package com.sansantek.sansanmulmul.config.jwt;
 
 import com.sansantek.sansanmulmul.exception.auth.UnAuthorizedException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
+import java.security.Key;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 @Component
 @Slf4j
 public class JwtTokenProvider {
 
-    @Value("${jwt.salt}")
-    private String salt;
+    private final Key key;
 
     @Value("${jwt.access-token.expiretime}")
     private long accessTokenExpireTime;
@@ -31,103 +32,95 @@ public class JwtTokenProvider {
     @Value("${jwt.refresh-token.expiretime}")
     private long refreshTokenExpireTime;
 
-    // AccessToken 생성
-    // 유효기간을 짧게 설정해 생성
-    public String createAccessToken(String userProviderId) {
-        return create(userProviderId, "access-token", accessTokenExpireTime);
+
+    public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey) {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // RefreshToken 생성
-    // AccessToken에 비해 유효기간을 길게 설정
-    public String createRefreshToken(String userProviderId) {
-        return create(userProviderId, "refresh-token", refreshTokenExpireTime);
+    // AccessToken, RefreshToken 생성 메소드
+    public JwtToken generateToken(Authentication authentication) {
+        // 권한 가져오기
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+        System.out.println("111");
+
+        long now = (new Date()).getTime();
+
+        // Access Token 생성
+        Date accessTokenExpiresIn = new Date(now + accessTokenExpireTime);
+        String accessToken = Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim("auth", authorities)
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+        System.out.println("accessToken" + accessToken);
+
+        // RefreshToken 생성
+        String refreshToken = Jwts.builder()
+                .setExpiration(new Date(now + refreshTokenExpireTime))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+        System.out.println("refreshToken" + refreshToken);
+
+        return JwtToken.builder()
+                .grantType("Bearer")
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
-    //	Token 발급
-    private String create(String userProviderId, String subject, long expireTime) {
-//		key : Claim에 셋팅될 key 값
-//		value : Claim에 셋팅 될 data 값
-//		subject : payload에 sub의 value로 들어갈 subject값
-//		expire : 토큰 유효기간 설정을 위한 값
-//		jwt 토큰의 구성 : header + payload + signature
-//		Payload 설정 : 생성일 (IssuedAt), 유효기간 (Expiration),
-//		토큰 제목 (Subject), 데이터 (Claim) 등 정보 세팅.
-        Claims claims = Jwts.claims();
+    // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
+    public Authentication getAuthentication(String accessToken) {
+        // Jwt 토큰 복호화
+        Claims claims = parseClaims(accessToken);
 
-//		저장할 data의 key, value
-        claims.put("userProviderId", userProviderId);
-
-        String jwt = Jwts.builder()
-//			Header 설정 : 토큰의 타입, 해쉬 알고리즘 정보 세팅.
-                .setHeaderParam("typ", "JWT")
-                .setClaims(claims)
-                .setSubject(subject) // 토큰 제목 설정 ex) access-token, refresh-token
-                .setIssuedAt(new Date()) // 생성일 설정
-                .setExpiration(new Date(System.currentTimeMillis() + expireTime)) // 만료일 설정 (유효기간)
-                .signWith(SignatureAlgorithm.HS256, this.generateKey()) // Signature 설정 : secret key를 활용한 암호화.
-                .compact(); // 직렬화 처리.
-
-        return jwt;
-    }
-
-    //	Signature 설정에 들어갈 key 생성
-    private byte[] generateKey() {
-        byte[] key = null;
-        try {
-//			charset 설정 안하면 사용자 플랫폼의 기본 인코딩 설정으로 인코딩 됨.
-            key = salt.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            if (log.isInfoEnabled()) {
-                e.printStackTrace();
-            } else {
-                log.error("Making JWT Key Error ::: {}", e.getMessage());
-            }
+        if (claims.get("auth") == null) {
+            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
-        return key;
+
+        // 클레임에서 권한 정보 가져오기
+        Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get("auth").toString().split(","))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+
+        // UserDetails 객체를 만들어서 Authentication return
+        // UserDetails: interface, User: UserDetails를 구현한 class
+        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
-    //	전달 받은 토큰이 제대로 생성된 것인지 확인 하고 문제가 있다면 UnauthorizedException 발생
+    // 토큰 정보 검증 메소드
     public boolean validateToken(String token) {
         try {
-//			Json Web Signature? 서버에서 인증을 근거로 인증 정보를 서버의 private key 서명 한것을 토큰화 한것
-//			setSigningKey : JWS 서명 검증을 위한  secret key 세팅
-//			parseClaimsJws : 파싱하여 원본 jws 만들기
-            Jws<Claims> claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(token);
-//			Claims 는 Map 구현체 형태
-            log.debug("claims: {}", claims);
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return false;
+        } catch (SecurityException | MalformedJwtException e) {
+            log.info("Invalid JWT Token", e);
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT Token", e);
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT Token", e);
+        } catch (IllegalArgumentException e) {
+            log.info("JWT claims string is empty.", e);
         }
+        return false;
     }
 
-    // 전달 받은 토큰을 기반으로 회원 정보 UserProviderId 가져오기
-    public String getUserProviderId(String authorization) {
-        Jws<Claims> claims = null;
+    private Claims parseClaims(String accessToken) {
         try {
-            claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(authorization);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new UnAuthorizedException();
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(accessToken)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
         }
-        Map<String, Object> value = claims.getBody();
-        log.info("value : {}", value);
-        return (String) value.get("userProviderId");
-    }
-
-    private Claims getClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(salt)
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    public Authentication getAuthentication(String token) {
-        Claims claims = getClaims(token);
-        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
-
-        return new UsernamePasswordAuthenticationToken(new org.springframework.security.core.userdetails.User(claims.getSubject
-                (), "", authorities), token, authorities);
     }
 }

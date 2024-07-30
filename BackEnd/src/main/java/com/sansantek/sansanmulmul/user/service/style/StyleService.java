@@ -4,6 +4,7 @@ import com.sansantek.sansanmulmul.exception.style.AlreadyStyleException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.domain.style.HikingStyle;
 import com.sansantek.sansanmulmul.user.domain.style.UserHikingStyle;
+import com.sansantek.sansanmulmul.user.dto.response.StyleResponse;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import com.sansantek.sansanmulmul.user.repository.style.HikingStyleRepository;
 import com.sansantek.sansanmulmul.user.repository.style.UserHikingStyleRepository;
@@ -32,15 +33,17 @@ public class StyleService {
     }
 
     // userId회원의 모든 등산 스타일 조회
-    public List<String> getStyleList(int userId) {
-        List<String> styleList = new ArrayList<>();
+    public List<StyleResponse> getStyleList(int userId) {
+        List<StyleResponse> styleList = new ArrayList<>();
 
         // userId에 해당하는 userHikingStyle 리스트 조회
         List<UserHikingStyle> userHikingStyles = userStyleRepository.findByUser_UserId(userId);
 
         // userHikingStyles리스트에서 styleName을 추출해 styleList에 저장
-        for (UserHikingStyle userHikingStyle : userHikingStyles)
-            styleList.add(userHikingStyle.getStyle().getHikingStylesName());
+        for (UserHikingStyle style : userHikingStyles) {
+            StyleResponse sr = new StyleResponse(style.getStyle().getHikingStylesId(), style.getStyle().getHikingStylesName());
+            styleList.add(sr);
+        }
 
         return styleList;
     }

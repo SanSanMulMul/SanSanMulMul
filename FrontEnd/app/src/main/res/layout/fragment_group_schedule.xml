@@ -146,7 +146,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         />
                 </LinearLayout>
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/btn_select_schedule_start"
@@ -222,7 +222,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         />
                 </LinearLayout>
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/btn_select_schedule_end"

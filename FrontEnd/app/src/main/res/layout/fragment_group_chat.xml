@@ -89,7 +89,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
             
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/chat_gpt_buttons"
@@ -99,24 +99,34 @@
                 android:gravity="center"
                 app:layout_constraintBottom_toTopOf="@id/group_chat_input"
                 >
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/btn_gpt_1"
                     android:text="🌞 등산 당일 날씨는?"
+                    android:stateListAnimator="@null"
                     android:textStyle="bold"
                     android:background="@drawable/chat_gpt_btn_background"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/btn_gpt_2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     />
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/btn_gpt_2"
                     android:text="🎒 등산 시 필수 준비물은?"
+                    android:stateListAnimator="@null"
                     android:textStyle="bold"
                     android:background="@drawable/chat_gpt_btn_background"
+                    app:layout_constraintStart_toEndOf="@id/btn_gpt_1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
             
             <!-- 채팅 입력 필드 및 전송 버튼 -->
             <LinearLayout

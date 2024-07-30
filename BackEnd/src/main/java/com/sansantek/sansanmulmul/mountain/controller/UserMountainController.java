@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,25 +33,19 @@ public class UserMountainController {
     @GetMapping("/like")
     @Operation(summary = "회원 즐겨찾기 조회", description = "액세스 토큰을 사용해 회원 즐겨찾기 조회")
     public ResponseEntity<Map<String, Object>> getUserLikedMountains
-            (@RequestHeader("Authorization") String accessToken) {
+            (Authentication authentication) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
-        log.debug("user accessToken: {}", accessToken);
 
         try {
-            String token = accessToken.substring(7);
+            String userProviderId = authentication.getName();
 
-            if (jwtTokenProvider.validateToken(token)) {
-                String userProviderId = jwtTokenProvider.getUserProviderId(token);
+            List<Mountain> likedMountains = userMountainService.getLikedMountains(userProviderId);
+            resultMap.put("likedMountains", likedMountains);
+            status = HttpStatus.OK;
 
-                List<Mountain> likedMountains = userMountainService.getLikedMountains(userProviderId);
 
-                resultMap.put("likedMountains", likedMountains);
-                status = HttpStatus.OK;
-            } else {
-                throw new InvalidTokenException();
-            }
         } catch (InvalidTokenException e) {
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
             resultMap.put("error", "Invalid or expired token");
@@ -67,26 +62,20 @@ public class UserMountainController {
     @PostMapping("/{mountainId}")
     @Operation(summary = "회원 즐겨찾기 추가", description = "액세스 토큰을 사용해 회원 즐겨찾기 추가")
     public ResponseEntity<Map<String, Object>> addLikedMountain
-            (@RequestHeader("Authorization") String accessToken,
+            (Authentication authentication,
              @PathVariable("mountainId") Long mountainId) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
-        log.debug("user accessToken: {}", accessToken);
+
 
         try {
-            String token = accessToken.substring(7);
+            String userProviderId = authentication.getName();
 
-            if (jwtTokenProvider.validateToken(token)) {
-                String userProviderId = jwtTokenProvider.getUserProviderId(token);
+            userMountainService.addLikedMountain(userProviderId, mountainId);
+            resultMap.put("message", "산 즐겨찾기 성공");
+            status = HttpStatus.OK;
 
-                userMountainService.addLikedMountain(userProviderId, mountainId);
-
-                resultMap.put("message", "산 즐겨찾기 성공");
-                status = HttpStatus.OK;
-            } else {
-                throw new InvalidTokenException();
-            }
         } catch (InvalidTokenException e) {
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
             resultMap.put("error", "Invalid or expired token");
@@ -103,26 +92,20 @@ public class UserMountainController {
     @DeleteMapping("/{mountainId}")
     @Operation(summary = "회원 즐겨찾기 삭제", description = "액세스 토큰을 사용해 회원 즐겨찾기 삭제")
     public ResponseEntity<Map<String, Object>> removeLikedMountain
-            (@RequestHeader("Authorization") String accessToken,
+            (Authentication authentication,
              @PathVariable("mountainId") Long mountainId) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
-        log.debug("user accessToken: {}", accessToken);
+
 
         try {
-            String token = accessToken.substring(7);
+            
+            String userProviderId = authentication.getName();
+            userMountainService.removeLikedMountain(userProviderId, mountainId);
+            resultMap.put("message", "즐겨찾기 제거");
+            status = HttpStatus.OK;
 
-            if (jwtTokenProvider.validateToken(token)) {
-                String userProviderId = jwtTokenProvider.getUserProviderId(token);
-
-                userMountainService.removeLikedMountain(userProviderId, mountainId);
-
-                resultMap.put("message", "즐겨찾기 제거");
-                status = HttpStatus.OK;
-            } else {
-                throw new InvalidTokenException();
-            }
         } catch (InvalidTokenException e) {
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
             resultMap.put("error", "Invalid or expired token");

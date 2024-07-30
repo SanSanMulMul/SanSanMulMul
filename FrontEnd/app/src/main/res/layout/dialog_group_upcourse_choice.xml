@@ -361,7 +361,7 @@
         </ScrollView>
 
         <!-- 하단 섹션 -->
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_next"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

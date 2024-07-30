@@ -1,8 +1,10 @@
 package com.sansantek.sansanmulmul.ui.view.mypagetab
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
@@ -11,6 +13,8 @@ import com.sansantek.sansanmulmul.databinding.FragmentMyPageTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupHikingStyleListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.MyPageHikingStyleListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.layoutmanager.CustomLayoutmanager
+import com.sansantek.sansanmulmul.ui.view.MainActivity
+import com.sansantek.sansanmulmul.ui.view.groupdetail.GroupDetailFragment
 
 private const val TAG = "MyPageTabFragment_싸피"
 class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
@@ -19,6 +23,19 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
 ) {
     private val styleList = mutableListOf("#등산도 식후경", "#등산은 사진이지", "#설렁설렁", "#저쩌구")
     private lateinit var myPageHikingStyleListAdapter: MyPageHikingStyleListAdapter
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        requireActivity().onBackPressedDispatcher.addCallback(this,
+            object: OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val parentFragment = parentFragment as GroupDetailFragment
+                    parentFragment.popBackStackGroupDetailFragmentView()
+                }
+            }
+        )
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         myPageHikingStyleListAdapter = MyPageHikingStyleListAdapter()
         binding.rvMyHikingStyle.apply {
@@ -29,6 +46,11 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
         }
 
         replaceFragment(MyPageFirstTabFragment())
+
+        binding.btnEditProfile.setOnClickListener{
+            val activity = requireActivity() as MainActivity
+            activity.changeAddToBackstackFragment(MyPageEditTabFragment())
+        }
 
         binding.tlTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {

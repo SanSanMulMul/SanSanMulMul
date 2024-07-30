@@ -59,6 +59,8 @@ android {
 
 dependencies {
 
+  implementation (libs.glide)
+
   implementation(libs.google.flexbox)
 
   implementation(libs.android.segmented)

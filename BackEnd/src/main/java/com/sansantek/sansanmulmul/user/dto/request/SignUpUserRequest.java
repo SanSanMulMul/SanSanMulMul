@@ -9,16 +9,20 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 public class SignUpUserRequest {
     private String userProviderId;
     private String userName;
     private String userNickName;
     private GenderStatus userGender;
-    private String userProfileImg; // nullable
+    private String userProfileImg;
     private LocalDate userBirth;
+    private boolean userIsAdmin;
+
+    public boolean isUserIsAdmin() {
+        return userIsAdmin;
+    }
+
     // 등산 스타일
 
 }

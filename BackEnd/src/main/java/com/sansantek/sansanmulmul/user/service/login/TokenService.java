@@ -1,12 +1,20 @@
 package com.sansantek.sansanmulmul.user.service.login;
 
+import com.sansantek.sansanmulmul.config.jwt.JwtToken;
+import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import javax.swing.*;
 
 @Service
 @RequiredArgsConstructor

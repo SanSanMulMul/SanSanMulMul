@@ -31,100 +31,100 @@ public class SummitstoneController {
     // JWT
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping
-    @Operation(summary = "회원 인증 정상석 조회", description = "회원이 인증한 정상석 조회")
-    public ResponseEntity<Map<String, Object>> getUserStone
-            (@RequestHeader("Authorization") String accessToken) {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.ACCEPTED;
-
-        log.debug("user accessToken: {}", accessToken);
-
-        try {
-            // Authorization 헤더에서 "Bearer " 접두사를 제거
-            String token = accessToken.substring(7);
-
-            // 액세스 토큰 유효성 검증
-            if (jwtTokenProvider.validateToken(token)) {
-                String userProviderId = jwtTokenProvider.getUserProviderId(token);
-
-                // 해당 사용자 가져오기
-                User user = userService.getUser(userProviderId);
-
-                // 사용자 인증 정상석 조회
-                List<String[]> userStoneList = summitstoneService.getStoneList(user.getUserId());
-
-                // JSON으로 결과 전송
-                resultMap.put("userStoneList Size: ", userStoneList.size());
-                for (int i = 0; i < userStoneList.size(); i++) {
-                    resultMap.put("stone_id: " + i, userStoneList.get(i)[0]);
-                    resultMap.put("stone_name: " + i, userStoneList.get(i)[1]);
-                }
-
-                status = HttpStatus.OK; // 200
-
-            } else {
-                throw new Exception("Invalid Token");
-            }
-
-        } catch (InvalidTokenException e) {
-            log.error("토큰 유효성 검사 실패: {}", e.getMessage());
-            resultMap.put("error", "Invalid or expired token");
-            status = HttpStatus.UNAUTHORIZED; // 401
-        } catch (Exception e) {
-            log.error("회원 정상석 조회 실패: {}", e.getMessage());
-            resultMap.put("error", "An unexpected error occurred");
-            status = HttpStatus.BAD_REQUEST; // 400
-        }
-
-        return new ResponseEntity<>(resultMap, status);
-    }
-
-    @PostMapping
-    @Operation(summary = "회원 인증 정상석 추가", description = "회원이 인증한 정상석 조회")
-    public ResponseEntity<Map<String, Object>> addUserStone
-            (@RequestHeader("Authorization") String accessToken,
-             @RequestParam int summitstoneId) {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.ACCEPTED;
-
-        log.debug("user accessToken: {}", accessToken);
-
-        try {
-            // Authorization 헤더에서 "Bearer " 접두사를 제거
-            String token = accessToken.substring(7);
-
-            // 액세스 토큰 유효성 검증
-            if (jwtTokenProvider.validateToken(token)) {
-                String userProviderId = jwtTokenProvider.getUserProviderId(token);
-
-            // 해당 사용자 가져오기
-            User user = userService.getUser(userProviderId);
-
-            // 사용자 인증 정상석 조회
-            summitstoneService.addStone(user.getUserId(), summitstoneId);
-
-            // JSON으로 결과 전송
-            resultMap.put("userId: ", user.getUserId());
-            resultMap.put("userProviderId: ", user.getUserProviderId());
-            resultMap.put("add summitstone Id: ", summitstoneId);
-
-            status = HttpStatus.OK; // 200
-
-            } else {
-                throw new Exception("Invalid Token");
-            }
-
-        } catch (InvalidTokenException e) {
-            log.error("토큰 유효성 검사 실패: {}", e.getMessage());
-            resultMap.put("error", "Invalid or expired token");
-            status = HttpStatus.UNAUTHORIZED; // 401
-        } catch (Exception e) {
-            log.error("회원 정상석 추가 실패: {}", e.getMessage());
-            resultMap.put("error", "An unexpected error occurred");
-            status = HttpStatus.BAD_REQUEST; // 400
-        }
-
-        return new ResponseEntity<>(resultMap, status);
-    }
+//    @GetMapping
+//    @Operation(summary = "회원 인증 정상석 조회", description = "회원이 인증한 정상석 조회")
+//    public ResponseEntity<Map<String, Object>> getUserStone
+//            (@RequestHeader("Authorization") String accessToken) {
+//        Map<String, Object> resultMap = new HashMap<>();
+//        HttpStatus status = HttpStatus.ACCEPTED;
+//
+//        log.debug("user accessToken: {}", accessToken);
+//
+//        try {
+//            // Authorization 헤더에서 "Bearer " 접두사를 제거
+//            String token = accessToken.substring(7);
+//
+//            // 액세스 토큰 유효성 검증
+//            if (jwtTokenProvider.validateToken(token)) {
+//                String userProviderId = jwtTokenProvider.getUserProviderId(token);
+//
+//                // 해당 사용자 가져오기
+//                User user = userService.getUser(userProviderId);
+//
+//                // 사용자 인증 정상석 조회
+//                List<String[]> userStoneList = summitstoneService.getStoneList(user.getUserId());
+//
+//                // JSON으로 결과 전송
+//                resultMap.put("userStoneList Size: ", userStoneList.size());
+//                for (int i = 0; i < userStoneList.size(); i++) {
+//                    resultMap.put("stone_id: " + i, userStoneList.get(i)[0]);
+//                    resultMap.put("stone_name: " + i, userStoneList.get(i)[1]);
+//                }
+//
+//                status = HttpStatus.OK; // 200
+//
+//            } else {
+//                throw new Exception("Invalid Token");
+//            }
+//
+//        } catch (InvalidTokenException e) {
+//            log.error("토큰 유효성 검사 실패: {}", e.getMessage());
+//            resultMap.put("error", "Invalid or expired token");
+//            status = HttpStatus.UNAUTHORIZED; // 401
+//        } catch (Exception e) {
+//            log.error("회원 정상석 조회 실패: {}", e.getMessage());
+//            resultMap.put("error", "An unexpected error occurred");
+//            status = HttpStatus.BAD_REQUEST; // 400
+//        }
+//
+//        return new ResponseEntity<>(resultMap, status);
+//    }
+//
+//    @PostMapping
+//    @Operation(summary = "회원 인증 정상석 추가", description = "회원이 인증한 정상석 조회")
+//    public ResponseEntity<Map<String, Object>> addUserStone
+//            (@RequestHeader("Authorization") String accessToken,
+//             @RequestParam int summitstoneId) {
+//        Map<String, Object> resultMap = new HashMap<>();
+//        HttpStatus status = HttpStatus.ACCEPTED;
+//
+//        log.debug("user accessToken: {}", accessToken);
+//
+//        try {
+//            // Authorization 헤더에서 "Bearer " 접두사를 제거
+//            String token = accessToken.substring(7);
+//
+//            // 액세스 토큰 유효성 검증
+//            if (jwtTokenProvider.validateToken(token)) {
+//                String userProviderId = jwtTokenProvider.getUserProviderId(token);
+//
+//            // 해당 사용자 가져오기
+//            User user = userService.getUser(userProviderId);
+//
+//            // 사용자 인증 정상석 조회
+//            summitstoneService.addStone(user.getUserId(), summitstoneId);
+//
+//            // JSON으로 결과 전송
+//            resultMap.put("userId: ", user.getUserId());
+//            resultMap.put("userProviderId: ", user.getUserProviderId());
+//            resultMap.put("add summitstone Id: ", summitstoneId);
+//
+//            status = HttpStatus.OK; // 200
+//
+//            } else {
+//                throw new Exception("Invalid Token");
+//            }
+//
+//        } catch (InvalidTokenException e) {
+//            log.error("토큰 유효성 검사 실패: {}", e.getMessage());
+//            resultMap.put("error", "Invalid or expired token");
+//            status = HttpStatus.UNAUTHORIZED; // 401
+//        } catch (Exception e) {
+//            log.error("회원 정상석 추가 실패: {}", e.getMessage());
+//            resultMap.put("error", "An unexpected error occurred");
+//            status = HttpStatus.BAD_REQUEST; // 400
+//        }
+//
+//        return new ResponseEntity<>(resultMap, status);
+//    }
 }

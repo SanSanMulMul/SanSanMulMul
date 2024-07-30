@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>코스 생성기</title>
+    <style>
+        .area {
+            position: absolute;
+            background: #fff;
+            border: 1px solid #888;
+            border-radius: 3px;
+            font-size: 12px;
+            top: -5px;
+            left: 15px;
+            padding: 6px;
+        }
+        .info {
+
+            font-size: 12px;
+            padding: 5px;
+        }
+
+        .info .title {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 이미지 지도를 표시할 div 입니다 -->
+
+    <div style="margin-bottom: 6px;">
+        <label for="mountainCode">산 코드</label><input id="mountainCode" type="text">
+        <button id="update">Select문 실행</button>
+    </div>
+    <div style="margin-bottom: 6px;">
+        <span>코스 ID</span>
+        <button id="minus">-</button>
+        <input id="mountainCourseId" type="text" readonly>
+        <button id="plus">+</button>
+    </div>
+    <div style="margin-bottom: 6px;">
+        <!-- 코스 이름 입력 -->
+        <label for="courseName">코스 이름</label><input id="courseName" type="text">
+        <!-- 난이도 선택 -->
+        <label for="courseLevel">난이도</label>
+        <select id="courseLevel"  style = "margin-right: 20px;">
+            <option value="EASY">쉬움</option>
+            <option value="MEDIUM">보통</option>
+            <option value="HARD">어려움</option>
+        </select>
+        <!-- 코스 기록 시작 버튼 -->
+        <button id="start">코스 기록 시작</button>
+    </div>
+    <div style="margin-bottom: 6px;">
+        <!-- 코스 1개 기록 끝 -->
+        <button id="end">코스 기록 끝</button>
+        <button id="close">인포윈도우 지우기</button>
+    </div>
+
+    <div>
+    </div>
+    <!-- 이미지 지도를 표시할 div 입니다 -->
+    <div id="map" style="width:100%;height:700px;"></div>
+
+    <script type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey={kakao앱키}"></script>
+    <script>
+        let viewEnable = true;
+        let sqlButtonFlag = false;
+
+        let command = "";
+        let sequence = 1;
+
+
+        let markerWindows=[];
+        let selectedPath=[];
+        let selectedPathSeq=[]; //추가
+
+        let polygonPathList = {};
+
+        //코스 생성 (라우터로 보낼 json)
+        let jsonCourseData = {}; //전역변수로 선언
+
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+            mapOption = {
+                center: new kakao.maps.LatLng(37.4243652436, 126.8709189267), // 지도의 중심좌표
+                level: 3 // 지도의 확대 레벨
+            };
+
+        var map = new kakao.maps.Map(mapContainer, mapOption),
+            customOverlay = new kakao.maps.CustomOverlay({}),
+            infowindow = new kakao.maps.InfoWindow({ removable: true });
+
+        // 각 track(구간)마다 선을 표시하고 이벤트를 건다.
+        // key : 트랙ID /  pathList : 트랙ID에 속하는 (위,경도)쌍들 
+        function displayArea(key, pathList) {
+
+            // track(구간) polyline 생성 
+            var polyline = new kakao.maps.Polyline({
+                map: map,
+                path: pathList, // 선을 구성하는 좌표배열 입니다
+                strokeWeight: 8, // 선의 두께 입니다
+                strokeColor: '#FAAC58', // 선의 색깔입니다
+                strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                strokeStyle: 'solid' // 선의 스타일입니다
+            });
+            polyline.seq=key;
+
+            // polyline에 이벤트 생성
+            //------------마우스 갖다댔을 때 
+            // << mouseover >> (마우스 위에 올려뒀을 때) -> 형광색,  track번호
+            kakao.maps.event.addListener(polyline, 'mouseover', function (mouseEvent) {
+                
+                //이미 선택된 등산로면 return
+                for(let index=0; index<selectedPath.length; index++){
+    
+                    if(selectedPath[index].seq==polyline.seq) return;
+                }
+                
+                
+                polyline.setOptions({ strokeColor: '#00FF40' }); //형광초록
+
+                customOverlay.setContent('<div class="area">' + key + '</div>'); //마우스 갖다댔을 때 track번호 뜨게함
+
+                customOverlay.setPosition(mouseEvent.latLng);
+                customOverlay.setMap(map);
+            });
+
+            // << mousemove >> 이벤트 -> seq 담은 사각형이 따라다니게
+            kakao.maps.event.addListener(polyline, 'mousemove', function (mouseEvent) {
+                //이미 선택된 등산로면 return
+                for(let index=0; index<selectedPath.length; index++){
+                    if(selectedPath[index].seq==polyline.seq) {
+                        customOverlay.setMap(null);
+                    }
+
+                }
+                customOverlay.setPosition(mouseEvent.latLng);
+            });
+
+            // << mouseout >> 이벤트 -> 원래 색깔로
+            kakao.maps.event.addListener(polyline, 'mouseout', function () {
+                //이미 선택된 등산로면 return
+                for(let index=0; index<selectedPath.length; index++){
+                    if(selectedPath[index].seq==polyline.seq) return;
+                }
+                
+                polyline.setOptions({ strokeColor: '#FAAC58' });
+                customOverlay.setMap(null);
+            });
+
+            //-----------클릭
+            // << click >> 이벤트 -> seq 인포윈도우로 띄워주고 쿼리 생성(시작하기 눌린상태면)
+            kakao.maps.event.addListener(polyline, 'click', function (mouseEvent) {
+                // 이미 클릭된 트랙이면 return
+                if (selectedPathSeq.includes(polyline.seq)) return; //추가
+
+                polyline.setOptions({ strokeColor: '#000000' });
+                
+                selectedPathSeq.push(polyline.seq); //추가
+                selectedPath.push(polyline); //클릭한 track
+
+                let content = '<div class="info" style="width: 100px;">' +
+                    '   <div class="title">' + key + '</div>' +
+                    '</div>';
+                let infowindow = new kakao.maps.InfoWindow({
+                    content: content,
+                    removable: true
+                });
+                // console.log(mouseEvent);//
+                infowindow.setPosition(mouseEvent.latLng);
+                infowindow.setMap(map);
+
+                markerWindows.push(infowindow);
+                // console.log("markerWindows : " + markerWindows)
+
+                if (sqlButtonFlag) {
+                    let mountainCourseId = document.getElementById('mountainCourseId').value; //코스 id
+                    command = command + `INSERT INTO course_tracks (course_id, track_id, course_tracks_sequence) VALUES `+
+                                `(${mountainCourseId},${key},${sequence});\n`;
+                    //----jsonCourseData : 코스에 track정보 추가
+                    // jsonCourseData에 tracks 멤버 추가 및 데이터 추가
+                    if (!jsonCourseData.tracks) {
+                        jsonCourseData.tracks = [];
+                    }
+                    jsonCourseData.tracks.push({ trackId: Number(key), sequence: sequence })
+                    //------
+                    sequence = sequence + 1;
+                }
+            });
+        }
+
+
+        // ---- SQL문 기록 시작 버튼
+        document.getElementById('start').addEventListener("click", (event) => {
+            console.log("sqlButtonFlag : ", sqlButtonFlag);
+            if (!sqlButtonFlag) { // 기록 시작일 때 (flag가 false일 때)
+                let mountainCode = document.getElementById('mountainCode').value;
+                let mountainCourseId=document.getElementById('mountainCourseId').value;
+                mountainCourseId = Number(mountainCourseId);
+                let courseName = document.getElementById('courseName').value;
+                let courseLevel = document.getElementById('courseLevel').value;
+
+                
+                command = `INSERT INTO course (course_id,mountain_code,course_name) VALUES `+
+                        `(${mountainCourseId},"${mountainCode}",${courseName});\n`;
+                viewEnable = true;
+                sequence = 1;
+                sqlButtonFlag = true;
+
+                // jsonCourseData = {}; //추가 : jsonData초기화
+                jsonCourseData = {
+                    courseId: Number(mountainCourseId),
+                    mountainCode: Number(mountainCode),
+                    name: courseName,
+                    level: courseLevel,
+                };
+            }
+        });
+
+        // ---- SQL문 기록 끝 버튼
+        document.getElementById('end').addEventListener("click", (event) => {
+            console.log("sqlButtonFlag: ", sqlButtonFlag);
+            if (sqlButtonFlag) {
+                //산 코스 ID +1 해줌
+                let mountainCourseId=document.getElementById('mountainCourseId').value;
+                mountainCourseId = Number(mountainCourseId);
+                mountainCourseId = mountainCourseId + 1;
+                document.getElementById('mountainCourseId').value=mountainCourseId;
+
+                //버튼 flag들 false로 변경
+                viewEnable = false;
+                sqlButtonFlag = false;
+
+                //앞서 생성한 SQL문 프린트
+                console.log(command);
+
+                //------------------------DB insert하기 (Express 라우터로 jsonData전송) //추가
+                // JSON 데이터 생성
+                // 콘솔찍기 테스트
+                // console.dir(jsonCourseData)
+
+                // AJAX 요청을 통해 서버로 JSON 데이터 전송
+                fetch('/insertCourse', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jsonCourseData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+
+            }
+        });
+
+        //마커윈도우 다 지우기 + polyline 색깔 다 원래대로 바꾸기
+        document.getElementById('close').addEventListener("click", (event) => {
+            
+            for(var i=0; i<markerWindows.length; i++){
+                markerWindows[i].close();
+            }
+            for(var i=0; i<selectedPath.length; i++){
+                selectedPath[i].setOptions({ strokeColor: '#FAAC58' });
+            }
+            // 배열 초기화 
+            selectedPath.splice(0);
+            selectedPathSeq.splice(0); 
+
+            // 코스 이름 입력 초기화
+            document.getElementById('courseName').value = '';
+            // 난이도 선택 초기화
+            document.getElementById('courseLevel').selectedIndex = 0;
+        });
+
+        // SELECT 문 실행 버튼 (DB에서 산 코드에 맞는 track & 그 좌표들(위경도) 화면에 찍어줌)
+        document.getElementById('update').addEventListener("click", (event) => {
+            viewEnable = true;
+            sqlButtonFlag = false;
+
+            let mountainCode = document.getElementById('mountainCode').value;
+            document.getElementById('mountainCourseId').value = mountainCode * 100 + 1;
+            command = "";
+            sequence = 1;
+
+            markerWindows=[];
+            selectedPath=[];
+
+            polygonPathList = {};
+            // { 트랙ID : [(위,경도),(위,경도),(위,경도), ... ],
+            //   트랙ID : [(위,경도),(위,경도),(위,경도), ... ],
+            //  }
+
+            infowindow.setMap(null);
+            customOverlay.setMap(null);
+
+            axios.get(`http://localhost:3000/track/${mountainCode}`)
+            .then(function (result) {                                       //바꿀 부분 
+                
+                let datas = result.data;
+                let marker =  new kakao.maps.LatLng(37.4243652436, 126.8709189267);
+                for (var i = 0, len = datas.length; i < len; i++) {
+                    let data = datas[i];
+                    let seq = Number(data.track_id); //구간 번호
+                    let latitude = Number(data.track_path_lat);
+                    let longitude = Number(data.track_path_lon);
+                    // console.log(data.latitude);
+                    marker = new kakao.maps.LatLng(latitude, longitude); //카카오맵에서 선을 구성하는 좌표 형식
+                    // ** 자바스크립트 얕은 복사. 같은거 가리킴. 수정 시 동시 수정됨
+                    var pathListBySeq = polygonPathList[seq]; //현재 보는 구간ID에 대해 이때까지 저장해둔 좌표들모음
+                    // console.log("----------------------")
+                    
+                    // console.log("polygonPathList[트랙ID] : " + polygonPathList[seq][0])
+                    
+                    if (pathListBySeq == null) { // 이번에 살펴보는 좌표가 새로운 트랙 시작이라면
+                        // console.log("pathListBySeq : "+ pathListBySeq)
+                        // console.log("이전 polygonPathList[트랙ID] : " + polygonPathList[seq])
+                        polygonPathList[seq] = []; //(위,경도)쌍들 저장할 배열[] init
+                        pathListBySeq = polygonPathList[seq];
+                        // console.log("이후 pathListBySeq : "+ pathListBySeq)
+                        // console.log("이후 polygonPathList[트랙ID] : " + polygonPathList[seq])
+                    }
+
+                    pathListBySeq.push(marker);
+                    
+                    // console.log("pathListBySeq : "+ pathListBySeq)
+                    // console.log("polygonPathList[트랙ID] : " + polygonPathList[seq][0])
+                }
+                
+                // 트랙 하나씩 displayArea 함수로 넘겨줌
+                for (key in polygonPathList) {
+                    // key : 트랙 번호 (트랙ID)
+                    // polygonPathList[key] : 해당 트랙ID에 속하는 (위,경도) 쌍들 저장되어있음
+                    // console.log("key : " + key + " / polygonPathList[key] : " + polygonPathList[key])
+                    displayArea(key, polygonPathList[key]);
+                }
+                map.setCenter(marker);
+            })
+            .catch(function (error) {
+                console.log("에러 발생 : ", error);
+            });
+        });
+
+        document.getElementById('minus').addEventListener("click", (event) => {
+            let tmp = Number(document.getElementById('mountainCourseId').value)-1;
+            document.getElementById('mountainCourseId').value = tmp;
+        });
+
+        document.getElementById('plus').addEventListener("click", (event) => {
+            let tmp = Number(document.getElementById('mountainCourseId').value)+1;
+            document.getElementById('mountainCourseId').value = tmp;
+        });
+    </script>
+
+</body>
+
+</html>

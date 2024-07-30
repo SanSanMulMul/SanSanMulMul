@@ -9,9 +9,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     // 조회
     Optional<User> findByUserId(int userId);
     Optional<User> findByUserProviderId(String userProviderId);
-    Optional<User> findByUserRefreshToken(String userRefreshToken);
     Optional<String> findUserRefreshTokenByUserProviderId(String userProviderId);
-    String findUserProviderIdByUserId(int userId);
+    int findUserIdByUserProviderId(String userProviderId);
 
     // 유무판단
     boolean existsByUserProviderId(String userProviderId);

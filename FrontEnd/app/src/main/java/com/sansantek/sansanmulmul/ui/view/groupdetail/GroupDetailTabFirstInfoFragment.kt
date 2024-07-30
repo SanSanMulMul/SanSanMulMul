@@ -30,7 +30,9 @@ class GroupDetailTabFirstInfoFragment :
 
     hikingStyleListAdapter = GroupDetailTabHikingStyleListAdapter()
     binding.rvGroupHikingStyle.apply {
-      layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+      layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false).apply {
+          isMeasurementCacheEnabled = false
+      }
       adapter = hikingStyleListAdapter.apply {
         submitList(styleList)
         addItemDecoration(SpaceItemDecoration(15))

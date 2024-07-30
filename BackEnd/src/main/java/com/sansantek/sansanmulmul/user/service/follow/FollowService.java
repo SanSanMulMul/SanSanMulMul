@@ -4,6 +4,7 @@ import com.sansantek.sansanmulmul.exception.follow.AlreadyFollowingException;
 import com.sansantek.sansanmulmul.exception.follow.FollowNotFoundException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.domain.follow.Follow;
+import com.sansantek.sansanmulmul.user.dto.response.FollowResponse;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import com.sansantek.sansanmulmul.user.repository.follow.FollowRepository;
 import com.sansantek.sansanmulmul.user.service.UserService;
@@ -35,30 +36,35 @@ public class FollowService {
     private final UserService userService;
 
     // userId회원이 갖고 있는 팔로워 리스트 조회
-    public List<User> getFollowers(int userId) {
-        List<User> followersList = new ArrayList<>();
+    public List<FollowResponse> getFollowers(int userId) {
+        List<FollowResponse> followersList = new ArrayList<>();
 
         // userId에 해당하는 followers 리스트 조회
         List<Follow> userFollowers = followRepository.findByFollowing_UserId(userId);
 
         // userFollowers에서 follower User 객체를 추출해 followersList에 저장
-        for (Follow follow : userFollowers)
-            followersList.add(follow.getFollower());
+        for (Follow follow : userFollowers) {
+            FollowResponse frs = new FollowResponse(follow.getFollower().getUserProfileImg(), follow.getFollower().getUserStaticBadge(), follow.getFollower().getUserNickname());
 
+            followersList.add(frs);
+        }
 
         return followersList;
     }
 
     // userId회원이 하고 있는 팔로우 리스트 조회
-    public List<User> getFollowings(int userId) {
-        List<User> followingsList = new ArrayList<>();
+    public List<FollowResponse> getFollowings(int userId) {
+        List<FollowResponse> followingsList = new ArrayList<>();
 
         // userId에 해당하는 followings 리스트 조회
         List<Follow> userFollowings = followRepository.findByFollower_UserId(userId);
 
         // userFollowings에서 following User 객체를 추출해 followingsList에 저장
-        for (Follow follow : userFollowings)
-            followingsList.add(follow.getFollowing());
+        for (Follow follow : userFollowings){
+            FollowResponse frs = new FollowResponse(follow.getFollowing().getUserProfileImg(), follow.getFollowing().getUserStaticBadge(), follow.getFollowing().getUserNickname());
+
+            followingsList.add(frs);
+        }
 
 
         return followingsList;
@@ -98,8 +104,10 @@ public class FollowService {
     public void deleteFollow(int userId, int followUserId) {
         // 팔로우를 취소할 회원 정보 조회
         User follower = userService.getUser(userId);
+        log.info("follower: " + follower.getUserNickname());
         // 팔로우를 취소 당할 회원 정보 조회
         User following = userService.getUser(followUserId);
+        log.info("following: " + following.getUserNickname());
 
         // Follow 정보 찾기
         Optional<Follow> existingFollow = followRepository.findByFollowerAndFollowing(follower, following);

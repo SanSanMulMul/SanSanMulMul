@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.user.domain;
 
+import com.sansantek.sansanmulmul.mountain.domain.UserMountain;
 import com.sansantek.sansanmulmul.user.domain.badge.UserBadge;
 import com.sansantek.sansanmulmul.user.domain.follow.Follow;
 import com.sansantek.sansanmulmul.user.domain.style.UserHikingStyle;
@@ -96,6 +97,7 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserHikingStyle> userStyles = new ArrayList<>();
+
 
     public User(String userProviderId, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth) {
         this.userProviderId = userProviderId;

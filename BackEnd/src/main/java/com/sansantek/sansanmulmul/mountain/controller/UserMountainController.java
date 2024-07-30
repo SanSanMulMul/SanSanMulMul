@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.mountain.controller;
 
-import com.sansantek.sansanmulmul.exception.InvalidTokenException;
+import com.sansantek.sansanmulmul.exception.auth.InvalidTokenException;
+
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.service.UserMountainService;
 import com.sansantek.sansanmulmul.user.service.UserService;

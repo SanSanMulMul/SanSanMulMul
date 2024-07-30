@@ -26,7 +26,9 @@
 
         <activity
             android:name=".ui.view.MainActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing"
+            />
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"

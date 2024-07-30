@@ -62,10 +62,14 @@ public class LoginController {
         if (userService.isExistsUser(id)) { // DB에 저장되어 있는 회원인 경우
             // 회원 정보 가져오기
             User loginUser = userService.getUser(id);
+            String password = "";
+            log.info("userId: {}, nickName: {}", id, nickName);
 
-            JwtToken jwtToken = userService.signIn(loginUser.getUserProviderId(), loginUser.getUserPassword());
-            System.out.println(jwtToken.getAccessToken());
-            System.out.println(jwtToken.getRefreshToken());
+            log.info("토큰 발급 시작");
+            JwtToken jwtToken = userService.signIn(loginUser.getUserProviderId(), password);
+            log.info("accesstoken: {}", jwtToken.getAccessToken());
+            log.info("refreshtoken: {}", jwtToken.getRefreshToken());
+            log.info("토큰 발급 완료");
 
             // 토큰 저장
             tokenService.saveRefreshToken(loginUser.getUserProviderId(), jwtToken.getRefreshToken());
@@ -102,15 +106,17 @@ public class LoginController {
 
         try {
             // 회원가입 진행
+//            String password = request.getUserPassword();
+            String password = "";
             User user = userService.signUpUser(request);
             log.info("회원가입 성공");
             log.info("sign-up user : {}", user);
 
             // 로그인 + 토큰 발급까지 완료하기
             log.info("토큰 발급 시작");
-            JwtToken jwtToken = userService.signIn(user.getUserProviderId(), user.getUserPassword());
-            System.out.println(jwtToken.getAccessToken());
-            System.out.println(jwtToken.getRefreshToken());
+            JwtToken jwtToken = userService.signIn(user.getUserProviderId(), password);
+            log.info("accesstoken: {}", jwtToken.getAccessToken());
+            log.info("refreshtoken: {}", jwtToken.getRefreshToken());
             log.info("토큰 발급 완료");
 
             // 토큰 넘겨주기

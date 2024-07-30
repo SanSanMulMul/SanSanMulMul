@@ -36,6 +36,7 @@ public class User /* implements UserDetails */ {
     private String userProviderId;
 
     @Column(name = "user_password", nullable = false)
+    @ColumnDefault("")
     private String userPassword;
 
     @Column(name = "user_refresh_token")

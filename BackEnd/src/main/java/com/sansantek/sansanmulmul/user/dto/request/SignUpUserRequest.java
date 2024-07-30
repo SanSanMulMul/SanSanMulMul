@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class SignUpUserRequest {
     private String userProviderId;
-    private String userPassword;
+//    private String userPassword;
     private String userName;
     private String userNickName;
     private GenderStatus userGender;

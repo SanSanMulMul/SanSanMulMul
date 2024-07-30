@@ -4,6 +4,7 @@ import com.sansantek.sansanmulmul.mountain.domain.summitstone.Summitstone;
 import com.sansantek.sansanmulmul.mountain.repository.summitstone.SummitstoneRepository;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.domain.summitstone.UserSummitstone;
+import com.sansantek.sansanmulmul.user.dto.response.StoneResponse;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import com.sansantek.sansanmulmul.user.repository.summitstone.UserSummitstoneRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,18 +24,16 @@ public class SummitstoneService {
     private final UserSummitstoneRepository userSummitstoneRepository;
 
     // 해당 회원의 모든 정상석 조회
-    public List<String[]> getStoneList(int userId) {
-        List<String[]> stoneList = new ArrayList<>();
+    public List<StoneResponse> getStoneList(int userId) {
+        List<StoneResponse> stoneList = new ArrayList<>();
 
         // userId에 해당하는 userStone 리스트 조회
         List<UserSummitstone> userStone = userSummitstoneRepository.findByUser_UserId(userId);
 
         // userStone리스트에서 stoneName을 추출해 stoneList에 저장
         for (UserSummitstone userSummitstone : userStone) {
-            String[] stoneData = new String[2];
-            stoneData[0] = String.valueOf(userSummitstone.getSummitstone().getStoneId());
-            stoneData[1] = userSummitstone.getSummitstone().getStoneName();
-            stoneList.add(stoneData);
+            StoneResponse sr = new StoneResponse(userSummitstone.getSummitstone().getStoneId(), userSummitstone.getSummitstone().getStoneName(), userSummitstone.getSummitstone().getStoneImg());
+            stoneList.add(sr);
         }
 
         return stoneList;

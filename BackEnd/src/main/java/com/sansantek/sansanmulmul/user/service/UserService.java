@@ -7,6 +7,7 @@ import com.sansantek.sansanmulmul.user.dto.request.SignUpUserRequest;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserRequest;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import com.sansantek.sansanmulmul.user.service.login.TokenService;
+import com.sansantek.sansanmulmul.user.service.style.StyleService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,22 +18,33 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
 
-    private final UserRepository userRepository;
+    // Spring Security
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
+
+    // JWT
+    private final JwtTokenProvider jwtTokenProvider;
     private final TokenService tokenService;
 
-    @Transactional
-    public User signUpUser(SignUpUserRequest signUpUserRequest) {
-//        String encoder = passwordEncoder.encode(signUpUserRequest.getUserPassword());
-        String encoder = passwordEncoder.encode("");
+    // service
+    private final StyleService styleService;
 
+    // Repository
+    private final UserRepository userRepository;
+
+    @Transactional
+    public User signUpUser(SignUpUserRequest signUpUserRequest, String password) {
+        // 비밀번호 인코딩
+        String encoder = passwordEncoder.encode(password);
+
+        // 회원 객체 생성
         User user = new User(
                 signUpUserRequest.getUserProviderId(),
                 encoder,
@@ -45,8 +57,9 @@ public class UserService {
                 signUpUserRequest.isUserIsAdmin()
         );
 
+        // 회원 영속성
         userRepository.save(user);
-        userRepository.flush();
+
         return user;
     }
 
@@ -71,6 +84,10 @@ public class UserService {
         return userRepository.existsByUserProviderId(userProviderId);
     }
 
+    public boolean isExistsUserNickname(String userNickname) {
+        return userRepository.existsByUserNickname(userNickname);
+    }
+
     public User getUser(String userProviderId) {
         return userRepository.findByUserProviderId(userProviderId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -81,10 +98,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
-    public boolean isExistsUserNickname(String userNickname) {
-        return userRepository.existsByUserNickname(userNickname);
-    }
-
+    @Transactional
     public User updateUser(String userProviderId, UpdateUserRequest updateUserRequest) {
         User user = userRepository.findByUserProviderId(userProviderId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));

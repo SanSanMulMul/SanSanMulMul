@@ -9,7 +9,7 @@ import com.sansantek.sansanmulmul.user.service.badge.BadgeService;
 import com.sansantek.sansanmulmul.user.service.login.KakaoService;
 import com.sansantek.sansanmulmul.user.service.login.TokenService;
 import com.sansantek.sansanmulmul.user.service.UserService;
-import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
+import com.sansantek.sansanmulmul.user.service.style.StyleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,12 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -35,13 +32,11 @@ import java.util.Map;
 public class LoginController {
 
     // service
-    private final UserService userService;
-    private final KakaoService kakaoService;
     private final TokenService tokenService;
+    private final KakaoService kakaoService;
+    private final UserService userService;
     private final BadgeService badgeService;
-
-    // JWT
-    private final JwtTokenProvider jwtTokenProvider;
+    private final StyleService styleService;
 
     @GetMapping("/login")
     @Operation(summary = "로그인", description = "카카오 소셜 로그인 + JWT 토큰")
@@ -65,20 +60,15 @@ public class LoginController {
             String password = "";
             log.info("userId: {}, nickName: {}", id, nickName);
 
-            log.info("토큰 발급 시작");
+            // 토큰 인증 기반 로그인 수행
             JwtToken jwtToken = userService.signIn(loginUser.getUserProviderId(), password);
-            log.info("accesstoken: {}", jwtToken.getAccessToken());
-            log.info("refreshtoken: {}", jwtToken.getRefreshToken());
-            log.info("토큰 발급 완료");
 
             // 토큰 저장
             tokenService.saveRefreshToken(loginUser.getUserProviderId(), jwtToken.getRefreshToken());
 
             // 토큰 넘겨주기
             resultMap.put("accessToken", jwtToken.getAccessToken());
-            log.info("accessToken", jwtToken.getAccessToken());
             resultMap.put("refreshToken", jwtToken.getRefreshToken());
-            log.info("refreshToken", jwtToken.getRefreshToken());
 
             // 상태 변경
             status = HttpStatus.OK; // 200
@@ -88,7 +78,7 @@ public class LoginController {
             // 카카오에서 제공받은 아이디와 닉네임을 JSON으로 프론트에게 전달
             resultMap.put("userProviderId", id);
             resultMap.put("userName", nickName);
-            resultMap.put("message", "userProviderId와 userName을 사용해서 다른 정보들도 함께 /signup으로 POST요청 해주세요 ! (주의) password는 1234로 부탁드려용");
+            resultMap.put("message", "userProviderId+userName+다른 정보 /signup으로 POST요청");
 
             // 상태 변경
             status = HttpStatus.NO_CONTENT; // 204
@@ -106,26 +96,21 @@ public class LoginController {
 
         try {
             // 회원가입 진행
-//            String password = request.getUserPassword();
             String password = "";
-            User user = userService.signUpUser(request);
+            User user = userService.signUpUser(request, password);
             log.info("회원가입 성공");
             log.info("sign-up user : {}", user);
 
             // 로그인 + 토큰 발급까지 완료하기
-            log.info("토큰 발급 시작");
             JwtToken jwtToken = userService.signIn(user.getUserProviderId(), password);
-            log.info("accesstoken: {}", jwtToken.getAccessToken());
-            log.info("refreshtoken: {}", jwtToken.getRefreshToken());
-            log.info("토큰 발급 완료");
-
-            // 토큰 넘겨주기
-            resultMap.put("accessToken", jwtToken.getAccessToken());
-            resultMap.put("refreshToken", jwtToken.getRefreshToken());
 
             // 기본 칭호(badge_id = 1) 등록하기
             log.info("기본 칭호 등록");
             badgeService.setBasicBadge(user.getUserId());
+
+            // 등산 스타일 추가
+            for (int hikingStyleId : request.getUserStyles())
+                styleService.addStyle(user.getUserId(), hikingStyleId);
 
             // JSON 으로 token 전달
             resultMap.put("userId", user.getUserId());
@@ -136,14 +121,19 @@ public class LoginController {
             status = HttpStatus.CREATED; // 201
 
         } catch(UsernameNotFoundException e) {
+
             log.info("회원이 존재하지 않음");
             log.error(e.getMessage());
             status = HttpStatus.NOT_FOUND; // 404
+
         } catch(AuthenticationException e){
+
             log.info("회원 인증 실패");
             log.error(e.getMessage());
             status = HttpStatus.UNAUTHORIZED; // 401
+
         } catch(Exception e){
+
             log.error("회원가입 실패");
             log.info("sign-up user : {}", request);
             status = HttpStatus.BAD_REQUEST; // 400
@@ -151,7 +141,6 @@ public class LoginController {
         }
 
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
-
     }
 
 }

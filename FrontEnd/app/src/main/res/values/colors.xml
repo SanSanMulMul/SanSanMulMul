@@ -73,11 +73,15 @@
 
   <color name="my_page_more_button_stroke_color">#989898</color>
   <color name="my_page_more_button_text_color">#797979</color>
-
   <color name="my_page_first_tab_title_text_color">#555555</color>
-
   <color name="my_page_history_dialog_close_btn_color">#373737</color>
+  <color name="my_page_edit_btn_tint_color">#808080</color>
 
+  <color name="my_page_edit_hiking_first_style_color">#FFBDBD</color>
+  <color name="my_page_edit_hiking_second_style_color">#FFECAA</color>
+  <color name="my_page_edit_hiking_third_style_color">#C6ECB5</color>
+  <color name="my_page_edit_hiking_fourth_style_color">#BDE7FF</color>
+  <color name="my_page_edit_hiking_fifth_style_color">#CEBDFF</color>
 
 
 

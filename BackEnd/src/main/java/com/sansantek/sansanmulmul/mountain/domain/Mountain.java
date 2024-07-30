@@ -1,10 +1,13 @@
 package com.sansantek.sansanmulmul.mountain.domain;
 
 
+import com.sansantek.sansanmulmul.mountain.domain.spot.MountainSpot;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 
 @Entity
@@ -33,5 +36,8 @@ public class Mountain {
     private double mountain_lat; //위도
     
     private double mountain_lon; //경도
+
+    @OneToMany(mappedBy = "mountain")
+    private List<MountainSpot> mountainSpot;
 
 }

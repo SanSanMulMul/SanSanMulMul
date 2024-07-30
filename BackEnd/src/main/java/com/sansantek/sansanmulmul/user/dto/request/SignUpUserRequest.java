@@ -12,11 +12,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class SignUpUserRequest {
     private String userProviderId;
-//    private String userPassword;
     private String userName;
     private String userNickName;
     private GenderStatus userGender;
-    private String userProfileImg; // nullable
+    private String userProfileImg;
     private LocalDate userBirth;
     private boolean userIsAdmin;
 

@@ -17,12 +17,4 @@ public class UpdateUserRequest {
     private GenderStatus userGender;
     private String userProfileImg;
     private LocalDate userBirth;
-    // 등산 스타일
-
-    private long userTotalLength;
-    private double userTotalElevation;
-    private long userTotalSteps;
-    private long userTotalKcal;
-    private long userTotalHiking;
-    private int userStoneCount;
 }

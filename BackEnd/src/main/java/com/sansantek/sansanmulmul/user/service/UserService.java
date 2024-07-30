@@ -41,6 +41,7 @@ public class UserService {
                 signUpUserRequest.getUserGender(),
                 signUpUserRequest.getUserProfileImg(),
                 signUpUserRequest.getUserBirth(),
+                1,
                 signUpUserRequest.isUserIsAdmin()
         );
 
@@ -88,25 +89,18 @@ public class UserService {
         User user = userRepository.findByUserProviderId(userProviderId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        if (updateUserRequest.getUserNickName() != null) {
+        if (updateUserRequest.getUserNickName() != null)
             user.setUserNickname(updateUserRequest.getUserNickName());
-        }
-        if (updateUserRequest.getUserGender() != null) {
-            user.setUserGender(updateUserRequest.getUserGender());
-        }
-        if (updateUserRequest.getUserProfileImg() != null) {
-            user.setUserProfileImg(updateUserRequest.getUserProfileImg());
-        }
-        if (updateUserRequest.getUserBirth() != null) {
-            user.setUserBirth(updateUserRequest.getUserBirth());
-        }
 
-        user.setUserTotalLength(updateUserRequest.getUserTotalLength());
-        user.setUserTotalElevation(updateUserRequest.getUserTotalElevation());
-        user.setUserTotalSteps(updateUserRequest.getUserTotalSteps());
-        user.setUserTotalKcal(updateUserRequest.getUserTotalKcal());
-        user.setUserTotalHiking(updateUserRequest.getUserTotalHiking());
-        user.setUserStoneCount(updateUserRequest.getUserStoneCount());
+        if (updateUserRequest.getUserGender() != null)
+            user.setUserGender(updateUserRequest.getUserGender());
+
+        if (updateUserRequest.getUserProfileImg() != null)
+            user.setUserProfileImg(updateUserRequest.getUserProfileImg());
+
+        if (updateUserRequest.getUserBirth() != null)
+            user.setUserBirth(updateUserRequest.getUserBirth());
+
 
         return userRepository.save(user);
     }

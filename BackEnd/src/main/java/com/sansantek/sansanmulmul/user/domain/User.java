@@ -52,7 +52,7 @@ public class User /* implements UserDetails */ {
     @Enumerated(EnumType.STRING)
     private GenderStatus userGender;
 
-    @Column(name = "user_profile_img")
+    @Column(name = "user_profile_img", nullable = false)
     private String userProfileImg;
 
     @Column(name = "user_birth", nullable = false)
@@ -110,7 +110,7 @@ public class User /* implements UserDetails */ {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserHikingStyle> userStyles = new ArrayList<>();
 
-    public User(String userProviderId, String userPassword, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth, boolean userIsAdmin) {
+    public User(String userProviderId, String userPassword, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth, int userStaticBadge, boolean userIsAdmin) {
         this.userProviderId = userProviderId;
         this.userPassword = userPassword;
         this.userName = userName;
@@ -118,6 +118,7 @@ public class User /* implements UserDetails */ {
         this.userGender = userGender;
         this.userProfileImg = userProfileImg;
         this.userBirth = userBirth;
+        this.userStaticBadge = userStaticBadge;
         this.userIsAdmin = userIsAdmin;
     }
 }

@@ -1,5 +1,7 @@
 package com.sansantek.sansanmulmul.user.controller.login;
 
+import com.nimbusds.jwt.JWT;
+import com.sansantek.sansanmulmul.config.jwt.JwtToken;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.dto.request.SignUpUserRequest;
 import com.sansantek.sansanmulmul.user.dto.response.KakaoUserInfoResponse;
@@ -15,6 +17,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -58,16 +63,18 @@ public class LoginController {
             // 회원 정보 가져오기
             User loginUser = userService.getUser(id);
 
-            // 토큰 발급
-            List<String> tokens = provideToken(id);
-            String accessToken = tokens.get(0);
-            String refreshToken = tokens.get(1);
+            JwtToken jwtToken = userService.signIn(loginUser.getUserProviderId(), loginUser.getUserPassword());
+            System.out.println(jwtToken.getAccessToken());
+            System.out.println(jwtToken.getRefreshToken());
 
-            // JSON 으로 token 전달
-            resultMap.put("userProviderId: ", id);
-            resultMap.put("userNickName: ", loginUser.getUserNickname());
-            resultMap.put("access-token", accessToken);
-            resultMap.put("refresh-token", refreshToken);
+            // 토큰 저장
+            tokenService.saveRefreshToken(loginUser.getUserProviderId(), jwtToken.getRefreshToken());
+
+            // 토큰 넘겨주기
+            resultMap.put("accessToken", jwtToken.getAccessToken());
+            log.info("accessToken", jwtToken.getAccessToken());
+            resultMap.put("refreshToken", jwtToken.getRefreshToken());
+            log.info("refreshToken", jwtToken.getRefreshToken());
 
             // 상태 변경
             status = HttpStatus.OK; // 200
@@ -75,49 +82,64 @@ public class LoginController {
         } else { // DB에 저장되어 있지 않은 회원인 경우
 
             // 카카오에서 제공받은 아이디와 닉네임을 JSON으로 프론트에게 전달
-            resultMap.put("userProviderId: ", id);
-            resultMap.put("userName: ", nickName);
-            resultMap.put("message", "userProviderId와 userName을 사용해서 다른 정보들도 함께 /signup으로 POST요청 해주세요 !");
+            resultMap.put("userProviderId", id);
+            resultMap.put("userName", nickName);
+            resultMap.put("message", "userProviderId와 userName을 사용해서 다른 정보들도 함께 /signup으로 POST요청 해주세요 ! (주의) password는 1234로 부탁드려용");
 
             // 상태 변경
             status = HttpStatus.NO_CONTENT; // 204
         }
-        
+
         return new ResponseEntity<>(resultMap, status);
     }
 
     @PostMapping("/signup")
     @Operation(summary = "회원가입", description = "회원가입 + 카카오 소셜 로그인 + JWT 토큰")
     public ResponseEntity<Map<String, Object>> signUp
-            ( @Valid @RequestBody SignUpUserRequest request) {
+            (@Valid @RequestBody SignUpUserRequest request) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
         try {
+            // 회원가입 진행
             User user = userService.signUpUser(request);
-            log.debug("회원가입 성공");
-            log.debug("sign-up user : {}", user);
+            log.info("회원가입 성공");
+            log.info("sign-up user : {}", user);
 
             // 로그인 + 토큰 발급까지 완료하기
-            List<String> tokens = provideToken(user.getUserProviderId());
-            String accessToken = tokens.get(0);
-            String refreshToken = tokens.get(1);
+            log.info("토큰 발급 시작");
+            JwtToken jwtToken = userService.signIn(user.getUserProviderId(), user.getUserPassword());
+            System.out.println(jwtToken.getAccessToken());
+            System.out.println(jwtToken.getRefreshToken());
+            log.info("토큰 발급 완료");
+
+            // 토큰 넘겨주기
+            resultMap.put("accessToken", jwtToken.getAccessToken());
+            resultMap.put("refreshToken", jwtToken.getRefreshToken());
 
             // 기본 칭호(badge_id = 1) 등록하기
+            log.info("기본 칭호 등록");
             badgeService.setBasicBadge(user.getUserId());
 
             // JSON 으로 token 전달
             resultMap.put("userId", user.getUserId());
-            resultMap.put("access-token", accessToken);
-            resultMap.put("refresh-token", refreshToken);
+            resultMap.put("accessToken", jwtToken.getAccessToken());
+            resultMap.put("refreshToken", jwtToken.getRefreshToken());
 
             // 상태 변경
             status = HttpStatus.CREATED; // 201
 
-        } catch (Exception e) {
-
+        } catch(UsernameNotFoundException e) {
+            log.info("회원이 존재하지 않음");
+            log.error(e.getMessage());
+            status = HttpStatus.NOT_FOUND; // 404
+        } catch(AuthenticationException e){
+            log.info("회원 인증 실패");
+            log.error(e.getMessage());
+            status = HttpStatus.UNAUTHORIZED; // 401
+        } catch(Exception e){
             log.error("회원가입 실패");
-            log.debug("sign-up user : {}", request);
+            log.info("sign-up user : {}", request);
             status = HttpStatus.BAD_REQUEST; // 400
 
         }
@@ -126,27 +148,4 @@ public class LoginController {
 
     }
 
-    // 토큰 생성
-    private List<String> provideToken(String userProviderId) {
-        // 반환할 토큰들 저장
-        List<String> tokens = new ArrayList<>();
-
-        // 2개 토큰 발급
-        String accessToken = jwtTokenProvider.createAccessToken(userProviderId);
-        String refreshToken = jwtTokenProvider.createRefreshToken(userProviderId);
-
-        // 2개 토큰 확인
-        log.debug("accessToken: {}", accessToken);
-        log.debug("refreshToken: {}", refreshToken);
-
-        // 발급받은 refresh token 을 DB에 저장
-        tokenService.saveRefreshToken(userProviderId, refreshToken);
-
-        // 리스트에 토큰 추가
-        tokens.add(accessToken);
-        tokens.add(refreshToken);
-
-        // 토큰 리스트 반환
-        return tokens;
-    }
 }

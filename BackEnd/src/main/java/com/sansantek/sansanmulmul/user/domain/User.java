@@ -25,7 +25,7 @@ import java.util.Set;
 @Setter
 @Builder
 @ToString
-public class User implements UserDetails {
+public class User /* implements UserDetails */ {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +34,9 @@ public class User implements UserDetails {
 
     @Column(name = "user_provider_id", nullable = false)
     private String userProviderId;
+
+    @Column(name = "user_password", nullable = false)
+    private String userPassword;
 
     @Column(name = "user_refresh_token")
     private String userRefreshToken;
@@ -82,68 +85,38 @@ public class User implements UserDetails {
     @ColumnDefault("0")
     private int userStoneCount;
 
+    @Column(name = "user_is_admin")
+    @ColumnDefault("false")
+    private boolean userIsAdmin;
+
+    // 회원 칭호
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserBadge> userBadges = new ArrayList<>();
 
+    // 회원 인증 정상석
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSummitstone> userSummitstones = new ArrayList<>();
 
+    // 회원 팔로잉
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follow> followings = new ArrayList<>();
 
+    // 회원 팔로워
     @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follow> followers = new ArrayList<>();
 
+    // 회원 등산 스타일
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserHikingStyle> userStyles = new ArrayList<>();
 
-    public User(String userProviderId, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth) {
+    public User(String userProviderId, String userPassword, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth, boolean userIsAdmin) {
         this.userProviderId = userProviderId;
+        this.userPassword = userPassword;
         this.userName = userName;
         this.userNickname = userNickname;
         this.userGender = userGender;
         this.userProfileImg = userProfileImg;
         this.userBirth = userBirth;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 권한 반환
-        return List.of(new SimpleGrantedAuthority("user"));
-    }
-
-    @Override
-    public String getPassword() {
-        return "";
-    }
-
-    @Override
-    public String getUsername() {
-        // 사용자의 고유한 값 반환
-        return userProviderId;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        // 사용자 계정 만료 여부 반환
-        return true; // 만료되지 않았음
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        // 계정 잠금 여부 반환
-        return true; // 잠금되지 않았음
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        // 사용자 패스워드 만료 여부 확인
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        // 계정 사용 가능 여부 반환
-        return true; // 계정 사용 가능
+        this.userIsAdmin = userIsAdmin;
     }
 }

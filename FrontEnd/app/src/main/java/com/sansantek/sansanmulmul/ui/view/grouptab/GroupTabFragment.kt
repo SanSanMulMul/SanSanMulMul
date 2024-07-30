@@ -54,6 +54,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
     radioButtonClickListener()
     initRecyclerViewData()
 
+    // 그룹생성(플러스) 버튼 클릭시
     binding.btnFloating.setOnClickListener {
       val activity = requireActivity() as MainActivity
       activity.changeAddToBackstackFragment(GroupCreateViewPagerFragment())

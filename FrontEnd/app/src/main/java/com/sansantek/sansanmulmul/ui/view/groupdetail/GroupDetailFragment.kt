@@ -27,6 +27,9 @@ import com.sansantek.sansanmulmul.databinding.PopupGroupDetailNotiBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupDetailAlarmListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.GroupDetailDrawerListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.DividerItemDecorator
+import com.sansantek.sansanmulmul.ui.view.MainActivity
+import com.sansantek.sansanmulmul.ui.view.groupchat.GroupChatFragment
+import com.sansantek.sansanmulmul.ui.view.register.GroupCreateViewPagerFragment
 import kotlinx.coroutines.launch
 
 private const val TAG = "GroupTabFragment 싸피"
@@ -193,6 +196,12 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
 
         binding.ibBackBtn.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
+        }
+
+        // 채팅 버튼 클릭 시 GroupChatFragment로 전환
+        binding.layoutChatBtn.setOnClickListener {
+            val activity = requireActivity() as MainActivity
+            activity.changeAddToBackstackFragment(GroupChatFragment())
         }
     }
 

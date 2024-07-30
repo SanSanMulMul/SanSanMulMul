@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.ui.view
 
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseActivity
@@ -57,6 +58,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
   fun changeAddToBackstackFragment(view: Fragment) {
     supportFragmentManager.beginTransaction().replace(binding.fragmentView.id, view)
       .addToBackStack(null).commit()
+  }
+
+  fun changeBottomNavigationVisibility(visible: Boolean){
+    if(visible){
+      binding.mainLayoutBottomNavigation.visibility = View.VISIBLE
+    }
+    else{
+      binding.mainLayoutBottomNavigation.visibility = View.GONE
+    }
+
   }
 
 }

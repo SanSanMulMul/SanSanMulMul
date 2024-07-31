@@ -10,17 +10,14 @@ import com.sansantek.sansanmulmul.BuildConfig
 import com.sansantek.sansanmulmul.data.local.SharedPreferencesUtil
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "ApplicationClass_싸피"
 class ApplicationClass : Application() {
     companion object {
-        // ipconfig를 통해 ip확인하기
-        // 핸드폰으로 접속은 같은 인터넷으로 연결 되어있어야함 (유,무선)
-
-        // 싸피에서 쓰는 컴퓨터 주소
-//        const val SERVER_URL = ""
-        //const val SERVER_URL = ""
+        const val SERVER_URL = BuildConfig.SERVER_IP
 
         lateinit var sharedPreferencesUtil: SharedPreferencesUtil
         lateinit var retrofit: Retrofit
@@ -48,12 +45,12 @@ class ApplicationClass : Application() {
             .build()
 
         // 앱이 처음 생성되는 순간, retrofit 인스턴스를 생성
-//        retrofit = Retrofit.Builder()
-//            .baseUrl(SERVER_URL)
-//            .addConverterFactory(ScalarsConverterFactory.create())
-//            .addConverterFactory(GsonConverterFactory.create(gson))
-//            .client(okHttpClient)
-//            .build()
+        retrofit = Retrofit.Builder()
+            .baseUrl(SERVER_URL)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(okHttpClient)
+            .build()
     }
 
     //GSon은 엄격한 json type을 요구하는데, 느슨하게 하기 위한 설정. success, fail이 json이 아니라 단순 문자열로 리턴될 경우 처리..

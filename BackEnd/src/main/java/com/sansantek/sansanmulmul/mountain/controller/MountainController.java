@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.mountain.controller;
 
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
+import com.sansantek.sansanmulmul.mountain.domain.spot.MountainSpot;
 import com.sansantek.sansanmulmul.mountain.service.MountainService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,7 +46,7 @@ public class MountainController {
 
     @GetMapping("/{mountain_id}")
     @Operation(summary = "산 상세 조회", description = "산Id+산Code+산 이름+산 위치+산 높이+산 상세설명+산 이미지+산 계절")
-    public ResponseEntity<Map<String, Object>> getMountainDetail(@PathVariable Long mountain_id) {
+    public ResponseEntity<Map<String, Object>> getMountainDetail(@PathVariable int mountain_id) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 

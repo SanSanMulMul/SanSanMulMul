@@ -4,6 +4,7 @@ import android.app.Application
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.kakao.sdk.common.KakaoSdk
+import com.sansantek.sansanmulmul.BuildConfig
 import com.sansantek.sansanmulmul.data.local.SharedPreferencesUtil
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -27,7 +28,7 @@ class ApplicationClass : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        KakaoSdk.init(this, "{NATIVE_APP_KEY}")
+        KakaoSdk.init(this, BuildConfig.NATIVE_APP_KEY)
 
         //shared preference 초기화
         sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)

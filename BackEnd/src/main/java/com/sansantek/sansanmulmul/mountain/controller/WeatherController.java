@@ -27,7 +27,7 @@ public class WeatherController {
 
     @GetMapping("/weather/{mountain_id}")
     @Operation(summary = "산 날씨 조회", description = "산의 위도와 경도를 사용해 일주일 날씨를 조회")
-    public ResponseEntity<Map<String, Object>> getWeather(@PathVariable("mountain_id") Long mountainId) {
+    public ResponseEntity<Map<String, Object>> getWeather(@PathVariable("mountain_id") int mountainId) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 

@@ -23,7 +23,7 @@ public class UserMountainService {
     private final UserMountainRepository userMountainRepository;
 
     // 즐겨찾기 추가
-    public void addLikedMountain(String userProviderId, Long mountainId) {
+    public void addLikedMountain(String userProviderId, int mountainId) {
         User user = userRepository.findByUserProviderId(userProviderId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         Mountain mountain = mountainRepository.findById(mountainId)
@@ -37,7 +37,7 @@ public class UserMountainService {
     }
 
     // 즐겨찾기 삭제
-    public void removeLikedMountain(String userProviderId, Long mountainId) {
+    public void removeLikedMountain(String userProviderId, int mountainId) {
         User user = userRepository.findByUserProviderId(userProviderId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         Mountain mountain = mountainRepository.findById(mountainId)

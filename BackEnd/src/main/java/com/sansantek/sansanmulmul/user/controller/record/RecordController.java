@@ -60,7 +60,7 @@ public class RecordController {
         return new ResponseEntity<>(resultMap, status);
     }
 
-    @GetMapping
+    @GetMapping("/detail")
     @Operation(summary = "회원 전체 등산 기록 조회", description = "액세스 토큰을 사용해 회원 전체 등산 기록 조회")
     public ResponseEntity<Map<String, Object>> getUserRecordDetails
             (Authentication authentication,

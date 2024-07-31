@@ -6,7 +6,7 @@ RUN ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo Asia/Seoul > /
 
 # build가 되는 시점에 JAR_FILE 경로에 jar파일 생성
 # build/libs - gradle로 빌드했을 때 jar 파일이 생성되는 경로
-ARG JAR_FILE=/build/libs/sanmul-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=/build/libs/sansanmulmul-0.0.1-SNAPSHOT.jar
 #ARG JAR_FILE=build/libs/*.jar
 
 # JAR_FILE을 sanmulproject.jar로 복사

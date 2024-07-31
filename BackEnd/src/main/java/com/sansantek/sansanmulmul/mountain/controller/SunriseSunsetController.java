@@ -27,7 +27,7 @@ public class SunriseSunsetController {
 
     @GetMapping("/sun/{mountain_id}")
     @Operation(summary = "산 일출일몰 조회", description = "산의 위도와 경도를 사용해 일출 및 일몰 시간을 조회")
-    public ResponseEntity<Map<String, Object>> getSunriseSunsetTimes(@PathVariable("mountain_id") Long mountainId) {
+    public ResponseEntity<Map<String, Object>> getSunriseSunsetTimes(@PathVariable("mountain_id") int mountainId) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 

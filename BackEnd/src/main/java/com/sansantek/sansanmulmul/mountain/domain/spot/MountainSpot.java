@@ -1,12 +1,11 @@
 package com.sansantek.sansanmulmul.mountain.domain.spot;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-
 
 
 @Entity
@@ -27,5 +26,6 @@ public class MountainSpot {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mountain_code", referencedColumnName = "mountain_code")
+    @JsonIgnore
     private Mountain mountain;
 }

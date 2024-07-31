@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.mountain.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sansantek.sansanmulmul.mountain.domain.spot.MountainSpot;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -16,7 +17,7 @@ import java.util.List;
 public class Mountain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long mountain_id;
+    private int mountain_id;
 
     private int mountain_code;
 
@@ -38,6 +39,7 @@ public class Mountain {
     private double mountain_lon; //경도
 
     @OneToMany(mappedBy = "mountain")
-    private List<MountainSpot> mountainSpot;
+    @JsonManagedReference
+    private List<MountainSpot> mountainSpots;
 
 }

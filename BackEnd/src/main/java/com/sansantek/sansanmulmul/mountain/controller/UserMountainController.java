@@ -63,7 +63,7 @@ public class UserMountainController {
     @Operation(summary = "회원 즐겨찾기 추가", description = "액세스 토큰을 사용해 회원 즐겨찾기 추가")
     public ResponseEntity<Map<String, Object>> addLikedMountain
             (Authentication authentication,
-             @PathVariable("mountainId") Long mountainId) {
+             @PathVariable("mountainId") int mountainId) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
@@ -93,7 +93,7 @@ public class UserMountainController {
     @Operation(summary = "회원 즐겨찾기 삭제", description = "액세스 토큰을 사용해 회원 즐겨찾기 삭제")
     public ResponseEntity<Map<String, Object>> removeLikedMountain
             (Authentication authentication,
-             @PathVariable("mountainId") Long mountainId) {
+             @PathVariable("mountainId") int mountainId) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 

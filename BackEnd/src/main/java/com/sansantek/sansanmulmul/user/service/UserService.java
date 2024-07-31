@@ -18,8 +18,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -27,11 +25,6 @@ public class UserService {
 
     // Spring Security
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
-
-    // JWT
-    private final JwtTokenProvider jwtTokenProvider;
-    private final TokenService tokenService;
 
     // service
     private final StyleService styleService;
@@ -40,7 +33,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public User signUpUser(SignUpUserRequest signUpUserRequest, String password) {
+    public User signUp(SignUpUserRequest signUpUserRequest, String password) {
         // 비밀번호 인코딩
         String encoder = passwordEncoder.encode(password);
 
@@ -61,23 +54,6 @@ public class UserService {
         userRepository.save(user);
 
         return user;
-    }
-
-    @Transactional
-    public JwtToken signIn(String userProviderId, String rawPassword) {
-        // 1. userProviderId를 기반으로 Authentication 객체 생성
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userProviderId, rawPassword);
-
-        // 2. 실제 검증. authenticate() 메서드를 통해 요청된 User 에 대한 검증 진행
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-
-        // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
-
-        // 4. 리프레시 토큰 저장
-        tokenService.saveRefreshToken(userProviderId, jwtToken.getRefreshToken());
-
-        return jwtToken;
     }
 
     public boolean isExistsUser(String userProviderId) {

@@ -44,6 +44,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                 false
             )
         }
+
         sharedPreferencesUtil = SharedPreferencesUtil(requireContext())
         hikingRecordingTabViewModel = HikingRecordingTabViewModel(sharedPreferencesUtil)
         chronometerViewModel = ChronometerViewModel(sharedPreferencesUtil)
@@ -54,6 +55,13 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
 
         hikingRecordingTabViewModel.state.observe(viewLifecycleOwner) { state ->
             changeHikingButton(binding.btnHikingRecording, state)
+        }
+
+
+        // 일단은 banned 화면 클릭하면 없어지도록..
+        binding.fragmentHikingRecordingLayoutBanned.setOnClickListener {
+            binding.fragmentHikingRecordingLayoutBanned.visibility = View.GONE
+            hikingRecordingTabViewModel.setState(BEFORE_HIKING)
         }
     }
 

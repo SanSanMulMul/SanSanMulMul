@@ -25,6 +25,8 @@ public class HikingRecord {
     @ManyToOne
     @JoinColumn(name = "mountain_id", nullable = false)
     private Mountain mountain;
+    
+    // 등산 그룹 멤버
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -56,14 +58,4 @@ public class HikingRecord {
     @Column(name = "record_kcal", nullable = false)
     @ColumnDefault("0")
     private long recordKcal;
-
-    public HikingRecord(LocalDateTime recordStartTime,  long recordUpDistance, long recordDownDistance, long recordDuration, long recordSteps, double recordElevation, long recordKcal) {
-        this.recordStartTime = recordStartTime;
-        this.recordUpDistance = recordUpDistance;
-        this.recordDownDistance = recordDownDistance;
-        this.recordDuration = recordDuration;
-        this.recordSteps = recordSteps;
-        this.recordElevation = recordElevation;
-        this.recordKcal = recordKcal;
-    }
 }

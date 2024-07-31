@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface MountainRepository extends JpaRepository<Mountain, Integer> {
     List<Mountain> findByMountainNameContaining(String name);
+
 }

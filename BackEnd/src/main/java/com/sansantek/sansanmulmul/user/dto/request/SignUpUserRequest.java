@@ -1,31 +1,32 @@
 package com.sansantek.sansanmulmul.user.dto.request;
 
 import com.sansantek.sansanmulmul.user.domain.GenderStatus;
+import com.sansantek.sansanmulmul.user.domain.style.UserHikingStyle;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 public class SignUpUserRequest {
     private String userProviderId;
     private String userName;
     private String userNickName;
     private GenderStatus userGender;
-    private String userProfileImg; // nullable
+    private String userProfileImg;
     private LocalDate userBirth;
+    private boolean userIsAdmin;
+
     // 등산 스타일
-    
-    // default 값으로 설정
-//    private long userTotalLength;
-//    private double userTotalElevation;
-//    private long userTotalSteps;
-//    private long userTotalKcal;
-//    private long userTotalHiking;
-//    private int userStoneCount;
+    private List<Integer> userStyles = new ArrayList<>(); // 등산 스타일 id 저장
+
+    // getter
+    public boolean isUserIsAdmin() {
+        return userIsAdmin;
+    }
 }

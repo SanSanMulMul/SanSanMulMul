@@ -6,11 +6,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-    Optional<User> findByUserId(Integer userId);
+    // 조회
+    Optional<User> findByUserId(int userId);
     Optional<User> findByUserProviderId(String userProviderId);
-    Optional<User> findByUserRefreshToken(String userRefreshToken);
     Optional<String> findUserRefreshTokenByUserProviderId(String userProviderId);
+    int findUserIdByUserProviderId(String userProviderId);
 
+    // 유무판단
     boolean existsByUserProviderId(String userProviderId);
     boolean existsByUserNickname(String userNickname);
+
+    // 저장
+    User save(User user);
 }

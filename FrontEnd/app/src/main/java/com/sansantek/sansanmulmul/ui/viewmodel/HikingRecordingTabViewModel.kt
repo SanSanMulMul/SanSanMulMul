@@ -3,7 +3,7 @@ package com.sansantek.sansanmulmul.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.sansantek.sansanmulmul.config.Const.Companion.BEFORE_HIKING
+import com.sansantek.sansanmulmul.config.Const.Companion.BANNED
 import com.sansantek.sansanmulmul.data.local.SharedPreferencesUtil
 
 class HikingRecordingTabViewModel(private val sharedPreferencesUtil: SharedPreferencesUtil) :
@@ -21,7 +21,7 @@ class HikingRecordingTabViewModel(private val sharedPreferencesUtil: SharedPrefe
     }
 
     fun getState(): Int {
-        return _state.value ?: BEFORE_HIKING
+        return _state.value ?: BANNED
     }
 
     fun deleteState() {

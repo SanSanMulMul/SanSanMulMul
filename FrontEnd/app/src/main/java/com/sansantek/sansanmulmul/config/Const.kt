@@ -3,6 +3,7 @@ package com.sansantek.sansanmulmul.config
 class Const {
     companion object {
         // Hiking Recording
+        const val BANNED = -1
         const val BEFORE_HIKING = 0
         const val HIKING = 1
         const val AFTER_HIKING = 2

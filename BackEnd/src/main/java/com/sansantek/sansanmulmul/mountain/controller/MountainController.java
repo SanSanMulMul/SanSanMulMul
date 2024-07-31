@@ -157,4 +157,22 @@ public class MountainController {
 
         return new ResponseEntity<>(resultMap, status);
     }
+    @GetMapping("/search")
+    @Operation(summary = "산 이름 검색", description = "산 이름에 특정 문자열이 포함된 산 리스트를 검색합니다")
+    public ResponseEntity<Map<String, Object>> searchMountainsByName(@RequestParam String name) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        try {
+            List<Mountain> mountains = mountainService.searchMountainsByName(name);
+            resultMap.put("mountains", mountains);
+            status = HttpStatus.OK; // 성공 시 200
+        } catch (Exception e) {
+            log.error("산 이름 검색 실패: {}", e.getMessage());
+            resultMap.put("error", "An unexpected error occurred");
+            status = HttpStatus.INTERNAL_SERVER_ERROR; // 그 외 실패 시 500
+        }
+
+        return new ResponseEntity<>(resultMap, status);
+    }
 }

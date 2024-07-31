@@ -14,9 +14,14 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
+import com.sansantek.sansanmulmul.data.model.KakaoLoginUser
 import com.sansantek.sansanmulmul.databinding.FragmentRegisterStartBinding
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import kotlinx.coroutines.launch
+import okio.IOException
+import retrofit2.HttpException
+import java.time.LocalDate
 
 
 private const val TAG = "RegisterStartFragment_싸피"
@@ -46,6 +51,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
                 Log.e(TAG, "카카오계정으로 로그인 실패", error)
             } else if (token != null) {
                 Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
+                Log.d(TAG, "loginWithKakao idToken: ${token.idToken}")
                 GoMain()
             }
         }
@@ -65,6 +71,41 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
                     UserApiClient.instance.loginWithKakaoAccount(requireActivity(), callback = callback)
                 } else if (token != null) {
                     Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
+                    Log.i(TAG, "카카오톡으로 로그인 성공 ${token.idToken}")
+                    // 사용자 정보 요청 (기본)
+                    UserApiClient.instance.me { user, error ->
+                        if (error != null) {
+                            Log.e(TAG, "사용자 정보 요청 실패", error)
+                        }
+                        else if (user != null) {
+                            Log.i(TAG, "사용자 정보 요청 성공" +
+                                    "\n회원번호: ${user.id}" +
+                                    "\n이메일: ${user.kakaoAccount?.email}" +
+                                    "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
+                                    "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
+                            user.kakaoAccount?.profile?.let {
+                                val userId = user.id
+                                val nickname = it.nickname!!
+                                val image = it.thumbnailImageUrl!!
+                                lifecycleScope.launch {
+                                    try{
+                                        token.idToken
+                                        Log.d(TAG, "loginWithKakao: ${KakaoLoginUser(userId.toString(), nickname, nickname, "M", image, LocalDate.of(2000, 1, 11), true, mutableListOf(0))}")
+                                        val result = userService.registerUser(KakaoLoginUser(userId.toString(), nickname, nickname, "M", image, LocalDate.of(2000, 1, 11), true, mutableListOf(0)))
+                                        Log.d(TAG, "loginWithKakao:result.code : ${result.code()}    result.body : ${result.body()}")
+                                    } catch (e: HttpException){
+                                        // HTTP 상태 코드가 200-299가 아닌 경우 EX : 404 등
+                                        Log.e(TAG, "loginWithKakao: 토큰 발급 에러" )
+                                    } catch (e: IOException){
+                                        Log.e(TAG, "loginWithKakao: Network Error ${e.message}", )
+                                    }
+                                    Log.d(TAG, "loginWithKakao: $")
+
+                                }
+                            }
+
+                        }
+                    }
                     GoMain()
                 }
             }
@@ -80,6 +121,10 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authCodeUrl))
             startActivity(intent)
         }
+    }
+
+    private fun getKakaoUserInfo(){
+
     }
 
     private fun GoMain() {

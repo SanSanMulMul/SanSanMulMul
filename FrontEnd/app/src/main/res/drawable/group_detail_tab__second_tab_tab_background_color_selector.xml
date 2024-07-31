@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/group_detail_second_tab_tabbar_selected_style" android:state_selected="true"/>
+    <item android:drawable="@drawable/group_detail_second_tabtabbar_unselected_style"/>
+
+</selector>

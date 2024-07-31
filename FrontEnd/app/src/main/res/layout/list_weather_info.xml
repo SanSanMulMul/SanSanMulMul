@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_gravity="center_vertical|center_horizontal"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="오늘"
+        android:textAlignment="center"
+        android:gravity="center_vertical"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:textColor="@color/group_detail_second_tab_weather_black_color"
+        android:layout_weight="1"
+        />
+
+    <ImageView
+        android:id="@+id/condition"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/sunny"
+        android:layout_weight="1"
+        />
+
+    <TextView
+        android:id="@+id/max_temperature"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:textAlignment="center"
+        android:gravity="center_vertical"
+        android:text="27º"
+        android:textColor="@color/group_detail_second_tab_temperature_max_color"
+        android:layout_weight="1"
+        />
+
+    <TextView
+        android:id="@+id/min_temperature"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textAlignment="center"
+        android:gravity="center_vertical"
+        android:text="16º"
+        android:textColor="@color/group_detail_second_tab_temperature_min_color"
+        />
+
+</LinearLayout>

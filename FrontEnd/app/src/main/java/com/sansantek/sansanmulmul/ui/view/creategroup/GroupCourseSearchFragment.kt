@@ -22,7 +22,9 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
         super.onViewCreated(view, savedInstanceState)
         initSearchView()
 
-        adapter = GroupCourceSearchListAdapter()
+        adapter = GroupCourceSearchListAdapter { course ->
+            showUpCourseChoiceDialog(course)
+        }
         binding.rvListSearchMountain.adapter = adapter
         binding.rvListSearchMountain.layoutManager = LinearLayoutManager(requireContext())
 
@@ -30,6 +32,7 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
         adapter.submitList(dataList)
 
     }
+
 
     private fun initSearchView() {
         // SearchView 초기화
@@ -70,6 +73,10 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
                 return true
             }
         })
+    }
+    private fun showUpCourseChoiceDialog(course: String) {
+        val dialog = UpCourseChoiceDialog()
+        dialog.show(parentFragmentManager, "UpCourseChoiceDialog")
     }
 }
 

@@ -1,13 +1,18 @@
 package com.sansantek.sansanmulmul.config
 
 import android.app.Application
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.kakao.sdk.common.KakaoSdk
+import com.kakao.sdk.common.util.Utility
+import com.sansantek.sansanmulmul.BuildConfig
 import com.sansantek.sansanmulmul.data.local.SharedPreferencesUtil
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
+private const val TAG = "ApplicationClass_싸피"
 class ApplicationClass : Application() {
     companion object {
         // ipconfig를 통해 ip확인하기
@@ -26,6 +31,8 @@ class ApplicationClass : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d(TAG, "onCreate: ${Utility.getKeyHash(this)}")
+        KakaoSdk.init(this, BuildConfig.NATIVE_APP_KEY)
 
         //shared preference 초기화
         sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)

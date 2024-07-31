@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/layout_group_schedule"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.view.creategroup.GroupScheduleFragment">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/layout_group_schedule_main"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="290dp"
+            android:id="@+id/layout_group_schedule_top"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/extra_info_gradient"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_group_schedule_title"
+                android:text="이제 마지막 단계입니다!"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="28dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/layout_course_info"
+                android:gravity="center"
+                />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/layout_course_info"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="30dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_group_schedule_title"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+                <TextView
+                    android:id="@+id/tv_last_up_course"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="상행코스 | "
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:background="@drawable/rounded_box"
+                    android:gravity="center"
+                    android:padding="10dp" />
+
+                <TextView
+                    android:id="@+id/tv_last_down_course"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="하행코스 | "
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:background="@drawable/rounded_box"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:layout_marginTop="10dp" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/layout_group_schedule_bot"
+            android:layout_marginBottom="50dp"
+            app:layout_constraintTop_toBottomOf="@id/layout_group_schedule_top"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layout_group_schedule_start"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layout_group_schedule_start_text"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_group_schedule_start_1"
+                        android:text="등산을 언제 "
+                        android:textSize="28dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/green"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/tv_group_schedule_start_2"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_group_schedule_start_2"
+                        android:text="시작"
+                        android:textColor="@color/black"
+                        android:textSize="28dp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@id/tv_group_schedule_start_1"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/tv_group_schedule_start_3"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_group_schedule_start_3"
+                        android:text="할까요?"
+                        android:textStyle="bold"
+                        android:textSize="28dp"
+                        android:textColor="@color/green"
+                        app:layout_constraintStart_toEndOf="@id/tv_group_schedule_start_2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
+                </LinearLayout>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_select_schedule_start"
+                    android:background="@drawable/rounded_box"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/layout_group_schedule_start_text"
+                    app:layout_constraintStart_toStartOf="@id/layout_group_schedule_start_text"
+                    app:layout_constraintEnd_toEndOf="@id/layout_group_schedule_start_text"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layout_group_schedule_end"
+                android:layout_marginTop="30dp"
+                app:layout_constraintTop_toBottomOf="@id/layout_group_schedule_start"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layout_group_schedule_end_text"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_group_schedule_end_1"
+                        android:text="등산을 언제 "
+                        android:textSize="28dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/green"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/tv_group_schedule_start_2"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_group_schedule_end_2"
+                        android:text="종료"
+                        android:textColor="@color/black"
+                        android:textSize="28dp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@id/tv_group_schedule_start_1"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/tv_group_schedule_start_3"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_group_schedule_end_3"
+                        android:text="할까요?"
+                        android:textStyle="bold"
+                        android:textSize="28dp"
+                        android:textColor="@color/green"
+                        app:layout_constraintStart_toEndOf="@id/tv_group_schedule_start_2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
+                </LinearLayout>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_select_schedule_end"
+                    android:background="@drawable/rounded_box"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/layout_group_schedule_end_text"
+                    app:layout_constraintStart_toStartOf="@id/layout_group_schedule_end_text"
+                    app:layout_constraintEnd_toEndOf="@id/layout_group_schedule_end_text"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+</FrameLayout>

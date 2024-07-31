@@ -51,5 +51,7 @@ public class MountainService {
                 })
                 .collect(Collectors.toList());
     }
-
+    public List<Mountain> searchMountainsByName(String name) {
+        return mountainRepository.findByMountainNameContaining(name);
+    }
 }

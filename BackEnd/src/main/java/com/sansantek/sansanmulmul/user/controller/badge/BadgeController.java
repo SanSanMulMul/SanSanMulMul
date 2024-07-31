@@ -31,11 +31,8 @@ public class BadgeController {
     private final BadgeService badgeService;
     private final BadgeRepository badgeRepository;
 
-    // JWT
-    private final JwtTokenProvider jwtTokenProvider;
-
     @GetMapping
-    @Operation(summary = "회원 전체 칭호 조회", description = "액세스 토큰을 사용해 회원 칭호 조회")
+    @Operation(summary = "회원 전체 칭호 조회", description = "액세스 토큰을 사용해 회원 전체 칭호 조회")
     public ResponseEntity<Map<String, Object>> getUserBadge
             (Authentication authentication) {
         Map<String, Object> resultMap = new HashMap<>();

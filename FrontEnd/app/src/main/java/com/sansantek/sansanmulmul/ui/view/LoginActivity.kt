@@ -3,7 +3,13 @@ package com.sansantek.sansanmulmul.ui.view
 import android.app.Application
 import android.os.Bundle
 import android.util.Log
+import com.kakao.sdk.auth.AuthApiClient
+import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.common.model.KakaoSdkError
+import com.kakao.sdk.user.UserApiClient
 import com.sansantek.sansanmulmul.config.BaseActivity
 import com.sansantek.sansanmulmul.databinding.ActivityLoginBinding
 import com.sansantek.sansanmulmul.ui.view.register.RegisterStartFragment
@@ -19,15 +25,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
         supportFragmentManager.beginTransaction()
             .replace(binding.fragmentView.id, RegisterStartFragment()).commit()
     }
-    
 }
 
-class GlobalApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        // 다른 초기화 코드들
 
-        // Kakao SDK 초기화
-        KakaoSdk.init(this, "{NATIVE_APP_KEY}")
-    }
-}

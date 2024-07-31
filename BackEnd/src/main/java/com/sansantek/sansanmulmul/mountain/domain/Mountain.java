@@ -21,7 +21,8 @@ public class Mountain {
 
     private int mountain_code;
 
-    private String mountain_name;
+    @Column(name = "mountain_name")
+    private String mountainName;
 
     private String mountain_location;
 

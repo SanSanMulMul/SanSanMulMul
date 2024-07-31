@@ -15,6 +15,8 @@ import com.kakao.sdk.user.UserApiClient
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentRegisterStartBinding
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
+import kotlinx.coroutines.launch
 
 
 private const val TAG = "RegisterStartFragment_싸피"
@@ -25,7 +27,11 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        lifecycleScope.launch { 
+            val result = mountainService.getAllMountainList(1)
+            Log.d(TAG, "onViewCreated: $result")
+        }
+        Log.d(TAG, "onViewCreated: ")
         binding.button.setOnClickListener {
             Log.d(TAG, "onViewCreated: 로그인 시도")
             // 카카오 로그인 시도

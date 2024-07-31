@@ -13,7 +13,7 @@ val naverClientId: String = properties.getProperty("naver_client_id")
 // 카카오 앱 키 로컬에서 불러오기
 val NATIVE_APP_KEY: String = properties.getProperty("NATIVE_APP_KEY")
 val BUILD_NATIVE_APP_KEY: String = properties.getProperty("BUILD_NATIVE_APP_KEY")
-
+val SERVER_IP: String = properties.getProperty("SERVER_IP")
 
 android {
   namespace = "com.sansantek.sansanmulmul"
@@ -32,6 +32,7 @@ android {
     manifestPlaceholders["NATIVE_APP_KEY"]= NATIVE_APP_KEY
 
     buildConfigField("String", "NATIVE_APP_KEY", BUILD_NATIVE_APP_KEY)
+    buildConfigField("String", "SERVER_IP", SERVER_IP)
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }

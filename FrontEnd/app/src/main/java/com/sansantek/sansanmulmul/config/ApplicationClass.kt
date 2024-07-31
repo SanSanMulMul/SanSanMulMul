@@ -9,6 +9,7 @@ import com.kakao.sdk.common.util.Utility
 import com.sansantek.sansanmulmul.BuildConfig
 import com.sansantek.sansanmulmul.data.local.SharedPreferencesUtil
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -42,6 +43,7 @@ class ApplicationClass : Application() {
         val okHttpClient = OkHttpClient.Builder()
             .readTimeout(5000, TimeUnit.MILLISECONDS)
             .connectTimeout(5000, TimeUnit.MILLISECONDS)
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
 
         // 앱이 처음 생성되는 순간, retrofit 인스턴스를 생성

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView.OnEditorActionListener
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.sansantek.sansanmulmul.R
@@ -18,7 +19,10 @@ import com.sansantek.sansanmulmul.databinding.FragmentHomeTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.FirstRecommendationViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.NewsViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.HorizontalMarginItemDecoration
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
+import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 
@@ -39,9 +43,9 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
     }
 
     private fun init() {
-        activity?.let { hideBottomNav(it.findViewById(R.id.main_layout_bottom_navigation), false) }
 
-        searchEditTextView = binding.layoutSearch.findViewById(R.id.et_search)
+
+        searchEditTextView = binding.includeEditText.etSearch
         val mountainSearchResultFragment = MountainSearchResultFragment()
 
         // 검색 완료 시 프래그먼트 이동
@@ -49,9 +53,17 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
             if (actionId == EditorInfo.IME_ACTION_DONE ||
                 (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
             ) {
+                // api 리스트 받을 거
+                // fragment 인자로 던짐
                 val bundle = Bundle()
+
+                // 번들에 받아온 키워드를 다시 타이핑한 텍스트로 넣어줌
                 bundle.putString("search_keyword", searchEditTextView.text.toString())
+
+                // 프래그먼트의 Argument에 번들을 넣어줌
                 mountainSearchResultFragment.setArguments(bundle)
+
+                // 검색 완료 버튼 누를 시 산검색완료 프래그먼트로 이동
                 requireActivity().supportFragmentManager.beginTransaction()
                     .addToBackStack(null)
                     .replace(R.id.fragment_view, mountainSearchResultFragment).commit()
@@ -87,7 +99,6 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
             itemList,
             object : FirstRecommendationViewPagerAdapter.OnItemClickListener {
                 override fun onItemClick(item: Recommendation) {
-//          Toast.makeText(context, "clicked : ${item.mountainName}", Toast.LENGTH_SHORT).show()
                     requireActivity().supportFragmentManager.beginTransaction()
                         .addToBackStack(null)
                         .replace(R.id.fragment_view, MountainDetailFragment()).commit()

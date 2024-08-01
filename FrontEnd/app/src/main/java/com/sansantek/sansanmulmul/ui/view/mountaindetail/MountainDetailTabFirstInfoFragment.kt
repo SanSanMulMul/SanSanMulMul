@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.ui.view.mountaindetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -20,16 +21,28 @@ import com.sansantek.sansanmulmul.ui.util.Util.formatSunRiseSunSetTime
 import com.sansantek.sansanmulmul.ui.util.Util.getNumberWithCommas
 import kotlinx.coroutines.launch
 
-private const val TAG = "MountainDetailTabFirstI"
-
+private const val TAG = "MountainDetailTabFirstI 싸피"
 class MountainDetailTabFirstInfoFragment : BaseFragment<FragmentMountainDetailTabFirstInfoBinding>(
   FragmentMountainDetailTabFirstInfoBinding::bind,
   R.layout.fragment_mountain_detail_tab_first_info
 ) {
   private var isExpanded = false
+  private var mountainId: Int? = null
+  private var mountainHeight: Int? = null
+  private var mountainDescription: String? = null
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    val bundle = arguments
+    Log.d(TAG, "onViewCreated: $bundle")
+    if(bundle != null){
+      mountainId = bundle.getInt("mountainId")
+      mountainHeight = bundle.getInt("mountainHeight")
+      mountainDescription = bundle.getString("mountainDescription")
+    }
+//    binding.tvHeight.text = "${mountainHeight}m"
+//    binding.tvMountainDetail.text = mountainDescription
     init()
+
   }
 
   private fun init() {

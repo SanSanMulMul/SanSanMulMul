@@ -39,11 +39,11 @@ public class Crew {
     private Mountain mountain;
 
 //    @ManyToOne
-//    @JoinColumn(name = "ascent_course_id", nullable = false)
+//    @JoinColumn(name = "course_id", nullable = false)
 //    private Course ascentCourse;
 //
 //    @ManyToOne
-//    @JoinColumn(name = "descent_course_id", nullable = false)
+//    @JoinColumn(name = "course_id", nullable = false)
 //    private Course descentCourse;
 
     @Column(name = "crew_name", nullable = false)

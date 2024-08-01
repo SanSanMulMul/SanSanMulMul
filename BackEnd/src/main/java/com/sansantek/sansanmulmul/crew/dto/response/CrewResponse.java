@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CrewResponse {
 
-    private int groupId;
-    private String groupName;
-    private LocalDateTime groupStartDate;
-    private LocalDateTime groupEndDate;
-    private int groupMaxMembers;
+    private int crewId;
+    private String crewName;
+    private LocalDateTime crewStartDate;
+    private LocalDateTime crewEndDate;
+    private int crewMaxMembers;
     // 참여 인원, 멤버가 그룹 참여 상태
     private String mountainImg;
 }

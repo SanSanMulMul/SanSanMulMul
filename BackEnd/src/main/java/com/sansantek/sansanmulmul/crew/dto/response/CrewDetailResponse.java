@@ -35,6 +35,7 @@ public class CrewDetailResponse {
 
     // 멤버
     // 참여 멤버 수
+    // 방장 정보
     // 멤버 목록
 
     // 산 정보

@@ -40,13 +40,9 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
     binding.button.setOnClickListener {
       Log.d(TAG, "onViewCreated: 로그인 시도")
       // 카카오 로그인 시도
-//        binding.button.setOnClickListener {
-//            Log.d(TAG, "onViewCreated: 로그인 시도")
-//            // 카카오 로그인 시도
-//            loginWithKakao()
-//            GoMain()
-//        }
-      startActivity(Intent(context, MainActivity::class.java)) // TODO : 이건 나중에 빼유~~~
+      loginWithKakao()
+//        GoMain()
+//      startActivity(Intent(context, MainActivity::class.java)) // TODO : 이건 나중에 빼유~~~
 
     }
   }
@@ -59,7 +55,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             } else if (token != null) {
                 Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
                 Log.d(TAG, "loginWithKakao idToken: ${token.idToken}")
-                GoMain()
+//                GoMain()
             }
     }
 
@@ -97,8 +93,8 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
                                 lifecycleScope.launch {
                                     try{
                                         token.idToken
-                                        Log.d(TAG, "loginWithKakao: ${KakaoLoginUser(userId.toString(), nickname, nickname, "M", image, LocalDate.of(2000, 1, 11), true, mutableListOf(0))}")
-                                        val result = userService.registerUser(KakaoLoginUser(userId.toString(), nickname, nickname, "M", image, LocalDate.of(2000, 1, 11), true, mutableListOf(0)))
+                                        Log.d(TAG, "loginWithKakao: ${KakaoLoginUser(userId.toString(), nickname, nickname, "M", image, "2000-01-11", true, mutableListOf<Int>())}")
+                                        val result = userService.registerUser(KakaoLoginUser(userId.toString(), nickname, nickname, "M", image, "2000-01-11", true, mutableListOf<Int>()))
                                         Log.d(TAG, "loginWithKakao:result.code : ${result.code()}    result.body : ${result.body()}")
                                     } catch (e: HttpException){
                                         // HTTP 상태 코드가 200-299가 아닌 경우 EX : 404 등
@@ -117,6 +113,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
                 }
             }
         } else {
+            Log.d(TAG, "loginWithKakao: 카카오 계정으로 로그인 시도")
             // 카카오 계정으로 로그인 시도
             UserApiClient.instance.loginWithKakaoAccount(requireActivity(), callback = callback)
             // Redirect URI 설정

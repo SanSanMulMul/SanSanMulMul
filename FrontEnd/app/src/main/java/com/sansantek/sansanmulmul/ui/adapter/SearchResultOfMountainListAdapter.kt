@@ -1,6 +1,5 @@
 package com.sansantek.sansanmulmul.ui.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.R
-import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.data.model.MountainDto
 import com.sansantek.sansanmulmul.databinding.ItemSearchResultOfMountainBinding
 
@@ -46,7 +44,7 @@ class SearchResultOfMountainListAdapter() :
             val item = getItem(position)
 //            binding.ivMountainImg.setImageResource(item.mountainImg)
 //            binding.ivMountainImg.
-            if(item.mountain_img == null){
+            if(item.mountainImg == null){
                 // 없을 경우 기본 이미지. 글라이드 : 링크이미지 받아올 때
                 Glide.with(binding.root)
                     .load("https://images-ext-1.discordapp.net/external/9pyEBG4x_J2aG-j5BeoaA8edEpEpfQEOEO9SdmT9hIg/https/k.kakaocdn.net/dn/cwObI9/btsGqPcg5ic/UHYbwvy2M2154EdZSpK8B1/img_110x110.jpg%2C?format=webp")
@@ -54,7 +52,7 @@ class SearchResultOfMountainListAdapter() :
             }
             else{
                 Glide.with(binding.root)
-                    .load(item.mountain_img)
+                    .load(item.mountainImg)
                     .into(binding.ivMountainImg)
             }
             binding.tvMountainName.text = item.mountainName

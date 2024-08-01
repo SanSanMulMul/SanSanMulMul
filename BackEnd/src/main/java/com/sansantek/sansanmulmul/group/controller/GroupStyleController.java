@@ -23,7 +23,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/group/style")
-@Tag(name = "회원 정보 컨트롤러", description = "회원 정보관련 기능 수행")
+@Tag(name = "그룹 등산 스타일 정보 컨트롤러", description = "그룹 등산 스타일 정보관련 기능 수행")
 public class GroupStyleController {
 
     // service

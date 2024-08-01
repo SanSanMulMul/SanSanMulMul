@@ -140,7 +140,7 @@ object Util {
   }
 
   // 숫자 단위에 맞게 세자리마다 콤마를 찍어주는 메소드
-  fun formatNumberWithCommas(number: Int): String {
+  fun getNumberWithCommas(number: Int): String {
     val numberFormat = NumberFormat.getNumberInstance(Locale.US)
     return numberFormat.format(number)
   }

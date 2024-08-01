@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
@@ -36,8 +35,25 @@ class MountainSearchResultFragment : BaseFragment<FragmentMountainSearchResultBi
             setItemClickListener(
                 object : SearchResultOfMountainListAdapter.OnItemClickListener {
                     override fun onItemClick(mountain: MountainDto) {
+
+                        // 산 상세 화면에 보낼 자료
+                        val bundle = Bundle()
+                        bundle.putInt("mountainId", mountain.mountainId)
+                        bundle.putString("mountainName", mountain.mountainName)
+                        bundle.putInt("mountainHeight", mountain.mountainHeight)
+                        bundle.putString("mountainDescription", mountain.mountainDescription)
+                        bundle.putString("mountainImage", mountain.mountainImg)
+
+                        val mountainDetailFragment = MountainDetailFragment()
+
+                        mountainDetailFragment.arguments = bundle
+                        Log.d(TAG, "onItemClick: resuyltFragment 여기는 멀쩡? $mountain")
+
+
                         requireActivity().supportFragmentManager.beginTransaction().addToBackStack(null)
-                            .replace(R.id.fragment_view, MountainDetailFragment()).commit()
+                            .replace(R.id.fragment_view, mountainDetailFragment).commit()
+
+
                     }
 
                 }

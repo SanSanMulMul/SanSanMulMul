@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class StyleResponse {
+public class UserStyleResponse {
     private int hikingStylesId;
     private String hikingStylesName;
 }

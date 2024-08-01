@@ -1,20 +1,15 @@
 package com.sansantek.sansanmulmul.user.service;
 
-import com.sansantek.sansanmulmul.config.jwt.JwtToken;
-import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.dto.request.SignUpUserRequest;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserRequest;
+import com.sansantek.sansanmulmul.user.dto.response.UserInfoResponse;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
-import com.sansantek.sansanmulmul.user.service.login.TokenService;
-import com.sansantek.sansanmulmul.user.service.style.StyleService;
+import com.sansantek.sansanmulmul.user.service.style.UserStyleService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +22,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     // service
-    private final StyleService styleService;
+    private final UserStyleService userStyleService;
 
     // Repository
     private final UserRepository userRepository;
@@ -72,6 +67,31 @@ public class UserService {
     public User getUser(int userId) {
         return userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+
+    public UserInfoResponse getUserResponse(String userProviderId) {
+        User user = userRepository.findByUserProviderId(userProviderId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        UserInfoResponse userInfo = new UserInfoResponse(
+                user.getUserId(),
+                user.getUserProviderId(),
+                user.getUserName(),
+                user.getUserNickname(),
+                user.getUserGender(),
+                user.getUserProfileImg(),
+                user.getUserBirth(),
+                user.getUserStaticBadge(),
+                user.getUserTotalLength(),
+                user.getUserTotalElevation(),
+                user.getUserTotalSteps(),
+                user.getUserTotalKcal(),
+                user.getUserTotalHiking(),
+                user.getUserStoneCount(),
+                user.isUserIsAdmin()
+        );
+
+        return userInfo;
     }
 
     @Transactional

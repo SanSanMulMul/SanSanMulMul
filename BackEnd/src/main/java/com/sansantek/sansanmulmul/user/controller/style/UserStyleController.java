@@ -5,11 +5,9 @@ import com.sansantek.sansanmulmul.exception.auth.InvalidTokenException;
 import com.sansantek.sansanmulmul.exception.style.AlreadyStyleException;
 import com.sansantek.sansanmulmul.exception.style.StyleNotFoundException;
 import com.sansantek.sansanmulmul.user.domain.User;
-import com.sansantek.sansanmulmul.user.domain.style.HikingStyle;
-import com.sansantek.sansanmulmul.user.dto.response.StyleResponse;
-import com.sansantek.sansanmulmul.user.repository.style.HikingStyleRepository;
+import com.sansantek.sansanmulmul.user.dto.response.UserStyleResponse;
 import com.sansantek.sansanmulmul.user.service.UserService;
-import com.sansantek.sansanmulmul.user.service.style.StyleService;
+import com.sansantek.sansanmulmul.user.service.style.UserStyleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +26,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/user/style")
 @Tag(name = "회원 등산 스타일 컨트롤러", description = "회원 등산 스타일의 관한 모든 기능 수행")
-public class StyleController {
+public class UserStyleController {
 
     // service
     private final UserService userService;
-    private final StyleService styleService;
+    private final UserStyleService userStyleService;
 
     // JWT
     private final JwtTokenProvider jwtTokenProvider;
@@ -52,21 +50,24 @@ public class StyleController {
             User user = userService.getUser(userProviderId);
 
             // 사용자 등산 스타일 조회
-            List<StyleResponse> userHikingStyleList = styleService.getStyleList(user.getUserId());
+            List<UserStyleResponse> userHikingStyleList = userStyleService.getStyleList(user.getUserId());
 
             // JSON으로 결과 전송
             resultMap.put("userHikingStyleListSize", userHikingStyleList.size());
             resultMap.put("userHikingStyleList", userHikingStyleList);
 
-
             status = HttpStatus.OK;
         } catch (InvalidTokenException e) {
+
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
             resultMap.put("error", "Invalid or expired token");
             status = HttpStatus.UNAUTHORIZED; // 401
+
         } catch (Exception e) {
+
             log.error("회원 등산 스타일 조회 실패: {}", e.getMessage());
             status = HttpStatus.BAD_REQUEST; // 400
+
         }
 
         return new ResponseEntity<>(resultMap, status);
@@ -88,13 +89,13 @@ public class StyleController {
             User user = userService.getUser(userProviderId);
 
             // 사용자 등산 스타일 추가
-            styleService.addStyle(user.getUserId(), hikingStyleId);
+            userStyleService.addStyle(user.getUserId(), hikingStyleId);
 
             // JSON으로 결과 전송
             resultMap.put("userId", user.getUserId());
             resultMap.put("userProviderId", user.getUserProviderId());
             resultMap.put("addHikingStyleId", hikingStyleId);
-            resultMap.put("addHikingStyleName", styleService.getStyleName(hikingStyleId));
+            resultMap.put("addHikingStyleName", userStyleService.getStyleName(hikingStyleId));
 
             status = HttpStatus.OK;
         } catch (AlreadyStyleException e) {
@@ -128,13 +129,13 @@ public class StyleController {
             User user = userService.getUser(userProviderId);
 
             // 사용자 등산 스타일 제거
-            styleService.deleteStyle(user.getUserId(), hikingStyleId);
+            userStyleService.deleteStyle(user.getUserId(), hikingStyleId);
 
             // JSON으로 결과 전송
             resultMap.put("userId", user.getUserId());
             resultMap.put("userProviderId", user.getUserProviderId());
             resultMap.put("deleteHikingStyleId", hikingStyleId);
-            resultMap.put("deleteHikingStyleName", styleService.getStyleName(hikingStyleId));
+            resultMap.put("deleteHikingStyleName", userStyleService.getStyleName(hikingStyleId));
 
             status = HttpStatus.OK; // 200
         } catch (StyleNotFoundException e) {

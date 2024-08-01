@@ -19,6 +19,7 @@ public class MountainService {
 
 
     public List<Mountain> getAllMountains(){
+
         return mountainRepository.findAll();
     }
 

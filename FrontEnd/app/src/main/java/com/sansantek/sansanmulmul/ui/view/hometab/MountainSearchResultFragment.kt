@@ -21,7 +21,7 @@ import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainServic
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
 import kotlinx.coroutines.launch
 
-private const val TAG = "산산물물_MountainSearchResultFra"
+private const val TAG = "번들"
 
 class MountainSearchResultFragment : BaseFragment<FragmentMountainSearchResultBinding>(
     FragmentMountainSearchResultBinding::bind,

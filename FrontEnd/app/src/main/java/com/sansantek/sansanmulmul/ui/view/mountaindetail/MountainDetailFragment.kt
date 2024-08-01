@@ -12,7 +12,7 @@ import com.sansantek.sansanmulmul.databinding.FragmentMountainDetailTabBinding
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import kotlinx.coroutines.launch
 
-private const val TAG = "MountainDetailFragment 싸피"
+private const val TAG = "마운틴디테일 번들"
 
 class MountainDetailFragment : BaseFragment<FragmentMountainDetailTabBinding>(
   FragmentMountainDetailTabBinding::bind,
@@ -28,14 +28,14 @@ class MountainDetailFragment : BaseFragment<FragmentMountainDetailTabBinding>(
     super.onViewCreated(view, savedInstanceState)
     init()
     val bundle = arguments
-    Log.d(TAG, "onViewCreated: 여기서 잘 오나? $bundle")
+    Log.d(TAG, "onViewCreated: 마운틴서치레절트에서 받은 번들$bundle")
     if(bundle != null){
       mountainId = bundle.getInt("mountainId")
       mountainName = bundle.getString("mountainName")
       mountainHeight = bundle.getInt("mountainHeight")
       mountainDescription = bundle.getString("mountainDescription")
       mountainImage = bundle.getString("mountainImage")
-      Log.d(TAG, "onViewCreated: ${mountainName}")
+//      Log.d(TAG, "onViewCreated: ${mountainName}")
     }
 
     binding.tvMountainName.text = mountainName.toString()
@@ -51,6 +51,25 @@ class MountainDetailFragment : BaseFragment<FragmentMountainDetailTabBinding>(
         .load(mountainImage)
         .into(binding.ivMountain)
     }
+    val mountainDetailTabFirstInfoFragment = MountainDetailTabFirstInfoFragment()
+    val detailBundle = Bundle()
+
+    mountainId?.let {
+      detailBundle.putInt("mountainId", it)
+    }
+    mountainHeight?.let {
+      detailBundle.putInt("mountainHeight", it)
+    }
+    mountainDescription?.let {
+      detailBundle.putString("mountainDescription", it)
+    }
+
+    mountainDetailTabFirstInfoFragment.arguments = detailBundle
+
+    Log.d(TAG, "init: 마운틴 디테일 탭퍼스트로 보내줄 번들${detailBundle}")
+
+    requireActivity().supportFragmentManager.beginTransaction()
+      .replace(binding.mountainDetailFragmentView.id, mountainDetailTabFirstInfoFragment).commit()
   }
 
   // 산 상세화면에서 나올 때 홈내비 다시 생기게
@@ -67,25 +86,6 @@ class MountainDetailFragment : BaseFragment<FragmentMountainDetailTabBinding>(
 
 
     // TODO : 코스 상세에서 뒤로가기 했을 때 무조건 첫번째 Tab으로 돌아오는 거 수정하기
-
-    val mountainDetailTabFirstInfoFragment = MountainDetailTabFirstInfoFragment()
-    val bundle = Bundle()
-
-    mountainId?.let {
-      bundle.putInt("mountainId", it)
-    }
-    mountainHeight?.let {
-      bundle.putInt("mountainHeight", it)
-    }
-    mountainDescription?.let {
-      bundle.putString("mountainDescription", it)
-    }
-
-    mountainDetailTabFirstInfoFragment.arguments = bundle
-
-
-    requireActivity().supportFragmentManager.beginTransaction()
-      .replace(binding.mountainDetailFragmentView.id, mountainDetailTabFirstInfoFragment).commit()
 
     initTabLayout()
   }

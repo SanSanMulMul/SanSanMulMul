@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,31 +33,18 @@ public class UserMountainController {
 
     @GetMapping("/like")
     @Operation(summary = "회원 즐겨찾기 조회", description = "액세스 토큰을 사용해 회원 즐겨찾기 조회")
-    public ResponseEntity<Map<String, Object>> getUserLikedMountains
-            (Authentication authentication) {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.ACCEPTED;
-
-
+    public ResponseEntity<List<Mountain>> getUserLikedMountains(Authentication authentication) {
         try {
             String userProviderId = authentication.getName();
-
             List<Mountain> likedMountains = userMountainService.getLikedMountains(userProviderId);
-            resultMap.put("likedMountains", likedMountains);
-            status = HttpStatus.OK;
-
-
+            return ResponseEntity.ok(likedMountains);
         } catch (InvalidTokenException e) {
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
-            resultMap.put("error", "Invalid or expired token");
-            status = HttpStatus.UNAUTHORIZED;
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.emptyList());
         } catch (Exception e) {
             log.error("회원 즐겨찾기 조회 실패: {}", e.getMessage());
-            resultMap.put("error", "An unexpected error occurred");
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
         }
-
-        return new ResponseEntity<>(resultMap, status);
     }
 
     @PostMapping("/{mountainId}")

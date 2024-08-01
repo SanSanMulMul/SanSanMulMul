@@ -3,21 +3,19 @@ package com.sansantek.sansanmulmul.crew.domain.style;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.user.domain.style.HikingStyle;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Table(name = "user_hiking_styles")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
+@Table(name = "crew_hiking_styles")
+@IdClass(CrewHikingStyleId.class)
 @Getter
 @Setter
-@IdClass(CrewHikingStyleId.class)
 public class CrewHikingStyle {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "crew_id", nullable = false)
     private Crew crew;
 
     @Id

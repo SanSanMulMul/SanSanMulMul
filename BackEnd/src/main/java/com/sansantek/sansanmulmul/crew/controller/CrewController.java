@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.crew.controller;
 
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.service.CrewService;
+import com.sansantek.sansanmulmul.exception.style.GroupNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +35,12 @@ public class CrewController {
 
             return new ResponseEntity<>(crewResponse, status);
 
+        } catch (GroupNotFoundException e) {
+            status = HttpStatus.NOT_FOUND; // 404
+
+            return new ResponseEntity<>(e.getMessage(), status);
         } catch (Exception e) {
-            status = HttpStatus.BAD_REQUEST;
+            status = HttpStatus.BAD_REQUEST; // 400
 
             return new ResponseEntity<>(e.getMessage(), status);
         }

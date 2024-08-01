@@ -31,7 +31,7 @@ public class Crew {
     private int crewId;
 
     @ManyToOne
-    @JoinColumn(name = "leader_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User leader;
 
     @ManyToOne

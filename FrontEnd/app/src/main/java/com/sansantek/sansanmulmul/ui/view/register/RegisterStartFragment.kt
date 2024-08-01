@@ -16,6 +16,7 @@ import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentRegisterStartBinding
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
+import com.sansantek.sansanmulmul.ui.view.hometab.HomeTabFragment
 import kotlinx.coroutines.launch
 
 
@@ -35,7 +36,8 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
         binding.button.setOnClickListener {
             Log.d(TAG, "onViewCreated: 로그인 시도")
             // 카카오 로그인 시도
-            loginWithKakao()
+//            loginWithKakao()
+            GoMain()
         }
     }
 
@@ -85,6 +87,8 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
     private fun GoMain() {
         // 메인 화면으로 이동하는 로직을 구현합니다.
         // 예: 메인 액티비티를 시작하거나 프래그먼트를 교체하는 코드
+        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragment_view, ViewPagerFragment()).commit()
+
         Log.i(TAG, "GoMain() 호출")
     }
 }

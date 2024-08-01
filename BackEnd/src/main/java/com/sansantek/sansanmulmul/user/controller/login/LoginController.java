@@ -89,6 +89,43 @@ public class LoginController {
         return new ResponseEntity<>(resultMap, status);
     }
 
+    @GetMapping("/login/{userProviderId}")
+    @Operation(summary = "로그인", description = "카카오 id로 회원 인증 + JWT 토큰 발급")
+    public ResponseEntity<?> doLogin
+            (@PathVariable("userProviderId") String userProviderId){
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        // 카카오에서 제공받은 아이디가 DB에 저장되어 있지 않다면?
+        if (userService.isExistsUser(userProviderId)) { // DB에 저장되어 있는 회원인 경우
+            // 회원 정보 가져오기
+            User loginUser = userService.getUser(userProviderId);
+            String password = "";
+            log.info("userProviderId: {}", userProviderId);
+
+            // 토큰 인증 기반 로그인 수행
+            JwtToken jwtToken = tokenService.generateToken(loginUser.getUserProviderId(), password);
+
+            // 토큰 저장
+            tokenService.saveRefreshToken(loginUser.getUserProviderId(), jwtToken.getRefreshToken());
+
+            // 토큰 넘겨주기
+            resultMap.put("accessToken", jwtToken.getAccessToken());
+            resultMap.put("refreshToken", jwtToken.getRefreshToken());
+
+            // 상태 변경
+            status = HttpStatus.OK; // 200
+
+        } else { // DB에 저장되어 있지 않은 회원인 경우
+            resultMap.put("message", "userProviderId+userName+다른 정보 /signup으로 POST요청");
+
+            // 상태 변경
+            status = HttpStatus.NO_CONTENT; // 204
+        }
+
+        return new ResponseEntity<>(resultMap, status);
+    }
+
     @PostMapping("/signup")
     @Operation(summary = "회원가입", description = "회원가입 + JWT 토큰 발급")
     public ResponseEntity<Map<String, Object>> signUp(@Valid @RequestBody SignUpUserRequest request) {

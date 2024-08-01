@@ -34,8 +34,8 @@ public class WeatherController {
                 throw new NoSuchElementException("Mountain not found");
             }
 
-            double latitude = mountain.getMountain_lat();
-            double longitude = mountain.getMountain_lon();
+            double latitude = mountain.getMountainLat();
+            double longitude = mountain.getMountainLon();
 
             Map<String, Object> weatherData = weatherService.getWeekWeather(latitude, longitude);
             List<Map<String, Object>> weatherList = (List<Map<String, Object>>) weatherData.get("list");

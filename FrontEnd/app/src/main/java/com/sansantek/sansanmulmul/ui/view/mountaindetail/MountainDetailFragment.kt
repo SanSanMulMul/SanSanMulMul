@@ -6,6 +6,7 @@ import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentMountainDetailTabBinding
+import com.sansantek.sansanmulmul.ui.view.MainActivity
 
 class MountainDetailFragment : BaseFragment<FragmentMountainDetailTabBinding>(
   FragmentMountainDetailTabBinding::bind,
@@ -17,8 +18,18 @@ class MountainDetailFragment : BaseFragment<FragmentMountainDetailTabBinding>(
     init()
   }
 
+  // 산 상세화면에서 나올 때 홈내비 다시 생기게
+  override fun onPause() {
+    val activity = requireActivity() as MainActivity
+    activity.changeBottomNavigationVisibility(true)
+    super.onPause()
+  }
+
+  // 산 상세화면 들어갈 때 홈내비 없앰
   private fun init() {
-    activity?.let { hideBottomNav(it.findViewById(R.id.main_layout_bottom_navigation), true) }
+    val activity = requireActivity() as MainActivity
+    activity.changeBottomNavigationVisibility(false)
+
 
     // TODO : 코스 상세에서 뒤로가기 했을 때 무조건 첫번째 Tab으로 돌아오는 거 수정하기
     requireActivity().supportFragmentManager.beginTransaction()

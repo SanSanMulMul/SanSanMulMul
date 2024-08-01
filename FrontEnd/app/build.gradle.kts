@@ -67,6 +67,11 @@ android {
 }
 
 dependencies {
+  //'com.github.bumptech.glide:glide:4.11.0'
+  implementation(libs.glide.v4110)
+
+  //'com.github.bumptech.glide:compiler:4.11.0'
+  annotationProcessor(libs.compiler)
 
   //  카카오 관련 전체 모듈 설치
   // com.kakao.sdk:v2-all:2.20.3

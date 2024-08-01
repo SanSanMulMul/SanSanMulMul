@@ -42,7 +42,7 @@
         app:layout_constraintStart_toStartOf="@id/iv_logo"
         app:layout_constraintTop_toBottomOf="@id/tv_app_name">
 
-        <include layout="@layout/component_search_grey" />
+        <include android:id="@+id/edit_text" layout="@layout/component_search_grey" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView

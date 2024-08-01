@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.ui.view.mountaindetail
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -42,11 +43,16 @@ class MountainDetailTabFirstInfoFragment : BaseFragment<FragmentMountainDetailTa
       val params: ViewGroup.LayoutParams? = binding.tvMountainDetail.layoutParams
       if (isExpanded) {
         if (params != null) {
+          binding.tvMountainDetail.ellipsize = TextUtils.TruncateAt.END
+          binding.tvMountainDetail.maxLines = 6
           params.height = 150f.dpToPx(requireContext()).toInt()
         }
       } else {
         if (params != null) {
+          binding.tvMountainDetail.maxLines = Integer.MAX_VALUE
           params.height = WindowManager.LayoutParams.WRAP_CONTENT
+          binding.tvMountainDetail.ellipsize = null
+
         }
       }
       binding.tvMountainDetail.setLayoutParams(params)

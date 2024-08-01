@@ -31,8 +31,8 @@ public class SunriseSunsetController {
 
         try {
             Mountain mountain = mountainService.getMountainDetail(mountainId);
-            double latitude = mountain.getMountain_lat();
-            double longitude = mountain.getMountain_lon();
+            double latitude = mountain.getMountainLat();
+            double longitude = mountain.getMountainLon();
 
             Map<String, String> sunriseSunsetTimes = sunriseSunsetService.getSunriseSunsetTimes(latitude, longitude);
             resultList.add(sunriseSunsetTimes);

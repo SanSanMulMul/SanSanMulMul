@@ -17,27 +17,35 @@ import java.util.List;
 public class Mountain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int mountain_id;
+    @Column(name = "mountain_id")
+    private int mountainId;
 
-    private int mountain_code;
+    @Column(name = "mountain_code")
+    private int mountainCode;
 
     @Column(name = "mountain_name")
     private String mountainName;
 
-    private String mountain_location;
+    @Column(name= "mountain_location")
+    private String mountainLocation;
 
-    private int mountain_height;
+    @Column(name = "mountain_height")
+    private int mountainHeight;
 
-    @Column(columnDefinition = "TEXT")
-    private String mountain_description;
+    @Column(name = "mountain_description",columnDefinition = "TEXT")
+    private String mountainDescription;
 
-    private String mountain_img;
+    @Column(name = "mountain_img")
+    private String mountainImg;
 
-    private String mountain_weather;
+    @Column(name = "mountain_weather")
+    private String mountainWeather;
 
-    private double mountain_lat; //위도
-    
-    private double mountain_lon; //경도
+    @Column(name = "mountain_lat")
+    private double mountainLat; //위도
+
+    @Column(name = "mountain_lon")
+    private double mountainLon; //경도
 
     @OneToMany(mappedBy = "mountain")
     @JsonManagedReference

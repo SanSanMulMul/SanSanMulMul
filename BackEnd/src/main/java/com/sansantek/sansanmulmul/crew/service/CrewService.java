@@ -1,17 +1,17 @@
 package com.sansantek.sansanmulmul.crew.service;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
+import com.sansantek.sansanmulmul.crew.dto.request.CrewRequest;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
-import com.sansantek.sansanmulmul.exception.style.GroupNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,24 +24,20 @@ public class CrewService {
     public List<CrewResponse> getAllCrews() {
         List<CrewResponse> crews = new ArrayList<>();
 
-        // DB에서 모든 그룹 가져오기
-        List<Crew> crewList = crewRepository.findAll();
+        List<Crew> crewsList = crewRepository.findAll();
 
-        for (Crew crew : crewList) {
-            CrewResponse gr = new CrewResponse(
-                    crew.getCrewId(),
-                    crew.getCrewName(),
-                    crew.getCrewStartDate(),
-                    crew.getCrewEndDate(),
-                    crew.getCrewMaxMembers(),
-                    crew.getMountain().getMountainImg()
-            );
+       for (Crew crew : crewsList) {
+           CrewResponse cr = new CrewResponse(
+                   crew.getCrewId(),
+                   crew.getCrewName(),
+                   crew.getCrewStartDate(),
+                   crew.getCrewEndDate(),
+                   crew.getCrewMaxMembers(),
+                   crew.getMountain().getMountainImg()
+           );
 
-            crews.add(gr);
-        }
-
-        if(crews.isEmpty())
-            throw new GroupNotFoundException();
+           crews.add(cr);
+       }
 
         return crews;
     }
@@ -65,5 +61,19 @@ public class CrewService {
         );
 
         return crewDetailResponse;
+    }
+
+    @Transactional
+    public void addCrew(int userId, CrewRequest request) {
+        // request를 Crew정보로 저장
+
+        // 그룹 등산 스타일에 추가
+
+        // 그룹 메세지 추가
+
+        // 그룹 링크를 제외하고 save
+
+        // 그룹 링크 추가
+
     }
 }

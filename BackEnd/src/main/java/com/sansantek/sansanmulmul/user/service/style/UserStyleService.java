@@ -50,8 +50,6 @@ public class UserStyleService {
     @Transactional
     // userId회원이 hikingStyleId스타일을 추가
     public void addStyle(int userId, int hikingStyleId) {
-        System.out.println(userId);
-        System.out.println(hikingStyleId);
         // 추가를 진행할 회원 정보 조회
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));

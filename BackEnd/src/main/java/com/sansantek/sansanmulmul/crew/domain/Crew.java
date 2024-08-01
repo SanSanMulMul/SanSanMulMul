@@ -89,6 +89,7 @@ public class Crew {
     private boolean crewIsDone;
 
     @Column(name = "crew_link", nullable = false)
+    @ColumnDefault("link is yet")
     @Schema(description = "그룹 카카오톡 공유 링크", example = "")
     private String crewLink;
 

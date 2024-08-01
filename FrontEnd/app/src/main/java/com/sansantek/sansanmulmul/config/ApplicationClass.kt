@@ -4,6 +4,8 @@ import android.app.Application
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.jakewharton.threetenabp.AndroidThreeTen
+import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.util.Utility
 import com.sansantek.sansanmulmul.BuildConfig
 import com.sansantek.sansanmulmul.data.local.SharedPreferencesUtil
@@ -24,13 +26,13 @@ class ApplicationClass : Application() {
   }
 
 
-  override fun onCreate() {
-    super.onCreate()
-    Log.d(TAG, "onCreate: ${Utility.getKeyHash(this)}")
-//    KakaoSdk.init(this, BuildConfig.NATIVE_APP_KEY)
-//    AndroidThreeTen.init(this)
-    //shared preference 초기화
-    sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)
+    override fun onCreate() {
+        super.onCreate()
+        Log.d(TAG, "onCreate: ${Utility.getKeyHash(this)}")
+        KakaoSdk.init(this, BuildConfig.NATIVE_APP_KEY)
+        AndroidThreeTen.init(this)
+        //shared preference 초기화
+        sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)
 
 //        ViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(this)
 //            .create(MainActivityViewModel::class.java)

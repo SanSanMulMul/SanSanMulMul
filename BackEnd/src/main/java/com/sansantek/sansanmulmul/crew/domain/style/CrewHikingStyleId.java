@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.group.domain.style;
+package com.sansantek.sansanmulmul.crew.domain.style;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class GroupHikingStyleId implements Serializable {
+public class CrewHikingStyleId implements Serializable {
     private int group;
     private int style;
 
@@ -16,7 +16,7 @@ public class GroupHikingStyleId implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GroupHikingStyleId that = (GroupHikingStyleId) o;
+        CrewHikingStyleId that = (CrewHikingStyleId) o;
         return Objects.equals(group, that.group) && Objects.equals(style, that.style);
     }
 

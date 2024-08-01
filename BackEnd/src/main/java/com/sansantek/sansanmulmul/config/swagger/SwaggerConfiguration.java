@@ -53,10 +53,10 @@ public class SwaggerConfiguration {
     }
 
     @Bean
-    public GroupedOpenApi groupApi() {
+    public GroupedOpenApi crewApi() {
         return GroupedOpenApi.builder()
-                .group("group")
-                .pathsToMatch("/group/**")
+                .group("crew")
+                .pathsToMatch("/crew/**")
                 .build();
     }
 }

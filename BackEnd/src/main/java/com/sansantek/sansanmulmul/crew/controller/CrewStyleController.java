@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/group/style")
+@RequestMapping("/crew/style")
 @Tag(name = "그룹 등산 스타일 정보 컨트롤러", description = "그룹 등산 스타일 정보관련 기능 수행")
 public class CrewStyleController {
 
@@ -34,7 +34,7 @@ public class CrewStyleController {
         try {
 
             // 특정 스타일에 해당하는 그룹 정보 조회
-            List<CrewStyleResponse> crewStyleResponseList = crewStyleService.getGroupList(styleId);
+            List<CrewStyleResponse> crewStyleResponseList = crewStyleService.getCrewList(styleId);
 
             // JSON으로 결과 전송
 //            resultMap.put("crewStyleResponseList", crewStyleResponseList);

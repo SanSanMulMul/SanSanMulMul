@@ -3,6 +3,7 @@ package com.sansantek.sansanmulmul.crew.service;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
+import com.sansantek.sansanmulmul.exception.style.GroupNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,9 @@ public class CrewService {
 
             crews.add(gr);
         }
+
+        if(crews.isEmpty())
+            throw new GroupNotFoundException();
 
         return crews;
     }

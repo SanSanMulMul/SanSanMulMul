@@ -15,22 +15,22 @@ import java.util.List;
 @Slf4j
 public class CrewStyleService {
 
-    private final CrewHikingStyleRepository groupStyleRepository;
+    private final CrewHikingStyleRepository CrewStyleRepository;
 
-    public List<CrewStyleResponse> getGroupList(int styleId) {
+    public List<CrewStyleResponse> getCrewList(int styleId) {
         List<CrewStyleResponse> crewStyleResponseList = new ArrayList<>();
 
         // styleId기반으로 그룹 찾기
-        List<CrewHikingStyle> crewHikingStyleList = groupStyleRepository.findByStyle_HikingStylesId(styleId);
+        List<CrewHikingStyle> crewHikingStyleList = CrewStyleRepository.findByStyle_HikingStylesId(styleId);
 
         // CrewStyleResponse 추출
         for (CrewHikingStyle crewHikingStyle : crewHikingStyleList) {
             CrewStyleResponse gr = new CrewStyleResponse(
-                    crewHikingStyle.getCrew().getGroupId(),
-                    crewHikingStyle.getCrew().getGroupName(),
-                    crewHikingStyle.getCrew().getGroupStartDate(),
-                    crewHikingStyle.getCrew().getGroupEndDate(),
-                    crewHikingStyle.getCrew().getGroupMaxMembers()
+                    crewHikingStyle.getCrew().getCrewId(),
+                    crewHikingStyle.getCrew().getCrewName(),
+                    crewHikingStyle.getCrew().getCrewStartDate(),
+                    crewHikingStyle.getCrew().getCrewEndDate(),
+                    crewHikingStyle.getCrew().getCrewMaxMembers()
             );
 
             crewStyleResponseList.add(gr);

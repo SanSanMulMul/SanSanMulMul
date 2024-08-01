@@ -3,12 +3,10 @@ package com.sansantek.sansanmulmul.user.controller.login;
 import com.sansantek.sansanmulmul.config.jwt.JwtToken;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.dto.request.SignUpUserRequest;
-import com.sansantek.sansanmulmul.user.dto.response.KakaoUserInfoResponse;
 import com.sansantek.sansanmulmul.user.service.badge.BadgeService;
-import com.sansantek.sansanmulmul.user.service.login.KakaoService;
 import com.sansantek.sansanmulmul.user.service.login.TokenService;
 import com.sansantek.sansanmulmul.user.service.UserService;
-import com.sansantek.sansanmulmul.user.service.style.StyleService;
+import com.sansantek.sansanmulmul.user.service.style.UserStyleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -34,7 +32,7 @@ public class LoginController {
     // service
     private final UserService userService;
     private final BadgeService badgeService;
-    private final StyleService styleService;
+    private final UserStyleService userStyleService;
     private final TokenService tokenService;
 
     @GetMapping("/login")
@@ -105,7 +103,7 @@ public class LoginController {
 
             // 등산 스타일 추가
             for (int hikingStyleId : request.getUserStyles())
-                styleService.addStyle(user.getUserId(), hikingStyleId);
+                userStyleService.addStyle(user.getUserId(), hikingStyleId);
 
             // JSON 으로 token 전달
             resultMap.put("userId", user.getUserId());

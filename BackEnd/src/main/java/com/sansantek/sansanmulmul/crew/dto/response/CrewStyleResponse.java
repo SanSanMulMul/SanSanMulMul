@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.group.dto.response;
+package com.sansantek.sansanmulmul.crew.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-public class GroupStyleResponse {
+public class CrewStyleResponse {
 
     private int groupId;
     private String groupName;

@@ -331,18 +331,9 @@
           android:background="@color/light_grey" />
 
         <include
-          android:id="@+id/weathe5"
+          android:id="@+id/weather5"
           layout="@layout/item_weather" />
 
-        <View
-          android:layout_width="1dp"
-          android:layout_height="match_parent"
-          android:layout_marginHorizontal="@dimen/mountain_detail_divider_horizontal_margin_10"
-          android:background="@color/light_grey" />
-
-        <include
-          android:id="@+id/weathe6"
-          layout="@layout/item_weather" />
       </LinearLayout>
 
 

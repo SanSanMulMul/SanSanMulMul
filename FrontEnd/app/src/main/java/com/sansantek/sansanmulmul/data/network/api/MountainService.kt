@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.data.network.api
 
 import com.sansantek.sansanmulmul.data.model.MountainDto
+import com.sansantek.sansanmulmul.data.model.MountainWeather
 import com.sansantek.sansanmulmul.data.model.SunriseSunsetTimes
 import retrofit2.Response
 import retrofit2.http.GET
@@ -16,4 +17,7 @@ interface MountainService {
 
   @GET("mountain/sun/{mountain_id}")
   suspend fun getMountainSunriseAndSunSetTimeByID(@Path("mountain_id") id: Int): Response<List<SunriseSunsetTimes>>
+
+  @GET("mountain/weather/{mountain_id}")
+  suspend fun getMountainWeatherByID(@Path("mountain_id") id: Int): Response<List<MountainWeather>>
 }

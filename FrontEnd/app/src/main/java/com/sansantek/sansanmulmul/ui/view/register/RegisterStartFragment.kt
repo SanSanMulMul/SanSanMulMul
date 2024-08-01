@@ -34,7 +34,12 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
     binding.button.setOnClickListener {
       Log.d(TAG, "onViewCreated: 로그인 시도")
       // 카카오 로그인 시도
+//        binding.button.setOnClickListener {
+//            Log.d(TAG, "onViewCreated: 로그인 시도")
+//            // 카카오 로그인 시도
 //            loginWithKakao()
+//            GoMain()
+//        }
       startActivity(Intent(context, MainActivity::class.java)) // TODO : 이건 나중에 빼유~~~
 
     }
@@ -84,9 +89,11 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
     }
   }
 
-  private fun GoMain() {
-    // 메인 화면으로 이동하는 로직을 구현합니다.
-    // 예: 메인 액티비티를 시작하거나 프래그먼트를 교체하는 코드
-    Log.i(TAG, "GoMain() 호출")
-  }
+    private fun GoMain() {
+        // 메인 화면으로 이동하는 로직을 구현합니다.
+        // 예: 메인 액티비티를 시작하거나 프래그먼트를 교체하는 코드
+        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragment_view, ViewPagerFragment()).commit()
+
+        Log.i(TAG, "GoMain() 호출")
+    }
 }

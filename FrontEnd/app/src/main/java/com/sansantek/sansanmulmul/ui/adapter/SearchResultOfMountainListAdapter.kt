@@ -4,30 +4,59 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.R
-import com.sansantek.sansanmulmul.data.model.Mountain
+import com.sansantek.sansanmulmul.data.model.MountainDto
 import com.sansantek.sansanmulmul.databinding.ItemSearchResultOfMountainBinding
 
-class SearchResultOfMountainListAdapter(
-    private val mountainList: List<Mountain>,
-    private val itemClickListener: OnItemClickListener
-) :
-    RecyclerView.Adapter<SearchResultOfMountainListAdapter.MountainViewHolder>() {
+class SearchResultOfMountainListAdapter() :
+    ListAdapter<MountainDto, SearchResultOfMountainListAdapter.MountainViewHolder>(
+        Comparator
+    ) {
+
+    companion object Comparator : DiffUtil.ItemCallback<MountainDto>() {
+        override fun areItemsTheSame(oldItem: MountainDto, newItem: MountainDto): Boolean {
+            return System.identityHashCode(oldItem) == System.identityHashCode(newItem)
+        }
+
+        override fun areContentsTheSame(oldItem: MountainDto, newItem: MountainDto): Boolean {
+            return oldItem == newItem
+        }
+    }
 
     private var lastPosition = -1
+    private lateinit var itemClickListener: OnItemClickListener
 
     interface OnItemClickListener {
-        fun onItemClick(mountain: Mountain)
+        fun onItemClick(mountain: MountainDto)
+    }
+
+    fun setItemClickListener(onItemClickListener: OnItemClickListener){
+        this.itemClickListener = onItemClickListener
     }
 
     inner class MountainViewHolder(private val binding: ItemSearchResultOfMountainBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindInfo(position: Int) {
-            val item = mountainList[position]
-            binding.ivMountainImg.setImageResource(item.mountainImg)
+            val item = getItem(position)
+//            binding.ivMountainImg.setImageResource(item.mountainImg)
+//            binding.ivMountainImg.
+            if(item.mountainImg == null){
+                // 없을 경우 기본 이미지. 글라이드 : 링크이미지 받아올 때
+                Glide.with(binding.root)
+                    .load("https://images-ext-1.discordapp.net/external/9pyEBG4x_J2aG-j5BeoaA8edEpEpfQEOEO9SdmT9hIg/https/k.kakaocdn.net/dn/cwObI9/btsGqPcg5ic/UHYbwvy2M2154EdZSpK8B1/img_110x110.jpg%2C?format=webp")
+                    .into(binding.ivMountainImg)
+            }
+            else{
+                Glide.with(binding.root)
+                    .load(item.mountainImg)
+                    .into(binding.ivMountainImg)
+            }
             binding.tvMountainName.text = item.mountainName
-            binding.tvCourseCnt.text = "코스 총 " + item.courseCnt + "개"
+            binding.tvCourseCnt.text = "코스 총 " + 6 + "개"
 
             binding.root.setOnClickListener { itemClickListener.onItemClick(item) }
         }
@@ -53,7 +82,6 @@ class SearchResultOfMountainListAdapter(
         setAnimation(holder.itemView, position)
     }
 
-    override fun getItemCount() = mountainList.size
 
     private fun setAnimation(viewToAnimate: View, position: Int) {
         // 애니메이션 딜레이 설정

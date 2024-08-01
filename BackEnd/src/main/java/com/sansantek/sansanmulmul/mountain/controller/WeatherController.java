@@ -27,10 +27,7 @@ public class WeatherController {
 
     @GetMapping("/weather/{mountain_id}")
     @Operation(summary = "산 날씨 조회", description = "산의 위도와 경도를 사용해 일주일 날씨를 조회")
-    public ResponseEntity<Map<String, Object>> getWeather(@PathVariable("mountain_id") int mountainId) {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.ACCEPTED;
-
+    public ResponseEntity<List<WeatherResponseDto>> getWeather(@PathVariable("mountain_id") int mountainId) {
         try {
             Mountain mountain = mountainService.getMountainDetail(mountainId);
             if (mountain == null) {
@@ -88,20 +85,14 @@ public class WeatherController {
                 weeklyWeather.add(dayDto);
             }
 
-            resultMap.put("mountain", mountain);
-            resultMap.put("weather", weeklyWeather);
-            status = HttpStatus.OK;
+            return ResponseEntity.ok(weeklyWeather);
 
         } catch (NoSuchElementException e) {
             log.error("산 상세 조회 실패: {}", e.getMessage());
-            resultMap.put("error", "Mountain not found");
-            status = HttpStatus.NOT_FOUND;
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             log.error("날씨 조회 실패: {}", e.getMessage());
-            resultMap.put("error", "An unexpected error occurred: " + e.getMessage());
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            return ResponseEntity.internalServerError().build();
         }
-
-        return new ResponseEntity<>(resultMap, status);
-    }
+}
 }

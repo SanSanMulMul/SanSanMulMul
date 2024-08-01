@@ -1,6 +1,7 @@
-package com.sansantek.sansanmulmul.user.domain.style;
+package com.sansantek.sansanmulmul.group.domain.style;
 
-import com.sansantek.sansanmulmul.user.domain.User;
+import com.sansantek.sansanmulmul.group.domain.Group;
+import com.sansantek.sansanmulmul.user.domain.style.HikingStyle;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,16 +12,17 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-@IdClass(UserHikingStyleId.class)
-public class UserHikingStyle {
+@IdClass(GroupHikingStyleId.class)
+public class GroupHikingStyle {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "group_id", nullable = false)
+    private Group group;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "hiking_styles_id", nullable = false)
     private HikingStyle style;
+
 }

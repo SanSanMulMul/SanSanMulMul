@@ -28,10 +28,10 @@ public class Mountain {
 
     private int mountain_height;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "mountain_description", columnDefinition = "TEXT")
     private String mountain_description;
 
-    private String mountain_img;
+    private String mountainImg;
 
     private String mountain_weather;
 

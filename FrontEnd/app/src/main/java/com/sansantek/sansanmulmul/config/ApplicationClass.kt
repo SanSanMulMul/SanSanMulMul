@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "ApplicationClass_싸피"
 class ApplicationClass : Application() {
     companion object {
-        const val SERVER_URL = BuildConfig.SERVER_IP
+        val SERVER_URL = BuildConfig.SERVER_IP
 
         lateinit var sharedPreferencesUtil: SharedPreferencesUtil
         lateinit var retrofit: Retrofit

@@ -44,13 +44,13 @@ public class UserController {
 
                 // 해당 닉네임 이미 존재
                 resultMap.put("userNickname", userNickname);
-                resultMap.put("message", "해당 닉네임을 가진 사용자가 존재합니다.");
+                resultMap.put("available", "false");
                 status = HttpStatus.CONFLICT; // 409
 
             } else {
 
                 resultMap.put("userNickname", userNickname);
-                resultMap.put("message", "사용가능한 닉네임입니다.");
+                resultMap.put("available", "true");
                 status = HttpStatus.OK; // 200
 
             }

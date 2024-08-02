@@ -75,6 +75,9 @@ dependencies {
   // sdk 24 버전에서 LocalDate를 쓸 수 없는 것에 대한 대안을 위한 추가
   implementation (libs.threetenabp)
 
+//  "com.google.android.gms:play-services-location:21.0.1"
+  implementation("com.google.android.gms:play-services-location:21.3.0")
+
   //  카카오 관련 전체 모듈 설치
   // com.kakao.sdk:v2-all:2.20.3
   implementation(libs.v2.all)

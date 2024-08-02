@@ -25,4 +25,7 @@ interface MountainService {
     @GET("mountain/search")
     suspend fun searchMountainList(@Query("name") name: String): List<MountainDto>
 
+    // 전체 산 리스트
+    @GET("mountain")
+    suspend fun getMountainList(): List<MountainDto>
 }

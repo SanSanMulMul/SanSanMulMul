@@ -19,10 +19,12 @@ public class MountainService {
 
 
     public List<Mountain> getAllMountains(){
+
         return mountainRepository.findAll();
     }
 
     public Mountain getMountainDetail(int mountain_id){
+
         return mountainRepository.findById(mountain_id).orElse(null);
     }
     public List<MountainSpot> getMountainSpotsWithDetail(int mountain_id, String detail) {

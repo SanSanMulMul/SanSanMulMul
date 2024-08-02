@@ -1,7 +1,6 @@
 package com.sansantek.sansanmulmul.user.domain.style;
 
 import com.sansantek.sansanmulmul.user.domain.User;
-import com.sansantek.sansanmulmul.user.domain.badge.UserBadgeId;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -51,4 +51,12 @@ public class SwaggerConfiguration {
                 .pathsToMatch("/mountain/**")
                 .build();
     }
+
+    @Bean
+    public GroupedOpenApi crewApi() {
+        return GroupedOpenApi.builder()
+                .group("crew")
+                .pathsToMatch("/crew/**")
+                .build();
+    }
 }

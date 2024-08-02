@@ -13,7 +13,7 @@ val naverClientId: String = properties.getProperty("naver_client_id")
 // 카카오 앱 키 로컬에서 불러오기
 val NATIVE_APP_KEY: String = properties.getProperty("NATIVE_APP_KEY")
 val BUILD_NATIVE_APP_KEY: String = properties.getProperty("BUILD_NATIVE_APP_KEY")
-
+val SERVER_IP: String = properties.getProperty("SERVER_IP")
 
 android {
   namespace = "com.sansantek.sansanmulmul"
@@ -21,7 +21,7 @@ android {
 
   defaultConfig {
     applicationId = "com.sansantek.sansanmulmul"
-    minSdk = 24
+    minSdk = 26
     targetSdk = 34
     versionCode = 1
     versionName = "1.0"
@@ -32,6 +32,7 @@ android {
     manifestPlaceholders["NATIVE_APP_KEY"]= NATIVE_APP_KEY
 
     buildConfigField("String", "NATIVE_APP_KEY", BUILD_NATIVE_APP_KEY)
+    buildConfigField("String", "SERVER_IP", SERVER_IP)
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
@@ -66,6 +67,13 @@ android {
 }
 
 dependencies {
+  //'com.github.bumptech.glide:glide:4.11.0'
+  implementation(libs.glide.v4110)
+
+  //'com.github.bumptech.glide:compiler:4.11.0'
+  annotationProcessor(libs.compiler)
+  // sdk 24 버전에서 LocalDate를 쓸 수 없는 것에 대한 대안을 위한 추가
+  implementation (libs.threetenabp)
 
   //  카카오 관련 전체 모듈 설치
   // com.kakao.sdk:v2-all:2.20.3

@@ -1,4 +1,4 @@
-package com.ssafy.contentprovider.util
+package com.sansantek.sansanmulmul.ui.util
 
 import android.content.Context
 import android.content.Intent
@@ -13,12 +13,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.sansantek.sansanmulmul.ui.util.OnGrantedListener
 
 
 private const val TAG = "CheckPermission_싸피"
 
-class PermissionChecker(private val context: Context) {
+class PermissionChecker(activityOrFragment: Any) {
+    private lateinit var context:Context
 
     private lateinit var permitted: OnGrantedListener
     fun setOnGrantedListener(listener: OnGrantedListener) {
@@ -27,6 +27,7 @@ class PermissionChecker(private val context: Context) {
 
     // 권한 체크
     fun checkPermission(context: Context, permissions: Array<String>): Boolean {
+        this.context = context
         for (permission in permissions) {
             if (ActivityCompat.checkSelfPermission(
                     context,
@@ -42,9 +43,9 @@ class PermissionChecker(private val context: Context) {
 
     // 권한 호출한 이후 결과받아서 처리할 Launcher (startPermissionRequestResult )
     val requestPermissionLauncher: ActivityResultLauncher<Array<String>> =
-        when (context) {
+        when (activityOrFragment) {
             is AppCompatActivity -> {
-                context.registerForActivityResult(
+                activityOrFragment.registerForActivityResult(
                     ActivityResultContracts.RequestMultiplePermissions()
                 ) {
                     resultChecking(it)
@@ -52,7 +53,7 @@ class PermissionChecker(private val context: Context) {
             }
 
             is Fragment -> {
-                context.registerForActivityResult(
+                activityOrFragment.registerForActivityResult(
                     ActivityResultContracts.RequestMultiplePermissions()
                 ) {
                     resultChecking(it)

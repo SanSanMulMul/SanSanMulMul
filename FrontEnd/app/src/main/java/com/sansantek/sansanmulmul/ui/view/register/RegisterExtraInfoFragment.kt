@@ -2,36 +2,124 @@ package com.sansantek.sansanmulmul.ui.view.register
 
 import android.graphics.LinearGradient
 import android.graphics.Shader
-import android.os.Build
+import android.icu.text.DecimalFormat
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
+import android.view.KeyEvent.KEYCODE_ENTER
 import android.view.View
 import android.widget.NumberPicker
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.getColor
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentRegisterExtraInfoBinding
-import com.sansantek.sansanmulmul.ui.view.grouptab.ShowGroupRegisterSuccessDialog
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
+import com.sansantek.sansanmulmul.ui.viewmodel.LoginActivityViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.Calendar
 
-private const val TAG = "산산물물_RegisterExtraInfoFragment"
+private const val TAG = "RegisterExtraInfoFragme 싸피"
 
 class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>(
     FragmentRegisterExtraInfoBinding::bind,
     R.layout.fragment_register_extra_info
 ) {
+    private val viewPagerFragment by lazy {
+        parentFragment as ViewPagerFragment
+    }
+    private val activityViewModel: LoginActivityViewModel by activityViewModels()
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
+        binding.etNickname.setOnKeyListener{ v, keyCode, event ->
+            if(event.action == KeyEvent.ACTION_DOWN && keyCode == KEYCODE_ENTER) {
+                activityViewModel.setUserNickName(binding.etNickname.text.toString())
+                true
+            }
+            false
+        }
+        binding.rgGender.setOnCheckedChangeListener { group, checkedId ->
+            Log.d(TAG, "onViewCreated: $checkedId")
+            if(checkedId == binding.rbMale.id) {
+                activityViewModel.setUserGender("M")
+            }
+            else{
+                activityViewModel.setUserGender("F")
+            }
+        }
+        binding.npYear.setOnValueChangedListener { picker, oldValue, newValue ->
+            activityViewModel.setUserBirth("${DecimalFormat("00").format(newValue)}-${DecimalFormat("00").format(binding.npMonth.value)}-${DecimalFormat("00").format(binding.npDay.value)}")
+        }
+        binding.npMonth.setOnValueChangedListener { picker, oldValue, newValue ->
+            activityViewModel.setUserBirth("${DecimalFormat("00").format(binding.npYear.value)}-${DecimalFormat("00").format(newValue)}-${DecimalFormat("00").format(binding.npDay.value)}")
+        }
+        binding.npDay.setOnValueChangedListener { picker, oldValue, newValue ->
+            activityViewModel.setUserBirth("${DecimalFormat("00").format(binding.npYear.value)}-${DecimalFormat("00").format(binding.npMonth.value)}-${DecimalFormat("00").format(newValue)}")
+        }
+    }
+
+    private fun registerObserver(){
+        activityViewModel.userGender.observe(viewLifecycleOwner){
+            Log.d(TAG, "observeGender: 성별을 변경했어요! 유효성 검사를 다시 진행할게요!")
+            checkValid()
+        }
+        activityViewModel.userNickname.observe(viewLifecycleOwner){
+            Log.d(TAG, "registerObserver: ")
+            checkValid()
+        }
+        activityViewModel.userName.observe(viewLifecycleOwner){
+            Log.d(TAG, "registerObserver: ")
+            checkValid()
+        }
+        activityViewModel.userBirth.observe(viewLifecycleOwner){
+            checkValid()
+        }
+    }
+
+    private fun checkValid(){
+        lifecycleScope.launch {
+            val isNickNameAvailable = async {
+                userService.isAvailableNickName(binding.etNickname.text.toString()).let {
+                    if (it.body() == null) false
+                    else {
+                        // null 체크해서 절대 null일리가 없음
+                        it.body()!!.available
+                    }
+                }
+            }
+            val isGenderSelected = binding.rgGender.checkedRadioButtonId != -1
+            Log.d(TAG, "checkValid: ${isNickNameAvailable}  $isGenderSelected")
+            if(isNickNameAvailable.await() && isGenderSelected){
+                viewPagerFragment.enableNextButton(true)
+            }
+            else{
+                viewPagerFragment.enableNextButton(false)
+            }
+        }
+    }
+
+    private fun init(){
+        viewPagerFragment.enableNextButton(false)
+        registerObserver()
+        loadUserNickName()
         setGradient(binding.extraInfoText1)
         setGradient(binding.extraInfoText2)
         setSpinner()
     }
-
+    private fun loadUserNickName(){
+        // 카카오에서 닉네임 입력받은 것으로 초기 세팅
+        val user = activityViewModel.user
+        user.kakaoAccount?.profile?.let{
+            binding.etNickname.setText(it.nickname)
+            activityViewModel.setUserName(it.nickname ?: "")
+            activityViewModel.setUserNickName(it.nickname ?: "")
+        }
+    }
     private fun setGradient(textView: TextView) {
         val paint = textView.paint
         val width = paint.measureText(textView.text.toString())
@@ -46,7 +134,6 @@ class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>
         textView.paint.shader = textShader
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setSpinner() {
         val year: NumberPicker = binding.npYear
         val month: NumberPicker = binding.npMonth
@@ -74,17 +161,9 @@ class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     private fun getCurrentDate(): LocalDate {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            LocalDate.now()
-        } else {
-            val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH) + 1
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-            LocalDate.of(year, month, day)
-        }
+        return LocalDate.now()
     }
 
     private fun initNumberPicker(

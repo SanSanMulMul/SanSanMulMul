@@ -1,13 +1,12 @@
 package com.sansantek.sansanmulmul.mountain.controller;
 
-import com.sansantek.sansanmulmul.mountain.DTO.WeatherResponseDto;
+import com.sansantek.sansanmulmul.mountain.dto.response.WeatherResponseDto;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.service.MountainService;
 import com.sansantek.sansanmulmul.util.WeatherService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,5 +93,5 @@ public class WeatherController {
             log.error("날씨 조회 실패: {}", e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
-}
+    }
 }

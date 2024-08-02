@@ -1,8 +1,8 @@
 package com.sansantek.sansanmulmul.data.network.api
 
-import com.sansantek.sansanmulmul.data.model.MountainDto
+import com.sansantek.sansanmulmul.data.model.Mountain
+import com.sansantek.sansanmulmul.data.model.MountainSunriseSunset
 import com.sansantek.sansanmulmul.data.model.MountainWeather
-import com.sansantek.sansanmulmul.data.model.SunriseSunsetTimes
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -14,15 +14,15 @@ interface MountainService {
     // 어노테이션으로 GET 방법임을 명시한 후, 주소로 동일하게 쓰고
     // 함수의 인자로, @Path("mountain_id")로 지금 보내주는 함수의 인자가 mountain_id라는 동적 경로로 사용될 것임을 명시
     @GET("mountain/{mountain_id}")
-    suspend fun getMountainDetailByID(@Path("mountain_id") id: Int): Response<MountainDto>
+    suspend fun getMountainDetailByID(@Path("mountain_id") id: Int): Response<Mountain>
 
     @GET("mountain/sun/{mountain_id}")
-    suspend fun getMountainSunriseAndSunSetTimeByID(@Path("mountain_id") id: Int): Response<List<SunriseSunsetTimes>>
+    suspend fun getMountainSunriseAndSunSetTimeByID(@Path("mountain_id") id: Int): Response<List<MountainSunriseSunset>>
 
     @GET("mountain/weather/{mountain_id}")
     suspend fun getMountainWeatherByID(@Path("mountain_id") id: Int): Response<List<MountainWeather>>
 
     @GET("mountain/search")
-    suspend fun searchMountainList(@Query("name") name: String): List<MountainDto>
+    suspend fun searchMountainList(@Query("name") name: String): Response<List<Mountain>>
 
 }

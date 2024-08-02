@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.ui.view.register
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -17,8 +18,11 @@ import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.KakaoLoginToken
 import com.sansantek.sansanmulmul.databinding.FragmentRegisterStartBinding
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
+import com.sansantek.sansanmulmul.ui.view.LoginActivity
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.viewmodel.LoginActivityViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -30,6 +34,12 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
 ) {
     private lateinit var kakaoLoginToken: KakaoLoginToken
     private val activityViewModel: LoginActivityViewModel by activityViewModels()
+    private lateinit var activity: LoginActivity
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity = context as LoginActivity
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -51,7 +61,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
 
     // 카카오 앱으로 로그인하는 로직
     private fun loginWithKakaoApp() {
-        UserApiClient.instance.loginWithKakaoTalk(requireActivity()) { token, error ->
+        UserApiClient.instance.loginWithKakaoTalk(activity) { token, error ->
             if (error != null) {
                 Log.e(TAG, "카카오톡으로 로그인 실패", error)
                 // 사용자가 로그인 과정을 취소한 경우
@@ -59,7 +69,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
                     return@loginWithKakaoTalk
                 }
                 // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
-                UserApiClient.instance.loginWithKakaoAccount(requireActivity(), callback = kakaoLoginCommonCallBack)
+                UserApiClient.instance.loginWithKakaoAccount(activity, callback = kakaoLoginCommonCallBack)
             } else if (token != null) {
                 Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
                 Log.i(TAG, "카카오톡으로 로그인 성공 ${token.idToken}")
@@ -112,23 +122,23 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
     private fun goMain() {
         // 메인 화면으로 이동하는 로직을 구현합니다.
         // 예: 메인 액티비티를 시작하거나 프래그먼트를 교체하는 코드
-        val intent = Intent(requireActivity(), MainActivity::class.java)
+        val intent = Intent(activity, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
-        requireActivity().finish()
+        activity.finish()
         Log.i(TAG, "GoMain() 호출")
     }
 
     private fun goRegister() {
         // 회원 가입으로 이동하는 로직을 구현합니다.
-        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragment_view, ViewPagerFragment()).commitAllowingStateLoss()
+        activity.supportFragmentManager.beginTransaction().replace(R.id.fragment_view, ViewPagerFragment()).commitAllowingStateLoss()
         Log.i(TAG, "GoRegister() 호출")
     }
 
     private fun loginWithKakaoAccount() {
         Log.d(TAG, "loginWithKakao: 카카오 계정으로 로그인 시도")
         // 카카오 계정으로 로그인 시도
-        UserApiClient.instance.loginWithKakaoAccount(requireActivity(), callback = kakaoLoginCommonCallBack)
+        UserApiClient.instance.loginWithKakaoAccount(activity, callback = kakaoLoginCommonCallBack)
         // Redirect URI 설정
         val redirectUri = "http://localhost:8080/user/login" // 실제 리디렉션 URI를 여기에 입력하세요
         val clientId = "7b5d50287be135923631b5d5c05be956" // 실제 클라이언트 ID를 여기에 입력하세요

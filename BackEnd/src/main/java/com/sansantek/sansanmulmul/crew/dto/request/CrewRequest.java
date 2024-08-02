@@ -30,7 +30,7 @@ public class CrewRequest {
     @Schema(description = "그룹 참여 최대 연령", example = "90")
     private int crewMaxAge;
     @Schema(description = "그룹 등산 스타일", example = "[1, 2, 3]")
-    private List<CrewHikingStyle> crewStyles = new ArrayList<>();
+    private List<Integer> crewStyles = new ArrayList<>();
 
     // 산
     @Schema(description = "산 고유 번호", example = "1")

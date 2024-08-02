@@ -109,4 +109,14 @@ public class Crew {
     // 그룹 등산 스타일
     @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CrewHikingStyle> crewStyles = new ArrayList<>();
+
+    public Crew(String crewName, String crewDescription, int crewMaxMembers, CrewRestriction crewGender, int crewMinAge, int crewMaxAge, Mountain mountain) {
+        this.crewName = crewName;
+        this.crewDescription = crewDescription;
+        this.crewMaxMembers = crewMaxMembers;
+        this.crewGender = crewGender;
+        this.crewMinAge = crewMinAge;
+        this.crewMaxAge = crewMaxAge;
+        this.mountain = mountain;
+    }
 }

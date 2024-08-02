@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.ui.view.register
 
 import android.graphics.LinearGradient
 import android.graphics.Shader
+import android.icu.text.DecimalFormat
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -21,7 +22,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-private const val TAG = "산산물물_RegisterExtraInfoFragment"
+private const val TAG = "RegisterExtraInfoFragme 싸피"
 
 class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>(
     FragmentRegisterExtraInfoBinding::bind,
@@ -37,24 +38,45 @@ class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>
         init()
         binding.etNickname.setOnKeyListener{ v, keyCode, event ->
             if(event.action == KeyEvent.ACTION_DOWN && keyCode == KEYCODE_ENTER) {
-                checkValid()
+                activityViewModel.setUserNickName(binding.etNickname.text.toString())
                 true
             }
             false
         }
         binding.rgGender.setOnCheckedChangeListener { group, checkedId ->
-            if(checkedId == 0) {
+            Log.d(TAG, "onViewCreated: $checkedId")
+            if(checkedId == binding.rbMale.id) {
                 activityViewModel.setUserGender("M")
             }
             else{
                 activityViewModel.setUserGender("F")
             }
         }
+        binding.npYear.setOnValueChangedListener { picker, oldValue, newValue ->
+            activityViewModel.setUserBirth("${DecimalFormat("00").format(newValue)}-${DecimalFormat("00").format(binding.npMonth.value)}-${DecimalFormat("00").format(binding.npDay.value)}")
+        }
+        binding.npMonth.setOnValueChangedListener { picker, oldValue, newValue ->
+            activityViewModel.setUserBirth("${DecimalFormat("00").format(binding.npYear.value)}-${DecimalFormat("00").format(newValue)}-${DecimalFormat("00").format(binding.npDay.value)}")
+        }
+        binding.npDay.setOnValueChangedListener { picker, oldValue, newValue ->
+            activityViewModel.setUserBirth("${DecimalFormat("00").format(binding.npYear.value)}-${DecimalFormat("00").format(binding.npMonth.value)}-${DecimalFormat("00").format(newValue)}")
+        }
     }
 
     private fun registerObserver(){
         activityViewModel.userGender.observe(viewLifecycleOwner){
             Log.d(TAG, "observeGender: 성별을 변경했어요! 유효성 검사를 다시 진행할게요!")
+            checkValid()
+        }
+        activityViewModel.userNickname.observe(viewLifecycleOwner){
+            Log.d(TAG, "registerObserver: ")
+            checkValid()
+        }
+        activityViewModel.userName.observe(viewLifecycleOwner){
+            Log.d(TAG, "registerObserver: ")
+            checkValid()
+        }
+        activityViewModel.userBirth.observe(viewLifecycleOwner){
             checkValid()
         }
     }
@@ -94,6 +116,8 @@ class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>
         val user = activityViewModel.user
         user.kakaoAccount?.profile?.let{
             binding.etNickname.setText(it.nickname)
+            activityViewModel.setUserName(it.nickname ?: "")
+            activityViewModel.setUserNickName(it.nickname ?: "")
         }
     }
     private fun setGradient(textView: TextView) {

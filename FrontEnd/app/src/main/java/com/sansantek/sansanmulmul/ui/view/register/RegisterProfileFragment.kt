@@ -10,17 +10,20 @@ import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.activityViewModels
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentRegisterProfileBinding
 import com.sansantek.sansanmulmul.ui.util.PermissionChecker
 import com.sansantek.sansanmulmul.ui.view.LoginActivity
+import com.sansantek.sansanmulmul.ui.viewmodel.LoginActivityViewModel
 
 private const val TAG = "RegisterProfileFragment 싸피"
 class RegisterProfileFragment : BaseFragment<FragmentRegisterProfileBinding>(
     FragmentRegisterProfileBinding::bind,
     R.layout.fragment_register_profile
 ) {
+    private val activityViewModel: LoginActivityViewModel by activityViewModels()
     private lateinit var activity: LoginActivity
     private val permissionList = arrayOf(Manifest.permission.CAMERA)
     private lateinit var permissionChecker : PermissionChecker
@@ -71,6 +74,7 @@ class RegisterProfileFragment : BaseFragment<FragmentRegisterProfileBinding>(
 
                     val image = it
                     binding.ivProfile.setImageURI(image)
+                    activityViewModel.setUserProfileImg(image.toString())
                 }
             }
         }

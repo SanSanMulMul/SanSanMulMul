@@ -30,15 +30,13 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
     }
 
     private fun onCheckedChangeListener(color: Int): CompoundButton.OnCheckedChangeListener {
-        return object : CompoundButton.OnCheckedChangeListener {
-            override fun onCheckedChanged(compoundButton: CompoundButton?, isChecked: Boolean) {
-                val checkBox = compoundButton as CheckBox
-                if (isChecked) {
-                    setGradient(checkBox, color)
-                } else {
-                    // Reset to the original drawable background
-                    checkBox.background = ContextCompat.getDrawable(requireContext(), R.drawable.check_box_background)
-                }
+        return CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
+            val checkBox = compoundButton as CheckBox
+            if (isChecked) {
+                setGradient(checkBox, color)
+            } else {
+                // Reset to the original drawable background
+                checkBox.background = ContextCompat.getDrawable(requireContext(), R.drawable.check_box_background)
             }
         }
     }

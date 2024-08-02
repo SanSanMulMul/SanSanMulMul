@@ -122,4 +122,61 @@ public class MountainController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @GetMapping("/recommend/spring")
+    @Operation(summary = "봄 산 추천",description = "산Id+산Code+산 이름+산 위치+산 높이+산 상세설명+산 이미지+산 계절")
+    public ResponseEntity<List<Mountain>> getSpring() {
+        try {
+            List<Mountain> mountains = mountainService.getSpring();
+            return ResponseEntity.status(HttpStatus.OK).body(mountains);
+        } catch (NoSuchElementException e) {
+            log.error("산 조회 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            log.error("산 조회 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/recommend/summer")
+    @Operation(summary = "여름 산 추천",description = "산Id+산Code+산 이름+산 위치+산 높이+산 상세설명+산 이미지+산 계절")
+    public ResponseEntity<List<Mountain>> getSummer() {
+        try {
+            List<Mountain> mountains = mountainService.getSummer();
+            return ResponseEntity.status(HttpStatus.OK).body(mountains);
+        } catch (NoSuchElementException e) {
+            log.error("산 조회 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            log.error("산 조회 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/recommend/fall")
+    @Operation(summary = "가을 산 추천",description = "산Id+산Code+산 이름+산 위치+산 높이+산 상세설명+산 이미지+산 계절")
+    public ResponseEntity<List<Mountain>> getFall() {
+        try {
+            List<Mountain> mountains = mountainService.getFall();
+            return ResponseEntity.status(HttpStatus.OK).body(mountains);
+        } catch (NoSuchElementException e) {
+            log.error("산 조회 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            log.error("산 조회 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/recommend/winter")
+    @Operation(summary = "겨울 산 추천",description = "산Id+산Code+산 이름+산 위치+산 높이+산 상세설명+산 이미지+산 계절")
+    public ResponseEntity<List<Mountain>> getWinter() {
+        try {
+            List<Mountain> mountains = mountainService.getWinter();
+            return ResponseEntity.status(HttpStatus.OK).body(mountains);
+        } catch (NoSuchElementException e) {
+            log.error("산 조회 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            log.error("산 조회 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

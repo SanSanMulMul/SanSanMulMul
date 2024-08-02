@@ -10,8 +10,6 @@ import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.databinding.FragmentMapTabBinding
-import com.sansantek.sansanmulmul.ui.adapter.BottomSheetMountainListAdapter
-import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
 
 
 class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
@@ -35,24 +33,24 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         bottomSheetBehavior = BottomSheetBehavior.from(binding.layoutBottomSheet)
         bottomSheetBehavior.addBottomSheetCallback(createBottomSheetCallback())
 
-        initMountainListRecyclerView()
+//        initMountainListRecyclerView()
     }
 
     private fun initMountainListRecyclerView() {
         val mountainList = initMountainData()
         val mountainRecyclerView = binding.rvBottomSheetMountain
-        val mountainListAdapter = BottomSheetMountainListAdapter(
-            mountainList,
-            object : BottomSheetMountainListAdapter.OnItemClickListener {
-                override fun onItemClick(mountain: Mountain) {
-                    requireActivity().supportFragmentManager.beginTransaction().addToBackStack(null)
-                        .replace(R.id.fragment_view, MountainDetailFragment()).commit()
-                }
-
-            })
+//        val mountainListAdapter = BottomSheetMountainListAdapter(
+//            mountainList,
+//            object : BottomSheetMountainListAdapter.OnItemClickListener {
+//                override fun onItemClick(mountain: Mountain) {
+//                    requireActivity().supportFragmentManager.beginTransaction().addToBackStack(null)
+//                        .replace(R.id.fragment_view, MountainDetailFragment()).commit()
+//                }
+//
+//            })
 
         mountainRecyclerView.layoutManager = LinearLayoutManager(context)
-        mountainRecyclerView.adapter = mountainListAdapter
+//        mountainRecyclerView.adapter = mountainListAdapter
 
         val dividerDrawable = activity?.getDrawable(R.drawable.recyclerview_divider_lightgray)
         val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
@@ -60,16 +58,17 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         mountainRecyclerView.addItemDecoration(dividerItemDecoration)
     }
 
-    private fun initMountainData(): List<Mountain> {
-        return listOf(
-            Mountain(R.drawable.dummy1, "가야산", 6),
-            Mountain(R.drawable.dummy2, "가리산", 3),
-            Mountain(R.drawable.dummy3, "가리왕산", 2),
-            Mountain(R.drawable.dummy3, "가리왕산", 2),
-            Mountain(R.drawable.dummy3, "가리왕산", 2),
-            Mountain(R.drawable.dummy3, "가리왕산", 2),
-            Mountain(R.drawable.dummy3, "가리왕산", 2)
-        )
+    private fun initMountainData(): List<Mountain>? {
+//        return listOf(
+//            Mountain(R.drawable.dummy1, "가야산", 6),
+//            Mountain(R.drawable.dummy2, "가리산", 3),
+//            Mountain(R.drawable.dummy3, "가리왕산", 2),
+//            Mountain(R.drawable.dummy3, "가리왕산", 2),
+//            Mountain(R.drawable.dummy3, "가리왕산", 2),
+//            Mountain(R.drawable.dummy3, "가리왕산", 2),
+//            Mountain(R.drawable.dummy3, "가리왕산", 2)
+//        )
+        return null
     }
 
     private fun createBottomSheetCallback(): BottomSheetCallback {

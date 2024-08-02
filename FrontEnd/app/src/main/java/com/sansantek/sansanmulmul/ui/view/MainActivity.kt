@@ -24,7 +24,7 @@ import com.sansantek.sansanmulmul.ui.view.hikingrecordingtab.HikingRecordingTabF
 import com.sansantek.sansanmulmul.ui.view.hometab.HomeTabFragment
 import com.sansantek.sansanmulmul.ui.view.maptab.MapTabFragment
 import com.sansantek.sansanmulmul.ui.view.mypagetab.MyPageTabFragment
-import com.ssafy.contentprovider.util.PermissionChecker
+import com.sansantek.sansanmulmul.ui.util.PermissionChecker
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat

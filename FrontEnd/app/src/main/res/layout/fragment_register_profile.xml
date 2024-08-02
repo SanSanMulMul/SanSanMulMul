@@ -65,6 +65,7 @@
             android:src="@drawable/register_profile_tiger" />
 
         <ImageView
+            android:id="@+id/iv_profile"
             android:layout_width="270dp"
             android:layout_height="270dp"
             android:layout_gravity="center"
@@ -74,6 +75,7 @@
             android:elevation="8dp" />
 
         <ImageButton
+            android:id="@+id/ib_edit_prifile_img"
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_gravity="bottom|end"

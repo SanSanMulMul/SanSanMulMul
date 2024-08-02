@@ -3,14 +3,16 @@ package com.sansantek.sansanmulmul.crew.domain.style;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.user.domain.style.HikingStyle;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "crew_hiking_styles")
-@IdClass(CrewHikingStyleId.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
+@IdClass(CrewHikingStyleId.class)
 public class CrewHikingStyle {
 
     @Id

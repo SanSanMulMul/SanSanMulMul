@@ -54,6 +54,7 @@ public class UserStyleService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));
 
+        // 추가를 진행할 등산 스타일 정보 조회
         HikingStyle hikingStyle = hikingStyleRepository.findByHikingStylesId(hikingStyleId)
                 .orElseThrow(() -> new RuntimeException("해당 등산 스타일을 찾을 수 없습니다."));
 

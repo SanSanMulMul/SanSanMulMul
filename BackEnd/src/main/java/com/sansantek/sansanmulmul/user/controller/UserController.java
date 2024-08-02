@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.user.controller;
 
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserRequest;
+import com.sansantek.sansanmulmul.user.dto.response.UserInfoResponse;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,13 +44,13 @@ public class UserController {
 
                 // 해당 닉네임 이미 존재
                 resultMap.put("userNickname", userNickname);
-                resultMap.put("message", "해당 닉네임을 가진 사용자가 존재합니다.");
+                resultMap.put("available", "false");
                 status = HttpStatus.CONFLICT; // 409
 
             } else {
 
                 resultMap.put("userNickname", userNickname);
-                resultMap.put("message", "사용가능한 닉네임입니다.");
+                resultMap.put("available", "true");
                 status = HttpStatus.OK; // 200
 
             }
@@ -65,9 +66,8 @@ public class UserController {
 
     @GetMapping("/info")
     @Operation(summary = "회원 정보 조회", description = "액세스 토큰을 사용해 회원 정보 조회")
-    public ResponseEntity<Map<String, Object>> getUserInfo
+    public ResponseEntity<?> getUserInfo
             (Authentication authentication) {
-        Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
         try {
@@ -75,33 +75,18 @@ public class UserController {
             String userProviderId = authentication.getName();
 
             // 해당 사용자 정보 조회
-            User user = userService.getUser(userProviderId);
-
-            log.debug("userInfo : {}", user);
-            resultMap.put("userId", user.getUserId());
-            resultMap.put("userProviderId", userProviderId);
-            resultMap.put("userName", user.getUserName());
-            resultMap.put("userNickname", user.getUserNickname());
-            resultMap.put("userGender", user.getUserGender());
-            resultMap.put("userProfileImg", user.getUserProfileImg());
-            resultMap.put("userBirth", user.getUserBirth());
-            resultMap.put("userStaticBadge", user.getUserStaticBadge());
-            resultMap.put("userTotalLength", user.getUserTotalLength());
-            resultMap.put("userTotalElevation", user.getUserTotalElevation());
-            resultMap.put("userTotalSteps", user.getUserTotalSteps());
-            resultMap.put("userTotalKcal", user.getUserTotalKcal());
-            resultMap.put("userTotalHiking", user.getUserTotalHiking());
-            resultMap.put("userStoneCount", user.getUserStoneCount());
-            resultMap.put("userIsAdmin", user.isUserIsAdmin());
-
+            UserInfoResponse user = userService.getUserResponse(userProviderId);
             status = HttpStatus.OK;
 
+            log.debug("userInfo : {}", user);
+
+            return new ResponseEntity<>(user, status);
         } catch (Exception e) {
             log.error("토큰 유효성 확인 실패");
             status = HttpStatus.UNAUTHORIZED;
-        }
 
-        return new ResponseEntity<>(resultMap, status);
+            return new ResponseEntity<>(e, status);
+        }
     }
 
     @PatchMapping("/info")

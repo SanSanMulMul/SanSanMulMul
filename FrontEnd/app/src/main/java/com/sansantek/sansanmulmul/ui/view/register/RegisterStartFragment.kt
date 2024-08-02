@@ -87,7 +87,9 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             } else if (user != null) {
                 Log.i(TAG, "사용자 정보 요청 성공 $user")
                 // null 아닌 거 확인되면 LoginActivityViewModel에 user정보 넘겨서 세팅
+                Log.d(TAG, "processAuthAndNavigateByKakaoApp: user ${user}")
                 activityViewModel.setUser(user)
+                Log.d(TAG, "processAuthAndNavigateByKakaoApp: ${activityViewModel.user}")
                 processAuthAndNavigate()
             }
         }

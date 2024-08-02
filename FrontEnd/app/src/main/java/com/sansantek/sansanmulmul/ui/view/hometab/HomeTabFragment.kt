@@ -8,7 +8,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView.OnEditorActionListener
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.sansantek.sansanmulmul.R
@@ -19,10 +19,9 @@ import com.sansantek.sansanmulmul.databinding.FragmentHomeTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.FirstRecommendationViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.NewsViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.HorizontalMarginItemDecoration
-import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
-import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
-import kotlinx.coroutines.launch
+import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
+import com.sansantek.sansanmulmul.ui.viewmodel.MountainSearchViewModel
 import kotlin.math.abs
 
 
@@ -32,6 +31,9 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
 ) {
 
     private lateinit var searchEditTextView: EditText
+    private val searchViewModel: MountainSearchViewModel by activityViewModels()
+    private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
@@ -43,8 +45,6 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
     }
 
     private fun init() {
-
-
         searchEditTextView = binding.includeEditText.etSearch
         val mountainSearchResultFragment = MountainSearchResultFragment()
 
@@ -53,21 +53,12 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
             if (actionId == EditorInfo.IME_ACTION_DONE ||
                 (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
             ) {
-                // api 리스트 받을 거
-                // fragment 인자로 던짐
-                val bundle = Bundle()
+                val searchKeyword = searchEditTextView.text.toString()
+                searchViewModel.setSearchKeyword(searchKeyword)
 
-                // 번들에 받아온 키워드를 다시 타이핑한 텍스트로 넣어줌
-                bundle.putString("search_keyword", searchEditTextView.text.toString())
-
-                // 프래그먼트의 Argument에 번들을 넣어줌
-                mountainSearchResultFragment.setArguments(bundle)
-
-                // 검색 완료 버튼 누를 시 산검색완료 프래그먼트로 이동
                 requireActivity().supportFragmentManager.beginTransaction()
                     .addToBackStack(null)
                     .replace(R.id.fragment_view, mountainSearchResultFragment).commit()
-
                 return@OnEditorActionListener true
             }
             false
@@ -106,7 +97,6 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
             })
         viewPager.adapter = adapter
 
-
         // 중간 아이템부터 보이도록
         val middlePosition = Int.MAX_VALUE / 2
         val initialPosition = middlePosition - middlePosition % adapter.items.size
@@ -120,9 +110,6 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
             val offset = position * -(2 * 180) // offset 값으로 간격 조정
             page.translationX = offset
         }
-
-        // 자동 스크롤
-        // autoScroll(viewPager, autoScrollDelay)
     }
 
     private fun setNewsData(): List<News> {
@@ -149,7 +136,6 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
                 handler.postDelayed(this, delay) // 스크롤 간격
             }
         }
-
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -157,7 +143,6 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
                 handler.postDelayed(runnable, delay)
             }
         })
-
         handler.post(runnable)
     }
 

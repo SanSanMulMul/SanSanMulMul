@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.user.domain.record;
 
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.user.domain.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -20,42 +21,52 @@ public class HikingRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "record_id", nullable = false)
+    @Schema(description = "기록 고유 번호", example = "1")
     private int recordId;
 
     @ManyToOne
     @JoinColumn(name = "mountain_id", nullable = false)
+    @Schema(description = "산 고유 번호", example = "1")
     private Mountain mountain;
     
     // 등산 그룹 멤버
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @Schema(description = "방장 user_id", example = "1")
     private User user;
 
     @Column(name = "record_start_time", nullable = false)
+    @Schema(description = "등산 출발 일시", example = "YYYY-MM-DD 23:22:00")
     private LocalDateTime recordStartTime;
 
     @Column(name = "record_up_distance", nullable = false)
     @ColumnDefault("0")
+    @Schema(description = "등산 상행 코스 이동 거리(단위: m)", example = "0.0")
     private long recordUpDistance;
 
     @Column(name = "record_down_distance", nullable = false)
     @ColumnDefault("0")
+    @Schema(description = "등산 하행 코스 이동 거리(단위: m)", example = "0.0")
     private long recordDownDistance;
 
     @Column(name = "record_duration", nullable = false)
     @ColumnDefault("0")
+    @Schema(description = "등산 산행 소요 시간(단위: 분)", example = "0")
     private long recordDuration;
 
     @Column(name = "record_steps", nullable = false)
     @ColumnDefault("0")
+    @Schema(description = "등산 걸음 수(단위: 걸음)", example = "0")
     private long recordSteps;
 
     @Column(name = "record_elevation", nullable = false)
     @ColumnDefault("0.0")
+    @Schema(description = "등산 고도(단위: m)", example = "0")
     private double recordElevation;
 
     @Column(name = "record_kcal", nullable = false)
     @ColumnDefault("0")
-    private long recordKcal;
+    @Schema(description = "등산 소요 칼로리(단위: Kcal)", example = "0")
+    private int recordKcal;
 }

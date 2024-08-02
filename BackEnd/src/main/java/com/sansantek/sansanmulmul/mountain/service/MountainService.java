@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,5 +56,17 @@ public class MountainService {
     }
     public List<Mountain> searchMountainsByName(String name) {
         return mountainRepository.findByMountainNameContaining(name);
+    }
+    public List<Mountain> getSpring() {
+        return mountainRepository.findByMountainWeatherIn(Arrays.asList("SPRING", "ALL"));
+    }
+    public List<Mountain> getSummer() {
+        return mountainRepository.findByMountainWeatherIn(Arrays.asList("SUMMER", "ALL"));
+    }
+    public List<Mountain> getFall() {
+        return mountainRepository.findByMountainWeatherIn(Arrays.asList("FALL", "ALL"));
+    }
+    public List<Mountain> getWinter() {
+        return mountainRepository.findByMountainWeatherIn(Arrays.asList("WINTER", "ALL"));
     }
 }

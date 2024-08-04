@@ -70,7 +70,7 @@ public class CrewController {
     }
 
     @PostMapping
-    @Operation(summary = "그룹 생성", description = "해당 사용작 그룹 생성")
+    @Operation(summary = "그룹 생성", description = "해당 사용자 그룹 생성")
     public ResponseEntity<?> createCrew
             (Authentication authentication,
              CrewRequest request) {

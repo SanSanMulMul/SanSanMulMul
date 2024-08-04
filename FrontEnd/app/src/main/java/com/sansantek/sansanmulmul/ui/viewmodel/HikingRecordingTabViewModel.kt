@@ -3,25 +3,20 @@ package com.sansantek.sansanmulmul.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.config.Const.Companion.BANNED
-import com.sansantek.sansanmulmul.data.local.SharedPreferencesUtil
+import com.sansantek.sansanmulmul.config.Const.Companion.BEFORE_HIKING
 
-class HikingRecordingTabViewModel(private val sharedPreferencesUtil: SharedPreferencesUtil) :
+
+private const val TAG = "HikingRecordingTabViewModel_싸피"
+class HikingRecordingTabViewModel() :
     ViewModel() {
-    private val _state = MutableLiveData<Int>()
-    val state: LiveData<Int> get() = _state
+    private val _recordingStatus = MutableLiveData<Int>(sharedPreferencesUtil.getHikingRecordingState())
+    val recordingStatus: LiveData<Int> get() = _recordingStatus
 
-    init {
-        _state.value = sharedPreferencesUtil.getHikingRecordingState()
-    }
-
-    fun setState(newState: Int) {
-        _state.value = newState
-        sharedPreferencesUtil.saveHikingRecordingState(newState)
-    }
-
-    fun getState(): Int {
-        return _state.value ?: BANNED
+    fun setRecordingStatus(recordingStatus: Int) {
+        _recordingStatus.value = recordingStatus
+        sharedPreferencesUtil.saveHikingRecordingState(recordingStatus)
     }
 
     fun deleteState() {

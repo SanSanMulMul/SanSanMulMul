@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.jetbrains.kotlin.android)
+  id("com.google.devtools.ksp")
 }
 // local에서 키를 가져옴
 val properties = Properties()
@@ -14,7 +15,7 @@ val naverClientId: String = properties.getProperty("naver_client_id")
 val NATIVE_APP_KEY: String = properties.getProperty("NATIVE_APP_KEY")
 val BUILD_NATIVE_APP_KEY: String = properties.getProperty("BUILD_NATIVE_APP_KEY")
 val SERVER_IP: String = properties.getProperty("SERVER_IP")
-
+val DATABASE_NAME: String = properties.getProperty("DATABASE_NAME")
 android {
   namespace = "com.sansantek.sansanmulmul"
   compileSdk = 34
@@ -33,6 +34,7 @@ android {
 
     buildConfigField("String", "NATIVE_APP_KEY", BUILD_NATIVE_APP_KEY)
     buildConfigField("String", "SERVER_IP", SERVER_IP)
+    buildConfigField("String", "DATABASE_NAME", DATABASE_NAME)
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
@@ -67,6 +69,13 @@ android {
 }
 
 dependencies {
+  //Room 의존성 추가
+  implementation(libs.androidx.room.runtime)
+  implementation(libs.room.ktx)
+  annotationProcessor(libs.room.compiler)
+  ksp(libs.room.compiler)
+
+
   //'com.github.bumptech.glide:glide:4.11.0'
   implementation(libs.glide.v4110)
 

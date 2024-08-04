@@ -31,7 +31,10 @@ public class SwaggerConfiguration {
                 .addList("bearerAuth");
 
         return new OpenAPI()
-                .addServersItem(new Server().url("https://i11d111.p.ssafy.io"))
+                .addServersItem(new Server().url("https://i11d111.p.ssafy.io")
+                    .description("Default Server URL"))
+                .addServersItem(new Server().url("http://localhost:8080")
+                        .description("Local Development Server"))
                 .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
                 .addSecurityItem(securityRequirement)
                 .info(apiInfo());

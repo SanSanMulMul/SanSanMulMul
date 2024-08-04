@@ -30,11 +30,11 @@ public class Crew {
     @Schema(description = "그룹 고유 번호", example = "1")
     private int crewId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User leader;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mountain_id", nullable = false)
     private Mountain mountain;
 

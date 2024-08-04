@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.config
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,12 @@ abstract class BaseFragment<B : ViewBinding>(
 ) : Fragment(layoutResId) {
   private var _binding: B? = null
   protected val binding get() = _binding!!
+  public lateinit var myContext: Context
+
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    myContext = context
+  }
 
   override fun onCreateView(
     inflater: LayoutInflater,

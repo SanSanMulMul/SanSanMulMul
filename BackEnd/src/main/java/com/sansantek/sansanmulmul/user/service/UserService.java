@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.user.service;
 
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.dto.request.SignUpUserRequest;
+import com.sansantek.sansanmulmul.user.dto.request.UpdateUserHikingStyleRequest;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserRequest;
 import com.sansantek.sansanmulmul.user.dto.response.UserInfoResponse;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
@@ -117,6 +118,6 @@ public class UserService {
 
     @Transactional
     public void deleteUser(String userProviderId) {
-        userRepository.DeleteByUserProviderId(userProviderId);
+        userRepository.deleteByUserProviderId(userProviderId);
     }
 }

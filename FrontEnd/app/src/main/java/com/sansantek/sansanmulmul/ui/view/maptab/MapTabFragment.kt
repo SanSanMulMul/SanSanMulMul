@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.ui.view.maptab
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -27,8 +28,18 @@ import com.sansantek.sansanmulmul.data.model.MountainDto
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
 import kotlinx.coroutines.launch
 import android.location.Location
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat
+import androidx.core.location.LocationManagerCompat.requestLocationUpdates
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.OverlayImage
+import com.sansantek.sansanmulmul.data.model.MountainCourse
+import kotlin.math.log
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -44,7 +55,9 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
+    private lateinit var locationClient: FusedLocationProviderClient
     private lateinit var mountainList: List<MountainDto>
+    private lateinit var mountainCourseInfo: List<MountainCourse>
 
     // 권한 코드
     private val LOCATION_PERMISSION_REQUEST_CODE = 5000
@@ -73,8 +86,8 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
             }
 
         }
-
         init()
+//        onMapReady(naverMap)
 
     }
 
@@ -87,11 +100,9 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     private fun initBottomSheet() {
         bottomSheetBehavior = BottomSheetBehavior.from(binding.layoutBottomSheet)
         bottomSheetBehavior.addBottomSheetCallback(createBottomSheetCallback())
-        initMountainListRecyclerView()
     }
 
-    private fun initMountainListRecyclerView() {
-        val mountainList = initMountainData()
+    private fun initMountainListRecyclerView(mountainList: List<Mountain>) {
         val mountainRecyclerView = binding.rvBottomSheetMountain
         val mountainListAdapter = BottomSheetMountainListAdapter(
             mountainList,
@@ -112,16 +123,15 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         mountainRecyclerView.addItemDecoration(dividerItemDecoration)
     }
 
-    private fun initMountainData(): List<Mountain> {
-        return listOf(
-            Mountain(R.drawable.dummy1, "가야산", 6),
-            Mountain(R.drawable.dummy2, "가리산", 3),
-            Mountain(R.drawable.dummy3, "가리왕산", 2),
-            Mountain(R.drawable.dummy3, "가리왕산", 2),
-            Mountain(R.drawable.dummy3, "가리왕산", 2),
-            Mountain(R.drawable.dummy3, "가리왕산", 2),
-            Mountain(R.drawable.dummy3, "가리왕산", 2)
-        )
+    private fun initMountainData(nearbyMountains: List<MountainDto>, mountainCourses: Map<Int, MountainCourse>): List<Mountain> {
+        return nearbyMountains.map { mountainDto ->
+            val courseCount = mountainCourses[mountainDto.mountainId]?.courseCount ?: 0
+            Mountain(
+                R.drawable.dummy1, // 이 부분은 실제 산의 이미지 리소스로 교체해야 합니다.
+                mountainDto.mountainName,
+                courseCount // 코스 수 추가
+            )
+        }
     }
 
     private fun createBottomSheetCallback(): BottomSheetCallback {
@@ -163,13 +173,19 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
 
     // 사용자 위치
     private fun initLocationSource() {
+        locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
         naverMap.locationSource = locationSource
+
+        // 위치 정보 업데이트 요청
+        requestLocationUpdates()
     }
 
     override fun onMapReady(naverMap: NaverMap) {
+        Log.d(TAG, "onMapReady: 실행 중")
         this.naverMap = naverMap
         initLocationSource()
+        Log.d(TAG, "onMapReady: 마지막 위치 ${locationSource.lastLocation}")
 
         // 위치 추적 모드 설정
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
@@ -184,22 +200,88 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         // 기본 카메라 위치 설정
         naverMap.moveCamera(CameraUpdate.zoomTo(10.0))
 
-        showNearbyMountains()
+        requestLocationUpdates()
     }
 
-    private fun showNearbyMountains() {
+    private fun requestLocationUpdates() {
+        locationSource.activate { provider ->
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return@activate
+            }
+            locationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    updateLocation(location)
+                } else {
+                    Log.d(TAG, "requestLocationUpdates: 위치 정보를 가져올 수 없습니다.")
+                }
+            }
+        }
+    }
+
+    private fun updateLocation(location: Location) {
+        Log.d(TAG, "updateLocation: 위치 업데이트 ${location.latitude}, ${location.longitude}")
+        moveCameraToLocation(location)
+        showNearbyMountains(location)
+    }
+
+    private fun moveCameraToLocation(location: Location) {
+        val cameraUpdate = CameraUpdate.scrollTo(LatLng(location.latitude, location.longitude)).animate(
+            CameraAnimation.Fly, 1000)
+        naverMap.moveCamera(cameraUpdate)
+    }
+
+    private fun showNearbyMountains(location: Location) {
         val currentLocation = locationSource.lastLocation ?: return
 
         val currentLat = currentLocation.latitude
         val currentLon = currentLocation.longitude
 
-        mountainList.filter { mountain ->
+        val nearbyMountains = mountainList.filter { mountain ->
             val distance = calculateDistance(currentLat, currentLon, mountain.mountainLat, mountain.mountainLon)
             distance <= 50 // 50km 이내에 있는 산 필터링
-        }.forEach { mountain ->
-            val marker = Marker()
-            marker.position = LatLng(mountain.mountainLat, mountain.mountainLon)
-            marker.map = naverMap
+        }
+
+        // 반목문으로 위치와 태그 지정
+        nearbyMountains.forEach { mountain ->
+            val marker = Marker().apply {
+                position = LatLng(mountain.mountainLat, mountain.mountainLon)
+                map = naverMap
+                tag = mountain.mountainName
+            }
+
+            // 마커 클릭 리스너 설정
+            marker.setOnClickListener { overlay ->
+                val marker = overlay as Marker
+                val infoWindow = InfoWindow().apply {
+                    adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
+                        override fun getText(infoWindow: InfoWindow): CharSequence {
+                            return marker.tag as CharSequence
+                        }
+                    }
+                }
+
+                // 이미 열려있는 InfoWindow가 있는 경우 닫음
+                if (marker.infoWindow != null) {
+                    marker.infoWindow?.close()
+                } else {
+                    infoWindow.open(marker)
+                }
+                true
+            }
+        }
+        Log.d(TAG, "showNearbyMountains: $nearbyMountains")
+        
+        // 코스 수 받아오기
+        val nearbyMountainIds = nearbyMountains.map { it.mountainId }
+        lifecycleScope.launch {
+            val mountainCourse = mutableMapOf<Int, MountainCourse>()
+            nearbyMountainIds.forEach { mountainId ->
+                val mountainCourseInfo = mountainService.getMountainCourse(mountainId)
+                mountainCourse[mountainId] = mountainCourseInfo
+                Log.d(TAG, "mountainCourseInfo for mountainId $mountainId: $mountainCourseInfo")
+            }
+            val mountains = initMountainData(nearbyMountains, mountainCourse)
+            initMountainListRecyclerView(mountains)
         }
     }
 

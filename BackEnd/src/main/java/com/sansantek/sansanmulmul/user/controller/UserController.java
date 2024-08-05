@@ -128,4 +128,31 @@ public class UserController {
         }
         return new ResponseEntity<>(resultMap, status);
     }
+
+    @DeleteMapping
+    @Operation(summary = "회원 탈퇴", description = "액세스 토큰을 사용해 회원 탈퇴")
+    public ResponseEntity<?> deleteUser
+            (Authentication authentication) {
+
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        try {
+            // 토큰을 통한 userProviderId 추출
+            String userProviderId = authentication.getName();
+
+            // 해당 사용자 정보 삭제
+            userService.deleteUser(userProviderId);
+
+            status = HttpStatus.OK; // 200
+
+            return new ResponseEntity<>(status);
+
+        } catch (Exception e) {
+
+            log.error("회원 정보 수정 실패: {}", e.getMessage());
+            status = HttpStatus.UNAUTHORIZED; // 401
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
 }

@@ -5,6 +5,7 @@ import com.sansantek.sansanmulmul.exception.auth.InvalidTokenException;
 import com.sansantek.sansanmulmul.exception.style.AlreadyStyleException;
 import com.sansantek.sansanmulmul.exception.style.StyleNotFoundException;
 import com.sansantek.sansanmulmul.user.domain.User;
+import com.sansantek.sansanmulmul.user.dto.request.UpdateUserHikingStyleRequest;
 import com.sansantek.sansanmulmul.user.dto.response.UserStyleResponse;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import com.sansantek.sansanmulmul.user.service.style.UserStyleService;
@@ -37,9 +38,8 @@ public class UserStyleController {
 
     @GetMapping
     @Operation(summary = "회원 등산 스타일 조회", description = "해당 회원의 선택된 등산 스타일 조회")
-    public ResponseEntity<Map<String, Object>> getHikingStyles
+    public ResponseEntity<?> getHikingStyles
             (Authentication authentication) {
-        Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
         try {
@@ -50,31 +50,30 @@ public class UserStyleController {
             User user = userService.getUser(userProviderId);
 
             // 사용자 등산 스타일 조회
-            List<UserStyleResponse> userHikingStyleList = userStyleService.getStyleList(user.getUserId());
+            List<Integer> userHikingStyleList = userStyleService.getStyleList(user.getUserId());
 
-            // JSON으로 결과 전송
-            resultMap.put("userHikingStyleListSize", userHikingStyleList.size());
-            resultMap.put("userHikingStyleList", userHikingStyleList);
+            status = HttpStatus.OK; // 200
 
-            status = HttpStatus.OK;
+            return new ResponseEntity<>(userHikingStyleList, status);
         } catch (InvalidTokenException e) {
 
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
-            resultMap.put("error", "Invalid or expired token");
             status = HttpStatus.UNAUTHORIZED; // 401
+
+            return new ResponseEntity<>(e.getMessage(), status);
 
         } catch (Exception e) {
 
             log.error("회원 등산 스타일 조회 실패: {}", e.getMessage());
             status = HttpStatus.BAD_REQUEST; // 400
 
+            return new ResponseEntity<>(e.getMessage(), status);
         }
 
-        return new ResponseEntity<>(resultMap, status);
     }
 
     @PostMapping
-    @Operation(summary = "회원 등산 스타일 추가", description = "해당 회원에 등산 스타일 추가")
+    @Operation(summary = "회원 등산 스타일 추가", description = "해당 회원의 등산 스타일 추가")
     public ResponseEntity<Map<String, Object>> addHikingStyle
             (Authentication authentication,
              @RequestParam int hikingStyleId) {
@@ -114,7 +113,7 @@ public class UserStyleController {
     }
 
     @DeleteMapping
-    @Operation(summary = "회원 등산 스타일 제거", description = "해당 회원에 등산 스타일 제거")
+    @Operation(summary = "회원 등산 스타일 제거", description = "해당 회원의 등산 스타일 제거")
     public ResponseEntity<Map<String, Object>> deleteHikingStyle
             (Authentication authentication,
              @RequestParam int hikingStyleId) {
@@ -157,5 +156,37 @@ public class UserStyleController {
         }
 
         return new ResponseEntity<>(resultMap, status);
+    }
+
+    @PutMapping
+    @Operation(summary = "회원 등산 스타일 수정", description = "해당 회원의 등산 스타일 수정")
+    public ResponseEntity<?> updateHIkingStyle
+            (Authentication authentication,
+             @RequestBody UpdateUserHikingStyleRequest request) {
+
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        try {
+            // 토큰을 통한 userProviderId 추출
+            String userProviderId = authentication.getName();
+
+            // 해당 사용자 가져오기
+            User user = userService.getUser(userProviderId);
+
+            // 사용자 등산 스타일 수정
+            boolean response = userStyleService.updateUserHikingStyle(user.getUserId(), request);
+
+            status = HttpStatus.OK; // 200
+
+            return new ResponseEntity(response, status);
+
+        } catch (InvalidTokenException e) {
+
+            log.error("토큰 유효성 검사 실패: {}", e.getMessage());
+            status = HttpStatus.UNAUTHORIZED; // 401
+
+
+            return new ResponseEntity(e.getMessage(), status);
+        }
     }
 }

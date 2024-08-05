@@ -45,6 +45,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             Log.d(TAG, "onViewCreated: 로그인 시도")
             // 카카오 로그인 시도
             loginWithKakao()
+//                goRegister()
         }
     }
 

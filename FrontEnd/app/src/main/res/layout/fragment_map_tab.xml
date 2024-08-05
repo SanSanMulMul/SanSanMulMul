@@ -11,7 +11,7 @@
     android:layout_height="match_parent">
 
     <!-- TODO : 이건 나중에 View 대신 Map으로 대체! -->
-    <View
+    <com.naver.maps.map.MapView
       android:id="@+id/maptab_map"
       android:layout_width="match_parent"
       android:layout_height="match_parent"

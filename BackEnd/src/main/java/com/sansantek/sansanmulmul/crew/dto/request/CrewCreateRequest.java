@@ -1,7 +1,6 @@
 package com.sansantek.sansanmulmul.crew.dto.request;
 
 import com.sansantek.sansanmulmul.crew.domain.CrewRestriction;
-import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class CrewRequest {
+public class CrewCreateRequest {
     // 그룹 생성 요청
     @Schema(description = "그룹 이름", example = "한사랑 산악회")
     private String crewName;

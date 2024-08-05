@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.user.controller;
 
+import com.sansantek.sansanmulmul.exception.user.UserDeletionException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserRequest;
 import com.sansantek.sansanmulmul.user.dto.response.UserInfoResponse;
@@ -27,9 +28,6 @@ public class UserController {
 
     // service
     private final UserService userService;
-
-    // JWT
-    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/nickname")
     @Operation(summary = "닉네임 중복 확인", description = "액세스 토큰을 사용해 회원 정보 조회 후 닉네임 중복 확인")
@@ -141,15 +139,21 @@ public class UserController {
             String userProviderId = authentication.getName();
 
             // 해당 사용자 정보 삭제
-            userService.deleteUser(userProviderId);
+            boolean chk = userService.deleteUser(userProviderId);
 
             status = HttpStatus.OK; // 200
 
-            return new ResponseEntity<>(status);
+            return new ResponseEntity<>(chk, status);
 
+        }catch (UserDeletionException e) {
+
+            log.error("회원 정보 삭제 실패: {}", e.getMessage());
+            status = HttpStatus.NOT_FOUND; // 404
+
+            return new ResponseEntity<>(e.getMessage(), status);
         } catch (Exception e) {
 
-            log.error("회원 정보 수정 실패: {}", e.getMessage());
+            log.error("회원 토큰 인증 실패 : {}", e.getMessage());
             status = HttpStatus.UNAUTHORIZED; // 401
 
             return new ResponseEntity<>(e.getMessage(), status);

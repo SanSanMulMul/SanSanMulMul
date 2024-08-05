@@ -33,9 +33,6 @@ public class UserStyleController {
     private final UserService userService;
     private final UserStyleService userStyleService;
 
-    // JWT
-    private final JwtTokenProvider jwtTokenProvider;
-
     @GetMapping
     @Operation(summary = "회원 등산 스타일 조회", description = "해당 회원의 선택된 등산 스타일 조회")
     public ResponseEntity<?> getHikingStyles
@@ -70,6 +67,38 @@ public class UserStyleController {
             return new ResponseEntity<>(e.getMessage(), status);
         }
 
+    }
+
+    @PutMapping
+    @Operation(summary = "회원 등산 스타일 수정", description = "해당 회원의 등산 스타일 수정")
+    public ResponseEntity<?> updateHIkingStyle
+            (Authentication authentication,
+             @RequestBody UpdateUserHikingStyleRequest request) {
+
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        try {
+            // 토큰을 통한 userProviderId 추출
+            String userProviderId = authentication.getName();
+
+            // 해당 사용자 가져오기
+            User user = userService.getUser(userProviderId);
+
+            // 사용자 등산 스타일 수정
+            boolean response = userStyleService.updateUserHikingStyle(user.getUserId(), request);
+
+            status = HttpStatus.OK; // 200
+
+            return new ResponseEntity(response, status);
+
+        } catch (InvalidTokenException e) {
+
+            log.error("토큰 유효성 검사 실패: {}", e.getMessage());
+            status = HttpStatus.UNAUTHORIZED; // 401
+
+
+            return new ResponseEntity(e.getMessage(), status);
+        }
     }
 
     @PostMapping
@@ -156,37 +185,5 @@ public class UserStyleController {
         }
 
         return new ResponseEntity<>(resultMap, status);
-    }
-
-    @PutMapping
-    @Operation(summary = "회원 등산 스타일 수정", description = "해당 회원의 등산 스타일 수정")
-    public ResponseEntity<?> updateHIkingStyle
-            (Authentication authentication,
-             @RequestBody UpdateUserHikingStyleRequest request) {
-
-        HttpStatus status = HttpStatus.ACCEPTED;
-
-        try {
-            // 토큰을 통한 userProviderId 추출
-            String userProviderId = authentication.getName();
-
-            // 해당 사용자 가져오기
-            User user = userService.getUser(userProviderId);
-
-            // 사용자 등산 스타일 수정
-            boolean response = userStyleService.updateUserHikingStyle(user.getUserId(), request);
-
-            status = HttpStatus.OK; // 200
-
-            return new ResponseEntity(response, status);
-
-        } catch (InvalidTokenException e) {
-
-            log.error("토큰 유효성 검사 실패: {}", e.getMessage());
-            status = HttpStatus.UNAUTHORIZED; // 401
-
-
-            return new ResponseEntity(e.getMessage(), status);
-        }
     }
 }

@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.data.network.api
 
+import com.sansantek.sansanmulmul.data.model.MountainCourse
 import com.sansantek.sansanmulmul.data.model.MountainDto
 import com.sansantek.sansanmulmul.data.model.MountainWeather
 import com.sansantek.sansanmulmul.data.model.SunriseSunsetTimes
@@ -28,4 +29,8 @@ interface MountainService {
     // 전체 산 리스트
     @GET("mountain")
     suspend fun getMountainList(): List<MountainDto>
+
+    // 산 코스 조회
+    @GET("mountain/{mountainId}/course")
+    suspend fun getMountainCourse(@Path("mountainId") id: Int): MountainCourse
 }

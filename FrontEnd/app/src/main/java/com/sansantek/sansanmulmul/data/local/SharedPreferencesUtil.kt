@@ -32,6 +32,18 @@ class SharedPreferencesUtil(context: Context) {
         }
     }
 
+    // recording 서비스 실행 유무 저장하기
+    fun saveRecordingServiceState(recordingStatus: String) {
+        val editor = preferences.edit()
+        editor.putString("isRecording", recordingStatus)
+        editor.apply()
+    }
+
+    // recording 서비스 실행 유무 불러오기
+    fun getRecordingServiceState(): String {
+        return preferences.getString("isRecording", "종료") ?: "종료"
+    }
+
 //    //사용자 정보 저장
 //    fun addUser(user:User){
 //        val editor = preferences.edit()
@@ -81,7 +93,7 @@ class SharedPreferencesUtil(context: Context) {
     }
 
 
-    fun saveHikingRecordingTime(seconds: Long) {
+    fun saveHikingRecordingBaseTime(seconds: Long) {
         val editor = preferences.edit()
 
         if (preferences.contains(SP_SPEND_TIME_KEY)) {
@@ -92,7 +104,7 @@ class SharedPreferencesUtil(context: Context) {
         editor.apply()
     }
 
-    fun getHikingRecordingTime(): Long {
+    fun getHikingRecordingBaseTime(): Long {
         return preferences.getLong(SP_SPEND_TIME_KEY, 0)
     }
 
@@ -103,19 +115,14 @@ class SharedPreferencesUtil(context: Context) {
         editor.apply()
     }
 
-    fun saveHikingRecordingTimeIsRunning(isRunning: Boolean) {
+    fun saveHikingRecordingStatus(recordingStatus: String) {
         val editor = preferences.edit()
-
-        if (preferences.contains(SP_SPEND_TIME_IS_RUNNING_KEY)) {
-            editor.putBoolean(SP_SPEND_TIME_IS_RUNNING_KEY, isRunning);
-        } else {
-            editor.putBoolean(SP_SPEND_TIME_IS_RUNNING_KEY, isRunning);
-        }
+        editor.putString(SP_SPEND_TIME_IS_RUNNING_KEY, recordingStatus)
         editor.apply()
     }
 
-    fun getHikingRecordingTimeIsRunning(): Boolean {
-        return preferences.getBoolean(SP_SPEND_TIME_IS_RUNNING_KEY, false)
+    fun getHikingRecordingStatus(): String {
+        return preferences.getString(SP_SPEND_TIME_IS_RUNNING_KEY, "종료") ?: "종료"
     }
 
 

@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.crew.controller;
 
-import com.sansantek.sansanmulmul.crew.dto.request.CrewRequest;
+import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequest;
+import com.sansantek.sansanmulmul.crew.dto.request.CrewCreateRequest;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewUserResponse;
@@ -39,13 +40,14 @@ public class CrewController {
 
 
     @GetMapping("/all")
-    @Operation(summary = "그룹 정보 전체 조회", description = "그룹에 대한 정보를 전체 조회")
-    public ResponseEntity<?> getAllCrews() {
+    @Operation(summary = "그룹 전체 목록 조회", description = "그룹 전체 목록 정보 조회")
+    public ResponseEntity<?> getAllCrews(Authentication authentication) {
         HttpStatus status = HttpStatus.ACCEPTED;
 
         try {
             // 전체 그룹 가져오기
-            List<CrewResponse> crewResponse = crewService.getAllCrews();
+            String userProviderId = authentication.getName();
+            List<CrewResponse> crewResponse = crewService.getAllCrews(userProviderId);
             
             return new ResponseEntity<>(crewResponse, status);
 
@@ -83,59 +85,59 @@ public class CrewController {
 //        }
 //    }
 
-    @GetMapping("/detail")
-    @Operation(summary = "그룹 상세 정보 조회", description = "해당 그룹에 대한 상세 정보를 조회")
-    public ResponseEntity<?> getCrewDetail(@RequestParam("crewId") int crewId) {
-        HttpStatus status = HttpStatus.ACCEPTED;
+//    @GetMapping("/detail")
+//    @Operation(summary = "그룹 상세 정보 조회", description = "해당 그룹에 대한 상세 정보를 조회")
+//    public ResponseEntity<?> getCrewDetail(@RequestParam("crewId") int crewId) {
+//        HttpStatus status = HttpStatus.ACCEPTED;
+//
+//        try {
+//            CrewDetailResponse crewDetailResponse = crewService.getCrewDetail(crewId);
+//
+//            return new ResponseEntity<>(crewDetailResponse, status);
+//        } catch (Exception e) {
+//
+//            status = HttpStatus.BAD_REQUEST; // 400
+//
+//            return new ResponseEntity<>(e.getMessage(), status);
+//        }
+//    }
 
-        try {
-            CrewDetailResponse crewDetailResponse = crewService.getCrewDetail(crewId);
-
-            return new ResponseEntity<>(crewDetailResponse, status);
-        } catch (Exception e) {
-
-            status = HttpStatus.BAD_REQUEST; // 400
-
-            return new ResponseEntity<>(e.getMessage(), status);
-        }
-    }
-
-    @PostMapping
-    @Operation(summary = "그룹 생성", description = "해당 사용자 그룹 생성")
-    public ResponseEntity<?> createCrew
-            (Authentication authentication,
-             CrewRequest request) {
-        HttpStatus status = HttpStatus.ACCEPTED;
-
-        try {
-
-            // 토큰을 통해 userProvider 추출
-            String userProviderId = authentication.getName();
-
-            // 해당 사용자 가져오기
-            User user = userService.getUser(userProviderId);
-
-            // 해당 사용자 userId로 그룹 생성 - 방장
-            crewService.addCrew(user.getUserId(), request);
-
-            status = HttpStatus.CREATED; // 201
-
-            return new ResponseEntity<>(status);
-
-        } catch (InvalidTokenException e) {
-
-            log.error("토큰 유효성 검사 실패: {}", e.getMessage());
-            status = HttpStatus.UNAUTHORIZED; // 401
-            
-            return new ResponseEntity<>(e.getMessage(), status);
-        } catch (Exception e) {
-
-            log.error("그룹 생성 실패: {}", e.getMessage());
-            status = HttpStatus.BAD_REQUEST; // 400
-            
-            return new ResponseEntity<>(e.getMessage(), status);
-        }
-    }
+//    @PostMapping
+//    @Operation(summary = "그룹 생성", description = "해당 사용자 그룹 생성")
+//    public ResponseEntity<?> createCrew
+//            (Authentication authentication,
+//             CrewCreateRequest request) {
+//        HttpStatus status = HttpStatus.ACCEPTED;
+//
+//        try {
+//
+//            // 토큰을 통해 userProvider 추출
+//            String userProviderId = authentication.getName();
+//
+//            // 해당 사용자 가져오기
+//            User user = userService.getUser(userProviderId);
+//
+//            // 해당 사용자 userId로 그룹 생성 - 방장
+//            crewService.addCrew(user.getUserId(), request);
+//
+//            status = HttpStatus.CREATED; // 201
+//
+//            return new ResponseEntity<>(status);
+//
+//        } catch (InvalidTokenException e) {
+//
+//            log.error("토큰 유효성 검사 실패: {}", e.getMessage());
+//            status = HttpStatus.UNAUTHORIZED; // 401
+//
+//            return new ResponseEntity<>(e.getMessage(), status);
+//        } catch (Exception e) {
+//
+//            log.error("그룹 생성 실패: {}", e.getMessage());
+//            status = HttpStatus.BAD_REQUEST; // 400
+//
+//            return new ResponseEntity<>(e.getMessage(), status);
+//        }
+//    }
     @GetMapping("/member/{crewId}")
     public ResponseEntity<?> getCrewMembers(@PathVariable int crewId) {
         try {

@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.crew.repository.style;
+package com.sansantek.sansanmulmul.crew.repository;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;

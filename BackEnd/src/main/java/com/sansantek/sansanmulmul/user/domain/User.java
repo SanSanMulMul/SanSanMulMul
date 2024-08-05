@@ -136,7 +136,7 @@ public class User /* implements UserDetails */ {
         this.userIsAdmin = userIsAdmin;
     }
 
-    public User(String userProviderId, String userPassword, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth, int userStaticBadge, boolean userIsAdmin, List<UserHikingStyle> userStyles) {
+        public User(String userProviderId, String userPassword, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth, int userStaticBadge, boolean userIsAdmin, List<UserHikingStyle> userStyles) {
         this.userProviderId = userProviderId;
         this.userPassword = userPassword;
         this.userName = userName;

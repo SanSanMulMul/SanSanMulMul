@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface UserHikingStyleRepository extends JpaRepository<UserHikingStyle, UserHikingStyleId> {
     List<UserHikingStyle> findByUser_UserId(int userId);
     Optional<UserHikingStyle> findByUserAndStyle(User user, HikingStyle style);
+    List<UserHikingStyle> findByUser(User user);
 }

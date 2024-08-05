@@ -11,5 +11,4 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserStyleResponse {
     private int hikingStylesId;
-    private String hikingStylesName;
 }

@@ -3,7 +3,9 @@ package com.sansantek.sansanmulmul.crew.controller;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewRequest;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewStyleResponse;
 import com.sansantek.sansanmulmul.crew.service.CrewService;
+import com.sansantek.sansanmulmul.crew.service.style.CrewStyleService;
 import com.sansantek.sansanmulmul.exception.auth.InvalidTokenException;
 import com.sansantek.sansanmulmul.exception.style.GroupNotFoundException;
 import com.sansantek.sansanmulmul.user.domain.User;
@@ -29,6 +31,7 @@ public class CrewController {
     // service
     private final CrewService crewService;
     private final UserService userService;
+    private final CrewStyleService crewStyleService;
 
     @GetMapping("/all")
     @Operation(summary = "그룹 정보 전체 조회", description = "그룹에 대한 정보를 전체 조회")
@@ -46,6 +49,29 @@ public class CrewController {
 
             return new ResponseEntity<>(e.getMessage(), status);
         } catch (Exception e) {
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
+
+    @GetMapping
+    @Operation(summary = "그룹 특정 등산 스타일 전체 조회", description = "해당 등산 스타일에 해당하는 그룹 전체 조회")
+    public ResponseEntity<?> getHikingStyles(@RequestParam("styleId") int styleId) {
+//        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        try {
+
+            // 특정 스타일에 해당하는 그룹 정보 조회
+            List<CrewStyleResponse> crewStyleResponseList = crewStyleService.getCrewList(styleId);
+
+            // JSON으로 결과 전송
+//            resultMap.put("crewStyleResponseList", crewStyleResponseList);
+
+            return new ResponseEntity<>(crewStyleResponseList, status);
+
+        } catch ( Exception e ) {
             status = HttpStatus.BAD_REQUEST; // 400
 
             return new ResponseEntity<>(e.getMessage(), status);
@@ -84,7 +110,7 @@ public class CrewController {
             // 해당 사용자 가져오기
             User user = userService.getUser(userProviderId);
 
-            // 해당 사용자 userId로 그룹 생성
+            // 해당 사용자 userId로 그룹 생성 - 방장
             crewService.addCrew(user.getUserId(), request);
 
             status = HttpStatus.CREATED; // 201

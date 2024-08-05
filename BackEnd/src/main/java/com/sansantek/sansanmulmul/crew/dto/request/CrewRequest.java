@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class CrewRequest {
-    // 그룹
+    // 그룹 생성 요청
     @Schema(description = "그룹 이름", example = "한사랑 산악회")
     private String crewName;
     @Schema(description = "그룹 설명", example = "모집합니다.")

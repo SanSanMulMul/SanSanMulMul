@@ -36,7 +36,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
                 Log.d(TAG, "onCreate: token: $token")
                 val newToken = userService.refreshToken(makeHeaderByAccessToken(token!!.accessToken))
                 Log.d(TAG, "onCreate: result : ${newToken.code()}")
-                if(newToken.code() == 202){
+                if(newToken.code() == 200){
                     launch(Dispatchers.IO) {
                         newToken.body()?.let {
                             sharedPreferencesUtil.saveKakaoLoginToken(it)

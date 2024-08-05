@@ -114,4 +114,9 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    @Transactional
+    public void deleteUser(String userProviderId) {
+        userRepository.DeleteByUserProviderId(userProviderId);
+    }
 }

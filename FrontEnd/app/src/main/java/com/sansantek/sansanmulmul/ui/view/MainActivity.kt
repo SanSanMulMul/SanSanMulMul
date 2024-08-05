@@ -127,7 +127,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         val fragment =
             supportFragmentManager.findFragmentById(R.id.fragment_view) as HikingRecordingTabFragment
         Log.d(TAG, "onActivityResult: $bitmap")
-        fragment.setImageBitmap(bitmap)
+//        fragment.setImageBitmap(bitmap)
     }
 
 

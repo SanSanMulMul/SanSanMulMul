@@ -19,6 +19,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startForegroundService
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.OnMapReadyCallback
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.config.BaseFragment
@@ -37,7 +39,7 @@ private const val TAG = "HikingRecordingTabFragment_싸피"
 class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBinding>(
     FragmentHikingRecordingTabBinding::bind,
     R.layout.fragment_hiking_recording_tab
-) {
+), OnMapReadyCallback {
     private lateinit var permissionChecker: PermissionChecker
     private var isHikingInfoViewExpanded = false
     private lateinit var rootActivity: MainActivity
@@ -117,6 +119,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                 // 상행 중이었을 때 => 하행으로 바뀜 버튼은 종료 버튼으로
                 HIKING -> {
                     deActivateRecordingService()
+                    resetChronometerTime()
                     launchChronometer()
                     tryRecordingServiceByStatus("하행")
                     hikingRecordingTabViewModel.setRecordingStatus(AFTER_HIKING)
@@ -233,9 +236,9 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         }
     }
 
-    fun setImageBitmap(imageBitmap: Bitmap?) {
-        binding.hikingRecordingTabMap.setImageBitmap(imageBitmap)
-    }
+//    fun setImageBitmap(imageBitmap: Bitmap?) {
+//        binding.hikingRecordingTabMap.setImageBitmap(imageBitmap)
+//    }
 
     private fun changeHikingButton(button: AppCompatButton, toState: Int) {
         when (toState) {
@@ -266,6 +269,10 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     private fun syncButtonStatus(){
         Log.d(TAG, "syncButtonStatus: syncButtonStastus")
         hikingRecordingTabViewModel.setRecordingStatus(sharedPreferencesUtil.getHikingRecordingState())
+    }
+
+    private fun resetBaseTime(){
+        chronometerViewModel.setBaseTime(SystemClock.elapsedRealtime())
     }
 
     private fun launchChronometer() {
@@ -310,5 +317,9 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
             if (!check) { return false }
         }
         return true
+    }
+
+    override fun onMapReady(p0: NaverMap) {
+
     }
 }

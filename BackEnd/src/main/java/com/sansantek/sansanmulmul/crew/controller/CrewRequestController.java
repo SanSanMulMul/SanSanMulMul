@@ -3,6 +3,7 @@ package com.sansantek.sansanmulmul.crew.controller;
 
 import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequest;
 import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequestStatus;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewRequestResponse;
 import com.sansantek.sansanmulmul.crew.service.request.CrewRequestService;
 import com.sansantek.sansanmulmul.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/crew")
@@ -70,6 +74,17 @@ public class CrewRequestController {
             String leaderProviderId = authentication.getName();
             crewRequestService.OutUser(crewId, userId, leaderProviderId);
             return ResponseEntity.ok().body("사용자가 크루에서 강퇴되었습니다.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{crewId}/requests")
+    @Operation(summary = "그룹 가입요청 목록", description = "그룹회원 가입요청목록 불러오는기능")
+    public ResponseEntity<?> getCrewRequests(@PathVariable int crewId, Authentication authentication) {
+        try {
+            List<CrewRequestResponse> requests = crewRequestService.getCrewRequests(crewId, authentication.getName());
+            return ResponseEntity.ok(requests);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

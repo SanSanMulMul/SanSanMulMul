@@ -4,6 +4,7 @@ import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequest;
 import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequestStatus;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewRequestResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewUserResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewRequestRepository;
@@ -79,12 +80,14 @@ public class CrewRequestService {
             CrewUser crewUser = CrewUser.builder()
                     .crew(crewRequest.getCrew())
                     .user(crewRequest.getUser())
+                    .isLeader(false)
                     .build();
             crewUserRepository.save(crewUser);
         }
 
         return crewRequest;
     }
+
     @Transactional
     public void OutUser(int crewId, int userId, String leaderProviderId) {
         Crew crew = crewRepository.findById(crewId)
@@ -103,6 +106,7 @@ public class CrewRequestService {
 
         crewUserRepository.delete(crewUser);
     }
+
     @Transactional
     public List<CrewUserResponse> getCrewMembers(int crewId) {
         Crew crew = crewRepository.findById(crewId)
@@ -123,5 +127,31 @@ public class CrewRequestService {
             userResponses.add(userResponse);
         }
         return userResponses;
+    }
+
+    @Transactional
+    public List<CrewRequestResponse> getCrewRequests(int crewId, String userProviderId) {
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("크루를 찾을 수 없습니다."));
+
+        User leader = crew.getLeader();
+        if (!leader.getUserProviderId().equals(userProviderId)) {
+            throw new RuntimeException("리더만 이 정보를 볼 수 있습니다.");
+        }
+
+        List<CrewRequest> requests = crewRequestRepository.findByCrewAndCrewRequestStatus(crew, CrewRequestStatus.R);
+        List<CrewRequestResponse> responseList = new ArrayList<>();
+
+        for (CrewRequest request : requests) {
+            CrewRequestResponse response = new CrewRequestResponse(
+                    request.getRequestId(),
+                    request.getUser().getUserName(),
+                    request.getUser().getUserNickname(),
+                    request.getCrewRequestStatus().name()
+            );
+            responseList.add(response);
+        }
+
+        return responseList;
     }
 }

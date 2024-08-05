@@ -40,4 +40,7 @@ public interface CrewRequestRepository extends JpaRepository<CrewRequest, Intege
     // 특정 크루, 사용자, 상태에 대한 가입 요청 존재 여부 확인
     boolean existsByCrewAndUserAndCrewRequestStatus(Crew crew, User user, CrewRequestStatus status);
 
+    List<CrewRequest> findByCrew(Crew crew);
+
+    List<CrewRequest> findByCrewAndCrewRequestStatus(Crew crew, CrewRequestStatus status);
 }

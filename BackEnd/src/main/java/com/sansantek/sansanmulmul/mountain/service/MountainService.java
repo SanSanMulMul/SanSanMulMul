@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,5 +69,15 @@ public class MountainService {
     }
     public List<Mountain> getWinter() {
         return mountainRepository.findByMountainWeatherIn(Arrays.asList("WINTER", "ALL"));
+    }
+
+    public List<String> getMountainName() {
+        List<String> mountainNameList = new ArrayList<>();
+
+        for (Mountain mountain : mountainRepository.findAll()) {
+            mountainNameList.add(mountain.getMountainName());
+        }
+
+        return mountainNameList;
     }
 }

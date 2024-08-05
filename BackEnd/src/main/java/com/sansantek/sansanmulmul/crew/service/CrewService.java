@@ -73,6 +73,7 @@ public class CrewService {
         return crewDetailResponse;
     }
 
+    // 그룹 생성
     @Transactional
     public void addCrew(int crewId, CrewRequest request) {
         Mountain mountain = mountainRepository.findByMountainId(request.getMountainId());

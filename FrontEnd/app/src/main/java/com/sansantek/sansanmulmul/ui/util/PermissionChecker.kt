@@ -12,7 +12,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.sansantek.sansanmulmul.R
 
 
 private const val TAG = "CheckPermission_싸피"
@@ -81,7 +83,8 @@ class PermissionChecker(activityOrFragment: Any) {
 
     //사용자가 권한을 허용하지 않았을때, 설정창으로 이동
     private fun moveToSettings() {
-        val alertDialog = AlertDialog.Builder(context)
+        Log.d(TAG, "moveToSettings: 퍼미션 다이얼로그")
+        val alertDialog = AlertDialog.Builder(context, R.style.MyAlertDialogTheme)
         alertDialog.setTitle("권한이 필요합니다.")
         alertDialog.setMessage("설정으로 이동합니다.")
         alertDialog.setPositiveButton("확인") { dialogInterface, i -> // 안드로이드 버전에 따라 다를 수 있음.
@@ -91,6 +94,7 @@ class PermissionChecker(activityOrFragment: Any) {
             dialogInterface.cancel()
         }
         alertDialog.setNegativeButton("취소") { dialogInterface, i -> dialogInterface.cancel() }
+        alertDialog.create().window?.setBackgroundDrawable(ContextCompat.getDrawable(context,android.R.color.white))
         alertDialog.show()
     }
 }

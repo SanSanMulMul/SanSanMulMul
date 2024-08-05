@@ -25,4 +25,7 @@ interface UserService {
     suspend fun loadUserProfile(@Header("Authorization") accessToken: String) : Response<User>
     @GET("user/token")
     suspend fun refreshToken(@Header("Authorization") accessToken: String) : Response<KakaoLoginToken>
+    @GET("user/style")
+    suspend fun getHikingStyle(@Header("Authorization") accessToken: String): List<Int>
+
 }

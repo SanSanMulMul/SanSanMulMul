@@ -26,6 +26,11 @@ import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainServic
 import com.sansantek.sansanmulmul.data.model.MountainDto
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
 import kotlinx.coroutines.launch
+import android.location.Location
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.overlay.Marker
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 
 private const val TAG = "맵 테스트 싸피"
@@ -59,6 +64,7 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
 
         lifecycleScope.launch {
             mountainList = mountainService.getMountainList()
+            // 산 ID, 위도 경도 추출
             mountainList.forEach { mountain ->
                 val id = mountain.mountainId
                 val latitude = mountain.mountainLat
@@ -177,5 +183,32 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
 
         // 기본 카메라 위치 설정
         naverMap.moveCamera(CameraUpdate.zoomTo(10.0))
+
+        showNearbyMountains()
+    }
+
+    private fun showNearbyMountains() {
+        val currentLocation = locationSource.lastLocation ?: return
+
+        val currentLat = currentLocation.latitude
+        val currentLon = currentLocation.longitude
+
+        mountainList.filter { mountain ->
+            val distance = calculateDistance(currentLat, currentLon, mountain.mountainLat, mountain.mountainLon)
+            distance <= 50 // 50km 이내에 있는 산 필터링
+        }.forEach { mountain ->
+            val marker = Marker()
+            marker.position = LatLng(mountain.mountainLat, mountain.mountainLon)
+            marker.map = naverMap
+        }
+    }
+
+    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val radius = 6371 // 지구 반지름 (단위: km)
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+        val a = Math.sin(dLat / 2).pow(2.0) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2).pow(2.0)
+        val c = 2 * Math.atan2(sqrt(a), sqrt(1 - a))
+        return radius * c
     }
 }

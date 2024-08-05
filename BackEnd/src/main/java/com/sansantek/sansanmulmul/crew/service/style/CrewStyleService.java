@@ -2,7 +2,7 @@ package com.sansantek.sansanmulmul.crew.service.style;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
-import com.sansantek.sansanmulmul.crew.dto.response.CrewStyleResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.style.CrewHikingStyleRepository;
 import com.sansantek.sansanmulmul.exception.style.AlreadyStyleException;
@@ -26,27 +26,27 @@ public class CrewStyleService {
     private final CrewRepository crewRepository;
     private final HikingStyleRepository hikingStyleRepository;
 
-    public List<CrewStyleResponse> getCrewList(int styleId) {
-        List<CrewStyleResponse> crewStyleResponseList = new ArrayList<>();
-
-        // styleId기반으로 그룹 찾기
-        List<CrewHikingStyle> crewHikingStyleList = crewStyleRepository.findByStyle_HikingStylesId(styleId);
-
-        // CrewStyleResponse 추출
-        for (CrewHikingStyle crewHikingStyle : crewHikingStyleList) {
-            CrewStyleResponse gr = new CrewStyleResponse(
-                    crewHikingStyle.getCrew().getCrewId(),
-                    crewHikingStyle.getCrew().getCrewName(),
-                    crewHikingStyle.getCrew().getCrewStartDate(),
-                    crewHikingStyle.getCrew().getCrewEndDate(),
-                    crewHikingStyle.getCrew().getCrewMaxMembers()
-            );
-
-            crewStyleResponseList.add(gr);
-        }
-
-        return crewStyleResponseList;
-    }
+//    public List<CrewResponse> getCrewList(int styleId) {
+//        List<CrewResponse> crewStyleResponseList = new ArrayList<>();
+//
+//        // styleId기반으로 그룹 찾기
+//        List<CrewHikingStyle> crewHikingStyleList = crewStyleRepository.findByStyle_HikingStylesId(styleId);
+//
+//        // CrewStyleResponse 추출
+//        for (CrewHikingStyle crewHikingStyle : crewHikingStyleList) {
+//            CrewResponse gr = new CrewResponse(
+//                    crewHikingStyle.getCrew().getCrewId(),
+//                    crewHikingStyle.getCrew().getCrewName(),
+//                    crewHikingStyle.getCrew().getCrewStartDate(),
+//                    crewHikingStyle.getCrew().getCrewEndDate(),
+//                    crewHikingStyle.getCrew().getCrewMaxMembers()
+//            );
+//
+//            crewStyleResponseList.add(gr);
+//        }
+//
+//        return crewStyleResponseList;
+//    }
 
     @Transactional
     public void addStyle(int crewId, int hikingStyleId) {

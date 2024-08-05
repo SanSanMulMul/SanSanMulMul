@@ -15,7 +15,9 @@ import android.util.Log
 import android.view.View
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.config.BaseActivity
 import com.sansantek.sansanmulmul.config.Const.Companion.REQUEST_IMAGE_CAPTURE
 import com.sansantek.sansanmulmul.databinding.ActivityMainBinding
@@ -25,6 +27,8 @@ import com.sansantek.sansanmulmul.ui.view.hometab.HomeTabFragment
 import com.sansantek.sansanmulmul.ui.view.maptab.MapTabFragment
 import com.sansantek.sansanmulmul.ui.view.mypagetab.MyPageTabFragment
 import com.sansantek.sansanmulmul.ui.util.PermissionChecker
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -34,7 +38,6 @@ private const val TAG = "MainActivity 싸피"
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
 
-    private lateinit var hikingRecordingTabFragment: HikingRecordingTabFragment
     private var photoURI: Uri? = null
     private lateinit var currentPhotoPath: String
     private var bitmap: Bitmap? = null
@@ -61,12 +64,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        hikingRecordingTabFragment = HikingRecordingTabFragment()
         initBottomNav()
         changeFragment(HomeTabFragment())
-
     }
-
 
     @SuppressLint("QueryPermissionsNeeded")
     private fun openCamera() {

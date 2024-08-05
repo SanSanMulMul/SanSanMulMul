@@ -13,11 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <com.naver.maps.map.MapView
             android:id="@+id/hiking_recording_tab_map"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/blue" />
+             />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_hiking_info"
@@ -30,7 +30,7 @@
 
             <!-- 시간 -->
             <Chronometer
-                android:id="@+id/hiking_spend_time"
+                android:id="@+id/timer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
@@ -44,10 +44,10 @@
                 android:id="@+id/layout_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/hiking_spend_time"
+                app:layout_constraintBottom_toBottomOf="@id/timer"
                 app:layout_constraintEnd_toStartOf="@id/layout_height"
-                app:layout_constraintStart_toEndOf="@id/hiking_spend_time"
-                app:layout_constraintTop_toTopOf="@id/hiking_spend_time">
+                app:layout_constraintStart_toEndOf="@id/timer"
+                app:layout_constraintTop_toTopOf="@id/timer">
 
                 <TextView
                     android:id="@+id/tv_distance_title"
@@ -122,7 +122,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/layout_calorie"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/hiking_spend_time">
+                app:layout_constraintTop_toBottomOf="@id/timer">
 
                 <TextView
                     android:id="@+id/tv_step_cnt_title"

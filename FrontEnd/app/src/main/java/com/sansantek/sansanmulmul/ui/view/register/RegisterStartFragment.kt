@@ -50,7 +50,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
 
     private fun loginWithKakao() {
         // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(requireContext())) {
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(myContext)) {
             loginWithKakaoApp()
         } else {
             loginWithKakaoAccount()

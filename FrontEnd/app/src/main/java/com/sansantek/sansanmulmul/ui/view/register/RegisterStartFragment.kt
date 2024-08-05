@@ -115,6 +115,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             result.body()?.let {
                 kakaoLoginToken = it
                 sharedPreferencesUtil.saveKakaoLoginToken(kakaoLoginToken)
+                Log.d(TAG, "isUser: $kakaoLoginToken")
             }
             return true
         }

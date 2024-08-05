@@ -145,4 +145,8 @@ object Util {
     return numberFormat.format(number)
   }
 
+  fun makeHeaderByAccessToken(accessToken: String): String{
+    return "Bearer $accessToken"
+  }
+
 }

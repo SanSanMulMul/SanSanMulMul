@@ -9,10 +9,11 @@ import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewHikingStyleRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
-import com.sansantek.sansanmulmul.crew.service.style.CrewStyleService;
+import com.sansantek.sansanmulmul.exception.style.AlreadyStyleException;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.repository.MountainRepository;
 import com.sansantek.sansanmulmul.user.domain.User;
+import com.sansantek.sansanmulmul.user.domain.style.HikingStyle;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import com.sansantek.sansanmulmul.user.repository.style.HikingStyleRepository;
 import com.sansantek.sansanmulmul.user.service.UserService;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +40,6 @@ public class CrewService {
     private final CrewUserRepository crewUserRepository;
 
     // service
-    private final CrewStyleService crewStyleService;
     private final UserService userService;
 
     // 모든 그룹 조회
@@ -131,7 +132,8 @@ public class CrewService {
 //    public List<CrewResponse> getCrewsListbyAge(int minAge, int maxAge) {
 
 
-    //////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
+
     // crewId에 해당하는 그룹 상세 조회
 //    public CrewDetailResponse getCrewDetail(int crewId) {
 //        Crew crew = crewRepository.findById(crewId)
@@ -183,6 +185,34 @@ public class CrewService {
 //
 //        // 그룹 링크 추가
 //
+//    }
+
+//    @Transactional
+//    public void addStyle(int crewId, int hikingStyleId) {
+//        // 추가를 진행할 그룹 정보 조회
+//        Crew crew = crewRepository.findByCrewId(crewId)
+//                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
+//
+//        // 추가를 진행할 등산 스타일 정보 조회
+//        HikingStyle hikingStyle = hikingStyleRepository.findByHikingStylesId(hikingStyleId)
+//                .orElseThrow(() -> new RuntimeException("해당 등산 스타일을 찾을 수 없습니다."));
+//
+//        // 이미 추가되어 있는지 확인
+//        Optional<CrewHikingStyle> existingStyle = crewStyleRepository.findByCrewAndStyle(crew, hikingStyle);
+//        if (existingStyle.isPresent())
+//            throw new AlreadyStyleException();
+//
+//        // crewHikingStyle 정보 생성
+//        CrewHikingStyle style = CrewHikingStyle.builder()
+//                .crew(crew)
+//                .style(hikingStyle)
+//                .build();
+//
+//        // Crew의 crewStyles리스트에 추가
+//        crew.getCrewStyles().add(style);
+//
+//        // Crew엔티티를 저장해 style 연관 관계 반영
+//        crewRepository.save(crew);
 //    }
 
 }

@@ -6,7 +6,6 @@ import com.sansantek.sansanmulmul.crew.dto.response.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewUserResponse;
 import com.sansantek.sansanmulmul.crew.service.CrewService;
-import com.sansantek.sansanmulmul.crew.service.style.CrewStyleService;
 import com.sansantek.sansanmulmul.crew.service.request.CrewRequestService;
 import com.sansantek.sansanmulmul.exception.auth.InvalidTokenException;
 import com.sansantek.sansanmulmul.exception.style.GroupNotFoundException;
@@ -34,15 +33,13 @@ public class CrewController {
     private final CrewService crewService;
     private final UserService userService;
 
-    private final CrewStyleService crewStyleService;
-
     private final CrewRequestService crewRequestService;
 
 
     @GetMapping("/all")
     @Operation(summary = "그룹 전체 목록 조회", description = "그룹 전체 목록 정보 조회")
     public ResponseEntity<?> getAllCrews(Authentication authentication) {
-        HttpStatus status = HttpStatus.ACCEPTED;
+        HttpStatus status = HttpStatus.OK;
 
         try {
             // 전체 그룹 가져오기
@@ -62,28 +59,30 @@ public class CrewController {
         }
     }
 
-//    @GetMapping
-//    @Operation(summary = "그룹 특정 등산 스타일 전체 조회", description = "해당 등산 스타일에 해당하는 그룹 전체 조회")
-//    public ResponseEntity<?> getHikingStyles(@RequestParam("styleId") int styleId) {
-////        Map<String, Object> resultMap = new HashMap<>();
-//        HttpStatus status = HttpStatus.ACCEPTED;
-//
-//        try {
-//
-//            // 특정 스타일에 해당하는 그룹 정보 조회
-//            List<CrewResponse> crewStyleResponseList = crewStyleService.getCrewList(styleId);
-//
-//            // JSON으로 결과 전송
-////            resultMap.put("crewStyleResponseList", crewStyleResponseList);
-//
-//            return new ResponseEntity<>(crewStyleResponseList, status);
-//
-//        } catch ( Exception e ) {
-//            status = HttpStatus.BAD_REQUEST; // 400
-//
-//            return new ResponseEntity<>(e.getMessage(), status);
-//        }
-//    }
+    @GetMapping
+    @Operation(summary = "그룹 특정 등산 스타일 전체 조회", description = "해당 등산 스타일에 해당하는 그룹 전체 조회")
+    public ResponseEntity<?> getCrewsbyStyle(@RequestParam("styleId") int styleId, Authentication authentication) {
+//        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        try {
+            //유저
+            String userProviderId = authentication.getName();
+
+            // 특정 스타일에 해당하는 그룹 정보 조회
+            List<CrewResponse> crewStyleResponseList = crewService.getCrewListbyStyle(styleId, userProviderId);
+
+            // JSON으로 결과 전송
+//            resultMap.put("crewStyleResponseList", crewStyleResponseList);
+
+            return new ResponseEntity<>(crewStyleResponseList, status);
+
+        } catch ( Exception e ) {
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
 
 //    @GetMapping("/detail")
 //    @Operation(summary = "그룹 상세 정보 조회", description = "해당 그룹에 대한 상세 정보를 조회")

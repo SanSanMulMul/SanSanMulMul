@@ -80,4 +80,8 @@
     <item name="android:textColor">@color/black</item>
   </style>
 
+  <style name="MypageTabItemStyle" parent="Base.Theme.SANSANMULMUL">
+    <item name="android:textSize">13sp</item>
+  </style>
+
 </resources>

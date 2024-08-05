@@ -21,8 +21,6 @@ import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import com.sansantek.sansanmulmul.ui.view.LoginActivity
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.viewmodel.LoginActivityViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -73,13 +71,13 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             } else if (token != null) {
                 Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
                 Log.i(TAG, "카카오톡으로 로그인 성공 ${token.idToken}")
-                processAuthAndNavigateByKakaoApp()
+                processAuthAndNavigateByKakao()
             }
         }
     }
 
     // 회원인지 파악하고 아니면 회원가입 페이지, 맞으면 바로 메인 화면으로 이동
-    private fun processAuthAndNavigateByKakaoApp() {
+    private fun processAuthAndNavigateByKakao() {
         // 사용자 정보 요청 (기본)
         UserApiClient.instance.me { user, error ->
             if (error != null) {
@@ -159,6 +157,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
         } else if (token != null) {
             Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
             Log.d(TAG, "loginWithKakao idToken: ${token.idToken}")
+            processAuthAndNavigateByKakao()
 //                GoMain()
         }
     }

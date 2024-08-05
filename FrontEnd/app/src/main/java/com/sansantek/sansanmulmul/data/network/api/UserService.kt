@@ -23,4 +23,6 @@ interface UserService {
     suspend fun isAvailableNickName(@Query("userNickname") nickName: String) : Response<AvailableNickNameResponse>
     @GET("user/info")
     suspend fun loadUserProfile(@Header("Authorization") accessToken: String) : Response<User>
+    @GET("user/token")
+    suspend fun refreshToken(@Header("Authorization") accessToken: String) : Response<KakaoLoginToken>
 }

@@ -5,6 +5,7 @@ import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequest;
 import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequestStatus;
 import com.sansantek.sansanmulmul.crew.service.request.CrewRequestService;
 import com.sansantek.sansanmulmul.user.domain.User;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,6 +23,7 @@ public class CrewRequestController {
     }
 
     @PostMapping("/{crewId}/join")
+    @Operation(summary = "그룹 가입요청", description = "그룹에 대한 가입요청")
     public ResponseEntity<?> requestJoinCrew(@PathVariable int crewId,
                                              Authentication authentication) {
         try {
@@ -34,6 +36,7 @@ public class CrewRequestController {
     }
 
     @PatchMapping("/{requestId}/accept")
+    @Operation(summary = "그룹 가입요청승인", description = "그룹에 대한 가입요청승인")
     public ResponseEntity<?> acceptJoinRequest(@PathVariable int requestId,
                                                Authentication authentication) {
         try {
@@ -46,6 +49,7 @@ public class CrewRequestController {
     }
 
     @PatchMapping("/{requestId}/refuse")
+    @Operation(summary = "그룹 가입요청거절", description = "그룹에 대한 가입요청거절")
     public ResponseEntity<?> refuseJoinRequest(@PathVariable int requestId,
                                                Authentication authentication) {
         try {
@@ -58,6 +62,7 @@ public class CrewRequestController {
     }
 
     @DeleteMapping("/{crewId}/{userId}")
+    @Operation(summary = "그룹 회원강퇴", description = "그룹회원 강퇴기능")
     public ResponseEntity<?> OutUser(@PathVariable int crewId,
                                          @PathVariable int userId,
                                          Authentication authentication) {

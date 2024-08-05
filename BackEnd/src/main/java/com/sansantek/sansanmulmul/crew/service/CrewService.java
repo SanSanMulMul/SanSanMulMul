@@ -1,14 +1,17 @@
 package com.sansantek.sansanmulmul.crew.service;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
+import com.sansantek.sansanmulmul.crew.domain.CrewRestriction;
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewRequest;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
+import com.sansantek.sansanmulmul.crew.repository.style.CrewHikingStyleRepository;
 import com.sansantek.sansanmulmul.crew.service.style.CrewStyleService;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.repository.MountainRepository;
+import com.sansantek.sansanmulmul.user.repository.style.HikingStyleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +28,8 @@ public class CrewService {
     // repository
     private final CrewRepository crewRepository;
     private final MountainRepository mountainRepository;
+    private final CrewHikingStyleRepository crewStyleRepository;
+    private final HikingStyleRepository hikingStyleRepository;
 
     // service
     private final CrewStyleService crewStyleService;
@@ -34,16 +39,28 @@ public class CrewService {
         List<CrewResponse> crews = new ArrayList<>();
 
         List<Crew> crewsList = crewRepository.findAll();
+        for (Crew crew : crewsList) {
 
-       for (Crew crew : crewsList) {
-           CrewResponse cr = new CrewResponse(
-                   crew.getCrewId(),
-                   crew.getCrewName(),
-                   crew.getCrewStartDate(),
-                   crew.getCrewEndDate(),
-                   crew.getCrewMaxMembers(),
-                   crew.getMountain().getMountainImg()
-           );
+           // 1. 현재날짜 이후것 부터 가져와야함 (CrewStartDate사용)
+//            if (crew.getCrewStartDate())
+
+
+           // 2. 현재 그룹에 인원 수 가져와야함 -> getCurrentMemberCount에 업데이트 되어있어야함
+            int currentMember = 1;
+           // 3. 현재 사용자(유저)가 이 그룹에 참여하고있는지 유무가 있어야 함
+            boolean isUserJoined = false;
+
+
+           CrewResponse cr = CrewResponse.builder()
+                   .crewId(crew.getCrewId())
+                   .crewName(crew.getCrewName())
+                   .crewStartDate(crew.getCrewStartDate())
+                   .crewEndDate(crew.getCrewEndDate())
+                   .crewMaxMembers(crew.getCrewMaxMembers())
+                   .crewCurrentMembers(currentMember) // Assuming this method exists
+                   .isUserJoined(isUserJoined) // This needs to be determined based on the current user
+                   .mountainImg(crew.getMountain().getMountainImg())
+                   .build();
 
            crews.add(cr);
        }
@@ -51,7 +68,40 @@ public class CrewService {
         return crews;
     }
 
-    // crewId에 해당하는 그룹 조회
+    // 그룹 {스타일} 검색 시 그룹 조회
+    public List<CrewResponse> getCrewsListbyStyle(int styleId) {
+        List<CrewResponse> crewStyleResponseList = new ArrayList<>();
+
+        // styleId기반으로 그룹 찾기
+        List<CrewHikingStyle> crewHikingStyleList = crewStyleRepository.findByStyle_HikingStylesId(styleId);
+
+        // CrewStyleResponse 추출
+//        for (CrewHikingStyle crewHikingStyle : crewHikingStyleList) {
+//            CrewResponse gr = new CrewResponse(
+//                    crewHikingStyle.getCrew().getCrewId(),
+//                    crewHikingStyle.getCrew().getCrewName(),
+//                    crewHikingStyle.getCrew().getCrewStartDate(),
+//                    crewHikingStyle.getCrew().getCrewEndDate(),
+//                    crewHikingStyle.getCrew().getCrewMaxMembers()
+//            );
+//
+//            crewStyleResponseList.add(gr);
+//        }
+
+        return crewStyleResponseList;
+    }
+
+
+    // 그룹 {성별} 검색 시 그룹 조회
+//    public List<CrewResponse> getCrewsListbyStyle(CrewRestriction gender) {
+
+
+    // 그룹 {연령} 검색 시 그룹 조회
+//    public List<CrewResponse> getCrewsListbyAge(int minAge, int maxAge) {
+
+
+    //////////////////////////////////////////////
+    // crewId에 해당하는 그룹 상세 조회
     public CrewDetailResponse getCrewDetail(int crewId) {
         Crew crew = crewRepository.findById(crewId)
                 .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));

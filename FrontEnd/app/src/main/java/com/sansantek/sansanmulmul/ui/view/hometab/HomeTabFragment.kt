@@ -3,15 +3,18 @@ package com.sansantek.sansanmulmul.ui.view.hometab
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView.OnEditorActionListener
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.News
 import com.sansantek.sansanmulmul.data.model.Recommendation
@@ -19,12 +22,15 @@ import com.sansantek.sansanmulmul.databinding.FragmentHomeTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.FirstRecommendationViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.NewsViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.HorizontalMarginItemDecoration
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainSearchViewModel
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-
+private const val TAG = "HomeTabFragment 싸피"
 class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
     FragmentHomeTabBinding::bind,
     R.layout.fragment_home_tab
@@ -46,13 +52,15 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
 
     private fun init() {
         searchEditTextView = binding.includeEditText.etSearch
-        val mountainSearchResultFragment = MountainSearchResultFragment()
+
+        loadUserProfile()
 
         // 검색 완료 시 프래그먼트 이동
         searchEditTextView.setOnEditorActionListener(OnEditorActionListener { _, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE ||
                 (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
             ) {
+                val mountainSearchResultFragment = MountainSearchResultFragment()
                 val searchKeyword = searchEditTextView.text.toString()
                 searchViewModel.setSearchKeyword(searchKeyword)
 
@@ -63,6 +71,24 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
             }
             false
         })
+    }
+
+    private fun loadUserProfile(){
+        sharedPreferencesUtil.getKakaoLoginToken()?.let {
+            lifecycleScope.launch {
+                val user = userService.loadUserProfile(makeHeaderByAccessToken(it.accessToken))
+                if(user.code() == 200){
+                    user.body()?.let {
+                        binding.tvShared.text = it.userNickName
+                    }
+                }
+                else{
+                    Log.d(TAG, "loadUserProfile: result :${user.code()}")
+                    Log.d(TAG, "loadUserProfile: ${user.body()}")
+                }
+            }
+        }
+
     }
 
     private fun initNewsViewPager(viewPager: ViewPager2) {

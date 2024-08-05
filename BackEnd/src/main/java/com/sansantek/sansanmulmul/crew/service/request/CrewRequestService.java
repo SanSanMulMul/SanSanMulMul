@@ -4,6 +4,7 @@ import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequest;
 import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequestStatus;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewUserResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewRequestRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
@@ -12,6 +13,9 @@ import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CrewRequestService {
@@ -99,5 +103,25 @@ public class CrewRequestService {
 
         crewUserRepository.delete(crewUser);
     }
+    @Transactional
+    public List<CrewUserResponse> getCrewMembers(int crewId) {
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("크루를 찾을 수 없습니다."));
 
+        List<CrewUser> crewUsers = crewUserRepository.findByCrew(crew);
+        List<CrewUserResponse> userResponses = new ArrayList<>();
+        for (CrewUser crewUser : crewUsers) {
+            User user = crewUser.getUser();
+            CrewUserResponse userResponse = new CrewUserResponse(
+                    user.getUserId(),
+                    user.getUserName(),
+                    user.getUserNickname(),
+                    user.getUserGender().toString(),
+                    user.getUserProfileImg(),
+                    user.getUserStaticBadge()
+            );
+            userResponses.add(userResponse);
+        }
+        return userResponses;
+    }
 }

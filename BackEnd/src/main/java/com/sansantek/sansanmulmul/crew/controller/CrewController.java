@@ -3,8 +3,10 @@ package com.sansantek.sansanmulmul.crew.controller;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewRequest;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewUserResponse;
 import com.sansantek.sansanmulmul.crew.service.CrewService;
 import com.sansantek.sansanmulmul.crew.service.style.CrewStyleService;
+import com.sansantek.sansanmulmul.crew.service.request.CrewRequestService;
 import com.sansantek.sansanmulmul.exception.auth.InvalidTokenException;
 import com.sansantek.sansanmulmul.exception.style.GroupNotFoundException;
 import com.sansantek.sansanmulmul.user.domain.User;
@@ -30,7 +32,11 @@ public class CrewController {
     // service
     private final CrewService crewService;
     private final UserService userService;
+
     private final CrewStyleService crewStyleService;
+
+    private final CrewRequestService crewRequestService;
+
 
     @GetMapping("/all")
     @Operation(summary = "그룹 정보 전체 조회", description = "그룹에 대한 정보를 전체 조회")
@@ -128,6 +134,15 @@ public class CrewController {
             status = HttpStatus.BAD_REQUEST; // 400
             
             return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
+    @GetMapping("/member/{crewId}")
+    public ResponseEntity<?> getCrewMembers(@PathVariable int crewId) {
+        try {
+            List<CrewUserResponse> members = crewRequestService.getCrewMembers(crewId);
+            return ResponseEntity.ok(members);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

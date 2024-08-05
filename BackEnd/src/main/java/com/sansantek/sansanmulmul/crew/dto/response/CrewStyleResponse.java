@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CrewStyleResponse {
 
+    // 그룹 전체 목록 조회 시 response
     private int groupId;
     private String groupName;
     private LocalDateTime startDatetime;

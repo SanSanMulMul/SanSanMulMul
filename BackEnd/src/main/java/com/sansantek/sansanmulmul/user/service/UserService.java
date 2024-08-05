@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.user.service;
 
+import com.sansantek.sansanmulmul.exception.user.UserDeletionException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.dto.request.SignUpUserRequest;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserHikingStyleRequest;
@@ -21,9 +22,6 @@ public class UserService {
 
     // Spring Security
     private final PasswordEncoder passwordEncoder;
-
-    // service
-    private final UserStyleService userStyleService;
 
     // Repository
     private final UserRepository userRepository;
@@ -117,7 +115,17 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(String userProviderId) {
-        userRepository.deleteByUserProviderId(userProviderId);
+    public boolean deleteUser(String userProviderId) {
+        try {
+
+            userRepository.deleteByUserProviderId(userProviderId);
+
+        } catch (Exception e) {
+
+            throw new UserDeletionException("Failed to delete user with provider ID: " + userProviderId, e);
+
+        }
+
+        return true;
     }
 }

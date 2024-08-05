@@ -11,6 +11,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sansantek.sansanmulmul.mountain.service.MountainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,36 +62,70 @@ public class NewsController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
-    @Operation(summary = "뉴스 정보 요청(랜덤)")
     @GetMapping(value = "/random", produces = "application/json; charset=utf-8")
-    public ResponseEntity<?> getRandomNews() {
+    public ResponseEntity<String> getRandomNews() {
         // 산 이름들 가져오기
         List<String> mountainNameList = mountainService.getMountainName();
 
         // 가져온 산 이름 기반으로 랜덤으로 인덱스 값 5개 뽑기
         Random random = new Random();
-        Set<String> selectedMountains = new HashSet<>();
-        while (selectedMountains.size() < 5) {
+        Set<Integer> selectedIndices = new HashSet<>();
+        while (selectedIndices.size() < 5) {
             int randomIndex = random.nextInt(mountainNameList.size());
-            selectedMountains.add(mountainNameList.get(randomIndex));
+            selectedIndices.add(randomIndex);
         }
 
         // 뉴스 불러오기
-        List<String> newsList = new ArrayList<>();
-        for (String mountainName : selectedMountains) {
-            String apiURL = "https://openapi.naver.com/v1/search/news?query=" + mountainName + "&display=1"; // JSON 결과
+        List<Map<String, Object>> newsList = new ArrayList<>();
+        for (Integer index : selectedIndices) {
+            String mountainName = mountainNameList.get(index);
+            System.out.println("산 이름: " + mountainName);
 
+            // URL 인코딩
+            String encodedMountainName;
+            try {
+                encodedMountainName = URLEncoder.encode(mountainName, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                encodedMountainName = mountainName; // 인코딩 실패시 원본 사용
+                System.err.println("URL 인코딩 오류: " + e.getMessage());
+            }
+
+            String apiURL = "https://openapi.naver.com/v1/search/news?query=" + encodedMountainName + "&display=1"; // JSON 결과
             Map<String, String> requestHeaders = new HashMap<>();
             requestHeaders.put("X-Naver-Client-Id", clientId);
             requestHeaders.put("X-Naver-Client-Secret", clientSecret);
-            String responseBody = get(apiURL, requestHeaders);
 
-            newsList.add(responseBody);
+            try {
+                String responseBody = get(apiURL, requestHeaders);
+
+                // 응답 문자열을 JSON 형식으로 변환
+                ObjectMapper objectMapper = new ObjectMapper();
+                Map<String, Object> jsonMap = objectMapper.readValue(responseBody, new TypeReference<Map<String, Object>>(){});
+                newsList.add(jsonMap);
+
+            } catch (Exception e) {
+                System.err.println("뉴스 요청 오류: " + e.getMessage());
+                Map<String, Object> errorMap = new HashMap<>();
+                errorMap.put("error", "뉴스 요청 오류: " + e.getMessage());
+                newsList.add(errorMap);
+            }
         }
 
         System.out.println("뉴스 불러오기 완료");
-        return new ResponseEntity<>(newsList, HttpStatus.OK);
+
+        // 전체 응답을 JSON 배열로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse;
+        try {
+            jsonResponse = objectMapper.writeValueAsString(newsList);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON 변환 실패", e);
+        }
+
+        return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
     }
+
+
 
     private static String get(String apiUrl, Map<String, String> requestHeaders) {
         HttpURLConnection con = connect(apiUrl);

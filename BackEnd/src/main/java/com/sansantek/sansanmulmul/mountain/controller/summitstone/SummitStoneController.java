@@ -29,21 +29,14 @@ public class SummitStoneController {
 
     @GetMapping("/summitstone")
     @Operation(summary = "서미트스톤 전체 조회", description = "모든 서미트스톤을 조회합니다.")
-    public ResponseEntity<Map<String, Object>> getAllSummitStone() {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.ACCEPTED;
-
+    public ResponseEntity<List<Summitstone>> getAllSummitStone() {
         try {
             List<Summitstone> summitstones = summitstoneService.getAllSummitstones();
-            resultMap.put("summitstones", summitstones);
-            status = HttpStatus.OK; // 성공 시 200
+            return ResponseEntity.status(HttpStatus.OK).body(summitstones);
         } catch (Exception e) {
             log.error("서미트스톤 전체 조회 실패: {}", e.getMessage());
-            resultMap.put("error", "An unexpected error occurred");
-            status = HttpStatus.INTERNAL_SERVER_ERROR; // 실패 시 500
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
-        return new ResponseEntity<>(resultMap, status);
     }
 
 }

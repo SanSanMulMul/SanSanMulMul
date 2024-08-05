@@ -36,7 +36,7 @@ public class CrewDetailResponse {
     // 멤버
     // 참여 멤버 수
     // 방장 정보
-    // 멤버 목록
+    // 멤버 목록 (방장포함)
 
     // 산 정보
     @Schema(description = "산 고유 번호", example = "1")

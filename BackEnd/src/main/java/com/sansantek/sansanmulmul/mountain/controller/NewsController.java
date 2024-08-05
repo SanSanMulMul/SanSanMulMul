@@ -9,9 +9,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sansantek.sansanmulmul.mountain.service.MountainService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,21 +26,23 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/mountain")
+@RequestMapping("/mountain/news")
+@RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "뉴스 컨트롤러", description = "네이버 산 뉴스를 3개 크롤링")
 @Slf4j
 public class NewsController {
 
+    private final MountainService mountainService;
     @Value("${naver.client-id}")
     private String clientId; // 애플리케이션 클라이언트 아이디
     @Value("${naver.client-secret}")
     private String clientSecret; // 애플리케이션 클라이언트 시크릿
 
 
-    @Operation(summary = "뉴스 정보 요청", description = "네이버 뉴스를 요청")
-    @GetMapping(value = "/news/{keyword}", produces = "application/json; charset=utf-8")
-    public ResponseEntity<String> news(@PathVariable("keyword") String keyword) {
+    @Operation(summary = "뉴스 정보 요청(사용자 기반)", description = "즐겨찾기 산 기반 네이버 뉴스를 요청")
+    @GetMapping(value = "/{keyword}", produces = "application/json; charset=utf-8")
+    public ResponseEntity<String> getUserNews(@PathVariable("keyword") String keyword) {
         String text = null;
         try {
             text = URLEncoder.encode(keyword, "UTF-8");
@@ -55,6 +61,71 @@ public class NewsController {
         System.out.println(responseBody); // 네이버가 주는 결과데이터
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/random", produces = "application/json; charset=utf-8")
+    public ResponseEntity<String> getRandomNews() {
+        // 산 이름들 가져오기
+        List<String> mountainNameList = mountainService.getMountainName();
+
+        // 가져온 산 이름 기반으로 랜덤으로 인덱스 값 5개 뽑기
+        Random random = new Random();
+        Set<Integer> selectedIndices = new HashSet<>();
+        while (selectedIndices.size() < 5) {
+            int randomIndex = random.nextInt(mountainNameList.size());
+            selectedIndices.add(randomIndex);
+        }
+
+        // 뉴스 불러오기
+        List<Map<String, Object>> newsList = new ArrayList<>();
+        for (Integer index : selectedIndices) {
+            String mountainName = mountainNameList.get(index);
+            System.out.println("산 이름: " + mountainName);
+
+            // URL 인코딩
+            String encodedMountainName;
+            try {
+                encodedMountainName = URLEncoder.encode(mountainName, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                encodedMountainName = mountainName; // 인코딩 실패시 원본 사용
+                System.err.println("URL 인코딩 오류: " + e.getMessage());
+            }
+
+            String apiURL = "https://openapi.naver.com/v1/search/news?query=" + encodedMountainName + "&display=1"; // JSON 결과
+            Map<String, String> requestHeaders = new HashMap<>();
+            requestHeaders.put("X-Naver-Client-Id", clientId);
+            requestHeaders.put("X-Naver-Client-Secret", clientSecret);
+
+            try {
+                String responseBody = get(apiURL, requestHeaders);
+
+                // 응답 문자열을 JSON 형식으로 변환
+                ObjectMapper objectMapper = new ObjectMapper();
+                Map<String, Object> jsonMap = objectMapper.readValue(responseBody, new TypeReference<Map<String, Object>>(){});
+                newsList.add(jsonMap);
+
+            } catch (Exception e) {
+                System.err.println("뉴스 요청 오류: " + e.getMessage());
+                Map<String, Object> errorMap = new HashMap<>();
+                errorMap.put("error", "뉴스 요청 오류: " + e.getMessage());
+                newsList.add(errorMap);
+            }
+        }
+
+        System.out.println("뉴스 불러오기 완료");
+
+        // 전체 응답을 JSON 배열로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse;
+        try {
+            jsonResponse = objectMapper.writeValueAsString(newsList);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON 변환 실패", e);
+        }
+
+        return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+    }
+
+
 
     private static String get(String apiUrl, Map<String, String> requestHeaders) {
         HttpURLConnection con = connect(apiUrl);

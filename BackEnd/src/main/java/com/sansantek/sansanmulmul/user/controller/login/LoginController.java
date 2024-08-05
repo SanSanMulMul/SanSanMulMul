@@ -199,11 +199,13 @@ public class LoginController {
             resultMap.put("accessToken", jwtToken.getAccessToken());
             resultMap.put("refreshToken", jwtToken.getRefreshToken());
 
+            status = HttpStatus.OK; // 200
+
         } catch (Exception e) {
 
             log.error("회원 인증 실패: {}", e.getMessage());
             resultMap.put("error", "Invalid or expired token");
-            status = HttpStatus.UNAUTHORIZED;
+            status = HttpStatus.UNAUTHORIZED; // 401
 
         }
 

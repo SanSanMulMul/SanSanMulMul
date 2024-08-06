@@ -33,9 +33,8 @@ public class SummitstoneController {
 
     @GetMapping
     @Operation(summary = "회원 인증 정상석 조회", description = "회원이 인증한 정상석 조회")
-    public ResponseEntity<Map<String, Object>> getUserStone
+    public ResponseEntity<?> getUserStone
             (Authentication authentication) {
-        Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
         try {
@@ -48,36 +47,29 @@ public class SummitstoneController {
             // 사용자 인증 정상석 조회
             List<StoneResponse> userStoneList = userSummitstoneService.getStoneListByUser(user.getUserId());
 
-            // JSON으로 결과 전송
-            resultMap.put("userStoneListSize", userStoneList.size());
-            resultMap.put("userStoneList", userStoneList);
-
             status = HttpStatus.OK; // 200
 
-
+            return new ResponseEntity<>(userStoneList, status);
         } catch (InvalidTokenException e) {
 
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
-            resultMap.put("error", "Invalid or expired token");
             status = HttpStatus.UNAUTHORIZED; // 401
 
+            return new ResponseEntity<>(e.getMessage(), status);
         } catch (Exception e) {
 
             log.error("회원 정상석 조회 실패: {}", e.getMessage());
-            resultMap.put("error", "An unexpected error occurred");
             status = HttpStatus.BAD_REQUEST; // 400
 
+            return new ResponseEntity<>(e.getMessage(), status);
         }
-
-        return new ResponseEntity<>(resultMap, status);
     }
 
     @PostMapping
     @Operation(summary = "회원 인증 정상석 추가", description = "회원이 인증한 정상석 조회")
-    public ResponseEntity<Map<String, Object>> addUserStone
+    public ResponseEntity<?> addUserStone
             (Authentication authentication,
              @RequestParam int summitstoneId) {
-        Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
         try {
@@ -88,30 +80,24 @@ public class SummitstoneController {
             User user = userService.getUser(userProviderId);
 
             // 사용자 인증 정상석 조회
-            userSummitstoneService.addStone(user.getUserId(), summitstoneId);
-
-            // JSON으로 결과 전송
-            resultMap.put("userId", user.getUserId());
-            resultMap.put("userProviderId", user.getUserProviderId());
-            resultMap.put("addSummitstoneId", summitstoneId);
-
+            boolean chk = userSummitstoneService.addStone(user.getUserId(), summitstoneId);
             status = HttpStatus.OK; // 200
+
+            return new ResponseEntity<>(chk, status);
 
         } catch (InvalidTokenException e) {
 
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
-            resultMap.put("error", "Invalid or expired token");
             status = HttpStatus.UNAUTHORIZED; // 401
 
+            return new ResponseEntity<>(e.getMessage(), status);
         } catch (Exception e) {
 
             log.error("회원 정상석 추가 실패: {}", e.getMessage());
-            resultMap.put("error", "An unexpected error occurred");
             status = HttpStatus.BAD_REQUEST; // 400
 
+            return new ResponseEntity<>(e.getMessage(), status);
         }
-
-        return new ResponseEntity<>(resultMap, status);
     }
     
     @GetMapping("/all")

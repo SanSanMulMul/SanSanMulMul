@@ -7,18 +7,27 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.config.BaseFragment
+import com.sansantek.sansanmulmul.config.Const.Companion.TITLE
 import com.sansantek.sansanmulmul.databinding.FragmentMyPageTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupHikingStyleListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.MyPageHikingStyleListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.layoutmanager.CustomLayoutmanager
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import com.sansantek.sansanmulmul.ui.util.Util
 import com.sansantek.sansanmulmul.ui.util.Util.convertHikingStyleIntListToStringList
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.view.groupdetail.GroupDetailFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 private const val TAG = "MyPageTabFragment_싸피"
 class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
@@ -30,17 +39,8 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
     private lateinit var myPageHikingStyleListAdapter: MyPageHikingStyleListAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        myPageHikingStyleListAdapter = MyPageHikingStyleListAdapter()
-        binding.tvUserName.text = activityViewModel.user.userNickName
-        activityViewModel.hikingStyles.value?.let {
-            styleList = convertHikingStyleIntListToStringList(it)
-        }
-        binding.rvMyHikingStyle.apply {
-            adapter = myPageHikingStyleListAdapter.apply {
-                submitList(styleList)
-            }
-            layoutManager = CustomLayoutmanager(requireContext(), 2)
-        }
+        Log.d(TAG, "onViewCreated: view created 실행됨")
+        init()
 
         replaceFragment(MyPageFirstTabFragment())
 
@@ -71,6 +71,59 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
         })
 
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun init(){
+        myPageHikingStyleListAdapter = MyPageHikingStyleListAdapter()
+        lifecycleScope.launch {
+            loadUserProfile()
+            loadUserHikingStyle()
+            Glide.with(binding.root).load(activityViewModel.user.userProfileImg).into(binding.ivMyPageProfile)
+            Log.d(TAG, "onViewCreated loading glide 실행 이후: ${activityViewModel.myPageInfo.value}")
+            activityViewModel.myPageInfo.value?.let {
+                Log.d(TAG, "init: 이제서야 binding에 매핑 시작 $it")
+                binding.tvTitleName.text = it.userBadge
+                binding.tvUserName.text = it.userNickname
+                binding.tvFollowerCnt.text = it.followerCnt.toString()
+                binding.tvFollowingCnt.text = it.followingCnt.toString()
+            }
+            Log.d(TAG, "init: 적용")
+            activityViewModel.hikingStyles.value?.let {
+                styleList = convertHikingStyleIntListToStringList(it)
+            }
+            binding.rvMyHikingStyle.apply {
+                adapter = myPageHikingStyleListAdapter.apply {
+                    submitList(styleList)
+                }
+                layoutManager = CustomLayoutmanager(requireContext(), 2)
+            }
+        }
+    }
+    private suspend fun loadUserHikingStyle(){
+        activityViewModel.token?.let {
+            activityViewModel.setHikingStyles(userService.getHikingStyle(makeHeaderByAccessToken(it.accessToken)).sorted())
+        }
+    }
+
+    private suspend fun loadUserProfile(){
+        activityViewModel.token?.let {
+            val myPage = userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
+            activityViewModel.setMyPageInfo(myPage)
+            val user = userService.loadUserProfile(makeHeaderByAccessToken(it.accessToken))
+            if(user.code() == 200){
+                user.body()?.let { result ->
+                    Log.d(TAG, "loadUserProfile 뷰모델에 결과 적용: user: $result")
+                    activityViewModel.setUser(result)
+                }
+            }
+
+            else{
+                Log.d(TAG, "loadUserProfile: result :${user.code()}")
+                Log.d(TAG, "loadUserProfile: ${user.body()}")
+            }
+
+        }
+
     }
 
     fun replaceFragment(view: Fragment){

@@ -3,6 +3,7 @@ package com.sansantek.sansanmulmul.mountain.service;
 
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.domain.spot.MountainSpot;
+import com.sansantek.sansanmulmul.mountain.dto.response.NewsResponse;
 import com.sansantek.sansanmulmul.mountain.repository.MountainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,13 +72,18 @@ public class MountainService {
         return mountainRepository.findByMountainWeatherIn(Arrays.asList("WINTER", "ALL"));
     }
 
-    public List<String> getMountainName() {
-        List<String> mountainNameList = new ArrayList<>();
+    public List<NewsResponse> getMountainName() {
+        List<NewsResponse> mountainNameList = new ArrayList<>();
 
-        for (Mountain mountain : mountainRepository.findAll()) {
-            mountainNameList.add(mountain.getMountainName());
-        }
+        for (Mountain mountain : mountainRepository.findAll())
+            mountainNameList.add(new NewsResponse(mountain.getMountainName(), mountain.getMountainImg()));
 
         return mountainNameList;
+    }
+
+    public NewsResponse getMountainName(String mountainName) {
+        Mountain mountain = mountainRepository.findByMountainName(mountainName);
+
+        return new NewsResponse(mountain.getMountainName(), mountain.getMountainImg());
     }
 }

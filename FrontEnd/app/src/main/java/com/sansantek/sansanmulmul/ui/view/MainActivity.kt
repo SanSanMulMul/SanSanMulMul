@@ -90,14 +90,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     private fun loadUserHikingStyle(){
         activityViewModel.token?.let {
-            lifecycleScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.Main) {
                 activityViewModel.setHikingStyles(userService.getHikingStyle(makeHeaderByAccessToken(it.accessToken)))
             }
         }
     }
-
-
-
 
     @SuppressLint("QueryPermissionsNeeded")
     private fun openCamera() {

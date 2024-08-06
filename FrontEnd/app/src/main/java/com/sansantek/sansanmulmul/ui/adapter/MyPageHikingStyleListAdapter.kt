@@ -25,7 +25,7 @@ class MyPageHikingStyleListAdapter():
 
         fun bindInfo(position: Int) {
             val item = getItem(position)
-            binding.tvHikingStyle.text = item.toString()
+            binding.tvHikingStyle.text = "# ${item}"
         }
     }
 

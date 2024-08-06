@@ -25,7 +25,7 @@ class MainActivityViewModel : ViewModel(){
     }
 
     private var _hikingStyles : MutableLiveData<List<Int>> = MutableLiveData()
-    val hikingstyles : LiveData<List<Int>>
+    val hikingStyles : LiveData<List<Int>>
         get() = _hikingStyles
 
     fun setHikingStyles(newHikingStyle : List<Int>){

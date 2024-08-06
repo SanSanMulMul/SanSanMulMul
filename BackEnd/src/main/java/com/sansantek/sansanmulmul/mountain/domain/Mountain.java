@@ -62,4 +62,7 @@ public class Mountain {
     @JsonManagedReference
     private List<MountainSpot> mountainSpots;
 
+    public void setMountainImg(String mountainImg) {
+        this.mountainImg = mountainImg;
+    }
 }

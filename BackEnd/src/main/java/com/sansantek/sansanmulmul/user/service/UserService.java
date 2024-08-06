@@ -115,19 +115,28 @@ public class UserService {
     }
 
     @Transactional
-    public boolean updateUser(String userProviderId, UpdateUserRequest updateUserRequest) {
+    public boolean updateUser(String userProviderId, UpdateUserRequest updateUserRequest, MultipartFile image) throws IOException{
         try {
             // 사용자 조회
             User user = userRepository.findByUserProviderId(userProviderId)
                     .orElseThrow(() -> new UserNotFoundException());
 
             // 사용자 정보 업데이트
-            user.setUserProfileImg(updateUserRequest.getUserProfileImg()); // 프로필
             user.setUserNickname(updateUserRequest.getUserNickName()); // 닉네임
             user.setUserStaticBadge(updateUserRequest.getUserStaticBadge()); // 칭호
             userStyleService.updateUserHikingStyle(user.getUserId(),
                     updateUserRequest.getStyles()); // 등산 스타일
-
+            // 이미지
+            String beforeImg = user.getUserProfileImg();
+            String newImgUrl = beforeImg;
+            if (image != null && !image.isEmpty()) { //Multipart 입력으로 이미지가 들어온 경우 (=이미지 수정할 경우)
+                // 1. 기존 이미지 S3에서 삭제
+                s3Service.deleteS3(beforeImg);
+                // 2. 새 이미지 S3에 업로드
+                newImgUrl = s3Service.uploadS3(image, "profileImg");
+            }
+            // 3. 새 이미지 DB에 업데이트
+            user.setUserProfileImg(newImgUrl);
             // 사용자 정보 저장
             userRepository.save(user);
 

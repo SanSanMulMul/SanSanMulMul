@@ -1,8 +1,11 @@
 package com.sansantek.sansanmulmul.common.util;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.sansantek.sansanmulmul.common.ErrorCode;
+import com.sansantek.sansanmulmul.common.GlobalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Optional;
 
 @Slf4j
@@ -20,6 +24,7 @@ import java.util.Optional;
 public class S3Uploader {
 
     private final AmazonS3Client amazonS3Client;
+    private final AmazonS3 amazonS3;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -65,12 +70,19 @@ public class S3Uploader {
     // S3에 있는 파일 삭제
     public void deleteS3(String filePath) throws Exception {
         try {
-            String key = filePath.substring(56); // 폴더, 파일 확장자
+//            String key = filePath.substring(56); // 폴더, 파일 확장자
 
-            try {
+            URI uri = new URI(filePath); // URL에서 객체 키 추출
+            String key = uri.getPath().substring(1); // URL의 첫 번째 '/'를 제거하여 객체 키 얻기
+
+            // 파일 존재 여부 확인
+            if (amazonS3Client.doesObjectExist(bucket, key)) {
+                // S3에서 파일 삭제
                 amazonS3Client.deleteObject(bucket, key);
-            } catch (AmazonS3Exception e) {
-                log.info(e.getErrorMessage());
+                log.info("File deleted successfully: {}", key);
+            } else { // file not found
+                log.warn("File not found: {}", key);
+                throw new GlobalException(ErrorCode.FILE_NOT_FOUND);
             }
         } catch (Exception exception) {
             log.info(exception.getMessage());

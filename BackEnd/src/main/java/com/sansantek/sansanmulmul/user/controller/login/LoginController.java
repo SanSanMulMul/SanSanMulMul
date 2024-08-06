@@ -130,14 +130,14 @@ public class LoginController {
 
     @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "회원가입", description = "회원가입 + JWT 토큰 발급")
-    public ResponseEntity<Map<String, Object>> signUp(@RequestPart SignUpUserRequest request, @RequestPart(value="image") MultipartFile image) {
+    public ResponseEntity<Map<String, Object>> signUp(@RequestPart(value="SignUpUserRequest") SignUpUserRequest SignUpUserRequest, @RequestPart(value="image") MultipartFile image) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
         try {
             // 회원가입 진행
             String password = "";
-            User user = userService.signUp(request, password, image);
+            User user = userService.signUp(SignUpUserRequest, password, image);
             log.info("회원가입 성공");
             log.info("sign-up user : {}", user);
 
@@ -149,7 +149,7 @@ public class LoginController {
             badgeService.setBasicBadge(user.getUserId());
 
             // 등산 스타일 추가
-            for (int hikingStyleId : request.getUserStyles())
+            for (int hikingStyleId : SignUpUserRequest.getUserStyles())
                 userStyleService.addStyle(user.getUserId(), hikingStyleId);
 
             // JSON 으로 token 전달
@@ -175,7 +175,7 @@ public class LoginController {
         } catch (Exception e) {
 
             log.error("회원 가입 실패: {}", e.getMessage());
-            log.info("sign-up user : {}", request);
+            log.info("sign-up user : {}", SignUpUserRequest);
             status = HttpStatus.BAD_REQUEST; // 400
 
         }

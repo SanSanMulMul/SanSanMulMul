@@ -15,11 +15,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -126,16 +128,16 @@ public class LoginController {
         return new ResponseEntity<>(resultMap, status);
     }
 
-    @PostMapping("/signup")
+    @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "회원가입", description = "회원가입 + JWT 토큰 발급")
-    public ResponseEntity<Map<String, Object>> signUp(@Valid @RequestBody SignUpUserRequest request) {
+    public ResponseEntity<Map<String, Object>> signUp(@RequestPart SignUpUserRequest request, @RequestPart(value="image") MultipartFile image) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
         try {
             // 회원가입 진행
             String password = "";
-            User user = userService.signUp(request, password);
+            User user = userService.signUp(request, password, image);
             log.info("회원가입 성공");
             log.info("sign-up user : {}", user);
 

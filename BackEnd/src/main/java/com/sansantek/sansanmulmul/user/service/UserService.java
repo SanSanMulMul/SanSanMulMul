@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.user.service;
 
+import com.sansantek.sansanmulmul.common.service.S3Service;
 import com.sansantek.sansanmulmul.exception.auth.UserNotFoundException;
 import com.sansantek.sansanmulmul.exception.user.UserDeletionException;
 import com.sansantek.sansanmulmul.exception.user.UserUpdateException;
@@ -18,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,9 +39,16 @@ public class UserService {
 
     // Service
     private final UserStyleService userStyleService;
+    private final S3Service s3Service;
 
     @Transactional
-    public User signUp(SignUpUserRequest signUpUserRequest, String password) {
+    public User signUp(SignUpUserRequest signUpUserRequest, String password, MultipartFile image) throws IOException {
+
+        // 프로필 이미지
+        String imgUrl = "";
+        if (image != null) imgUrl = s3Service.uploadS3(image, "profileImg"); //S3 내 profileImg폴더로
+        log.info("[S3저장됨] imgUrl: " + imgUrl);
+
         // 비밀번호 인코딩
         String encoder = passwordEncoder.encode(password);
 
@@ -49,7 +59,7 @@ public class UserService {
                 signUpUserRequest.getUserName(),
                 signUpUserRequest.getUserNickName(),
                 signUpUserRequest.getUserGender(),
-                signUpUserRequest.getUserProfileImg(),
+                imgUrl,
                 signUpUserRequest.getUserBirth(),
                 1,
                 signUpUserRequest.isUserIsAdmin()

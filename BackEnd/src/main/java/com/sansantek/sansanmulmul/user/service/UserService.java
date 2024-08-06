@@ -7,8 +7,10 @@ import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.dto.request.SignUpUserRequest;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserHikingStyleRequest;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserRequest;
+import com.sansantek.sansanmulmul.user.dto.response.MyPageResponse;
 import com.sansantek.sansanmulmul.user.dto.response.UserInfoResponse;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
+import com.sansantek.sansanmulmul.user.repository.badge.BadgeRepository;
 import com.sansantek.sansanmulmul.user.service.style.UserStyleService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -16,6 +18,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +32,7 @@ public class UserService {
 
     // Repository
     private final UserRepository userRepository;
+    private final BadgeRepository badgeRepository;
 
     // Service
     private final UserStyleService userStyleService;
@@ -138,5 +144,39 @@ public class UserService {
         }
 
         return true;
+    }
+
+    public MyPageResponse getMyPageResponse(String userProviderId) {
+        try {
+            // 사용자 조회
+            User user = userRepository.findByUserProviderId(userProviderId)
+                    .orElseThrow(() -> new UserNotFoundException());
+
+            // 사용자 스타일
+            List<String> styles = new ArrayList<>();
+            for (int i = 0; i < user.getUserStyles().size(); i++) {
+                String style = user.getUserStyles().get(i).getStyle().getHikingStylesName();
+                styles.add(style);
+            }
+
+            String badge =badgeRepository.findByBadgeId(user.getUserStaticBadge()).get().getBadgeImage() + " " + badgeRepository.findByBadgeId(user.getUserStaticBadge()).get().getBadgeName();
+
+            MyPageResponse value = new MyPageResponse(
+                    user.getUserProfileImg(),
+                    badge,
+                    user.getUserNickname(),
+                    user.getFollowers().size(),
+                    user.getFollowings().size(),
+                    styles
+            );
+
+            return value;
+        } catch (UserNotFoundException e) {
+            // 사용자를 찾을 수 없는 경우
+            throw e;
+        } catch (Exception e) {
+            // 일반적인 오류 발생 시
+            throw new UserUpdateException("회원 정보 업데이트 중 오류가 발생했습니다.", e);
+        }
     }
 }

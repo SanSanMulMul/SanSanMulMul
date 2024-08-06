@@ -1,11 +1,14 @@
 package com.sansantek.sansanmulmul.ui.adapter
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.data.model.News
 
@@ -28,8 +31,18 @@ class NewsViewPagerAdapter(val items: List<News>) :
         val actualPosition = position % items.size
 //        holder.bind(items[actualPosition])
         val item = items[actualPosition]
-        holder.tvNewsTitle.text = item.newsTitle
-        holder.ivNewsImg.setImageResource(item.newsImg)
+        holder.tvNewsTitle.text = item.title
+        // 이미지 로드
+        Glide.with(holder.itemView.context)
+            .load(item.originallink)
+            .into(holder.ivNewsImg)
+
+        // 뉴스 항목 클릭 이벤트
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.link))
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int = Int.MAX_VALUE

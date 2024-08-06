@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.ui.adapter
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,9 @@ import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.data.model.News
 
-class NewsViewPagerAdapter(val items: List<News>) :
+private const val TAG = "NewsViewPagerAdapter 싸피"
+
+class NewsViewPagerAdapter(private val items: List<News>) :
     RecyclerView.Adapter<NewsViewPagerAdapter.RecommendationViewHolder>() {
 
     class RecommendationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -32,9 +35,10 @@ class NewsViewPagerAdapter(val items: List<News>) :
 //        holder.bind(items[actualPosition])
         val item = items[actualPosition]
         holder.tvNewsTitle.text = item.title
+        Log.d(TAG, "onBindViewHolder: ${item.title}")
         // 이미지 로드
         Glide.with(holder.itemView.context)
-            .load(item.originallink)
+            .load(item.mountainimg)
             .into(holder.ivNewsImg)
 
         // 뉴스 항목 클릭 이벤트

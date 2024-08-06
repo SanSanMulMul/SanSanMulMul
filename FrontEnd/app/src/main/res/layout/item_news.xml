@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/mulish_bold"
-                android:text="뉴스"
+                android:text="실시간 뉴스"
                 android:textColor="@color/red"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/tv_news_title"

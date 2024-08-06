@@ -7,6 +7,7 @@ import com.sansantek.sansanmulmul.data.model.MountainCourse
 import com.sansantek.sansanmulmul.data.model.MountainWeather
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -34,4 +35,7 @@ interface MountainService {
     // 산 코스 조회
     @GET("mountain/{mountainId}/course")
     suspend fun getMountainCourse(@Path("mountainId") id: Int): MountainCourse
+
+    @GET("/mountain/like")
+    suspend fun getLikedMountainList(@Header("Authorization") accessToken: String) : Response<List<Mountain>>
 }

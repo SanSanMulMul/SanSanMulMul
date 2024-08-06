@@ -10,6 +10,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.TypedValue
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.Const.Companion.HIKINGSTYLE
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.text.NumberFormat
@@ -147,6 +148,14 @@ object Util {
 
   fun makeHeaderByAccessToken(accessToken: String): String{
     return "Bearer $accessToken"
+  }
+
+  fun convertHikingStyleIntListToStringList(hikingStyle : List<Int>) : List<String>{
+      val result = mutableListOf<String>()
+      hikingStyle.forEach {
+        result.add(HIKINGSTYLE[it])
+      }
+      return result
   }
 
 }

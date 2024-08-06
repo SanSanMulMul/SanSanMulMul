@@ -8,6 +8,7 @@ import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.domain.follow.Follow;
 import com.sansantek.sansanmulmul.user.dto.response.FollowResponse;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
+import com.sansantek.sansanmulmul.user.repository.badge.BadgeRepository;
 import com.sansantek.sansanmulmul.user.repository.follow.FollowRepository;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import jakarta.persistence.EntityManager;
@@ -30,6 +31,7 @@ public class FollowService {
     // repository
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final BadgeRepository badgeRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -46,7 +48,11 @@ public class FollowService {
 
         // userFollowers에서 follower User 객체를 추출해 followersList에 저장
         for (Follow follow : userFollowers) {
-            FollowResponse frs = new FollowResponse(follow.getFollower().getUserProfileImg(), follow.getFollower().getUserStaticBadge(), follow.getFollower().getUserNickname());
+            String badge =badgeRepository.findByBadgeId(follow.getFollowing().getUserStaticBadge()).get().getBadgeImage() + " " + badgeRepository.findByBadgeId(follow.getFollowing().getUserStaticBadge()).get().getBadgeName();
+            FollowResponse frs = new FollowResponse(
+                    follow.getFollower().getUserProfileImg(),
+                    badge,
+                    follow.getFollower().getUserNickname());
 
             followersList.add(frs);
         }
@@ -56,6 +62,11 @@ public class FollowService {
 
     // userId회원이 하고 있는 팔로우 리스트 조회
     public List<FollowResponse> getFollowings(int userId) {
+        // 사용자 조회
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException());
+        
+        // 반환할 팔로잉 리스트
         List<FollowResponse> followingsList = new ArrayList<>();
 
         // userId에 해당하는 followings 리스트 조회
@@ -63,7 +74,11 @@ public class FollowService {
 
         // userFollowings에서 following User 객체를 추출해 followingsList에 저장
         for (Follow follow : userFollowings){
-            FollowResponse frs = new FollowResponse(follow.getFollowing().getUserProfileImg(), follow.getFollowing().getUserStaticBadge(), follow.getFollowing().getUserNickname());
+            String badge =badgeRepository.findByBadgeId(follow.getFollowing().getUserStaticBadge()).get().getBadgeImage() + " " + badgeRepository.findByBadgeId(follow.getFollowing().getUserStaticBadge()).get().getBadgeName();
+            FollowResponse frs = new FollowResponse(
+                    follow.getFollowing().getUserProfileImg(), 
+                    badge,
+                    follow.getFollowing().getUserNickname());
 
             followingsList.add(frs);
         }

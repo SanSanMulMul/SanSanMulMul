@@ -5,6 +5,7 @@ import com.sansantek.sansanmulmul.exception.user.UserDeletionException;
 import com.sansantek.sansanmulmul.exception.user.UserUpdateException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserRequest;
+import com.sansantek.sansanmulmul.user.dto.response.MyPageResponse;
 import com.sansantek.sansanmulmul.user.dto.response.UserInfoResponse;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
@@ -32,7 +33,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/nickname")
-    @Operation(summary = "닉네임 중복 확인", description = "액세스 토큰을 사용해 회원 정보 조회 후 닉네임 중복 확인")
+    @Operation(summary = "닉네임 중복 확인", description = "닉네임 중복 확인")
     public ResponseEntity<?> chkNickname
             (@RequestParam String userNickname) {
         HttpStatus status = HttpStatus.ACCEPTED;
@@ -148,6 +149,30 @@ public class UserController {
             status = HttpStatus.UNAUTHORIZED; // 401
 
             return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
+
+    @GetMapping("/mypage")
+    @Operation(summary = "마이페이지 내 회원 정보 조회", description = "액세스 토큰을 사용해 마이페이지 내 필요한 회원 정보조회")
+    public ResponseEntity<?> getMypageInfo
+            (Authentication authentication) {
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        try {
+            // 토큰을 통한 userProviderId 추출
+            String userProviderId = authentication.getName();
+
+            // 해당 사용자 정보 조회
+            MyPageResponse user = userService.getMyPageResponse(userProviderId);
+            status = HttpStatus.OK;
+
+            log.debug("userInfo : {}", user);
+            return new ResponseEntity<>(user, status);
+        } catch (Exception e) {
+            log.error("토큰 유효성 확인 실패");
+            status = HttpStatus.UNAUTHORIZED;
+
+            return new ResponseEntity<>(e, status);
         }
     }
 }

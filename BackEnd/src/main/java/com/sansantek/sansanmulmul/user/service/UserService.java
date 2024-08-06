@@ -1,6 +1,8 @@
 package com.sansantek.sansanmulmul.user.service;
 
+import com.sansantek.sansanmulmul.exception.auth.UserNotFoundException;
 import com.sansantek.sansanmulmul.exception.user.UserDeletionException;
+import com.sansantek.sansanmulmul.exception.user.UserUpdateException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.dto.request.SignUpUserRequest;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserHikingStyleRequest;
@@ -25,6 +27,9 @@ public class UserService {
 
     // Repository
     private final UserRepository userRepository;
+
+    // Service
+    private final UserStyleService userStyleService;
 
     @Transactional
     public User signUp(SignUpUserRequest signUpUserRequest, String password) {
@@ -94,24 +99,30 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(String userProviderId, UpdateUserRequest updateUserRequest) {
-        User user = userRepository.findByUserProviderId(userProviderId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    public boolean updateUser(String userProviderId, UpdateUserRequest updateUserRequest) {
+        try {
+            // 사용자 조회
+            User user = userRepository.findByUserProviderId(userProviderId)
+                    .orElseThrow(() -> new UserNotFoundException());
 
-        if (updateUserRequest.getUserNickName() != null)
-            user.setUserNickname(updateUserRequest.getUserNickName());
+            // 사용자 정보 업데이트
+            user.setUserProfileImg(updateUserRequest.getUserProfileImg()); // 프로필
+            user.setUserNickname(updateUserRequest.getUserNickName()); // 닉네임
+            user.setUserStaticBadge(updateUserRequest.getUserStaticBadge()); // 칭호
+            userStyleService.updateUserHikingStyle(user.getUserId(),
+                    updateUserRequest.getStyles()); // 등산 스타일
 
-        if (updateUserRequest.getUserGender() != null)
-            user.setUserGender(updateUserRequest.getUserGender());
+            // 사용자 정보 저장
+            userRepository.save(user);
 
-        if (updateUserRequest.getUserProfileImg() != null)
-            user.setUserProfileImg(updateUserRequest.getUserProfileImg());
-
-        if (updateUserRequest.getUserBirth() != null)
-            user.setUserBirth(updateUserRequest.getUserBirth());
-
-
-        return userRepository.save(user);
+            return true;
+        } catch (UserNotFoundException e) {
+            // 사용자를 찾을 수 없는 경우
+            throw e;
+        } catch (Exception e) {
+            // 일반적인 오류 발생 시
+            throw new UserUpdateException("회원 정보 업데이트 중 오류가 발생했습니다.", e);
+        }
     }
 
     @Transactional

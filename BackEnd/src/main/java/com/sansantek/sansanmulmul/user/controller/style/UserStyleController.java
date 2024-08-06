@@ -73,7 +73,7 @@ public class UserStyleController {
     @Operation(summary = "회원 등산 스타일 수정", description = "해당 회원의 등산 스타일 수정")
     public ResponseEntity<?> updateHIkingStyle
             (Authentication authentication,
-             @RequestBody UpdateUserHikingStyleRequest request) {
+             @RequestBody List<Integer> request) {
 
         HttpStatus status = HttpStatus.ACCEPTED;
 

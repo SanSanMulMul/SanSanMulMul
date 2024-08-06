@@ -1,7 +1,9 @@
 package com.sansantek.sansanmulmul.user.service.follow;
 
+import com.sansantek.sansanmulmul.exception.auth.UserNotFoundException;
 import com.sansantek.sansanmulmul.exception.follow.AlreadyFollowingException;
 import com.sansantek.sansanmulmul.exception.follow.FollowNotFoundException;
+import com.sansantek.sansanmulmul.exception.follow.FollowOperationException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.domain.follow.Follow;
 import com.sansantek.sansanmulmul.user.dto.response.FollowResponse;
@@ -71,59 +73,91 @@ public class FollowService {
     }
 
     // userId회원이 followUserId회원을 팔로우
-    public void addFollow(int userId, int followUserId) {
-        // 팔로우를 진행할 회원 정보 조회
-        User follower = userService.getUser(userId);
-        User following = userService.getUser(followUserId);
+    @Transactional
+    public boolean addFollow(int userId, int followUserId) {
+        try {
+            // 팔로우를 진행할 회원 정보 조회
+            User follower = userService.getUser(userId);
+            User following = userService.getUser(followUserId);
 
-        // 이미 팔로우 중인지 확인
-        Optional<Follow> existingFollow = followRepository.findByFollowerAndFollowing(follower, following);
-        if (existingFollow.isPresent()) {
-            throw new AlreadyFollowingException();
+            // 이미 팔로우 중인지 확인
+            Optional<Follow> existingFollow = followRepository.findByFollowerAndFollowing(follower, following);
+            if (existingFollow.isPresent()) {
+                throw new AlreadyFollowingException("이미 팔로우 중입니다.");
+            }
+
+            // Follow 정보 생성
+            Follow follow = Follow.builder()
+                    .follower(follower)
+                    .following(following)
+                    .build();
+
+            // Follow 객체 저장
+            followRepository.saveAndFlush(follow);
+
+            // 양방향 관계 설정
+            follower.getFollowings().add(follow);
+            following.getFollowers().add(follow);
+
+            // User 객체 저장
+            userRepository.save(follower);
+            userRepository.save(following);
+
+            return true;
+
+        } catch (UserNotFoundException e) {
+            // 회원 정보 조회 실패 시 사용자 정의 예외 처리
+            throw new FollowNotFoundException();
+        } catch (AlreadyFollowingException e) {
+            // 이미 팔로우 중인 경우 예외 처리
+            throw e; // 기존 예외 그대로 던짐
+        } catch (Exception e) {
+            // 기타 예외 처리
+            throw new FollowOperationException("팔로우 처리 중 문제가 발생했습니다.", e);
         }
-
-        // Follow 정보 생성
-        Follow follow = Follow.builder()
-                .follower(follower)
-                .following(following)
-                .build();
-
-        // Follow 객체 저장
-        followRepository.saveAndFlush(follow);
-
-        // 양방향 관계 설정
-        follower.getFollowings().add(follow);
-        following.getFollowers().add(follow);
-
-        // User 객체 저장
-        userRepository.save(follower);
-        userRepository.save(following);
     }
 
     // userId회원이 followUserId회원을 언팔로우
-    public void deleteFollow(int userId, int followUserId) {
-        // 팔로우를 취소할 회원 정보 조회
-        User follower = userService.getUser(userId);
-        log.info("follower: " + follower.getUserNickname());
-        // 팔로우를 취소 당할 회원 정보 조회
-        User following = userService.getUser(followUserId);
-        log.info("following: " + following.getUserNickname());
+    @Transactional
+    public boolean deleteFollow(int userId, int followUserId) {
+        try {
+            // 언팔로우를 할 회원 정보 조회
+            User follower = userService.getUser(userId);
+            log.info("follower: " + follower.getUserNickname());
 
-        // Follow 정보 찾기
-        Optional<Follow> existingFollow = followRepository.findByFollowerAndFollowing(follower, following);
-        if (existingFollow.isEmpty())
-            // 팔로우 중이 아닌 경우 처리
-            throw new FollowNotFoundException();
+            // 언팔로우를 당할 회원 정보 조회
+            User following = userService.getUser(followUserId);
+            log.info("following: " + following.getUserNickname());
 
-        // Follow 객체 삭제
-        followRepository.delete(existingFollow.get());
+            // Follow 정보 찾기
+            Optional<Follow> existingFollow = followRepository.findByFollowerAndFollowing(follower, following);
+            if (existingFollow.isEmpty()) {
+                // 팔로우 중이 아닌 경우 예외 처리
+                throw new FollowNotFoundException();
+            }
 
-        // 양방향 관계 삭제
-        follower.getFollowings().remove(existingFollow.get());
-        following.getFollowers().remove(existingFollow.get());
+            // Follow 객체 삭제
+            followRepository.delete(existingFollow.get());
 
-        // User 객체 저장
-        userRepository.save(follower);
-        userRepository.save(following);
+            // 양방향 관계 삭제
+            follower.getFollowings().remove(existingFollow.get());
+            following.getFollowers().remove(existingFollow.get());
+
+            // User 객체 저장
+            userRepository.save(follower);
+            userRepository.save(following);
+
+            return true;
+
+        } catch (UserNotFoundException e) {
+            // 회원 정보 조회 실패 시 사용자 정의 예외 처리
+            throw new FollowOperationException("회원 정보를 찾을 수 없습니다.", e);
+        } catch (FollowNotFoundException e) {
+            // 팔로우 관계가 없을 때 예외 처리
+            throw e; // 기존 예외 그대로 던짐
+        } catch (Exception e) {
+            // 기타 예외 처리
+            throw new FollowOperationException("언팔로우 처리 중 문제가 발생했습니다.", e);
+        }
     }
 }

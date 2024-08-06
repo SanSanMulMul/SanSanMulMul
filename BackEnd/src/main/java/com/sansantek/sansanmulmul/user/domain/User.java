@@ -56,7 +56,7 @@ public class User {
     private GenderStatus userGender;
 
     @Column(name = "user_profile_img", nullable = false)
-    @Schema(description = "회원 카카오 프로필 이미지", example = "http://t1.kakaocdn.net/account_images/default_profile.jpeg.twg.thumb.R640x640")
+    @Schema(description = "회원 프로필 이미지", example = "http://t1.kakaocdn.net/account_images/default_profile.jpeg.twg.thumb.R640x640")
     private String userProfileImg;
 
     @Column(name = "user_birth", nullable = false)

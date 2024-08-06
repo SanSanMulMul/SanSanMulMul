@@ -48,7 +48,7 @@ public class UserStyleService {
 
     // userId 회원이 갖고 있는 스타일 수정
     @Transactional
-    public Boolean updateUserHikingStyle(int userId, UpdateUserHikingStyleRequest request) {
+    public Boolean updateUserHikingStyle(int userId, List<Integer> request) {
         try {
             // userId회원의 모든 스타일을 제거
             deleteAllStyles(userId);
@@ -65,13 +65,13 @@ public class UserStyleService {
 
     // userId 회원이 여러 hikingStyleId 스타일을 추가
     @Transactional
-    public void addStyles(int userId, UpdateUserHikingStyleRequest request) {
+    public void addStyles(int userId, List<Integer> request) {
         // 추가를 진행할 회원 정보 조회
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));
 
         // 각 스타일 ID에 대해 추가 작업 수행
-        for (int hikingStyleId : request.getStyles()) {
+        for (int hikingStyleId : request) {
             // 추가를 진행할 등산 스타일 정보 조회
             HikingStyle hikingStyle = hikingStyleRepository.findByHikingStylesId(hikingStyleId)
                     .orElseThrow(() -> new RuntimeException("해당 등산 스타일을 찾을 수 없습니다."));

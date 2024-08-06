@@ -16,6 +16,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sansantek.sansanmulmul.mountain.service.MountainService;
 import lombok.RequiredArgsConstructor;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +60,38 @@ public class NewsController {
         String responseBody = get(apiURL, requestHeaders);
 
         System.out.println("뉴스 불러오기 완료");
-        System.out.println(responseBody); // 네이버가 주는 결과데이터
+
+        try {
+            // 응답 문자열을 JSON 형식으로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> jsonMap = objectMapper.readValue(responseBody, new TypeReference<Map<String, Object>>(){});
+
+            // HTML 태그 제거
+            if (jsonMap.containsKey("items") && jsonMap.get("items") instanceof List) {
+                List<Map<String, Object>> items = (List<Map<String, Object>>) jsonMap.get("items");
+                for (Map<String, Object> item : items) {
+                    if (item.containsKey("title")) {
+                        item.put("title", cleanHtml((String) item.get("title")));
+                    }
+                    if (item.containsKey("description")) {
+                        item.put("description", cleanHtml((String) item.get("description")));
+                    }
+                    if (item.containsKey("originallink")) {
+                        item.put("originallink", cleanHtml((String) item.get("originallink")));
+                    }
+                    if (item.containsKey("link")) {
+                        item.put("link", cleanHtml((String) item.get("link")));
+                    }
+                }
+            }
+
+            // 수정된 JSON을 문자열로 변환
+            responseBody = objectMapper.writeValueAsString(jsonMap);
+
+        } catch (Exception e) {
+            throw new RuntimeException("JSON 처리 실패", e);
+        }
+
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
@@ -101,6 +134,26 @@ public class NewsController {
                 // 응답 문자열을 JSON 형식으로 변환
                 ObjectMapper objectMapper = new ObjectMapper();
                 Map<String, Object> jsonMap = objectMapper.readValue(responseBody, new TypeReference<Map<String, Object>>(){});
+
+                // HTML 태그 제거
+                if (jsonMap.containsKey("items") && jsonMap.get("items") instanceof List) {
+                    List<Map<String, Object>> items = (List<Map<String, Object>>) jsonMap.get("items");
+                    for (Map<String, Object> item : items) {
+                        if (item.containsKey("title")) {
+                            item.put("title", cleanHtml((String) item.get("title")));
+                        }
+                        if (item.containsKey("description")) {
+                            item.put("description", cleanHtml((String) item.get("description")));
+                        }
+                        if (item.containsKey("originallink")) {
+                            item.put("originallink", cleanHtml((String) item.get("originallink")));
+                        }
+                        if (item.containsKey("link")) {
+                            item.put("link", cleanHtml((String) item.get("link")));
+                        }
+                    }
+                }
+
                 newsList.add(jsonMap);
 
             } catch (Exception e) {
@@ -110,8 +163,6 @@ public class NewsController {
                 newsList.add(errorMap);
             }
         }
-
-        System.out.println("뉴스 불러오기 완료");
 
         // 전체 응답을 JSON 배열로 변환
         ObjectMapper objectMapper = new ObjectMapper();
@@ -176,4 +227,17 @@ public class NewsController {
         }
     }
 
+    private String cleanHtml(String html) {
+        // HTML 태그 제거
+        String cleanedHtml = Jsoup.clean(html, Safelist.none());
+        // HTML 엔티티 디코딩
+        cleanedHtml = Jsoup.parse(cleanedHtml).text();
+        // 남아있을 수 있는 &quot; 등의 엔티티 추가 처리
+        cleanedHtml = cleanedHtml.replace("&quot;", "\"")
+                .replace("&amp;", "&")
+                .replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("&nbsp;", " ");
+        return cleanedHtml;
+    }
 }

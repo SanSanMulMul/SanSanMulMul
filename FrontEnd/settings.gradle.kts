@@ -1,4 +1,7 @@
 pluginManagement {
+    plugins{
+        id("com.google.devtools.ksp") apply false
+    }
     repositories {
         google {
             content {

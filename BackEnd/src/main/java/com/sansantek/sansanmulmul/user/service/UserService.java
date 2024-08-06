@@ -137,6 +137,7 @@ public class UserService {
             }
             // 3. 새 이미지 DB에 업데이트
             user.setUserProfileImg(newImgUrl);
+
             // 사용자 정보 저장
             userRepository.save(user);
 
@@ -153,6 +154,12 @@ public class UserService {
     @Transactional
     public boolean deleteUser(String userProviderId) {
         try {
+            //S3에서 이미지 삭제
+            // 사용자 조회
+            User user = userRepository.findByUserProviderId(userProviderId)
+                    .orElseThrow(() -> new UserNotFoundException());
+            String userImg = user.getUserProfileImg();
+            s3Service.deleteS3(userImg); //s3에서 이미지 삭제
 
             userRepository.deleteByUserProviderId(userProviderId);
 

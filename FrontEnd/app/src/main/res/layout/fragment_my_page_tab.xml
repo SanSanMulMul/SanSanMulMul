@@ -96,6 +96,7 @@
                             />
                     </LinearLayout>
                     <TextView
+                        android:id="@+id/tv_user_name"
                         android:text="박태우스"
                         android:textSize="28sp"
                         android:textColor="@color/white"

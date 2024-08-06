@@ -22,7 +22,7 @@ import com.sansantek.sansanmulmul.ui.view.register.RegisterStartFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-private const val TAG = "MainActivity 싸피"
+private const val TAG = "LoginActivity 싸피"
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::inflate) {
     private var token : KakaoLoginToken? = null
@@ -45,7 +45,9 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
                     val intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                     }
-                    launch(Dispatchers.Main){ startActivity(intent) }
+                    launch(Dispatchers.Main){
+                        startActivity(intent)
+                        this@LoginActivity.finish()}
                 }
                 else{
                     launch(Dispatchers.Main) {
@@ -64,6 +66,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
     private fun checkAlreadyLogin(): Boolean{
         token = sharedPreferencesUtil.getKakaoLoginToken()
         return token != null
+    }
+
+    override fun onDestroy() {
+        Log.d(TAG, "onDestroy: Login Activity 종료")
+        super.onDestroy()
     }
 }
 

@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
@@ -13,31 +14,27 @@ import com.sansantek.sansanmulmul.databinding.FragmentMyPageTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupHikingStyleListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.MyPageHikingStyleListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.layoutmanager.CustomLayoutmanager
+import com.sansantek.sansanmulmul.ui.util.Util
+import com.sansantek.sansanmulmul.ui.util.Util.convertHikingStyleIntListToStringList
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.view.groupdetail.GroupDetailFragment
+import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 
 private const val TAG = "MyPageTabFragment_싸피"
 class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
     FragmentMyPageTabBinding::bind,
     R.layout.fragment_my_page_tab
 ) {
-    private val styleList = mutableListOf("#등산도 식후경", "#등산은 사진이지", "#설렁설렁", "#저쩌구")
+    private var styleList : List<String> = mutableListOf()
+    private val activityViewModel : MainActivityViewModel by activityViewModels()
     private lateinit var myPageHikingStyleListAdapter: MyPageHikingStyleListAdapter
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        requireActivity().onBackPressedDispatcher.addCallback(this,
-            object: OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    val parentFragment = parentFragment as GroupDetailFragment
-                    parentFragment.popBackStackGroupDetailFragmentView()
-                }
-            }
-        )
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         myPageHikingStyleListAdapter = MyPageHikingStyleListAdapter()
+        binding.tvUserName.text = activityViewModel.user.userNickName
+        activityViewModel.hikingStyles.value?.let {
+            styleList = convertHikingStyleIntListToStringList(it)
+        }
         binding.rvMyHikingStyle.apply {
             adapter = myPageHikingStyleListAdapter.apply {
                 submitList(styleList)

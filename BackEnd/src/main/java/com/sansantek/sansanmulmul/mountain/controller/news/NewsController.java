@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.mountain.controller;
+package com.sansantek.sansanmulmul.mountain.controller.news;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import java.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sansantek.sansanmulmul.mountain.dto.response.NewsResponse;
 import com.sansantek.sansanmulmul.mountain.service.MountainService;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
@@ -61,15 +62,24 @@ public class NewsController {
 
         System.out.println("뉴스 불러오기 완료");
 
+        List<Map<String, Object>> newsList = new ArrayList<>();
+
         try {
             // 응답 문자열을 JSON 형식으로 변환
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> jsonMap = objectMapper.readValue(responseBody, new TypeReference<Map<String, Object>>(){});
 
-            // HTML 태그 제거
+            NewsResponse news = mountainService.getMountainName(keyword);
+            String mountainName = news.getMountainName();
+            String mountainImg = news.getMountainImg();
+
+            // 뉴스 항목이 있을 경우
             if (jsonMap.containsKey("items") && jsonMap.get("items") instanceof List) {
                 List<Map<String, Object>> items = (List<Map<String, Object>>) jsonMap.get("items");
+
                 for (Map<String, Object> item : items) {
+                    item.put("mountainName", mountainName);
+                    item.put("mountainImg", mountainImg);
                     if (item.containsKey("title")) {
                         item.put("title", cleanHtml((String) item.get("title")));
                     }
@@ -83,10 +93,11 @@ public class NewsController {
                         item.put("link", cleanHtml((String) item.get("link")));
                     }
                 }
+                newsList.addAll(items);
             }
 
-            // 수정된 JSON을 문자열로 변환
-            responseBody = objectMapper.writeValueAsString(jsonMap);
+            // 전체 응답을 JSON 배열로 변환
+            responseBody = objectMapper.writeValueAsString(newsList);
 
         } catch (Exception e) {
             throw new RuntimeException("JSON 처리 실패", e);
@@ -95,10 +106,12 @@ public class NewsController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
+
+
     @GetMapping(value = "/random", produces = "application/json; charset=utf-8")
-    public ResponseEntity<String> getRandomNews() {
-        // 산 이름들 가져오기
-        List<String> mountainNameList = mountainService.getMountainName();
+    public ResponseEntity<?> getRandomNews() {
+        // 산 이름, 이미지들 가져오기
+        List<NewsResponse> mountainNameList = mountainService.getMountainName();
 
         // 가져온 산 이름 기반으로 랜덤으로 인덱스 값 5개 뽑기
         Random random = new Random();
@@ -111,8 +124,8 @@ public class NewsController {
         // 뉴스 불러오기
         List<Map<String, Object>> newsList = new ArrayList<>();
         for (Integer index : selectedIndices) {
-            String mountainName = mountainNameList.get(index);
-            System.out.println("산 이름: " + mountainName);
+            String mountainName = mountainNameList.get(index).getMountainName();
+            String mountainImg = mountainNameList.get(index).getMountainImg();
 
             // URL 인코딩
             String encodedMountainName;
@@ -139,6 +152,8 @@ public class NewsController {
                 if (jsonMap.containsKey("items") && jsonMap.get("items") instanceof List) {
                     List<Map<String, Object>> items = (List<Map<String, Object>>) jsonMap.get("items");
                     for (Map<String, Object> item : items) {
+                        item.put("mountainName", mountainName);
+                        item.put("mountainImg", mountainImg);
                         if (item.containsKey("title")) {
                             item.put("title", cleanHtml((String) item.get("title")));
                         }
@@ -152,14 +167,15 @@ public class NewsController {
                             item.put("link", cleanHtml((String) item.get("link")));
                         }
                     }
+                    newsList.addAll(items);
                 }
-
-                newsList.add(jsonMap);
 
             } catch (Exception e) {
                 System.err.println("뉴스 요청 오류: " + e.getMessage());
                 Map<String, Object> errorMap = new HashMap<>();
                 errorMap.put("error", "뉴스 요청 오류: " + e.getMessage());
+                errorMap.put("mountainName", mountainName);
+                errorMap.put("mountainImg", mountainImg);
                 newsList.add(errorMap);
             }
         }
@@ -175,6 +191,7 @@ public class NewsController {
 
         return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
     }
+
 
 
 

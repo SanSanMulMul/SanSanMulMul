@@ -1,6 +1,8 @@
 package com.sansantek.sansanmulmul.user.controller;
 
+import com.sansantek.sansanmulmul.exception.auth.UserNotFoundException;
 import com.sansantek.sansanmulmul.exception.user.UserDeletionException;
+import com.sansantek.sansanmulmul.exception.user.UserUpdateException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserRequest;
 import com.sansantek.sansanmulmul.user.dto.response.UserInfoResponse;
@@ -31,26 +33,20 @@ public class UserController {
 
     @GetMapping("/nickname")
     @Operation(summary = "닉네임 중복 확인", description = "액세스 토큰을 사용해 회원 정보 조회 후 닉네임 중복 확인")
-    public ResponseEntity<Map<String, Object>> chkNickname
+    public ResponseEntity<?> chkNickname
             (@RequestParam String userNickname) {
-        Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
         try {
             // 사용자 닉네임 중복 확인
             if (userService.isExistsUserNickname(userNickname)) {
-
-                // 해당 닉네임 이미 존재
-                resultMap.put("userNickname", userNickname);
-                resultMap.put("available", "false");
                 status = HttpStatus.CONFLICT; // 409
 
+                return new ResponseEntity<>(false, status);
             } else {
-
-                resultMap.put("userNickname", userNickname);
-                resultMap.put("available", "true");
                 status = HttpStatus.OK; // 200
 
+                return new ResponseEntity<>(true, status);
             }
 
         } catch (Exception e) {
@@ -58,8 +54,8 @@ public class UserController {
             log.error("닉네임 중복 확인 실패");
             status = HttpStatus.BAD_REQUEST; // 400
 
+            return new ResponseEntity<>(e.getMessage(), status);
         }
-        return new ResponseEntity<>(resultMap, status);
     }
 
     @GetMapping("/info")
@@ -77,7 +73,6 @@ public class UserController {
             status = HttpStatus.OK;
 
             log.debug("userInfo : {}", user);
-
             return new ResponseEntity<>(user, status);
         } catch (Exception e) {
             log.error("토큰 유효성 확인 실패");
@@ -89,42 +84,38 @@ public class UserController {
 
     @PatchMapping("/info")
     @Operation(summary = "회원 정보 수정", description = "액세스 토큰을 사용해 회원 정보 수정")
-    public ResponseEntity<Map<String, Object>> updateUserInfo
-            (Authentication authentication,
-             @RequestBody UpdateUserRequest updateUserRequest) {
-        Map<String, Object> resultMap = new HashMap<>();
+    public ResponseEntity<?> updateUserInfo(
+            Authentication authentication,
+            @RequestBody UpdateUserRequest updateUserRequest) {
+
         HttpStatus status = HttpStatus.ACCEPTED;
 
         try {
             // 토큰을 통한 userProviderId 추출
             String userProviderId = authentication.getName();
 
-            // 해당 사용자 정보 수정
-            User updatedUser = userService.updateUser(userProviderId, updateUserRequest);
-
-            resultMap.put("userId", updatedUser.getUserId());
-            resultMap.put("userProviderId", userProviderId);
-            resultMap.put("userName", updatedUser.getUserName());
-            resultMap.put("userNickname", updatedUser.getUserNickname());
-            resultMap.put("userGender", updatedUser.getUserGender());
-            resultMap.put("userProfileImg", updatedUser.getUserProfileImg());
-            resultMap.put("userBirth", updatedUser.getUserBirth());
-            resultMap.put("userStaticBadge", updatedUser.getUserStaticBadge());
-            resultMap.put("userTotalLength", updatedUser.getUserTotalLength());
-            resultMap.put("userTotalElevation", updatedUser.getUserTotalElevation());
-            resultMap.put("userTotalSteps", updatedUser.getUserTotalSteps());
-            resultMap.put("userTotalKcal", updatedUser.getUserTotalKcal());
-            resultMap.put("userTotalHiking", updatedUser.getUserTotalHiking());
-            resultMap.put("userStoneCount", updatedUser.getUserStoneCount());
-            resultMap.put("userIsAdmin", updatedUser.isUserIsAdmin());
+            // 사용자 정보 수정
+            boolean chk = userService.updateUser(userProviderId, updateUserRequest);
             status = HttpStatus.OK;
 
+            return new ResponseEntity<>(chk, status);
+
+        } catch (UserNotFoundException e) {
+            log.error("회원 정보 수정 실패 - 사용자 없음: {}", e.getMessage());
+            status = HttpStatus.NOT_FOUND;
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        } catch (UserUpdateException e) {
+            log.error("회원 정보 수정 실패 - 처리 중 오류: {}", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+            return new ResponseEntity<>(e.getMessage(), status);
         } catch (Exception e) {
-            log.error("회원 정보 수정 실패: {}", e.getMessage());
-            resultMap.put("error", "Invalid or expired token");
+            log.error("회원 정보 수정 실패 - 인증 오류: {}", e.getMessage());
             status = HttpStatus.UNAUTHORIZED;
+
+            return new ResponseEntity<>(e.getMessage(), status);
         }
-        return new ResponseEntity<>(resultMap, status);
     }
 
     @DeleteMapping

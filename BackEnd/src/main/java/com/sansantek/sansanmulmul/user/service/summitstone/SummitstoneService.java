@@ -24,7 +24,7 @@ public class SummitstoneService {
     private final UserSummitstoneRepository userSummitstoneRepository;
 
     // 해당 회원의 모든 정상석 조회
-    public List<StoneResponse> getStoneList(int userId) {
+    public List<StoneResponse> getStoneListByUser(int userId) {
         List<StoneResponse> stoneList = new ArrayList<>();
 
         // userId에 해당하는 userStone 리스트 조회
@@ -32,7 +32,11 @@ public class SummitstoneService {
 
         // userStone리스트에서 stoneName을 추출해 stoneList에 저장
         for (UserSummitstone userSummitstone : userStone) {
-            StoneResponse sr = new StoneResponse(userSummitstone.getSummitstone().getStoneId(), userSummitstone.getSummitstone().getStoneName(), userSummitstone.getSummitstone().getStoneImg());
+            StoneResponse sr = new StoneResponse(
+                    userSummitstone.getSummitstone().getStoneId(),
+                    userSummitstone.getSummitstone().getMountain().getMountainName(),
+                    userSummitstone.getSummitstone().getStoneName(),
+                    userSummitstone.getSummitstone().getStoneImg());
             stoneList.add(sr);
         }
 

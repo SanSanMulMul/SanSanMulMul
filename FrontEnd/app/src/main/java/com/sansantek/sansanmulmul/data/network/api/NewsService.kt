@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName
 import com.sansantek.sansanmulmul.data.model.KakaoLoginToken
 import com.sansantek.sansanmulmul.data.model.KakaoLoginUser
 import com.sansantek.sansanmulmul.data.model.News
-import com.sansantek.sansanmulmul.data.model.NewsResponse
 import com.sansantek.sansanmulmul.data.model.User
 import com.sansantek.sansanmulmul.data.model.UserToken
 import retrofit2.Response
@@ -20,8 +19,6 @@ import retrofit2.http.Query
 interface NewsService{
     @GET("mountain/news/{keyword}")
     suspend fun getNewsKeyword(
-//        @Header("X-Naver-Client-Id") clientId: String,
-//        @Header("X-Naver-Client-Secret") clientSecret: String,
         @Path("keyword") keyword: String
-    ): Response<NewsResponse>
+    ): List<News>
 }

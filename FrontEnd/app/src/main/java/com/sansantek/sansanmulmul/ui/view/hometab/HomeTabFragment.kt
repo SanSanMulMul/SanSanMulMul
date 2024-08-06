@@ -17,7 +17,6 @@ import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.News
-import com.sansantek.sansanmulmul.data.model.NewsResponse
 import com.sansantek.sansanmulmul.data.model.Recommendation
 import com.sansantek.sansanmulmul.databinding.FragmentHomeTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.FirstRecommendationViewPagerAdapter
@@ -41,6 +40,7 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
     private lateinit var searchEditTextView: EditText
     private val searchViewModel: MountainSearchViewModel by activityViewModels()
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
+    private lateinit var newsList : List<News>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,6 +53,7 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         initRecommendationViewPager(binding.vpRecommendation1, 3000)
         initRecommendationViewPager(binding.vpRecommendation2, 3500)
         initRecommendationViewPager(binding.vpRecommendation3, 4000)
+        initRecommendationViewPager(binding.vpRecommendation4, 4000)
     }
 
     private fun init() {
@@ -143,30 +144,9 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
 
     private fun setNewsData(onNewsDataReady: (List<News>) -> Unit) {
         lifecycleScope.launch {
-            try {
-                val response = newsService.getNewsKeyword("금오산 등산")
-                Log.d(TAG, "setNewsData: ${response}")
-                if (response.isSuccessful) {
-                    val newsResponse: NewsResponse? = response.body()
-                    newsResponse?.let {
-                        val newsList = it.items.map { news ->
-                            News(
-                                title = news.title,
-                                originallink = news.originallink,
-                                link = news.link,
-                                description = news.description,
-                                pubDate = news.pubDate
-                            )
-                        }
-                        Log.d(TAG, "newsList: $newsList")
-                        onNewsDataReady(newsList)
-                    }
-                } else {
-                    Log.e(TAG, "뉴스 키워드 요청 실패: ${response}")
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "뉴스 키워드 요청 중 오류 발생", e)
-            }
+            newsList = newsService.getNewsKeyword("가리산")
+            Log.d(TAG, "setNewsData: ${newsList}")
+            onNewsDataReady(newsList)
         }
     }
 

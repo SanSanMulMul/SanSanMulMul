@@ -88,7 +88,7 @@ class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>
                     if (it.body() == null) false
                     else {
                         // null 체크해서 절대 null일리가 없음
-                        it.body()!!.available
+                        it.body()!!
                     }
                 }
             }

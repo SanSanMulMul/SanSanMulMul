@@ -1,7 +1,6 @@
 package com.sansantek.sansanmulmul.data.network.api
 
 import com.google.gson.annotations.SerializedName
-import com.sansantek.sansanmulmul.data.model.AvailableNickNameResponse
 import com.sansantek.sansanmulmul.data.model.KakaoLoginToken
 import com.sansantek.sansanmulmul.data.model.KakaoLoginUser
 import com.sansantek.sansanmulmul.data.model.User
@@ -20,7 +19,7 @@ interface UserService {
     @GET("user/login/{userProviderId}")
     suspend fun loginUser(@Path("userProviderId") id: String) : Response<KakaoLoginToken>
     @GET("user/nickname")
-    suspend fun isAvailableNickName(@Query("userNickname") nickName: String) : Response<AvailableNickNameResponse>
+    suspend fun isAvailableNickName(@Query("userNickname") nickName: String) : Response<Boolean>
     @GET("user/info")
     suspend fun loadUserProfile(@Header("Authorization") accessToken: String) : Response<User>
     @GET("user/token")

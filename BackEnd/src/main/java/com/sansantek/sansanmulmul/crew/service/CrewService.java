@@ -2,23 +2,31 @@ package com.sansantek.sansanmulmul.crew.service;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.domain.CrewRestriction;
+import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewRequest;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewDetailResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewMyResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
+import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
 import com.sansantek.sansanmulmul.crew.repository.style.CrewHikingStyleRepository;
 import com.sansantek.sansanmulmul.crew.service.style.CrewStyleService;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.repository.MountainRepository;
+import com.sansantek.sansanmulmul.user.domain.User;
+import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import com.sansantek.sansanmulmul.user.repository.style.HikingStyleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +39,11 @@ public class CrewService {
     private final CrewHikingStyleRepository crewStyleRepository;
     private final HikingStyleRepository hikingStyleRepository;
 
+    @Autowired
+    private CrewUserRepository crewUserRepository;
+
+    @Autowired
+    private UserRepository userRepository;
     // service
     private final CrewStyleService crewStyleService;
 
@@ -41,29 +54,29 @@ public class CrewService {
         List<Crew> crewsList = crewRepository.findAll();
         for (Crew crew : crewsList) {
 
-           // 1. 현재날짜 이후것 부터 가져와야함 (CrewStartDate사용)
+            // 1. 현재날짜 이후것 부터 가져와야함 (CrewStartDate사용)
 //            if (crew.getCrewStartDate())
 
 
-           // 2. 현재 그룹에 인원 수 가져와야함 -> getCurrentMemberCount에 업데이트 되어있어야함
+            // 2. 현재 그룹에 인원 수 가져와야함 -> getCurrentMemberCount에 업데이트 되어있어야함
             int currentMember = 1;
-           // 3. 현재 사용자(유저)가 이 그룹에 참여하고있는지 유무가 있어야 함
+            // 3. 현재 사용자(유저)가 이 그룹에 참여하고있는지 유무가 있어야 함
             boolean isUserJoined = false;
 
 
-           CrewResponse cr = CrewResponse.builder()
-                   .crewId(crew.getCrewId())
-                   .crewName(crew.getCrewName())
-                   .crewStartDate(crew.getCrewStartDate())
-                   .crewEndDate(crew.getCrewEndDate())
-                   .crewMaxMembers(crew.getCrewMaxMembers())
-                   .crewCurrentMembers(currentMember) // Assuming this method exists
-                   .isUserJoined(isUserJoined) // This needs to be determined based on the current user
-                   .mountainImg(crew.getMountain().getMountainImg())
-                   .build();
+            CrewResponse cr = CrewResponse.builder()
+                    .crewId(crew.getCrewId())
+                    .crewName(crew.getCrewName())
+                    .crewStartDate(crew.getCrewStartDate())
+                    .crewEndDate(crew.getCrewEndDate())
+                    .crewMaxMembers(crew.getCrewMaxMembers())
+                    .crewCurrentMembers(currentMember) // Assuming this method exists
+                    .isUserJoined(isUserJoined) // This needs to be determined based on the current user
+                    .mountainImg(crew.getMountain().getMountainImg())
+                    .build();
 
-           crews.add(cr);
-       }
+            crews.add(cr);
+        }
 
         return crews;
     }
@@ -107,7 +120,7 @@ public class CrewService {
                 .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
 
         CrewDetailResponse crewDetailResponse = new CrewDetailResponse(
-            crew.getCrewId(),
+                crew.getCrewId(),
                 crew.getCrewName(),
                 crew.getCrewStartDate(),
                 crew.getCrewEndDate(),
@@ -143,14 +156,32 @@ public class CrewService {
         crewRepository.save(crew);
 
         // 그룹 등산 스타일에 추가
-        for (CrewHikingStyle style: crew.getCrewStyles()) {
-            
+        for (CrewHikingStyle style : crew.getCrewStyles()) {
+
         }
 
         // 그룹 메세지 추가
 
 
         // 그룹 링크 추가
+
+    }
+    //현재 진행중인 크루><
+    public List<Crew> getingCrews(User user) {
+        return crewUserRepository.findByUserAndCrew_CrewIsDone(user, false).stream()
+                .map(CrewUser::getCrew)
+                .collect(Collectors.toList());
+    }
+    //종료된 크루><
+    public List<Crew> getCompletedCrews(User user) {
+        return crewUserRepository.findByUserAndCrew_CrewIsDone(user, true).stream()
+                .map(CrewUser::getCrew)
+                .collect(Collectors.toList());
+    }
+
+    // 현재 인원 수를 계산하는 메서드
+    public int getCurrentMemberCount(int crewId) {
+        return crewUserRepository.countByCrewCrewId(crewId);
 
     }
 }

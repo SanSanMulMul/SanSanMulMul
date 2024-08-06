@@ -38,5 +38,5 @@ interface UserService {
     @GET("user/badge")
     suspend fun getMyBadgeList(@Header("Authorization") accessToken: String) : List<String>
     @PATCH("user/info")
-    suspend fun updateUserProfile(@Header("Authorization") accessToken: String, @Body profileUpdateData: ProfileUpdateData) : Boolean
+    suspend fun updateUserProfile(@Header("Authorization") accessToken: String, @Body profileUpdateData: ProfileUpdateData) : Response<Boolean>
 }

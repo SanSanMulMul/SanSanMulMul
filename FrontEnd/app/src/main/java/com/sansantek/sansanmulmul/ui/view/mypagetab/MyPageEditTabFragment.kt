@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -40,6 +41,9 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
     private lateinit var titleList: List<String>
     private lateinit var myPageAdapter: ArrayAdapter<String>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.etNickname.setOnClickListener {
+            Log.d(TAG, "onViewCreated: ${it.background}")
+        }
         binding.spinnerTitle.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -88,26 +92,33 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
                             styleList
                         )
                     )
-                    if (result) {
-                        lifecycleScope.launch {
+                    when(result.code()){
+                        200 -> {
+                            lifecycleScope.launch {
 
-                            val job1 = async {
-                                val newUser = userService.loadUserProfile(makeHeaderByAccessToken(it.accessToken))
-                                activityViewModel.setUser(newUser.body()!!)
+                                val job1 = async {
+                                    val newUser = userService.loadUserProfile(makeHeaderByAccessToken(it.accessToken))
+                                    activityViewModel.setUser(newUser.body()!!)
+                                }
+                                val job2 = async {
+                                    val newMyPage = userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
+                                    activityViewModel.setMyPageInfo(newMyPage)
+                                }
+                                val job3 = async {
+                                    val newHikingStyle = userService.getHikingStyle(makeHeaderByAccessToken(it.accessToken))
+                                    activityViewModel.setHikingStyles(newHikingStyle)
+                                }
+                                job1.await()
+                                job2.await()
+                                job3.await()
+                                showToast("프로필 수정이 성공적으로 완료되었습니다!")
+                                requireActivity().supportFragmentManager.popBackStack()
                             }
-                            val job2 = async {
-                                val newMyPage = userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
-                                activityViewModel.setMyPageInfo(newMyPage)
+                        }
+                        401 -> {
+                            binding.textInputLayoutNickname.apply {
+                                error = "이미 사용 중인 닉네임입니다!"
                             }
-                            val job3 = async {
-                                val newHikingStyle = userService.getHikingStyle(makeHeaderByAccessToken(it.accessToken))
-                                activityViewModel.setHikingStyles(newHikingStyle)
-                            }
-                            job1.await()
-                            job2.await()
-                            job3.await()
-                            showToast("프로필 수정이 성공적으로 완료되었습니다!")
-                            requireActivity().supportFragmentManager.popBackStack()
                         }
                     }
                 }

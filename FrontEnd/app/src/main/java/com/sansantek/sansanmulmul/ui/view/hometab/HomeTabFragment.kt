@@ -1,5 +1,3 @@
-package com.sansantek.sansanmulmul.ui.view.hometab
-
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -24,6 +22,7 @@ import com.sansantek.sansanmulmul.ui.adapter.NewsViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.HorizontalMarginItemDecoration
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.newsService
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService // mountainService 추가
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
@@ -40,7 +39,7 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
     private lateinit var searchEditTextView: EditText
     private val searchViewModel: MountainSearchViewModel by activityViewModels()
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
-    private lateinit var newsList : List<News>
+    private lateinit var newsList: List<News>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,10 +49,9 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         setNewsData {
             initNewsViewPager(binding.layoutCarouselNews, it)
         }
-        initRecommendationViewPager(binding.vpRecommendation1, 3000)
-        initRecommendationViewPager(binding.vpRecommendation2, 3500)
-        initRecommendationViewPager(binding.vpRecommendation3, 4000)
-        initRecommendationViewPager(binding.vpRecommendation4, 4000)
+
+        // 계절별 추천 데이터를 받아와서 ViewPager를 초기화합니다.
+        loadSeasonalRecommendations()
     }
 
     private fun init() {
@@ -79,16 +77,15 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         })
     }
 
-    private fun loadUserProfile(){
+    private fun loadUserProfile() {
         sharedPreferencesUtil.getKakaoLoginToken()?.let {
             lifecycleScope.launch {
                 val user = userService.loadUserProfile(makeHeaderByAccessToken(it.accessToken))
-                if(user.code() == 200){
+                if (user.code() == 200) {
                     user.body()?.let {
                         binding.tvShared.text = it.userNickName
                     }
-                }
-                else{
+                } else {
                     Log.d(TAG, "loadUserProfile: result :${user.code()}")
                     Log.d(TAG, "loadUserProfile: ${user.body()}")
                 }
@@ -114,8 +111,28 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         autoScroll(viewPager, 5000)
     }
 
-    private fun initRecommendationViewPager(viewPager: ViewPager2, autoScrollDelay: Long) {
-        val itemList = setRecommendationData()
+    private fun loadSeasonalRecommendations() {
+        loadRecommendationData(binding.vpRecommendation1, "spring", 3000)
+        loadRecommendationData(binding.vpRecommendation2, "summer", 3500)
+        loadRecommendationData(binding.vpRecommendation3, "fall", 4000)
+        loadRecommendationData(binding.vpRecommendation4, "winter", 4000)
+    }
+
+    private fun loadRecommendationData(viewPager: ViewPager2, season: String, autoScrollDelay: Long) {
+        lifecycleScope.launch {
+            val recommendationList = when (season) {
+                "spring" -> mountainService.getMountainSpring()
+                "summer" -> mountainService.getMountainSummer()
+                "fall" -> mountainService.getMountainFall()
+                "winter" -> mountainService.getMountainWinter()
+                else -> emptyList()
+            }.map { Recommendation(it.mountainName, "난이도", R.drawable.dummy1) } // 난이도와 이미지는 필요에 따라 수정
+
+            initRecommendationViewPager(viewPager, recommendationList, autoScrollDelay)
+        }
+    }
+
+    private fun initRecommendationViewPager(viewPager: ViewPager2, itemList: List<Recommendation>, autoScrollDelay: Long) {
         val adapter = FirstRecommendationViewPagerAdapter(
             itemList,
             object : FirstRecommendationViewPagerAdapter.OnItemClickListener {
@@ -140,6 +157,8 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
             val offset = position * -(2 * 180) // offset 값으로 간격 조정
             page.translationX = offset
         }
+
+        autoScroll(viewPager, autoScrollDelay)
     }
 
     private fun setNewsData(onNewsDataReady: (List<News>) -> Unit) {
@@ -148,14 +167,6 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
             Log.d(TAG, "setNewsData: ${newsList}")
             onNewsDataReady(newsList)
         }
-    }
-
-    private fun setRecommendationData(): List<Recommendation> {
-        return listOf(
-            Recommendation("지리산", "어려움", R.drawable.dummy1),
-            Recommendation("가야산", "보통", R.drawable.dummy2),
-            Recommendation("가리왕산", "쉬움", R.drawable.dummy3),
-        )
     }
 
     private fun autoScroll(viewPager: ViewPager2, delay: Long) {

@@ -1,7 +1,9 @@
 package com.sansantek.sansanmulmul.crew.controller;
 
+import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewRequest;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewDetailResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewMyResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewUserResponse;
 import com.sansantek.sansanmulmul.crew.service.CrewService;
@@ -12,6 +14,8 @@ import com.sansantek.sansanmulmul.exception.style.GroupNotFoundException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -46,7 +51,7 @@ public class CrewController {
         try {
             // 전체 그룹 가져오기
             List<CrewResponse> crewResponse = crewService.getAllCrews();
-            
+
             return new ResponseEntity<>(crewResponse, status);
 
         } catch (GroupNotFoundException e) {
@@ -126,16 +131,17 @@ public class CrewController {
 
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
             status = HttpStatus.UNAUTHORIZED; // 401
-            
+
             return new ResponseEntity<>(e.getMessage(), status);
         } catch (Exception e) {
 
             log.error("그룹 생성 실패: {}", e.getMessage());
             status = HttpStatus.BAD_REQUEST; // 400
-            
+
             return new ResponseEntity<>(e.getMessage(), status);
         }
     }
+
     @GetMapping("/member/{crewId}")
     public ResponseEntity<?> getCrewMembers(@PathVariable int crewId) {
         try {
@@ -143,6 +149,38 @@ public class CrewController {
             return ResponseEntity.ok(members);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "진행 중인 그룹 조회", description = "회원의 진행 중인 그룹을 조회합니다.")
+    @GetMapping("/ing")
+    public ResponseEntity<?> getingCrews(Authentication authentication) {
+        try {
+            String userProviderId = authentication.getName();
+            User user = userService.getUser(userProviderId);
+            List<Crew> ongoingCrews = crewService.getingCrews(user);
+            List<CrewMyResponse> response = ongoingCrews.stream()
+                    .map(crew -> CrewMyResponse.from(crew, crewService.getCurrentMemberCount(crew.getCrewId())))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "종료된 그룹 조회", description = "회원의 종료된 그룹을 조회합니다.")
+    @GetMapping("/complete")
+    public ResponseEntity<?> getCompletedCrews(Authentication authentication) {
+        try {
+            String userProviderId = authentication.getName();
+            User user = userService.getUser(userProviderId);
+            List<Crew> completedCrews = crewService.getCompletedCrews(user);
+            List<CrewMyResponse> response = completedCrews.stream()
+                    .map(crew -> CrewMyResponse.from(crew, crewService.getCurrentMemberCount(crew.getCrewId())))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 }

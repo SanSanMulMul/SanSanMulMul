@@ -34,37 +34,38 @@
   <color name="tab_background_unselected">#FFFFFF</color>
   <color name="tab_divider_color">#E9E9E9</color>
 
-    <color name="group_detail_green">#C0E2C6</color>
-    <color name="group_detail_group_description_title">#A1CCA8</color>
+  <color name="group_detail_green">#C0E2C6</color>
+  <color name="group_detail_group_description_title">#A1CCA8</color>
 
-    <color name="group_detail_group_positive_btn">#A1CCA8</color>
-    <color name="group_detail_group_negative_btn">#EAA0C4</color>
-    <color name="group_detail_alarm_green_btn">#A1CCA8</color>
-    <color name="group_detail_alarm_black_btn">#616161</color>
-    <color name="group_detail_alarm_divider">#E0E0E0</color>
+  <color name="group_detail_group_positive_btn">#A1CCA8</color>
+  <color name="group_detail_group_negative_btn">#EAA0C4</color>
+  <color name="group_detail_alarm_green_btn">#A1CCA8</color>
+  <color name="group_detail_alarm_black_btn">#616161</color>
+  <color name="group_detail_alarm_divider">#E0E0E0</color>
 
-    <color name="difficulty_easy">#20B75D</color>
-    <color name="difficulty_medium">#FFD234</color>
-    <color name="difficulty_hard">#D70E0E</color>
+  <color name="difficulty_easy">#20B75D</color>
+  <color name="difficulty_medium">#FFD234</color>
+  <color name="difficulty_hard">#D70E0E</color>
 
-    <color name="group_detail_drawer_grey">#6B6B6B</color>
-    <color name="group_detail_drawer_black">#414141</color>
+  <color name="group_detail_drawer_grey">#6B6B6B</color>
+  <color name="group_detail_drawer_black">#414141</color>
 
-    <color name="group_detail_second_tab_tabbar_green">#A1CCA8</color>
-    <color name="group_detail_second_tab_tabbar_divider">#E0E0E0</color>
-    <color name="group_detail_second_tab_mountain_name">#CCD2CD</color>
-    <color name="group_detail_second_tab_course_name">#606060</color>
+  <color name="group_detail_second_tab_tabbar_green">#A1CCA8</color>
+  <color name="group_detail_second_tab_tabbar_divider">#E0E0E0</color>
+  <color name="group_detail_second_tab_mountain_name">#CCD2CD</color>
+  <color name="group_detail_second_tab_course_name">#606060</color>
 
-    <color name="group_detail_second_tab_difficulty_hard">#C81F1F</color>
-    <color name="group_detail_second_tab_course_change_btn">#5F5F5F</color>
-    <color name="group_detail_second_tab_map_overlay_btn">#29000000</color>
-    <color name="group_detail_second_tab_dot_title_color">#424242</color>
-    <color name="group_detail_second_tab_border_color">#767676</color>
-    <color name="group_detail_second_tab_distance_data_color">#232323</color>
-    <color name="group_detail_second_tab_temperature_max_color">#AA1919</color>
-    <color name="group_detail_second_tab_temperature_min_color">#266EDA</color>
-    <color name="group_detail_second_tab_weather_black_color">#000000</color>
+  <color name="group_detail_second_tab_difficulty_hard">#C81F1F</color>
+  <color name="group_detail_second_tab_course_change_btn">#5F5F5F</color>
+  <color name="group_detail_second_tab_map_overlay_btn">#29000000</color>
+  <color name="group_detail_second_tab_dot_title_color">#424242</color>
+  <color name="group_detail_second_tab_border_color">#767676</color>
+  <color name="group_detail_second_tab_distance_data_color">#232323</color>
+  <color name="group_detail_second_tab_temperature_max_color">#AA1919</color>
+  <color name="group_detail_second_tab_temperature_min_color">#266EDA</color>
+  <color name="group_detail_second_tab_weather_black_color">#000000</color>
 
+  <color name="my_page_tab_layout_unselected_transparent_color">#60FFFFFF</color>
   <color name="my_page_more_button_stroke_color">#989898</color>
   <color name="my_page_more_button_text_color">#797979</color>
   <color name="my_page_first_tab_title_text_color">#555555</color>
@@ -78,9 +79,8 @@
   <color name="my_page_edit_hiking_fifth_style_color">#CEBDFF</color>
 
 
-
-    <color name="hiking_recording_tab_button_pink">#F8ACAC</color>
-    <color name="hiking_recording_tab_button_purple">#C0ADF6</color>
+  <color name="hiking_recording_tab_button_pink">#F8ACAC</color>
+  <color name="hiking_recording_tab_button_purple">#C0ADF6</color>
 
 
 </resources>

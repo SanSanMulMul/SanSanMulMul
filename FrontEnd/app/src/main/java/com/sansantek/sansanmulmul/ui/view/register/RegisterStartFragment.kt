@@ -47,12 +47,13 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             Log.d(TAG, "onViewCreated: 로그인 시도")
             // 카카오 로그인 시도
             loginWithKakao()
+//                goRegister()
         }
     }
 
     private fun loginWithKakao() {
         // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(requireContext())) {
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(myContext)) {
             loginWithKakaoApp()
         } else {
             loginWithKakaoAccount()
@@ -73,13 +74,13 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             } else if (token != null) {
                 Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
                 Log.i(TAG, "카카오톡으로 로그인 성공 ${token.idToken}")
-                processAuthAndNavigateByKakaoApp()
+                processAuthAndNavigateByKakao()
             }
         }
     }
 
     // 회원인지 파악하고 아니면 회원가입 페이지, 맞으면 바로 메인 화면으로 이동
-    private fun processAuthAndNavigateByKakaoApp() {
+    private fun processAuthAndNavigateByKakao() {
         // 사용자 정보 요청 (기본)
         UserApiClient.instance.me { user, error ->
             if (error != null) {
@@ -115,6 +116,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             result.body()?.let {
                 kakaoLoginToken = it
                 sharedPreferencesUtil.saveKakaoLoginToken(kakaoLoginToken)
+                Log.d(TAG, "isUser: $kakaoLoginToken")
             }
             return true
         }
@@ -158,6 +160,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
         } else if (token != null) {
             Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
             Log.d(TAG, "loginWithKakao idToken: ${token.idToken}")
+            processAuthAndNavigateByKakao()
 //                GoMain()
         }
     }

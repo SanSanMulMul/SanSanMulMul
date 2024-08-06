@@ -1,6 +1,6 @@
 package com.sansantek.sansanmulmul.data.model
 
-data class SunriseSunsetTimes(
+data class MountainSunriseSunset(
     val sunrise: String,
     val sunset: String
 )

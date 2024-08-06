@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CrewDetailResponse {
 
-    // 그룹
+    /* 특정 그룹 상세보기 응답 */
     @Schema(description = "그룹 고유 번호", example = "1")
     private int crewId;
     @Schema(description = "그룹 이름", example = "한사랑 산악회")

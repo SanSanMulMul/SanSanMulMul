@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.crew.domain;
 
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
+import com.sansantek.sansanmulmul.mountain.domain.course.Course;
 import com.sansantek.sansanmulmul.user.domain.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -32,19 +33,26 @@ public class Crew {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @Schema(description = "방장 유저id", example = "1")
     private User leader;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mountain_id", nullable = false)
+    @ColumnDefault("14")
+    @Schema(description = "산 고유 번호", example = "14")
     private Mountain mountain;
 
-//    @ManyToOne
-//    @JoinColumn(name = "course_id", nullable = false)
-//    private Course ascentCourse;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "course_id", nullable = false)
-//    private Course descentCourse;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Schema(description = "상행 코스 번호", example = "47190010101")
+    @ColumnDefault("47190010101")
+    @JoinColumn(name = "crew_up_course_id", nullable = false)
+    private Course upCourse;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Schema(description = "하행 코스 번호", example = "47190010102")
+    @ColumnDefault("47190010102")
+    @JoinColumn(name = "crew_down_course_id", nullable = false)
+    private Course downCourse;
 
     @Column(name = "crew_name", nullable = false)
     @Schema(description = "그룹 이름", example = "한사랑 산악회")
@@ -88,7 +96,7 @@ public class Crew {
     @ColumnDefault("false")
     private boolean crewIsDone;
 
-    @Column(name = "crew_link", nullable = false)
+    @Column(name = "crew_link")
     @ColumnDefault("link is yet")
     @Schema(description = "그룹 카카오톡 공유 링크", example = "")
     private String crewLink;
@@ -109,6 +117,17 @@ public class Crew {
     // 그룹 등산 스타일
     @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CrewHikingStyle> crewStyles = new ArrayList<>();
+
+    // 그룹 방장 변경
+    public void changeLeader(User newLeader) {
+        if (this.leader != null) {
+            this.leader.getLeadingCrews().remove(this);
+        }
+        this.leader = newLeader;
+        if (newLeader != null) {
+            newLeader.getLeadingCrews().add(this);
+        }
+    }
 
     public Crew(String crewName, String crewDescription, int crewMaxMembers, CrewRestriction crewGender, int crewMinAge, int crewMaxAge, Mountain mountain) {
         this.crewName = crewName;

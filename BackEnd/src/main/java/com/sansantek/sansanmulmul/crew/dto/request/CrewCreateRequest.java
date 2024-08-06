@@ -15,7 +15,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class CrewCreateRequest {
-    // 그룹 생성 요청
+
+    /* 그룹 생성 요청 */
     @Schema(description = "그룹 이름", example = "한사랑 산악회")
     private String crewName;
     @Schema(description = "그룹 설명", example = "모집합니다.")
@@ -31,11 +32,13 @@ public class CrewCreateRequest {
     @Schema(description = "그룹 등산 스타일", example = "[1, 2, 3]")
     private List<Integer> crewStyles = new ArrayList<>();
 
-    // 산
+    // <산 선택>
     @Schema(description = "산 고유 번호", example = "1")
     private int mountainId;
 
-    // 코스
+    // <코스 선택>
     // 상행 코스
     // 하행 코스
+
+
 }

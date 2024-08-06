@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.user.domain;
 
+import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.user.domain.badge.UserBadge;
 import com.sansantek.sansanmulmul.user.domain.follow.Follow;
 import com.sansantek.sansanmulmul.user.domain.style.UserHikingStyle;
@@ -122,6 +123,10 @@ public class User {
     // 회원 등산 스타일
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserHikingStyle> userStyles = new ArrayList<>();
+
+    // 회원이 방장으로 있는 그룹들
+    @OneToMany(mappedBy = "leader")
+    private List<Crew> leadingCrews;
 
 
     public User(String userProviderId, String userPassword, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth, int userStaticBadge, boolean userIsAdmin) {

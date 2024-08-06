@@ -5,6 +5,13 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="android:paddingVertical=&quot;14dp&quot;&#xA;                    android:paddingHorizontal=&quot;14dp&quot;" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -139,22 +146,40 @@
                     android:layout_marginTop="10dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/et_nickname"
+                    app:layout_constraintBottom_toTopOf="@id/text_input_layout_nickname"
                     />
-                <EditText
-                    android:id="@+id/et_nickname"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/text_input_layout_nickname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_rectangle_stroke_green_green_20"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textSize="14sp"
-                    android:paddingVertical="14dp"
-                    android:paddingHorizontal="14dp"
                     app:layout_constraintTop_toBottomOf="@id/tv_nickname"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    />
+                    app:boxStrokeWidth="1dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="@drawable/my_page_text_input_layout_selector"
+                    app:boxStrokeErrorColor="@drawable/my_page_text_input_layout_error_selector"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:errorTextColor="@color/red"
+                    app:hintEnabled="false"
+                    >
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_nickname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textSize="14sp"
+                        android:layout_gravity="center_vertical"
+                        android:cursorVisible="false"
+                        android:textSelectHandleLeft="@android:color/transparent"
+                        android:textSelectHandleRight="@android:color/transparent"
+                        android:textColorHighlight="@android:color/transparent"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_title"
@@ -211,6 +236,7 @@
                     android:layout_height="0dp"
                     android:textSize="14sp"
                     android:paddingVertical="14dp"
+                    android:nestedScrollingEnabled="false"
                     app:layout_constraintTop_toBottomOf="@id/tv_hike_style"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"

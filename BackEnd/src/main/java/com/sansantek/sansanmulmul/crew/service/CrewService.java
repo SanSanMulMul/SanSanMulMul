@@ -1,10 +1,13 @@
 package com.sansantek.sansanmulmul.crew.service;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
+
 import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequest;
+import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewCreateRequest;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewDetailResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewMyResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewHikingStyleRepository;
@@ -20,12 +23,13 @@ import com.sansantek.sansanmulmul.user.service.UserService;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -55,12 +59,14 @@ public class CrewService {
         List<Crew> crewList = crewRepository.findAll();
         for (Crew crew : crewList) {
 
+
            // 1. 현재날짜 이후것 부터 가져와야함 (CrewStartDate사용)
             if (crew.getCrewStartDate().isAfter(now)) {
                 // 2. 현재 그룹에 속한 인원 수 가져옴
                 int currentMember = crewUserRepository.countByCrew_CrewId(crew.getCrewId());
                 // 3. 현재 사용자(유저)가 이 그룹에 참여하고있는지 확인
                 boolean isUserJoined = crewUserRepository.existsByCrewAndUser(crew, currentUser);
+
 
                 CrewResponse cr = CrewResponse.builder()
                         .crewId(crew.getCrewId())
@@ -215,4 +221,22 @@ public class CrewService {
 //        crewRepository.save(crew);
 //    }
 
+    //현재 진행중인 크루><
+    public List<Crew> getingCrews(User user) {
+        return crewUserRepository.findByUserAndCrew_CrewIsDone(user, false).stream()
+                .map(CrewUser::getCrew)
+                .collect(Collectors.toList());
+    }
+    //종료된 크루><
+    public List<Crew> getCompletedCrews(User user) {
+        return crewUserRepository.findByUserAndCrew_CrewIsDone(user, true).stream()
+                .map(CrewUser::getCrew)
+                .collect(Collectors.toList());
+    }
+
+    // 현재 인원 수를 계산하는 메서드
+    public int getCurrentMemberCount(int crewId) {
+        return crewUserRepository.countByCrewCrewId(crewId);
+
+    }
 }

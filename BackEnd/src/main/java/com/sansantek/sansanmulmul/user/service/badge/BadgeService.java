@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.user.service.badge;
 
+import com.sansantek.sansanmulmul.exception.auth.UserNotFoundException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.domain.badge.Badge;
 import com.sansantek.sansanmulmul.user.domain.badge.UserBadge;
@@ -54,12 +55,18 @@ public class BadgeService {
     public List<String> getBadgeList(int userId) {
         List<String> badgeList = new ArrayList<>();
 
+        // 사용자 조회
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException());
+
         // userId에 해당하는 userBadge 리스트 조회
         List<UserBadge> userBadges = userBadgeRepository.findByUser_UserId(userId);
 
         // userBadge 리스트에서 badgeName 추출하여 badgeList에 저장
-        for (UserBadge userBadge : userBadges)
-            badgeList.add(userBadge.getBadge().getBadgeName());
+        for (UserBadge userBadge : userBadges) {
+            String badge = userBadge.getBadge().getBadgeImage() + " " + userBadge.getBadge().getBadgeName();
+            badgeList.add(badge);
+        }
 
         return badgeList;
     }

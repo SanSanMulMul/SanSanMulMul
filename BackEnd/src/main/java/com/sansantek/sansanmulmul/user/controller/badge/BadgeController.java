@@ -33,9 +33,8 @@ public class BadgeController {
 
     @GetMapping
     @Operation(summary = "회원 전체 칭호 조회", description = "액세스 토큰을 사용해 회원 전체 칭호 조회")
-    public ResponseEntity<Map<String, Object>> getUserBadge
+    public ResponseEntity<?> getUserBadge
             (Authentication authentication) {
-        Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
         try {
@@ -44,33 +43,27 @@ public class BadgeController {
 
             // 해당 사용자 가져오기
             User user = userService.getUser(userProviderId);
-            String userStaticBadge = badgeRepository.findByBadgeId(user.getUserStaticBadge()).get().getBadgeName();
 
             // 사용자 칭호 조회
             List<String> userBadgeList = badgeService.getBadgeList(user.getUserId());
-
-            // JSON으로 결과 전송
-            resultMap.put("userStaticBadgeId", user.getUserStaticBadge());
-            resultMap.put("userStaticBadgeName", userStaticBadge);
-            resultMap.put("userBadgeList", userBadgeList);
-
             status = HttpStatus.OK; // 200
+
+            return new ResponseEntity<>(userBadgeList, status);
 
         } catch (InvalidTokenException e) {
 
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
-            resultMap.put("error", "Invalid or expired token");
             status = HttpStatus.UNAUTHORIZED; // 401
+
+            return new ResponseEntity<>(e.getMessage(), status);
 
         } catch (Exception e) {
 
             log.error("회원 칭호 조회 실패: {}", e.getMessage());
-            resultMap.put("error", "An unexpected error occurred");
             status = HttpStatus.BAD_REQUEST; // 400
 
+            return new ResponseEntity<>(e.getMessage(), status);
         }
-
-        return new ResponseEntity<>(resultMap, status);
     }
 
     @PostMapping

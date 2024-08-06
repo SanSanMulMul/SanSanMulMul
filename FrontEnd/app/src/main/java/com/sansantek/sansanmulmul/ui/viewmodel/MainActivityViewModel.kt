@@ -3,12 +3,15 @@ package com.sansantek.sansanmulmul.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.tasks.Tasks.await
 import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.data.model.FollowUser
 import com.sansantek.sansanmulmul.data.model.KakaoLoginToken
 import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.data.model.MyPageInfo
 import com.sansantek.sansanmulmul.data.model.User
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 
 class MainActivityViewModel : ViewModel(){
     private lateinit var _user: User
@@ -17,6 +20,9 @@ class MainActivityViewModel : ViewModel(){
 
     fun setUser(user:User){
         _user = user
+    }
+    fun isUserInitialized():Boolean{
+        return ::_user.isInitialized
     }
 
     private var _token : KakaoLoginToken? = sharedPreferencesUtil.getKakaoLoginToken()

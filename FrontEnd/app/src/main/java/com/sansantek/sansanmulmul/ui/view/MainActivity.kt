@@ -87,8 +87,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             launch(Dispatchers.Main) {
                 initBottomNav()
             }
+            changeFragment(HomeTabFragment())
         }
-        changeFragment(HomeTabFragment())
     }
 
     private fun loadLikedMountainList(){

@@ -24,6 +24,7 @@ import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 private const val TAG = "MyPageEditTabFragment 싸피"
@@ -87,10 +88,27 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
                             styleList
                         )
                     )
-                    Log.d(TAG, "onViewCreated: update 결과 $result")
                     if (result) {
-                        showToast("프로필 수정이 성공적으로 완료되었습니다!")
-                        requireActivity().supportFragmentManager.popBackStack()
+                        lifecycleScope.launch {
+
+                            val job1 = async {
+                                val newUser = userService.loadUserProfile(makeHeaderByAccessToken(it.accessToken))
+                                activityViewModel.setUser(newUser.body()!!)
+                            }
+                            val job2 = async {
+                                val newMyPage = userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
+                                activityViewModel.setMyPageInfo(newMyPage)
+                            }
+                            val job3 = async {
+                                val newHikingStyle = userService.getHikingStyle(makeHeaderByAccessToken(it.accessToken))
+                                activityViewModel.setHikingStyles(newHikingStyle)
+                            }
+                            job1.await()
+                            job2.await()
+                            job3.await()
+                            showToast("프로필 수정이 성공적으로 완료되었습니다!")
+                            requireActivity().supportFragmentManager.popBackStack()
+                        }
                     }
                 }
             }

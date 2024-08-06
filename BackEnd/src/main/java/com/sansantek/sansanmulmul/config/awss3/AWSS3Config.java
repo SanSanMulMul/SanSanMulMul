@@ -5,7 +5,6 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.sansantek.sansanmulmul.config.awss3.AWSS3ObjectStorage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,10 +30,4 @@ public class AWSS3Config {
                 .build();
     }
 
-    @Bean
-    public AWSS3ObjectStorage awsS3ObjectStorageUpload(AmazonS3 amazonS3) {
-        AWSS3ObjectStorage awsS3ObjectStorageUpload = new AWSS3ObjectStorage(amazonS3);
-        awsS3ObjectStorageUpload.setBucket(bucket);
-        return awsS3ObjectStorageUpload;
-    }
 }

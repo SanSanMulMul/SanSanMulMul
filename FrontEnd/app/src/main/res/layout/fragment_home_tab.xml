@@ -113,6 +113,7 @@
         app:layout_constraintTop_toTopOf="@id/tv_shared" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
     <!-- 뉴스 -->
     <androidx.viewpager2.widget.ViewPager2
       android:id="@+id/layout_carousel_news"
@@ -146,7 +147,7 @@
         style="@style/HomeTabRecommendationTitleStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="박태우스"
+        android:text="봄"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -155,7 +156,7 @@
         style="@style/HomeTabRecommendationTitleStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="님과 비슷한 유저가 많이 간 산"
+        android:text="에 가기 좋은 산"
         app:layout_constraintBottom_toBottomOf="@id/tv_nickname2"
         app:layout_constraintStart_toEndOf="@id/tv_nickname2"
         app:layout_constraintTop_toTopOf="@id/tv_nickname2" />
@@ -186,7 +187,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:text="20대 남성"
+        android:text="여름"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -195,7 +196,7 @@
         style="@style/HomeTabRecommendationTitleStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=" 유저가 많이 간 산"
+        android:text="에 가기 좋은 산"
         app:layout_constraintBottom_toBottomOf="@id/tv_age_and_gender"
         app:layout_constraintStart_toEndOf="@id/tv_age_and_gender"
         app:layout_constraintTop_toTopOf="@id/tv_age_and_gender" />
@@ -227,7 +228,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="여름"
+        android:text="가을"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

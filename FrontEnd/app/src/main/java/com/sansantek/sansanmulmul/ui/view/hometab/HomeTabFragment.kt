@@ -17,11 +17,13 @@ import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.News
+import com.sansantek.sansanmulmul.data.model.NewsResponse
 import com.sansantek.sansanmulmul.data.model.Recommendation
 import com.sansantek.sansanmulmul.databinding.FragmentHomeTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.FirstRecommendationViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.NewsViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.HorizontalMarginItemDecoration
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.newsService
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
@@ -31,11 +33,11 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 private const val TAG = "HomeTabFragment 싸피"
+
 class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
     FragmentHomeTabBinding::bind,
     R.layout.fragment_home_tab
 ) {
-
     private lateinit var searchEditTextView: EditText
     private val searchViewModel: MountainSearchViewModel by activityViewModels()
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
@@ -44,7 +46,10 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         super.onViewCreated(view, savedInstanceState)
         init()
 
-        initNewsViewPager(binding.layoutCarouselNews)
+        // 뉴스 데이터를 가져온 후 ViewPager를 초기화합니다.
+        setNewsData {
+            initNewsViewPager(binding.layoutCarouselNews, it)
+        }
         initRecommendationViewPager(binding.vpRecommendation1, 3000)
         initRecommendationViewPager(binding.vpRecommendation2, 3500)
         initRecommendationViewPager(binding.vpRecommendation3, 4000)
@@ -88,11 +93,9 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
                 }
             }
         }
-
     }
 
-    private fun initNewsViewPager(viewPager: ViewPager2) {
-        val itemList = setNewsData()
+    private fun initNewsViewPager(viewPager: ViewPager2, itemList: List<News>) {
         val adapter = NewsViewPagerAdapter(itemList)
         viewPager.adapter = adapter
 
@@ -107,7 +110,7 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
             val scale = 1 - abs(position) // scale 값으로 양쪽 애들 높이 조정
             page.scaleY = 0.85f + 0.15f * scale
         }
-        autoScroll(viewPager, 3000)
+        autoScroll(viewPager, 5000)
     }
 
     private fun initRecommendationViewPager(viewPager: ViewPager2, autoScrollDelay: Long) {
@@ -138,12 +141,33 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         }
     }
 
-    private fun setNewsData(): List<News> {
-        return listOf(
-            News("뉴스1", R.drawable.dummy1),
-            News("뉴스2", R.drawable.dummy2),
-            News("뉴스3", R.drawable.dummy3)
-        )
+    private fun setNewsData(onNewsDataReady: (List<News>) -> Unit) {
+        lifecycleScope.launch {
+            try {
+                val response = newsService.getNewsKeyword("금오산 등산")
+                Log.d(TAG, "setNewsData: ${response}")
+                if (response.isSuccessful) {
+                    val newsResponse: NewsResponse? = response.body()
+                    newsResponse?.let {
+                        val newsList = it.items.map { news ->
+                            News(
+                                title = news.title,
+                                originallink = news.originallink,
+                                link = news.link,
+                                description = news.description,
+                                pubDate = news.pubDate
+                            )
+                        }
+                        Log.d(TAG, "newsList: $newsList")
+                        onNewsDataReady(newsList)
+                    }
+                } else {
+                    Log.e(TAG, "뉴스 키워드 요청 실패: ${response}")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "뉴스 키워드 요청 중 오류 발생", e)
+            }
+        }
     }
 
     private fun setRecommendationData(): List<Recommendation> {

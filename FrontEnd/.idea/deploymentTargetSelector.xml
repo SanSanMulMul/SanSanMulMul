@@ -4,10 +4,17 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
+<<<<<<< HEAD
         <DropdownSelection timestamp="2024-08-02T06:17:34.057908200Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=R39M10GKZWN" />
+=======
+        <DropdownSelection timestamp="2024-08-06T08:23:42.494608500Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=R3CN90FRF9P" />
+>>>>>>> FE/mypage_tab
             </handle>
           </Target>
         </DropdownSelection>

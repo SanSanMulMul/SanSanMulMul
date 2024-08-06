@@ -26,61 +26,19 @@ class MyPageEditHikingStyleListAdapter():
 
     inner class MyPageEditHikingStyleListHolder(private val binding: ListMyPageEditHikingStyleBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
+        val selectedBackgroundList = listOf(R.drawable.my_page_edit_hiking_style_round_stroke_first_selected, R.drawable.my_page_edit_hiking_style_round_stroke_second_selected, R.drawable.my_page_edit_hiking_style_round_stroke_third_selected, R.drawable.my_page_edit_hiking_style_round_stroke_fourth_selected, R.drawable.my_page_edit_hiking_style_round_stroke_fifth_selected, R.drawable.my_page_edit_hiking_style_round_stroke_sixth_selected)
+        val unSelectedBackgroundList = listOf(R.drawable.my_page_edit_hiking_style_round_stroke_first_unselected, R.drawable.my_page_edit_hiking_style_round_stroke_second_unselected, R.drawable.my_page_edit_hiking_style_round_stroke_third_unselected, R.drawable.my_page_edit_hiking_style_round_stroke_fourth_unselected, R.drawable.my_page_edit_hiking_style_round_stroke_fifth_unselected, R.drawable.my_page_edit_hiking_style_round_stroke_sixth_unselected)
         fun bindInfo(position: Int) {
             val item = getItem(position)
             binding.tvHikingStyle.text = item.style
-            when(position){
-                0 -> {
-                    if(item.check){
-                        setBackground(R.drawable.my_page_edit_hiking_style_round_stroke_first_selected)
-                    }
-                    else{
-                        setBackground(R.drawable.my_page_edit_hiking_style_round_stroke_first_unselected)
-                    }
-                    binding.tvHikingStyle.setPadding(10,30,10,30)
-                }
-                1 -> {
-                    if(item.check){
-                        setBackground(R.drawable.my_page_edit_hiking_style_round_stroke_second_selected)
-                    }
-                    else{
-                        setBackground(R.drawable.my_page_edit_hiking_style_round_stroke_second_unselected)
-                    }
-                    binding.tvHikingStyle.setPadding(10,30,10,30)
-
-                }
-                2 -> {
-                    if(item.check){
-                        setBackground(R.drawable.my_page_edit_hiking_style_round_stroke_third_selected)
-                    }
-                    else{
-                        setBackground(R.drawable.my_page_edit_hiking_style_round_stroke_third_unselected)
-                    }
-                    binding.tvHikingStyle.setPadding(10,30,10,30)
-                }
-                3 -> {
-                    if(item.check){
-                        setBackground(R.drawable.my_page_edit_hiking_style_round_stroke_fourth_selected)
-                    }
-                    else{
-                        setBackground(R.drawable.my_page_edit_hiking_style_round_stroke_fourth_unselected)
-                    }
-                    binding.tvHikingStyle.setPadding(10,30,10,30)
-                }
-                4 -> {
-                    if(item.check){
-                        setBackground(R.drawable.my_page_edit_hiking_style_round_stroke_fifth_selected)
-                    }
-                    else{
-                        setBackground(R.drawable.my_page_edit_hiking_style_round_stroke_fifth_unselected)
-                    }
-                    binding.tvHikingStyle.setPadding(10,30,10,30)
-                }
-                else -> {
-
-                }
+            if(item.check){
+                setBackground(selectedBackgroundList[position])
             }
+            else{
+                setBackground(unSelectedBackgroundList[position])
+            }
+            binding.tvHikingStyle.setPadding(10,30,10,30)
+
             binding.root.setOnClickListener {
                 itemClickListener.onClick(position)
             }

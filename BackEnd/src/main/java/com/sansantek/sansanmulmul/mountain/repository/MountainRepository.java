@@ -12,6 +12,8 @@ public interface MountainRepository extends JpaRepository<Mountain, Integer> {
 
     Mountain findByMountainId(int mountainId);
     Mountain findByMountainName(String mountainName);
+    Mountain findByMountainCode(int mountainCode);
+
     List<Mountain> findByMountainWeatherIn(List<String> weathers);
 
 }

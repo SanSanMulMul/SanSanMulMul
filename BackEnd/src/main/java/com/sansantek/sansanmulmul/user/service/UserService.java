@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.user.service;
 
+import com.sansantek.sansanmulmul.common.service.S3Service;
 import com.sansantek.sansanmulmul.exception.auth.UserNotFoundException;
 import com.sansantek.sansanmulmul.exception.user.UserDeletionException;
 import com.sansantek.sansanmulmul.exception.user.UserUpdateException;
@@ -18,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,9 +39,16 @@ public class UserService {
 
     // Service
     private final UserStyleService userStyleService;
+    private final S3Service s3Service;
 
     @Transactional
-    public User signUp(SignUpUserRequest signUpUserRequest, String password) {
+    public User signUp(SignUpUserRequest signUpUserRequest, String password, MultipartFile image) throws IOException {
+
+        // 프로필 이미지
+        String imgUrl = "";
+        if (image != null) imgUrl = s3Service.uploadS3(image, "profileImg"); //S3 내 profileImg폴더로
+        log.info("[S3저장됨] imgUrl: " + imgUrl);
+
         // 비밀번호 인코딩
         String encoder = passwordEncoder.encode(password);
 
@@ -49,7 +59,7 @@ public class UserService {
                 signUpUserRequest.getUserName(),
                 signUpUserRequest.getUserNickName(),
                 signUpUserRequest.getUserGender(),
-                signUpUserRequest.getUserProfileImg(),
+                imgUrl,
                 signUpUserRequest.getUserBirth(),
                 1,
                 signUpUserRequest.isUserIsAdmin()
@@ -105,18 +115,28 @@ public class UserService {
     }
 
     @Transactional
-    public boolean updateUser(String userProviderId, UpdateUserRequest updateUserRequest) {
+    public boolean updateUser(String userProviderId, UpdateUserRequest updateUserRequest, MultipartFile image) throws IOException{
         try {
             // 사용자 조회
             User user = userRepository.findByUserProviderId(userProviderId)
                     .orElseThrow(() -> new UserNotFoundException());
 
             // 사용자 정보 업데이트
-            user.setUserProfileImg(updateUserRequest.getUserProfileImg()); // 프로필
             user.setUserNickname(updateUserRequest.getUserNickName()); // 닉네임
             user.setUserStaticBadge(updateUserRequest.getUserStaticBadge()); // 칭호
             userStyleService.updateUserHikingStyle(user.getUserId(),
                     updateUserRequest.getStyles()); // 등산 스타일
+            // 이미지
+            String beforeImg = user.getUserProfileImg();
+            String newImgUrl = beforeImg;
+            if (image != null && !image.isEmpty()) { //Multipart 입력으로 이미지가 들어온 경우 (=이미지 수정할 경우)
+                // 1. 기존 이미지 S3에서 삭제
+                s3Service.deleteS3(beforeImg);
+                // 2. 새 이미지 S3에 업로드
+                newImgUrl = s3Service.uploadS3(image, "profileImg");
+            }
+            // 3. 새 이미지 DB에 업데이트
+            user.setUserProfileImg(newImgUrl);
 
             // 사용자 정보 저장
             userRepository.save(user);
@@ -134,6 +154,12 @@ public class UserService {
     @Transactional
     public boolean deleteUser(String userProviderId) {
         try {
+            //S3에서 이미지 삭제
+            // 사용자 조회
+            User user = userRepository.findByUserProviderId(userProviderId)
+                    .orElseThrow(() -> new UserNotFoundException());
+            String userImg = user.getUserProfileImg();
+            s3Service.deleteS3(userImg); //s3에서 이미지 삭제
 
             userRepository.deleteByUserProviderId(userProviderId);
 

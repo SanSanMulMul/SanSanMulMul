@@ -45,7 +45,10 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
                     val intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                     }
-                    launch(Dispatchers.Main){ startActivity(intent) }
+                    launch(Dispatchers.Main){
+                        startActivity(intent)
+                        finish()
+                    }
                 }
                 else{
                     launch(Dispatchers.Main) {

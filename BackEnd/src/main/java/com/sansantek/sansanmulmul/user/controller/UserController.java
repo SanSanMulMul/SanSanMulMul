@@ -15,9 +15,11 @@ import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -83,11 +85,12 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/info")
+    @PatchMapping(value = "/info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "회원 정보 수정", description = "액세스 토큰을 사용해 회원 정보 수정")
     public ResponseEntity<?> updateUserInfo(
             Authentication authentication,
-            @RequestBody UpdateUserRequest updateUserRequest) {
+            @RequestPart(value="updateUserRequest") UpdateUserRequest updateUserRequest,
+            @RequestPart(value="image")MultipartFile image) {
 
         HttpStatus status = HttpStatus.ACCEPTED;
 
@@ -96,7 +99,7 @@ public class UserController {
             String userProviderId = authentication.getName();
 
             // 사용자 정보 수정
-            boolean chk = userService.updateUser(userProviderId, updateUserRequest);
+            boolean chk = userService.updateUser(userProviderId, updateUserRequest, image);
             status = HttpStatus.OK;
 
             return new ResponseEntity<>(chk, status);

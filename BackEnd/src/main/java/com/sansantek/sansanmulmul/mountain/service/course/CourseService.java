@@ -74,6 +74,7 @@ public class CourseService {
         List<CourseTracks> courseTracks = courseTracksRepository.findByCourse_CourseId(courseId);
 
         Map<String, Object> result = new HashMap<>();
+        result.put("mountainId", mountainId);
         result.put("courseId", course.getCourseId());
         result.put("courseName", course.getCourseName());
         result.put("courseLength", course.getCourseLength());

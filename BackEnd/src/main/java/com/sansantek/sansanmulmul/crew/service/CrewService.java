@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -279,5 +280,14 @@ public class CrewService {
     public int getCurrentMemberCount(int crewId) {
         return crewUserRepository.countByCrewCrewId(crewId);
 
+    }
+
+    public Crew getCrewById(int crewId) {
+        Optional<Crew> crew = crewRepository.findById(crewId);
+        if (crew.isPresent()) {
+            return crew.get();
+        } else {
+            throw new IllegalArgumentException("Crew not found");
+        }
     }
 }

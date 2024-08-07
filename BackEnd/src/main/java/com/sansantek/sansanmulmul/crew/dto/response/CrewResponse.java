@@ -44,7 +44,7 @@ public class CrewResponse {
     @Schema(description = "그룹 등산 스타일", example = "[2, 4, 5]")
     private List<Integer> crewStyles = new ArrayList<>();
     // 방장 정보 - 프로필사진, 닉네임, 칭호
-    private String userName;
+    private int userStaticBadge;
     private String userNickname;
     private String userProfileImg;
 }

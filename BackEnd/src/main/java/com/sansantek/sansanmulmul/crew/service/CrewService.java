@@ -90,7 +90,7 @@ public class CrewService {
                         .crewMaxAge(crew.getCrewMaxAge())
                         .crewGender(crew.getCrewGender())
                         .crewStyles(styles)
-                        .userName(currentUser.getUserName())
+                        .userStaticBadge(currentUser.getUserStaticBadge())
                         .userNickname(currentUser.getUserNickname())
                         .userProfileImg(currentUser.getUserProfileImg())
                         .build();

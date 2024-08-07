@@ -79,6 +79,10 @@ public class UserService {
         return userRepository.existsByUserNickname(userNickname);
     }
 
+    public boolean isExistsUserNicknameNotMe(String userNickname, String userProviderId) {
+        return userRepository.existsByUserNicknameAndUserProviderIdNot(userNickname, userProviderId);
+    }
+
     public User getUser(String userProviderId) {
         return userRepository.findByUserProviderId(userProviderId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));

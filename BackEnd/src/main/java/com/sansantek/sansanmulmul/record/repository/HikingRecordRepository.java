@@ -1,6 +1,6 @@
-package com.sansantek.sansanmulmul.user.repository.record;
+package com.sansantek.sansanmulmul.record.repository;
 
-import com.sansantek.sansanmulmul.user.domain.record.HikingRecord;
+import com.sansantek.sansanmulmul.record.domain.HikingRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

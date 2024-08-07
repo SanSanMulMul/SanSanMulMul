@@ -1,5 +1,6 @@
-package com.sansantek.sansanmulmul.user.domain.record;
+package com.sansantek.sansanmulmul.record.domain;
 
+import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.user.domain.User;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,11 +26,14 @@ public class HikingRecord {
     private int recordId;
 
     @ManyToOne
+    @JoinColumn(name = "crew_id", nullable = false)
+    @Schema(description = "그룹 고유 번호", example = "1")
+    private Crew crew;
+
+    @ManyToOne
     @JoinColumn(name = "mountain_id", nullable = false)
     @Schema(description = "산 고유 번호", example = "1")
     private Mountain mountain;
-    
-    // 등산 그룹 멤버
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -37,7 +41,7 @@ public class HikingRecord {
     private User user;
 
     @Column(name = "record_start_time", nullable = false)
-    @Schema(description = "등산 출발 일시", example = "YYYY-MM-DD 23:22:00")
+    @Schema(description = "등산 출발 일시", example = "YYYY-MM-DD 23:59:59")
     private LocalDateTime recordStartTime;
 
     @Column(name = "record_up_distance", nullable = false)

@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.ui.view
 
 
+import HomeTabFragment
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -15,20 +16,15 @@ import android.util.Log
 import android.view.View
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.sansantek.sansanmulmul.R
-import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.config.BaseActivity
 import com.sansantek.sansanmulmul.config.Const.Companion.REQUEST_IMAGE_CAPTURE
 import com.sansantek.sansanmulmul.databinding.ActivityMainBinding
+import com.sansantek.sansanmulmul.ui.util.PermissionChecker
 import com.sansantek.sansanmulmul.ui.view.grouptab.GroupTabFragment
 import com.sansantek.sansanmulmul.ui.view.hikingrecordingtab.HikingRecordingTabFragment
-import com.sansantek.sansanmulmul.ui.view.hometab.HomeTabFragment
 import com.sansantek.sansanmulmul.ui.view.maptab.MapTabFragment
 import com.sansantek.sansanmulmul.ui.view.mypagetab.MyPageTabFragment
-import com.sansantek.sansanmulmul.ui.util.PermissionChecker
-import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat

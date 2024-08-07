@@ -20,12 +20,13 @@ import com.sansantek.sansanmulmul.databinding.FragmentHomeTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.FirstRecommendationViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.NewsViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.HorizontalMarginItemDecoration
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.newsService
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
-import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService // mountainService 추가
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.view.hometab.MountainSearchResultFragment
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
-import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
+import com.sansantek.sansanmulmul.ui.viewmodel.CourseDetailViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainSearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -38,7 +39,7 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
 ) {
     private lateinit var searchEditTextView: EditText
     private val searchViewModel: MountainSearchViewModel by activityViewModels()
-    private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
+    private val courseDetailViewModel: CourseDetailViewModel by activityViewModels()
     private lateinit var newsList: List<News>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -118,7 +119,11 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         loadRecommendationData(binding.vpRecommendation4, "winter", 4000)
     }
 
-    private fun loadRecommendationData(viewPager: ViewPager2, season: String, autoScrollDelay: Long) {
+    private fun loadRecommendationData(
+        viewPager: ViewPager2,
+        season: String,
+        autoScrollDelay: Long
+    ) {
         lifecycleScope.launch {
             val recommendationList = when (season) {
                 "spring" -> mountainService.getMountainSpring()
@@ -126,13 +131,23 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
                 "fall" -> mountainService.getMountainFall()
                 "winter" -> mountainService.getMountainWinter()
                 else -> emptyList()
-            }.map { Recommendation(it.mountainName, "난이도", R.drawable.dummy1) } // 난이도와 이미지는 필요에 따라 수정
+            }.map {
+                Recommendation(
+                    it.mountainName,
+                    "난이도",
+                    R.drawable.dummy1
+                )
+            } // 난이도와 이미지는 필요에 따라 수정
 
             initRecommendationViewPager(viewPager, recommendationList, autoScrollDelay)
         }
     }
 
-    private fun initRecommendationViewPager(viewPager: ViewPager2, itemList: List<Recommendation>, autoScrollDelay: Long) {
+    private fun initRecommendationViewPager(
+        viewPager: ViewPager2,
+        itemList: List<Recommendation>,
+        autoScrollDelay: Long
+    ) {
         val adapter = FirstRecommendationViewPagerAdapter(
             itemList,
             object : FirstRecommendationViewPagerAdapter.OnItemClickListener {

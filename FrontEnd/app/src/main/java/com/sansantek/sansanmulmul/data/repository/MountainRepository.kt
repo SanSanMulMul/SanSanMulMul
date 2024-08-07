@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.data.repository
 
 import com.sansantek.sansanmulmul.data.model.Mountain
+import com.sansantek.sansanmulmul.data.model.MountainCourse
 import com.sansantek.sansanmulmul.data.model.MountainSunriseSunset
 import com.sansantek.sansanmulmul.data.model.MountainWeather
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil
@@ -53,6 +54,21 @@ class MountainRepository {
         return try {
             val response =
                 RetrofiltUtil.mountainService.getMountainWeatherByID(mountainId)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    // 산 코스 정보 조회
+    suspend fun getMountainCourse(mountainId: Int): MountainCourse? {
+        return try {
+            val response =
+                RetrofiltUtil.mountainService.getMountainCourse(mountainId)
             if (response.isSuccessful) {
                 response.body()
             } else {

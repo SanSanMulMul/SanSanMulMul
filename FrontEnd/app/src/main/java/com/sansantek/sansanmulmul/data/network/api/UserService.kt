@@ -20,8 +20,9 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UserService {
+    @Multipart
     @POST("user/signup")
-    suspend fun registerUser(@Body kakaoLoginUser: KakaoLoginUser): Response<UserToken>
+    suspend fun registerUser(@Part image: MultipartBody.Part, @Part("SignUpUserRequest") kakaoLoginUser: KakaoLoginUser): Response<UserToken>
     @GET("user/login/{userProviderId}")
     suspend fun loginUser(@Path("userProviderId") id: String) : Response<KakaoLoginToken>
     @GET("user/nickname")

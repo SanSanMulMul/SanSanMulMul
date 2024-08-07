@@ -24,6 +24,12 @@ public class CrewLeaderService {
     private final CrewRepository crewRepository;
     private final UserRepository userRepository;
 
+    /* 1. 그룹 수정 */
+
+
+    /* 2. 그룹 삭제 */
+
+
     /* 3. 그룹 방장 위임 */
     public void updateCrewLeader(int crewId, int newLeaderId) {
         Crew crew = crewRepository.findById(crewId)

@@ -5,7 +5,7 @@ import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequest;
 import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequestStatus;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewRequestResponse;
-import com.sansantek.sansanmulmul.crew.dto.response.CrewUserResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewUserResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewRequestRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;

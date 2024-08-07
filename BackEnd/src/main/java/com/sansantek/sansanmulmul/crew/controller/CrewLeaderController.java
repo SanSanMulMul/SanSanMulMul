@@ -19,5 +19,12 @@ public class CrewLeaderController {
     * 3. 그룹 방장 위임
     * */
 
+    /* 1. 그룹 수정 */
+
+
+    /* 2. 그룹 삭제 */
+
+
+    /* 3. 그룹 방장 위임 */
 
 }

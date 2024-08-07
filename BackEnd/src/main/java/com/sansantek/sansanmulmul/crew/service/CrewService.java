@@ -2,17 +2,14 @@ package com.sansantek.sansanmulmul.crew.service;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 
-import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequest;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewCreateRequest;
-import com.sansantek.sansanmulmul.crew.dto.response.CrewDetailResponse;
-import com.sansantek.sansanmulmul.crew.dto.response.CrewMyResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewHikingStyleRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
-import com.sansantek.sansanmulmul.exception.style.AlreadyStyleException;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.domain.course.Course;
 import com.sansantek.sansanmulmul.mountain.repository.MountainRepository;
@@ -25,7 +22,6 @@ import com.sansantek.sansanmulmul.user.service.UserService;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -240,27 +236,27 @@ public class CrewService {
     ////////////////////////////////////////////////////////////
 
     /* 3. 그룹 상세 보기 */
-    // crewId에 해당하는 그룹 상세 조회
-//    public CrewDetailResponse getCrewDetail(int crewId) {
-//        Crew crew = crewRepository.findById(crewId)
-//                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
-//
-//        CrewDetailResponse crewDetailResponse = new CrewDetailResponse(
-//            crew.getCrewId(),
-//                crew.getCrewName(),
-//                crew.getCrewStartDate(),
-//                crew.getCrewEndDate(),
-//                crew.getCrewDescription(),
-//                crew.getCrewStyles(),
-//                crew.getCrewMaxMembers(),
-//                crew.getMountain().getMountainId(),
-//                crew.getMountain().getMountainName(),
-//                crew.getMountain().getMountainDescription(),
-//                crew.getMountain().getMountainImg()
-//        );
-//
-//        return crewDetailResponse;
-//    }
+    public CrewDetailResponse getCrewDetail(int crewId) {
+        // crewId에 해당하는 그룹 상세 조회
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
+
+        CrewDetailResponse crewDetailResponse = new CrewDetailResponse(
+            crew.getCrewId(),
+                crew.getCrewName(),
+                crew.getCrewStartDate(),
+                crew.getCrewEndDate(),
+                crew.getCrewDescription(),
+                crew.getCrewStyles(),
+                crew.getCrewMaxMembers(),
+                crew.getMountain().getMountainId(),
+                crew.getMountain().getMountainName(),
+                crew.getMountain().getMountainDescription(),
+                crew.getMountain().getMountainImg()
+        );
+
+        return crewDetailResponse;
+    }
 
     //현재 진행중인 크루><
     public List<Crew> getingCrews(User user) {

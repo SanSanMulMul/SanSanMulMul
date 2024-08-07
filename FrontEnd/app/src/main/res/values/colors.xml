@@ -24,6 +24,8 @@
   <color name="light_green">#C5D275</color>
   <color name="light_blue">#BEDDFA</color>
   <color name="light_purple">#D5BEFA</color>
+  <color name="orange">#FFCC33</color>
+  <color name="light_yellow">#FFECAA</color>
   <color name="gradientStartColor">#51D767</color>
   <color name="gradientEndColor">#B690E9</color>
   <color name="sansanmulmul_green">#A1CCA8</color>

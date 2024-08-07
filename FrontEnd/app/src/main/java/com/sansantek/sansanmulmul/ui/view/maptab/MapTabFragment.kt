@@ -90,7 +90,6 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     override fun onResume() {
         super.onResume()
         if (this::naverMap.isInitialized) {
-            fetchMountainListAndUpdateLocation()
         }
     }
 
@@ -239,23 +238,19 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         if (!::mountainList.isInitialized) {
             Log.e(TAG, "mountainList가 초기화되지 않았습니다.")
         } else {
-            fetchMountainListAndUpdateLocation()
-        }
+            // 현재 위치를 가져옴
+            val currentLocation = locationSource.lastLocation ?: return
 
-        // 현재 위치를 가져옴
-        val currentLocation = locationSource.lastLocation ?: return
+            val currentLat = currentLocation.latitude
+            val currentLon = currentLocation.longitude
 
-        val currentLat = currentLocation.latitude
-        val currentLon = currentLocation.longitude
+            // 50km 이내의 산들을 필터링
+            val nearbyMountains = mountainList.filter { mountain ->
+                val distance = calculateDistance(currentLat, currentLon, mountain.mountainLat, mountain.mountainLon)
+                distance <= 50 // 50km 이내에 있는 산 필터링
+            }
 
-        // 50km 이내의 산들을 필터링
-        val nearbyMountains = mountainList.filter { mountain ->
-            val distance = calculateDistance(currentLat, currentLon, mountain.mountainLat, mountain.mountainLon)
-            distance <= 50 // 50km 이내에 있는 산 필터링
-        }
-
-        // 마운틴 리스트가 초기화되었는지 확인하고 초기화되었으면 아래 로직을 실행
-        if (::mountainList.isInitialized) {
+            // 마운틴 리스트가 초기화되었는지 확인하고 초기화되었으면 아래 로직을 실행
             nearbyMountains.forEach { mountain ->
                 val marker = Marker().apply {
                     position = LatLng(mountain.mountainLat, mountain.mountainLon)
@@ -317,35 +312,6 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
                 val mountains = initMountainData(nearbyMountains, mountainCourse)
                 initMountainListRecyclerView(mountains)
             }
-        } else {
-            Log.e(TAG, "Mountain list is not initialized")
-        }
-    }
-
-    private fun fetchMountainListAndUpdateLocation() {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            lifecycleScope.launch {
-                try {
-                    // 산 리스트를 가져와서 초기화
-                    mountainList = mountainService.getMountainList()
-
-                    // 위치 정보를 가져와서 업데이트
-                    locationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                        if (location != null) {
-                            updateLocation(location)
-                        } else {
-                            Log.d(TAG, "fetchMountainListAndUpdateLocation: 위치 정보를 가져올 수 없습니다.")
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "fetchMountainListAndUpdateLocation: 산 리스트를 가져오는 중 오류 발생", e)
-                }
-            }
-        } else {
-            Log.e(TAG, "fetchMountainListAndUpdateLocation: 위치 권한이 없습니다.")
-            // 필요한 경우 권한 요청 코드를 추가할 수 있습니다.
         }
     }
 

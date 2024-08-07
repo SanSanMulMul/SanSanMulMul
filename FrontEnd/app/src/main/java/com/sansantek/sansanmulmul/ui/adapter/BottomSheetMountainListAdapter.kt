@@ -3,6 +3,7 @@ package com.sansantek.sansanmulmul.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.data.model.SearchMountainListItem
 import com.sansantek.sansanmulmul.databinding.ItemBottomSheetMountainBinding
@@ -19,9 +20,10 @@ class BottomSheetMountainListAdapter(
 
     inner class MountainViewHolder(private val binding: ItemBottomSheetMountainBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bindInfo(position: Int) {
-            val item = mountainList[position]
-            binding.ivMountain.setImageResource(item.mountainImg)
+        fun bindInfo(item: SearchMountainListItem) {
+            Glide.with(binding.root.context)
+                .load(item.mountainImg)
+                .into(binding.ivMountain)
             binding.tvMountainName.text = item.mountainName
             binding.tvMountainCourseCnt.text = "코스 총 " + item.courseCnt + "개"
 
@@ -43,7 +45,7 @@ class BottomSheetMountainListAdapter(
     }
 
     override fun onBindViewHolder(holder: MountainViewHolder, position: Int) {
-        holder.bindInfo(position)
+        holder.bindInfo(mountainList[position])
     }
 
     override fun getItemCount() = mountainList.size

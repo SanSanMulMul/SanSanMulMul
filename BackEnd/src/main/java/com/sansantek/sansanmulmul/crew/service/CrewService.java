@@ -136,7 +136,7 @@ public class CrewService {
 
     /* 그룹 생성 요청 */
     @Transactional
-    public void createCrew(int userId, CrewCreateRequest request) {
+    public void createCrew(int userId, CrewCreateRequest request) { //방장userId, 요청dto
         Mountain mountain = mountainRepository.findByMountainId(request.getMountainId());
 
         // 생성요청request를 Crew정보로 저장

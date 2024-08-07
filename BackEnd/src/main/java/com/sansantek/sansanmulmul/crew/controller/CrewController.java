@@ -97,7 +97,7 @@ public class CrewController {
     @Operation(summary = "그룹 생성", description = "해당 사용자 그룹 생성")
     public ResponseEntity<?> createCrew
     (Authentication authentication,
-     CrewCreateRequest request) {
+     CrewCreateRequest crewCreateRequest) {
         HttpStatus status = HttpStatus.ACCEPTED;
 
         try {
@@ -109,7 +109,7 @@ public class CrewController {
             User user = userService.getUser(userProviderId);
 
             // 2. 해당 사용자 userId로 그룹 생성 - 방장(해당 사용자는 방장이 됨)
-            crewService.createCrew(user.getUserId(), request);
+            crewService.createCrew(user.getUserId(), crewCreateRequest);
 
             status = HttpStatus.CREATED; // 201
 

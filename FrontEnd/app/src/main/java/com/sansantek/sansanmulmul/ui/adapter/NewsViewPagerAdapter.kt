@@ -38,7 +38,7 @@ class NewsViewPagerAdapter(private val items: List<News>) :
         Log.d(TAG, "onBindViewHolder: ${item.title}")
         // 이미지 로드
         Glide.with(holder.itemView.context)
-            .load(item.mountainimg)
+            .load(item.mountainImg)
             .into(holder.ivNewsImg)
 
         // 뉴스 항목 클릭 이벤트

@@ -10,6 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -123,7 +124,7 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         return nearbyMountains.map { mountainDto ->
             val courseCount = mountainCourses[mountainDto.mountainId]?.courseCount ?: 0
             SearchMountainListItem(
-                R.drawable.dummy1, // 이 부분은 실제 산의 이미지 리소스로 교체해야 합니다.
+                mountainDto.mountainImg,
                 mountainDto.mountainName,
                 courseCount // 코스 수 추가
             )

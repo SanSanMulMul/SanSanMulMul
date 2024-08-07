@@ -105,7 +105,7 @@ public class Crew {
     @Schema(description = "그룹 생성 일시", example = "2024-08-01 23:59:59")
     private LocalDateTime crewCreatedAt;
 
-    @Column(name = "crew_modified_at", nullable = false)
+    @Column(name = "crew_modified_at")
     @Schema(description = "그룹 수정 일시", example = "2024-08-01 23:59:59")
     private LocalDateTime crewModifiedAt;
 
@@ -129,13 +129,24 @@ public class Crew {
         }
     }
 
-    public Crew(String crewName, String crewDescription, int crewMaxMembers, CrewRestriction crewGender, int crewMinAge, int crewMaxAge, Mountain mountain) {
+    // 그룹 생성 시 사용
+    public Crew(User leader, String crewName, String crewDescription, int crewMaxMembers, CrewRestriction crewGender, int crewMinAge, int crewMaxAge,
+                LocalDateTime crewStartDate, LocalDateTime crewEndDate, Mountain mountain, Course upCourse, Course downCourse) {
+        this.leader = leader;
         this.crewName = crewName;
         this.crewDescription = crewDescription;
         this.crewMaxMembers = crewMaxMembers;
         this.crewGender = crewGender;
         this.crewMinAge = crewMinAge;
         this.crewMaxAge = crewMaxAge;
+        this.crewStartDate = crewStartDate;
+        this.crewEndDate = crewEndDate;
         this.mountain = mountain;
+        this.upCourse = upCourse;
+        this.downCourse = downCourse;
+        //날짜
+        this.crewCreatedAt = LocalDateTime.now();
+        this.crewModifiedAt = LocalDateTime.now();
     }
+
 }

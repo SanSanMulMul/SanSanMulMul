@@ -2,8 +2,11 @@ package com.sansantek.sansanmulmul.crew.service;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
+import com.sansantek.sansanmulmul.crew.dto.request.CrewUpdateRequest;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
+import com.sansantek.sansanmulmul.mountain.repository.MountainRepository;
+import com.sansantek.sansanmulmul.mountain.repository.course.CourseRepository;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -11,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -27,11 +32,37 @@ public class CrewLeaderService {
     private final CrewRepository crewRepository;
     private final UserRepository userRepository;
     private final CrewUserRepository crewUserRepository;
+    private final MountainRepository mountainRepository;
+    private final CourseRepository courseRepository;
 
     // service
 
     /* 1. 그룹 수정 */
+    @Transactional
+    public void updateCrew(int crewId, String leaderProviderId, CrewUpdateRequest crewUpdateRequest) {
+        //크루 확인
+        Crew crew = crewRepository.findByCrewId(crewId)
+                .orElseThrow(() -> new EntityNotFoundException("크루를 찾을 수 없습니다"));
+        //현재 사용자 확인
+        User currentUser = userRepository.findByUserProviderId(leaderProviderId)
+                .orElseThrow(() -> new RuntimeException("방장 정보를 찾을 수 없습니다."));
 
+        // 사용자가 크루의 리더가 맞는지 확인
+        if (!crew.getLeader().equals(currentUser)) {
+            throw new RuntimeException("크루의 리더가 아닙니다.");
+        }
+
+        //정보 업데이트
+        crew.setCrewStartDate(crewUpdateRequest.getCrewStartDate());
+        crew.setCrewEndDate(crewUpdateRequest.getCrewEndDate());
+        crew.setMountain(mountainRepository.findByMountainId(crewUpdateRequest.getMountainId()));
+        crew.setUpCourse(courseRepository.findByCourseId(crewUpdateRequest.getUpCourseId()));
+        crew.setDownCourse(courseRepository.findByCourseId(crewUpdateRequest.getDownCourseId()));
+        crew.setCrewModifiedAt(LocalDateTime.now()); //변경시간 업데이트
+
+        //변경 내용 저장
+        crewRepository.save(crew);
+    }
 
     /* 2. 그룹 삭제 */
     @Transactional

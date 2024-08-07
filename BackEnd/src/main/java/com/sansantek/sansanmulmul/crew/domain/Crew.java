@@ -3,6 +3,7 @@ package com.sansantek.sansanmulmul.crew.domain;
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.domain.course.Course;
+import com.sansantek.sansanmulmul.record.domain.HikingRecord;
 import com.sansantek.sansanmulmul.user.domain.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -117,6 +118,10 @@ public class Crew {
     // 그룹 등산 스타일
     @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CrewHikingStyle> crewStyles = new ArrayList<>();
+
+    // 그룹 기록
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HikingRecord> records = new ArrayList<>();
 
     // 그룹 방장 변경
     public void changeLeader(User newLeader) {

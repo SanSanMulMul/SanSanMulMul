@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class CrewRequestResponse {
 
+    /* 그룹 승인 요청 응답 */
     private int requestId;
     private String userName;
     private String userNickname;

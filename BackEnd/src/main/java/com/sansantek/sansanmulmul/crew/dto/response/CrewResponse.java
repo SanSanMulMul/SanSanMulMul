@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CrewResponse {
 
-    // 그룹 전체 목록 조회 시 response
+    /* 그룹 전체 목록 조회 시 응답 */
     @Schema(description = "그룹 고유 번호", example = "1")
     private int crewId;
     @Schema(description = "그룹 이름", example = "한사랑 산악회")
     private String crewName;
-    @Schema(description = "그룹 시작 일시", example = "2024-08-01 23:59:59")
+    @Schema(description = "그룹 시작 일시", example = "2024-08-01 22:59:59")
     private LocalDateTime crewStartDate;
     @Schema(description = "그룹 종료 일시", example = "2024-08-01 23:59:59")
     private LocalDateTime crewEndDate;

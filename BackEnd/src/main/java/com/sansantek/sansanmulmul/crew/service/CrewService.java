@@ -76,6 +76,7 @@ public class CrewService {
                     styles.add(styleId);
                 }
                 // 5. 방장 정보
+                User leader = crew.getLeader();
                 CrewResponse cr = CrewResponse.builder()
                         .crewId(crew.getCrewId())
                         .crewName(crew.getCrewName())
@@ -90,9 +91,9 @@ public class CrewService {
                         .crewMaxAge(crew.getCrewMaxAge())
                         .crewGender(crew.getCrewGender())
                         .crewStyles(styles)
-                        .userStaticBadge(currentUser.getUserStaticBadge())
-                        .userNickname(currentUser.getUserNickname())
-                        .userProfileImg(currentUser.getUserProfileImg())
+                        .userStaticBadge(leader.getUserStaticBadge())
+                        .userNickname(leader.getUserNickname())
+                        .userProfileImg(leader.getUserProfileImg())
                         .build();
 
                 crews.add(cr);

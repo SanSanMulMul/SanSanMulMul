@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.crew.controller;
 
+import com.amazonaws.Response;
 import com.sansantek.sansanmulmul.crew.service.CrewLeaderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -7,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -47,5 +45,18 @@ public class CrewLeaderController {
 
 
     /* 3. 그룹 방장 위임 */
+    @PutMapping("/{crewId}/leader")
+    @Operation(summary = "그룹 방장 위임", description = "그룹 방장 위임 기능")
+    public ResponseEntity<?> delegateLeader(@PathVariable int crewId,
+                                            Authentication authentication,
+                                            @RequestParam int nextLeaderId) {
+        try {
+            String currentProviderId = authentication.getName();
+            crewLeaderService.delegateLeader(crewId, currentProviderId, nextLeaderId);
+            return ResponseEntity.ok().body("방장이 위임되었습니다.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 }

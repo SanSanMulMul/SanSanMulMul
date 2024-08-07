@@ -10,7 +10,7 @@ data class Mountain(
     val mountainLocation: String,
     val mountainHeight: Int,
     val mountainDescription: String?,
-    val mountainImg: String?,
+    val mountainImg: String,
     val mountainWeather: String,
     val mountainLat: Double,
     val mountainLon: Double,

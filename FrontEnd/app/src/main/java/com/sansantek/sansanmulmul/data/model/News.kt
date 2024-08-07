@@ -6,6 +6,6 @@ data class News(
     val link: String,
     val description: String,
     val pubDate: String,
-    val mountainname : String,
-    val mountainimg : String,
+    val mountainName : String,
+    val mountainImg : String?,
 )

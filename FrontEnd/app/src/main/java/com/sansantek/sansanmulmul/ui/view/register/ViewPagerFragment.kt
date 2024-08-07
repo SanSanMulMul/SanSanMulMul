@@ -84,6 +84,7 @@ class ViewPagerFragment : BaseFragment<FragmentLoginViewPagerBinding>(
                                         sharedPreferencesUtil.saveKakaoLoginToken(token)
                                         activityViewModel.setLoginToken(token)
                                     }
+
                                 }
                             }
                         }

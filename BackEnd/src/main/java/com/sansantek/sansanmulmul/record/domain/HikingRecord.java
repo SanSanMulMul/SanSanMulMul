@@ -73,4 +73,5 @@ public class HikingRecord {
     @ColumnDefault("0")
     @Schema(description = "등산 소요 칼로리(단위: Kcal)", example = "0")
     private int recordKcal;
+
 }

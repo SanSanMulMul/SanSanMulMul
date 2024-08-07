@@ -67,7 +67,7 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         permissionChecker = PermissionChecker(this)
-        binding.ivProfileImg.setOnClickListener {
+        binding.ibEditButton.setOnClickListener {
             if (permissionChecker.checkPermission(activity, permissionList)) {
                 permissionChecker.setOnGrantedListener { //퍼미션 획득 성공일때
                     openGallery()

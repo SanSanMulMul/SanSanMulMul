@@ -2,15 +2,47 @@ package com.sansantek.sansanmulmul.data.local
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.gson.Gson
 import com.sansantek.sansanmulmul.config.Const.Companion.BEFORE_HIKING
 import com.sansantek.sansanmulmul.config.Const.Companion.SHARED_PREFERENCES_NAME
 import com.sansantek.sansanmulmul.config.Const.Companion.SP_HIKING_RECORDING_STATE
 import com.sansantek.sansanmulmul.config.Const.Companion.SP_SPEND_TIME_IS_RUNNING_KEY
 import com.sansantek.sansanmulmul.config.Const.Companion.SP_SPEND_TIME_KEY
+import com.sansantek.sansanmulmul.data.model.KakaoLoginToken
 
 class SharedPreferencesUtil(context: Context) {
     private var preferences: SharedPreferences =
         context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+    private val gson = Gson()
+
+    // 카카오를 통한 로그인 토큰 저장 및 얻기
+    fun saveKakaoLoginToken(token: KakaoLoginToken) {
+        val editor = preferences.edit()
+        val json = gson.toJson(token)
+        editor.putString("kakao_login_token", json)
+        editor.apply()
+    }
+
+    fun getKakaoLoginToken(): KakaoLoginToken? {
+        val json = preferences.getString("kakao_login_token", null)
+        return if (json != null) {
+            gson.fromJson(json, KakaoLoginToken::class.java)
+        } else {
+            null
+        }
+    }
+
+    // recording 서비스 실행 유무 저장하기
+    fun saveRecordingServiceState(recordingStatus: String) {
+        val editor = preferences.edit()
+        editor.putString("isRecording", recordingStatus)
+        editor.apply()
+    }
+
+    // recording 서비스 실행 유무 불러오기
+    fun getRecordingServiceState(): String {
+        return preferences.getString("isRecording", "종료") ?: "종료"
+    }
 
 //    //사용자 정보 저장
 //    fun addUser(user:User){
@@ -61,7 +93,7 @@ class SharedPreferencesUtil(context: Context) {
     }
 
 
-    fun saveHikingRecordingTime(seconds: Long) {
+    fun saveHikingRecordingBaseTime(seconds: Long) {
         val editor = preferences.edit()
 
         if (preferences.contains(SP_SPEND_TIME_KEY)) {
@@ -72,7 +104,7 @@ class SharedPreferencesUtil(context: Context) {
         editor.apply()
     }
 
-    fun getHikingRecordingTime(): Long {
+    fun getHikingRecordingBaseTime(): Long {
         return preferences.getLong(SP_SPEND_TIME_KEY, 0)
     }
 
@@ -83,19 +115,14 @@ class SharedPreferencesUtil(context: Context) {
         editor.apply()
     }
 
-    fun saveHikingRecordingTimeIsRunning(isRunning: Boolean) {
+    fun saveHikingRecordingStatus(recordingStatus: String) {
         val editor = preferences.edit()
-
-        if (preferences.contains(SP_SPEND_TIME_IS_RUNNING_KEY)) {
-            editor.putBoolean(SP_SPEND_TIME_IS_RUNNING_KEY, isRunning);
-        } else {
-            editor.putBoolean(SP_SPEND_TIME_IS_RUNNING_KEY, isRunning);
-        }
+        editor.putString(SP_SPEND_TIME_IS_RUNNING_KEY, recordingStatus)
         editor.apply()
     }
 
-    fun getHikingRecordingTimeIsRunning(): Boolean {
-        return preferences.getBoolean(SP_SPEND_TIME_IS_RUNNING_KEY, false)
+    fun getHikingRecordingStatus(): String {
+        return preferences.getString(SP_SPEND_TIME_IS_RUNNING_KEY, "종료") ?: "종료"
     }
 
 

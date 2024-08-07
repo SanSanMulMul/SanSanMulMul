@@ -1,7 +1,9 @@
 package com.sansantek.sansanmulmul.data.network.api
 
+
 import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.data.model.MountainSunriseSunset
+import com.sansantek.sansanmulmul.data.model.MountainCourse
 import com.sansantek.sansanmulmul.data.model.MountainWeather
 import retrofit2.Response
 import retrofit2.http.GET
@@ -25,4 +27,27 @@ interface MountainService {
     @GET("mountain/search")
     suspend fun searchMountainList(@Query("name") name: String): Response<List<Mountain>>
 
+    // 전체 산 리스트
+    @GET("mountain")
+    suspend fun getMountainList(): List<Mountain>
+
+    // 산 코스 조회
+    @GET("mountain/{mountainId}/course")
+    suspend fun getMountainCourse(@Path("mountainId") id: Int): MountainCourse
+
+    // 산 추천 (봄)
+    @GET("mountain/recommend/spring")
+    suspend fun getMountainSpring(): List<Mountain>
+
+    // 산 추천 (여름)
+    @GET("mountain/recommend/summer")
+    suspend fun getMountainSummer(): List<Mountain>
+
+    // 산 추천 (가을)
+    @GET("mountain/recommend/fall")
+    suspend fun getMountainFall(): List<Mountain>
+
+    // 산 추천 (겨울)
+    @GET("mountain/recommend/winter")
+    suspend fun getMountainWinter(): List<Mountain>
 }

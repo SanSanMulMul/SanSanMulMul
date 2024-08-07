@@ -1,4 +1,4 @@
-package com.ssafy.contentprovider.util
+package com.sansantek.sansanmulmul.ui.util
 
 import android.content.Context
 import android.content.Intent
@@ -12,13 +12,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.sansantek.sansanmulmul.ui.util.OnGrantedListener
+import com.sansantek.sansanmulmul.R
 
 
 private const val TAG = "CheckPermission_싸피"
 
-class PermissionChecker(private val context: Context) {
+class PermissionChecker(activityOrFragment: Any) {
+    private lateinit var context:Context
 
     private lateinit var permitted: OnGrantedListener
     fun setOnGrantedListener(listener: OnGrantedListener) {
@@ -27,6 +29,7 @@ class PermissionChecker(private val context: Context) {
 
     // 권한 체크
     fun checkPermission(context: Context, permissions: Array<String>): Boolean {
+        this.context = context
         for (permission in permissions) {
             if (ActivityCompat.checkSelfPermission(
                     context,
@@ -42,9 +45,9 @@ class PermissionChecker(private val context: Context) {
 
     // 권한 호출한 이후 결과받아서 처리할 Launcher (startPermissionRequestResult )
     val requestPermissionLauncher: ActivityResultLauncher<Array<String>> =
-        when (context) {
+        when (activityOrFragment) {
             is AppCompatActivity -> {
-                context.registerForActivityResult(
+                activityOrFragment.registerForActivityResult(
                     ActivityResultContracts.RequestMultiplePermissions()
                 ) {
                     resultChecking(it)
@@ -52,7 +55,7 @@ class PermissionChecker(private val context: Context) {
             }
 
             is Fragment -> {
-                context.registerForActivityResult(
+                activityOrFragment.registerForActivityResult(
                     ActivityResultContracts.RequestMultiplePermissions()
                 ) {
                     resultChecking(it)
@@ -80,7 +83,8 @@ class PermissionChecker(private val context: Context) {
 
     //사용자가 권한을 허용하지 않았을때, 설정창으로 이동
     private fun moveToSettings() {
-        val alertDialog = AlertDialog.Builder(context)
+        Log.d(TAG, "moveToSettings: 퍼미션 다이얼로그")
+        val alertDialog = AlertDialog.Builder(context, R.style.MyAlertDialogTheme)
         alertDialog.setTitle("권한이 필요합니다.")
         alertDialog.setMessage("설정으로 이동합니다.")
         alertDialog.setPositiveButton("확인") { dialogInterface, i -> // 안드로이드 버전에 따라 다를 수 있음.
@@ -90,6 +94,7 @@ class PermissionChecker(private val context: Context) {
             dialogInterface.cancel()
         }
         alertDialog.setNegativeButton("취소") { dialogInterface, i -> dialogInterface.cancel() }
+        alertDialog.create().window?.setBackgroundDrawable(ContextCompat.getDrawable(context,android.R.color.white))
         alertDialog.show()
     }
 }

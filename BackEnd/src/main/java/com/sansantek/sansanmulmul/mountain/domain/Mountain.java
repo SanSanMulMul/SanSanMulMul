@@ -64,7 +64,7 @@ public class Mountain {
     private List<MountainSpot> mountainSpots;
 
     // 그룹이 선택한 산
-    @OneToMany(mappedBy = "mountain")
-    private List<Crew> crews;
+//    @OneToMany(mappedBy = "mountain")
+//    private List<Crew> crews;
 
 }

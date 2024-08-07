@@ -1,12 +1,17 @@
 package com.sansantek.sansanmulmul.ui.view.mypagetab
 
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
+import android.view.ViewTreeObserver
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -41,9 +46,17 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
     private lateinit var titleList: List<String>
     private lateinit var myPageAdapter: ArrayAdapter<String>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.etNickname.setOnClickListener {
-            Log.d(TAG, "onViewCreated: ${it.background}")
+        binding.root.setOnClickListener {
+            hideKeyboard()
         }
+
+        binding.etNickname.setOnEditorActionListener { textView, action, keyEvent ->
+            if(action == EditorInfo.IME_ACTION_DONE ){
+                hideKeyboard()
+            }
+            false
+        }
+
         binding.spinnerTitle.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -63,6 +76,15 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
             }
 
         }
+
+        binding.etNickname.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                // 포커스가 사라질 때 실행할 로직
+                checkValidNickname()
+            }
+        }
+
+
         binding.btnSave.setOnClickListener {
             lifecycleScope.launch {
                 val styleList = hikeStyleList.filter {
@@ -72,53 +94,48 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
                 }
                 Log.d(TAG, "onViewCreated: styleList $styleList")
                 activityViewModel.token?.let {
-                    Log.d(
-                        TAG,
-                        "onViewCreated: update 내용 ${
+                    val isValid = userService.chkDuplicateNickname(
+                        it.accessToken,
+                        binding.etNickname.text.toString()
+                    )
+                    if (isValid.code() != 409) {
+                        val result = userService.updateUserProfile(
+                            makeHeaderByAccessToken(it.accessToken),
                             ProfileUpdateData(
                                 binding.etNickname.text.toString(),
                                 activityViewModel.userProfileImgUrl,
                                 activityViewModel.userTitle,
                                 styleList
                             )
-                        }"
-                    )
-                    val result = userService.updateUserProfile(
-                        makeHeaderByAccessToken(it.accessToken),
-                        ProfileUpdateData(
-                            binding.etNickname.text.toString(),
-                            activityViewModel.userProfileImgUrl,
-                            activityViewModel.userTitle,
-                            styleList
                         )
-                    )
-                    when(result.code()){
-                        200 -> {
-                            lifecycleScope.launch {
 
-                                val job1 = async {
-                                    val newUser = userService.loadUserProfile(makeHeaderByAccessToken(it.accessToken))
-                                    activityViewModel.setUser(newUser.body()!!)
-                                }
-                                val job2 = async {
-                                    val newMyPage = userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
-                                    activityViewModel.setMyPageInfo(newMyPage)
-                                }
-                                val job3 = async {
-                                    val newHikingStyle = userService.getHikingStyle(makeHeaderByAccessToken(it.accessToken))
-                                    activityViewModel.setHikingStyles(newHikingStyle)
-                                }
-                                job1.await()
-                                job2.await()
-                                job3.await()
-                                showToast("프로필 수정이 성공적으로 완료되었습니다!")
-                                requireActivity().supportFragmentManager.popBackStack()
+                        lifecycleScope.launch {
+
+                            val job1 = async {
+                                val newUser =
+                                    userService.loadUserProfile(makeHeaderByAccessToken(it.accessToken))
+                                activityViewModel.setUser(newUser.body()!!)
                             }
+                            val job2 = async {
+                                val newMyPage =
+                                    userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
+                                activityViewModel.setMyPageInfo(newMyPage)
+                            }
+                            val job3 = async {
+                                val newHikingStyle =
+                                    userService.getHikingStyle(makeHeaderByAccessToken(it.accessToken))
+                                activityViewModel.setHikingStyles(newHikingStyle)
+                            }
+                            job1.await()
+                            job2.await()
+                            job3.await()
+                            showToast("프로필 수정이 성공적으로 완료되었습니다!")
+                            requireActivity().supportFragmentManager.popBackStack()
                         }
-                        401 -> {
-                            binding.textInputLayoutNickname.apply {
-                                error = "이미 사용 중인 닉네임입니다!"
-                            }
+
+                    } else {
+                        binding.textInputLayoutNickname.apply {
+                            error = "이미 사용 중인 닉네임입니다!"
                         }
                     }
                 }
@@ -169,6 +186,44 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
 
     }
 
+    private fun checkValidNickname(){
+        val inputText = binding.etNickname.text.toString()
+        lifecycleScope.launch {
+            activityViewModel.token?.let {
+                Log.d(TAG, "onViewCreated: $inputText")
+                val result = userService.chkDuplicateNickname(
+                    makeHeaderByAccessToken(it.accessToken),
+                    inputText
+                )
+                Log.d(TAG, "onViewCreated: $result")
+                if (result.code() == 200) {
+                    binding.textInputLayoutNickname.apply {
+                        error = null
+                    }
+                } else {
+                    binding.textInputLayoutNickname.apply {
+                        error = "이미 사용 중인 닉네임입니다!"
+                    }
+                }
+            }
+        }
+    }
+
+    private fun hideKeyboard() {
+        Log.d(TAG, "hideKeyboard: 키보드 숨기기 실행")
+        if (requireActivity().currentFocus != null) {
+            if (binding.textInputLayoutNickname.hasFocus()) {
+                val inputManager =
+                    requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                inputManager.hideSoftInputFromWindow(
+                    requireActivity().currentFocus?.windowToken,
+                    0
+                )
+                binding.textInputLayoutNickname.clearFocus()
+            }
+        }
+    }
+
     private fun loadTitle() {
         activityViewModel.token?.let {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -182,4 +237,5 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
             }
         }
     }
+
 }

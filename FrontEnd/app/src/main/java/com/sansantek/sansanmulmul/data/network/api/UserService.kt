@@ -39,4 +39,6 @@ interface UserService {
     suspend fun getMyBadgeList(@Header("Authorization") accessToken: String) : List<String>
     @PATCH("user/info")
     suspend fun updateUserProfile(@Header("Authorization") accessToken: String, @Body profileUpdateData: ProfileUpdateData) : Response<Boolean>
+    @GET("user/chknick")
+    suspend fun chkDuplicateNickname(@Header("Authorization") accessToken: String, @Query("userNickname") nickName: String): Response<Boolean>
 }

@@ -16,8 +16,7 @@
         <com.naver.maps.map.MapView
             android:id="@+id/hiking_recording_tab_map"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-             />
+            android:layout_height="match_parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_hiking_info"
@@ -206,7 +205,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- TODO : 이 View는 추후 map으로 대체할 것 -->
         <ImageView
             android:id="@+id/btn_camera"
             android:layout_width="0dp"

@@ -30,16 +30,17 @@
         <!-- 닫기 버튼 -->
 
         <!-- 다이얼로그 설명 -->
-        <androidx.appcompat.widget.AppCompatButton
+        <ImageView
             android:id="@+id/btn_close"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:background="@drawable/rounded_rectangle_white_grey_10"
+            android:padding="5dp"
+            android:src="@drawable/close"
             app:layout_constraintBottom_toBottomOf="@id/tv_qr_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.329"
             app:layout_constraintStart_toEndOf="@id/tv_qr_title"
-            app:layout_constraintTop_toTopOf="@id/tv_qr_title"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="@id/tv_qr_title" />
 
         <LinearLayout
             android:id="@+id/layout_qr_description"

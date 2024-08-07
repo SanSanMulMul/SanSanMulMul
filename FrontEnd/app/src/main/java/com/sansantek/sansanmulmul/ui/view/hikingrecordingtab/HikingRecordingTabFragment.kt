@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.ColorStateList
-import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
@@ -36,6 +35,7 @@ import com.sansantek.sansanmulmul.ui.viewmodel.HikingRecordingTabViewModel
 
 
 private const val TAG = "HikingRecordingTabFragment_싸피"
+
 class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBinding>(
     FragmentHikingRecordingTabBinding::bind,
     R.layout.fragment_hiking_recording_tab
@@ -54,7 +54,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         arrayOf()
     }
     private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()){
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) {
         Log.d(TAG, "requestPermissionLauncher: 건수 : ${it.size}")
         currentCallback?.onActivityResult(it)
     }
@@ -76,7 +77,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, "onViewCreated: init 시작")
         init()
-        showQRCodeDialog()
+//        showQRCodeDialog()
         Log.d(TAG, "onViewCreated: init 종료")
     }
 
@@ -99,7 +100,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         )
     }
 
-    private fun initClickListener(){
+    private fun initClickListener() {
         initButtonClickListener()
         initHikingInfoViewClickListener()
         initBanLayoutClickListener()
@@ -134,16 +135,21 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
             }
         }
         binding.btnCamera.setOnClickListener {
-            rootActivity.checkPermission()
+            showCameraGuideDialog()
         }
     }
+
+    private fun showCameraGuideDialog() {
+        CameraGuideDialog().show(rootActivity.supportFragmentManager, "dialog")
+    }
+
     private fun initHikingInfoViewClickListener() {
         binding.layoutHikingInfo.setOnClickListener {
             showExpandedInfoView()
         }
     }
 
-    private fun showExpandedInfoView(){
+    private fun showExpandedInfoView() {
         when (isHikingInfoViewExpanded) {
             true -> {
                 binding.layoutStepCnt.visibility = View.GONE
@@ -166,16 +172,18 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         }
     }
 
-    private fun registerObserving(){
+    private fun registerObserving() {
         hikingRecordingTabViewModel.recordingStatus.observe(viewLifecycleOwner) { status ->
             changeHikingButton(binding.btnHikingRecording, status)
-            when(status){
+            when (status) {
                 BEFORE_HIKING -> {
                     resetChronometerTime()
                 }
+
                 HIKING -> {
                     launchChronometer()
                 }
+
                 AFTER_HIKING -> {
                     launchChronometer()
                 }
@@ -189,7 +197,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         }
     }
 
-    private fun registerLocalBroadCastReceiver(){
+    private fun registerLocalBroadCastReceiver() {
         LocalBroadcastManager.getInstance(rootActivity).registerReceiver(
             mMessageReceiver, IntentFilter("step")
         )
@@ -199,36 +207,41 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         QRCodeDialog().show(rootActivity.supportFragmentManager, "dialog")
     }
 
-    private fun activateRecordingService(status: String){
-        val serviceIntent = Intent(rootActivity,HikingRecordingService::class.java).apply { putExtra("status", status) }
+    private fun activateRecordingService(status: String) {
+        val serviceIntent = Intent(rootActivity, HikingRecordingService::class.java).apply {
+            putExtra(
+                "status",
+                status
+            )
+        }
         startForegroundService(rootActivity, serviceIntent)
         sharedPreferencesUtil.saveRecordingServiceState(status)
     }
 
-    private fun deActivateRecordingService(){
-        val serviceIntent = Intent(rootActivity,HikingRecordingService::class.java)
+    private fun deActivateRecordingService() {
+        val serviceIntent = Intent(rootActivity, HikingRecordingService::class.java)
         requireActivity().stopService(serviceIntent)
         sharedPreferencesUtil.saveRecordingServiceState("종료")
     }
 
-    private fun checkRecordingService(): String{
+    private fun checkRecordingService(): String {
         return sharedPreferencesUtil.getRecordingServiceState()
     }
 
-    private fun tryRecordingServiceByStatus(status: String){
-        if(permissionChecker.checkPermission(rootActivity, PERMISSION)){
+    private fun tryRecordingServiceByStatus(status: String) {
+        if (permissionChecker.checkPermission(rootActivity, PERMISSION)) {
             //권한있는 경우
-            if(checkRecordingService() == "종료"){
+            if (checkRecordingService() == "종료") {
                 activateRecordingService(status)
             }
-        }else{
+        } else {
             showToast("권한을 설정하셔야 기록 서비스를 이용 가능합니다!")
             //ask for permission
             requestPermission {
                 if (!isAllPermissionGranted(it)) {
                     showToast("권한없이는 등산 서비스를 제대로 이용하실 수 없습니다!")
                 } else {
-                    if (checkRecordingService()=="종료") {
+                    if (checkRecordingService() == "종료") {
                         activateRecordingService(status)
                     }
                 }
@@ -243,7 +256,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     private fun changeHikingButton(button: AppCompatButton, toState: Int) {
         when (toState) {
             BEFORE_HIKING -> {
-                button.backgroundTintList = getColorStateList(R.color.hiking_recording_tab_button_pink)
+                button.backgroundTintList =
+                    getColorStateList(R.color.hiking_recording_tab_button_pink)
                 button.text = "상행 시작"
             }
 
@@ -253,7 +267,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
             }
 
             AFTER_HIKING -> {
-                button.backgroundTintList = getColorStateList(R.color.hiking_recording_tab_button_purple)
+                button.backgroundTintList =
+                    getColorStateList(R.color.hiking_recording_tab_button_purple)
                 button.text = "끝내기"
             }
         }
@@ -266,12 +281,12 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         )
     }
 
-    private fun syncButtonStatus(){
+    private fun syncButtonStatus() {
         Log.d(TAG, "syncButtonStatus: syncButtonStastus")
         hikingRecordingTabViewModel.setRecordingStatus(sharedPreferencesUtil.getHikingRecordingState())
     }
 
-    private fun resetBaseTime(){
+    private fun resetBaseTime() {
         chronometerViewModel.setBaseTime(SystemClock.elapsedRealtime())
     }
 
@@ -282,18 +297,22 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
 
     private fun initChronometerBaseTime() {
         // 측정 방식이 base 시간을 기준으로 얼마나 시간이 흘렀는가임, UI에서는 base 시간과 elapsedTime 차이를 바로 보여주는 것
-        when(hikingRecordingTabViewModel.recordingStatus.value){
-            BEFORE_HIKING ->{
+        when (hikingRecordingTabViewModel.recordingStatus.value) {
+            BEFORE_HIKING -> {
                 chronometerViewModel.setBaseTime(SystemClock.elapsedRealtime())
             }
+
             else -> {
-                Log.d(TAG, "initChronometerBaseTime: ${sharedPreferencesUtil.getHikingRecordingBaseTime()}")
+                Log.d(
+                    TAG,
+                    "initChronometerBaseTime: ${sharedPreferencesUtil.getHikingRecordingBaseTime()}"
+                )
                 chronometerViewModel.setBaseTime(sharedPreferencesUtil.getHikingRecordingBaseTime())
             }
         }
     }
 
-    private fun startChronometer(){
+    private fun startChronometer() {
         binding.timer.start()
     }
 
@@ -303,18 +322,20 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         binding.timer.stop()
     }
 
-    private fun requestPermission(callback: ActivityResultCallback<Map<String, Boolean>>){
+    private fun requestPermission(callback: ActivityResultCallback<Map<String, Boolean>>) {
         currentCallback = callback
         requestPermissionLauncher.launch(PERMISSION)
     }
 
-    private fun setPermissionChecker(){
+    private fun setPermissionChecker() {
         permissionChecker = PermissionChecker(this)
     }
 
-    private fun isAllPermissionGranted(result: Map<String, Boolean>): Boolean{
+    private fun isAllPermissionGranted(result: Map<String, Boolean>): Boolean {
         result.values.forEach { check ->
-            if (!check) { return false }
+            if (!check) {
+                return false
+            }
         }
         return true
     }

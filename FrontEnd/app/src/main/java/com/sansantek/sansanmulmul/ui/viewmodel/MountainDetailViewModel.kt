@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sansantek.sansanmulmul.data.model.Mountain
+import com.sansantek.sansanmulmul.data.model.MountainCourse
 import com.sansantek.sansanmulmul.data.model.MountainSunriseSunset
 import com.sansantek.sansanmulmul.data.model.MountainWeather
 import com.sansantek.sansanmulmul.data.repository.MountainRepository
@@ -27,6 +28,9 @@ class MountainDetailViewModel : ViewModel() {
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
+
+    private val _mountainCourse = MutableLiveData<MountainCourse?>()
+    val mountainCourse: LiveData<MountainCourse?> get() = _mountainCourse
 
     fun setMountainID(mountainID: Int) {
         _mountainID.value = mountainID
@@ -73,6 +77,22 @@ class MountainDetailViewModel : ViewModel() {
                     _mountainWeather.postValue(response)
                 } else {
                     _error.postValue("데이터를 불러오는 데 실패했습니다!ㅠ.ㅠ")
+                }
+            } catch (e: Exception) {
+                _error.postValue("Error: ${e.message}")
+            }
+        }
+    }
+
+    fun fetchMountainCourse(mountainId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = repository.getMountainCourse(mountainId)
+                if (response != null && response.courseCount!! > 0) {
+                    _mountainCourse.postValue(response)
+                } else {
+                    _mountainCourse.postValue(MountainCourse(emptyList(), 0, emptyList()))
+                    _error.postValue("코스 데이터가 없습니다.")
                 }
             } catch (e: Exception) {
                 _error.postValue("Error: ${e.message}")

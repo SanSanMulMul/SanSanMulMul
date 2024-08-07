@@ -75,6 +75,9 @@ dependencies {
   annotationProcessor(libs.room.compiler)
   ksp(libs.room.compiler)
 
+  // Retrofit 관련 의존
+  implementation(libs.retrofit)
+  implementation(libs.converter.gson)
 
   //'com.github.bumptech.glide:glide:4.11.0'
   implementation(libs.glide.v4110)

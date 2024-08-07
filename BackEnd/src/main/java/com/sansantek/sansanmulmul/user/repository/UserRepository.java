@@ -14,6 +14,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     // 유무판단
     boolean existsByUserProviderId(String userProviderId);
     boolean existsByUserNickname(String userNickname);
+    boolean existsByUserNicknameAndUserProviderIdNot(String userNickname, String userProviderId);
 
     // 저장
     User save(User user);

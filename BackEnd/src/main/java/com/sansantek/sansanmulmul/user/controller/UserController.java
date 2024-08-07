@@ -35,7 +35,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/nickname")
-    @Operation(summary = "닉네임 중복 확인", description = "닉네임 중복 확인")
+    @Operation(summary = "닉네임 중복 확인", description = "회원가입 시 입력한 닉네임을 포함해 중복 확인")
     public ResponseEntity<?> chkNickname
             (@RequestParam String userNickname) {
         HttpStatus status = HttpStatus.ACCEPTED;
@@ -43,6 +43,37 @@ public class UserController {
         try {
             // 사용자 닉네임 중복 확인
             if (userService.isExistsUserNickname(userNickname)) {
+                status = HttpStatus.CONFLICT; // 409
+
+                return new ResponseEntity<>(false, status);
+            } else {
+                status = HttpStatus.OK; // 200
+
+                return new ResponseEntity<>(true, status);
+            }
+
+        } catch (Exception e) {
+
+            log.error("닉네임 중복 확인 실패");
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
+
+    @GetMapping("/chknick")
+    @Operation(summary = "닉네임 중복 확인", description = "마이 페이지 편집 시 입력한 닉네임을 포함해 중복 확인")
+    public ResponseEntity<?> chkNicknameEdit
+            (Authentication authentication,
+                    @RequestParam String userNickname) {
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        try {
+            // 토큰을 통한 userProviderId 추출
+            String userProviderId = authentication.getName();
+
+            // 사용자 닉네임 중복 확인
+            if (userService.isExistsUserNicknameNotMe(userNickname, userProviderId)) {
                 status = HttpStatus.CONFLICT; // 409
 
                 return new ResponseEntity<>(false, status);

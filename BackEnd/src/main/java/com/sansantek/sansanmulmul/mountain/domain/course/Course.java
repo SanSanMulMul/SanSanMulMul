@@ -36,12 +36,13 @@ public class Course {
     private int courseUptime;
 
     @Column(name = "course_downtime", nullable = false)
-    @Schema(description = "하생 소요시간",example = "12")
+    @Schema(description = "하행 소요시간",example = "12")
     private int courseDowntime;
 
     @Column(name = "course_level", nullable = false)
     @Schema(description = "코스 난이도", example = "EASY")
-    private String courseLevel;
+    @Enumerated(EnumType.STRING)
+    private Level courseLevel;
 
     @Column(name = "course_best_track_id")
     @Schema(description = "코스대표구간",example = "")

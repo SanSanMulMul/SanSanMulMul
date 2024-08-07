@@ -63,8 +63,8 @@ public class Mountain {
     @JsonManagedReference
     private List<MountainSpot> mountainSpots;
 
-    // 그룹이 선택한 산
-    @OneToMany(mappedBy = "mountain")
-    private List<Crew> crews;
+//    // 그룹이 선택한 산
+//    @OneToMany(mappedBy = "mountain")
+//    private List<Crew> crews;
 
 }

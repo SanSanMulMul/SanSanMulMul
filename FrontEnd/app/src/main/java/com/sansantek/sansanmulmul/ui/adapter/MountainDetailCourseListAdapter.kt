@@ -3,6 +3,8 @@ package com.sansantek.sansanmulmul.ui.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.data.model.CourseDetail
@@ -11,20 +13,31 @@ import com.sansantek.sansanmulmul.databinding.ItemMountainDetailCourseBinding
 private const val TAG = "싸피_MountainDetailCourseLis"
 
 class MountainDetailCourseListAdapter(
-  private val courseList: List<CourseDetail>,
   private val itemClickListener: OnItemClickListener
 ) :
-  RecyclerView.Adapter<MountainDetailCourseListAdapter.MountainDetailCourseViewHolder>() {
+  ListAdapter<CourseDetail, MountainDetailCourseListAdapter.MountainDetailCourseViewHolder>(
+    Comparator
+  ) {
 
   interface OnItemClickListener {
     fun onItemClick(course: CourseDetail)
+  }
+
+  companion object Comparator : DiffUtil.ItemCallback<CourseDetail>() {
+    override fun areItemsTheSame(oldItem: CourseDetail, newItem: CourseDetail): Boolean {
+      return System.identityHashCode(oldItem) == System.identityHashCode(newItem)
+    }
+
+    override fun areContentsTheSame(oldItem: CourseDetail, newItem: CourseDetail): Boolean {
+      return oldItem == newItem
+    }
   }
 
   inner class MountainDetailCourseViewHolder(private val binding: ItemMountainDetailCourseBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bindInfo(position: Int) {
-      val item = courseList[position]
+      val item = getItem(position)
       Log.d(TAG, "bindInfo: $item")
       binding.tvDifficulty.text = item.courseLevel
       binding.tvCourseName.text = item.courseName
@@ -61,7 +74,5 @@ class MountainDetailCourseListAdapter(
   override fun onBindViewHolder(holder: MountainDetailCourseViewHolder, position: Int) {
     holder.bindInfo(position)
   }
-
-  override fun getItemCount() = courseList.size
 
 }

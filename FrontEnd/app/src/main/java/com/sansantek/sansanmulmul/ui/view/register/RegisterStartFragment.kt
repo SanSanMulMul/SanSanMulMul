@@ -21,8 +21,6 @@ import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import com.sansantek.sansanmulmul.ui.view.LoginActivity
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.viewmodel.LoginActivityViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -48,6 +46,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             // 카카오 로그인 시도
             loginWithKakao()
 //                goRegister()
+//            goMain()
         }
     }
 
@@ -70,7 +69,10 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
                     return@loginWithKakaoTalk
                 }
                 // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
-                UserApiClient.instance.loginWithKakaoAccount(activity, callback = kakaoLoginCommonCallBack)
+                UserApiClient.instance.loginWithKakaoAccount(
+                    activity,
+                    callback = kakaoLoginCommonCallBack
+                )
             } else if (token != null) {
                 Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
                 Log.i(TAG, "카카오톡으로 로그인 성공 ${token.idToken}")
@@ -135,7 +137,8 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
 
     private fun goRegister() {
         // 회원 가입으로 이동하는 로직을 구현합니다.
-        activity.supportFragmentManager.beginTransaction().replace(R.id.fragment_view, ViewPagerFragment()).commitAllowingStateLoss()
+        activity.supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_view, ViewPagerFragment()).commitAllowingStateLoss()
         Log.i(TAG, "GoRegister() 호출")
     }
 
@@ -146,7 +149,8 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
         // Redirect URI 설정
         val redirectUri = "http://localhost:8080/user/login" // 실제 리디렉션 URI를 여기에 입력하세요
         val clientId = "7b5d50287be135923631b5d5c05be956" // 실제 클라이언트 ID를 여기에 입력하세요
-        val authCodeUrl = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}\n"
+        val authCodeUrl =
+            "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}\n"
 
         // authCodeUrl로 이동
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authCodeUrl))

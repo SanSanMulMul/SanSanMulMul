@@ -70,7 +70,7 @@ public class CrewController {
         }
     }
 
-    @GetMapping("/{styleId}")
+/*    @GetMapping("/{styleId}")
     @Operation(summary = "그룹 특정 등산 스타일 전체 조회", description = "해당 등산 스타일에 해당하는 그룹 전체 조회")
     public ResponseEntity<?> getCrewsbyStyle(@PathVariable("styleId") int styleId, Authentication authentication) {
 //        Map<String, Object> resultMap = new HashMap<>();
@@ -93,7 +93,7 @@ public class CrewController {
 
             return new ResponseEntity<>(e.getMessage(), status);
         }
-    }
+    }*/
 
     ////////////////////////////////////////////////////////////
 

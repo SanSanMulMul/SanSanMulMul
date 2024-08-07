@@ -64,29 +64,38 @@ public class CrewService {
         List<Crew> crewList = crewRepository.findAll();
         for (Crew crew : crewList) {
 
-
-           // 1. 현재날짜 이후것 부터 가져와야함 (CrewStartDate사용)
+            // 1. 현재날짜 이후것 부터 가져와야함 (CrewStartDate사용)
             if (crew.getCrewStartDate().isAfter(now)) {
                 // 2. 현재 그룹에 속한 인원 수 가져옴
                 int currentMember = crewUserRepository.countByCrew_CrewId(crew.getCrewId());
                 // 3. 현재 사용자(유저)가 이 그룹에 참여하고있는지 확인
                 boolean isUserJoined = crewUserRepository.existsByCrewAndUser(crew, currentUser);
-
+                // 4. 그룹 스타일 Integer List로
+                List<Integer> styles = new ArrayList<>();
+                for (int i = 0; i < crew.getCrewStyles().size(); i++) {
+                    int styleId = crew.getCrewStyles().get(i).getStyle().getHikingStylesId();
+                    styles.add(styleId);
+                }
 
                 CrewResponse cr = CrewResponse.builder()
                         .crewId(crew.getCrewId())
                         .crewName(crew.getCrewName())
+                        .mountainName(crew.getMountain().getMountainName())
                         .crewStartDate(crew.getCrewStartDate())
                         .crewEndDate(crew.getCrewEndDate())
                         .crewMaxMembers(crew.getCrewMaxMembers())
                         .crewCurrentMembers(currentMember) // Assuming this method exists
                         .isUserJoined(isUserJoined) // This needs to be determined based on the current user
                         .mountainImg(crew.getMountain().getMountainImg())
+                        .crewMinAge(crew.getCrewMinAge())
+                        .crewMaxAge(crew.getCrewMaxAge())
+                        .crewGender(crew.getCrewGender())
+                        .crewStyles(styles)
                         .build();
 
                 crews.add(cr);
             }
-       }
+        }
 
         return crews;
     }

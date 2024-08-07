@@ -1,9 +1,12 @@
 package com.sansantek.sansanmulmul.crew.dto.response;
 
+import com.sansantek.sansanmulmul.crew.domain.CrewRestriction;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -17,6 +20,8 @@ public class CrewResponse {
     private int crewId;
     @Schema(description = "그룹 이름", example = "한사랑 산악회")
     private String crewName;
+    @Schema(description = "산 이름", example = "금오산")
+    private String mountainName;
     @Schema(description = "그룹 시작 일시", example = "2024-08-01 22:59:59")
     private LocalDateTime crewStartDate;
     @Schema(description = "그룹 종료 일시", example = "2024-08-01 23:59:59")
@@ -29,4 +34,13 @@ public class CrewResponse {
     private boolean isUserJoined;
     @Schema(description = "산 이미지 경로", example = "1")
     private String mountainImg;
+    //최소, 최대나이, 성별, 스타일
+    @Schema(description = "그룹 참여 최소 연령", example = "10")
+    private int crewMinAge;
+    @Schema(description = "그룹 참여 최대 연령", example = "90")
+    private int crewMaxAge;
+    @Schema(description = "그룹 허용 성별", example = "A")
+    private CrewRestriction crewGender;
+    @Schema(description = "그룹 등산 스타일", example = "[2, 4, 5]")
+    private List<Integer> crewStyles = new ArrayList<>();
 }

@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.data.model
 
 data class Recommendation(
+  val mountainId : Int,
   val mountainName: String,
   val mountainHeight: Int,
   val mountainImg: String?,

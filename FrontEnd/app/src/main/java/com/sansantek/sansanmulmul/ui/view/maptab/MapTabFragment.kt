@@ -273,9 +273,23 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         lifecycleScope.launch {
             val mountainCourse = mutableMapOf<Int, MountainCourse>()
             nearbyMountainIds.forEach { mountainId ->
-                val mountainCourseInfo = mountainService.getMountainCourse(mountainId)
-                mountainCourse[mountainId] = mountainCourseInfo
-                Log.d(TAG, "mountainCourseInfo for mountainId $mountainId: $mountainCourseInfo")
+                try {
+                    val response = mountainService.getMountainCourse(mountainId)
+                    if (response.isSuccessful) {
+                        val mountainCourseInfo = response.body()
+                        if (mountainCourseInfo != null) {
+                            mountainCourse[mountainId] = mountainCourseInfo
+                            Log.d(TAG, " $mountainId: $mountainCourseInfo")
+                        } else {
+                            Log.e(TAG, " $mountainId")
+                        }
+                    } else {
+                        Log.e(TAG, " $mountainId: ${response.errorBody()}")
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, " $mountainId: ${e.message}")
+                    e.printStackTrace()
+                }
             }
             val mountains = initMountainData(nearbyMountains, mountainCourse)
             initMountainListRecyclerView(mountains)

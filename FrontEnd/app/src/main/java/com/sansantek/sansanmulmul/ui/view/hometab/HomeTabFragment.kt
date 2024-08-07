@@ -43,7 +43,6 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
     private val searchViewModel: MountainSearchViewModel by activityViewModels()
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
     private lateinit var newsList : List<News>
-    private lateinit var springMountain : List<Mountain>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -119,6 +118,9 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
             recommendationList,
             object : FirstRecommendationViewPagerAdapter.OnItemClickListener {
                 override fun onItemClick(item: Recommendation) {
+                    // 뷰모델을 가져와서 산 ID 넘겨주기
+                    mountainDetailViewModel.setMountainID(item.mountainId)
+
                     requireActivity().supportFragmentManager.beginTransaction()
                         .addToBackStack(null)
                         .replace(R.id.fragment_view, MountainDetailFragment()).commit()
@@ -188,8 +190,7 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
                 "winter" -> mountainService.getMountainWinter()
                 else -> emptyList()
             }.map {
-                val imageUrl = it.mountainImg // 기본 이미지 URL을 설정하거나 사용
-                Recommendation(it.mountainName, it.mountainHeight, imageUrl)
+                Recommendation(it.mountainId, it.mountainName, it.mountainHeight, it.mountainImg)
             }
 
             // 계절별 데이터를 로그로 출력

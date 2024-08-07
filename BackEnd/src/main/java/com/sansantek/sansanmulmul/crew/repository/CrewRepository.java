@@ -10,4 +10,5 @@ import java.util.Optional;
 
 public interface CrewRepository extends JpaRepository<Crew, Integer> {
     Optional<Crew> findByCrewId(int crewId);
+    boolean existsByCrewIdAndLeader_UserId(int crewId, int userId);
 }

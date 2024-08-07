@@ -33,6 +33,8 @@ class FirstRecommendationViewPagerAdapter(
   }
 
   override fun onBindViewHolder(holder: RecommendationViewHolder, position: Int) {
+
+
     val actualPosition = position % items.size
     val item = items[actualPosition]
     holder.tvMountainName.text = item.mountainName

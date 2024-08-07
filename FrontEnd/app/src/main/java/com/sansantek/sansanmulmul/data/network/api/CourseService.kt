@@ -6,9 +6,9 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface CourseService {
-    @GET("/mountain/{mountainId}/course/{courseId}")
-    suspend fun getCourseDetailID(
-        @Path("mountain_id") mountainId: Int,
-        @Path("course_id") courseId: Long
-    ): Response<CourseDetail>
+  @GET("/mountain/{mountainId}/course/{courseId}")
+  suspend fun getCourseDetailByID(
+    @Path("mountainId") mountainId: Int,
+    @Path("courseId") courseId: Long
+  ): Response<CourseDetail>
 }

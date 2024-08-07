@@ -29,16 +29,24 @@ public class CrewCreateRequest {
     private int crewMinAge;
     @Schema(description = "그룹 참여 최대 연령", example = "90")
     private int crewMaxAge;
+    @Schema(description = "그룹 시작 일시", example = "2024-08-01 23:59:59")
+    private int crewStartDate;
+    @Schema(description = "그룹 종료 일시", example = "2024-08-02 23:59:59")
+    private int crewEndDate;
     @Schema(description = "그룹 등산 스타일", example = "[1, 2, 3]")
     private List<Integer> crewStyles = new ArrayList<>();
 
     // <산 선택>
-    @Schema(description = "산 고유 번호", example = "1")
+    @Schema(description = "산 고유 번호", example = "14")
     private int mountainId;
 
     // <코스 선택>
     // 상행 코스
+    @Schema(description = "상행 코스 고유 번호", example = "47190010101")
+    private int upCourseId;
     // 하행 코스
+    @Schema(description = "하행 코스 고유 번호", example = "47190010102")
+    private int downCourseId;
 
 
 }

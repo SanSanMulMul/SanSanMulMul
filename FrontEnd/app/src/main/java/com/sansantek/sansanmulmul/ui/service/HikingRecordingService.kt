@@ -98,7 +98,7 @@ class HikingRecordingService : Service(), SensorEventListener {
             var step: StepCount
             CoroutineScope(Dispatchers.IO).launch {
                 val today = getCurrentDateInfo()
-                step = repository.getStepCount(today.year, today.month, today.day, status) ?: StepCount()
+                step = repository.getStepCount(today.year, today.month, today.day) ?: StepCount()
 
                 Log.d(TAG, "onSensorChanged: stepcount 확인 $step")
                 if (step.stepCount == -1) {
@@ -108,7 +108,6 @@ class HikingRecordingService : Service(), SensorEventListener {
                     step.year = date.year
                     step.month = date.month
                     step.day = date.day
-                    step.status = status
 
                     step.stepCount = 1
                     Log.d(TAG, "onSensorChanged: insert")
@@ -124,7 +123,7 @@ class HikingRecordingService : Service(), SensorEventListener {
                 }
 
                 val intent = Intent().apply {
-                    setAction("step")
+                    action = "step"
                     putExtra("value", step.stepCount)
                 }
 

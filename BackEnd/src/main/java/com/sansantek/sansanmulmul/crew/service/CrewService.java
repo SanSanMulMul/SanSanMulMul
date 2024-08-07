@@ -233,10 +233,11 @@ public class CrewService {
         User leader = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
+        //그룹 생성자 = 방장
         CrewUser crewUser = CrewUser.builder()
                 .crew(crew)
                 .user(leader)
-                .isLeader(false)
+                .isLeader(true)
                 .build();
         crewUserRepository.save(crewUser);
     }

@@ -1,13 +1,13 @@
 package com.sansantek.sansanmulmul.crew.controller;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
-import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequest;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewCreateRequest;
-import com.sansantek.sansanmulmul.crew.domain.Crew;
-import com.sansantek.sansanmulmul.crew.dto.response.CrewDetailResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailCommonResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewMyResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
-import com.sansantek.sansanmulmul.crew.dto.response.CrewUserResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewHikingDetailResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewUserResponse;
 import com.sansantek.sansanmulmul.crew.service.CrewService;
 import com.sansantek.sansanmulmul.crew.service.request.CrewRequestService;
 import com.sansantek.sansanmulmul.exception.auth.InvalidTokenException;
@@ -15,8 +15,6 @@ import com.sansantek.sansanmulmul.exception.style.GroupNotFoundException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -148,24 +146,67 @@ public class CrewController {
 
 
     /* 3. 그룹 상세 보기 */
-//    @GetMapping("/detail")
-//    @Operation(summary = "그룹 상세 정보 조회", description = "해당 그룹에 대한 상세 정보를 조회")
-//    public ResponseEntity<?> getCrewDetail(@RequestParam("crewId") int crewId) {
-//        HttpStatus status = HttpStatus.ACCEPTED;
-//
-//        try {
-//            CrewDetailResponse crewDetailResponse = crewService.getCrewDetail(crewId);
-//
-//            return new ResponseEntity<>(crewDetailResponse, status);
-//        } catch (Exception e) {
-//
-//            status = HttpStatus.BAD_REQUEST; // 400
-//
-//            return new ResponseEntity<>(e.getMessage(), status);
-//        }
-//    }
+    // (1) 상단 공통된 부분 (유저 정보 isLeader 포함)
+    @GetMapping("/detail/{crewId}/common")
+    @Operation(summary = "그룹 상세 조회 [상단공통부분]", description = "그룹 상세보기 - 상단에 고정되는 부분")
+    public ResponseEntity<?> getCrewDetailCommon(Authentication authentication, @PathVariable int crewId) {
+        HttpStatus status = HttpStatus.OK;
+
+        try {
+            // 1. 현재 사용자 가져오기
+            String userProviderId = authentication.getName(); // 토큰을 통해 userProvider 추출
+            User user = userService.getUser(userProviderId); // 해당 사용자 가져오기
+
+            // 2. 그룹 정보 가져오기
+            CrewDetailCommonResponse crewDetailCommonResponse = crewService.getCrewDetailCommon(crewId, user.getUserId());
+
+            return new ResponseEntity<>(crewDetailCommonResponse, status);
+        } catch (Exception e) {
+
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
 
 
+    // (2) [탭1] 그룹 정보
+    @GetMapping("/detail/{crewId}/info")
+    @Operation(summary = "그룹 상세 조회 [탭1] 그룹 정보", description = "그룹 상세보기 - (탭1) 그룹 정보")
+    public ResponseEntity<?> getCrewDetailCrewInfo(@PathVariable int crewId) {
+        HttpStatus status = HttpStatus.OK;
+
+        try {
+            CrewDetailResponse crewDetailResponse = crewService.getCrewDetailCrewInfo(crewId);
+
+            return new ResponseEntity<>(crewDetailResponse, status);
+        } catch (Exception e) {
+
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
+
+    // (3) [탭2] 등산 정보
+    @GetMapping("/detail/{crewId}/hikinginfo")
+    @Operation(summary = "그룹 상세 조회 [탭2] 등산 정보", description = "그룹 상세보기 - (탭2) 등산 정보")
+    public ResponseEntity<?> getCrewDetailHikingInfo(@PathVariable int crewId) {
+        HttpStatus status = HttpStatus.OK;
+
+        try {
+            CrewHikingDetailResponse crewHikingDetailResponse = crewService.getCrewDetailHikingInfo(crewId);
+
+            return new ResponseEntity<>(crewHikingDetailResponse, status);
+        } catch (Exception e) {
+
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
+
+    ////////////////////////////////////////////////////////////
     @GetMapping("/member/{crewId}")
     public ResponseEntity<?> getCrewMembers(@PathVariable int crewId) {
         try {

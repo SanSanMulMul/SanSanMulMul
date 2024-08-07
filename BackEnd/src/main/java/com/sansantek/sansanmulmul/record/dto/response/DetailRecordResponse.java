@@ -1,6 +1,6 @@
 package com.sansantek.sansanmulmul.record.dto.response;
 
-import com.sansantek.sansanmulmul.crew.dto.response.CrewUserResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewUserResponse;
 import com.sansantek.sansanmulmul.mountain.domain.course.Course;
 import com.sansantek.sansanmulmul.mountain.domain.course.Track;
 import com.sansantek.sansanmulmul.mountain.domain.course.TrackPath;

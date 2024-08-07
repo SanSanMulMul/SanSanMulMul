@@ -2,17 +2,16 @@ package com.sansantek.sansanmulmul.crew.service;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 
-import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequest;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewCreateRequest;
-import com.sansantek.sansanmulmul.crew.dto.response.CrewDetailResponse;
-import com.sansantek.sansanmulmul.crew.dto.response.CrewMyResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailCommonResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewHikingDetailResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewHikingStyleRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
-import com.sansantek.sansanmulmul.exception.style.AlreadyStyleException;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.domain.course.Course;
 import com.sansantek.sansanmulmul.mountain.repository.MountainRepository;
@@ -25,7 +24,6 @@ import com.sansantek.sansanmulmul.user.service.UserService;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -225,6 +223,7 @@ public class CrewService {
         crewRepository.save(crew);
     }
 
+    @Transactional
     public void updateCrewUser(Crew crew, int userId) {
         //현재 사용자 확인
         User leader = userRepository.findByUserId(userId)
@@ -241,28 +240,86 @@ public class CrewService {
     ////////////////////////////////////////////////////////////
 
     /* 3. 그룹 상세 보기 */
-    // crewId에 해당하는 그룹 상세 조회
-//    public CrewDetailResponse getCrewDetail(int crewId) {
-//        Crew crew = crewRepository.findById(crewId)
-//                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
-//
-//        CrewDetailResponse crewDetailResponse = new CrewDetailResponse(
-//            crew.getCrewId(),
-//                crew.getCrewName(),
-//                crew.getCrewStartDate(),
-//                crew.getCrewEndDate(),
-//                crew.getCrewDescription(),
-//                crew.getCrewStyles(),
-//                crew.getCrewMaxMembers(),
-//                crew.getMountain().getMountainId(),
-//                crew.getMountain().getMountainName(),
-//                crew.getMountain().getMountainDescription(),
-//                crew.getMountain().getMountainImg()
-//        );
-//
-//        return crewDetailResponse;
-//    }
+    // (1) 상단 공통된 부분 (유저 정보 isLeader 포함)
+    public CrewDetailCommonResponse getCrewDetailCommon(int crewId, int userId) {
+        // crewId에 해당하는 그룹 상세 조회
+        // 1. 해당 crew 가져옴
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
 
+        // 2. 현재 그룹에 속한 인원 수 가져옴
+        int currentMember = crewUserRepository.countByCrew_CrewId(crew.getCrewId());
+        // 3. 현재 사용자(유저)가 이 그룹의 리더인지 확인
+        boolean isLeader = crewRepository.existsByCrewIdAndLeader_UserId(crewId, userId);
+
+        CrewDetailCommonResponse crewDetailCommonResponse = CrewDetailCommonResponse.builder()
+                .crewId(crewId)
+                .crewName(crew.getCrewName())
+                .crewStartDate(crew.getCrewStartDate())
+                .crewEndDate(crew.getCrewEndDate())
+                .crewCurrentMembers(currentMember)
+                .crewMaxMembers(crew.getCrewMaxMembers())
+                .mountainImg(crew.getMountain().getMountainImg())
+                .isLeader(isLeader)
+                .build();
+
+        return crewDetailCommonResponse;
+    }
+
+    // (2) [탭1] 그룹 정보
+    public CrewDetailResponse getCrewDetailCrewInfo(int crewId) {
+        // crewId에 해당하는 그룹 상세 조회
+        // 1. 해당 crew 가져옴
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
+        // 2. 해당 crew의 hikingStyle들 string으로 가져오기
+        List<String> styles = new ArrayList<>();
+        for (int i = 0; i < crew.getCrewStyles().size() ; i++) {
+            String style = crew.getCrewStyles().get(i).getStyle().getHikingStylesName();
+            styles.add(style);
+        }
+
+        CrewDetailResponse crewDetailResponse = CrewDetailResponse.builder()
+                .crewDescription(crew.getCrewDescription())
+                .crewHikingStyles(styles)
+                .build();
+
+        return crewDetailResponse;
+    }
+
+
+    // (3) [탭2] 등산 정보
+    public CrewHikingDetailResponse getCrewDetailHikingInfo(int crewId) {
+        // crewId에 해당하는 그룹 상세 조회
+        // 1. 해당 crew 가져옴
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
+        // 2. 산
+        Mountain mountain = crew.getMountain();
+        // 3. 상행 코스, 하행 코스
+        Course upCourse = crew.getUpCourse();
+        Course downCourse = crew.getDownCourse();
+
+        CrewHikingDetailResponse crewHikingDetailResponse = CrewHikingDetailResponse.builder()
+                .mountainId(mountain.getMountainId())
+                .mountainName(mountain.getMountainName())
+                .mountainDescription(mountain.getMountainDescription())
+                .upCourseId(upCourse.getCourseId())
+                .upCourseName(upCourse.getCourseName())
+                .upCourseLevel(upCourse.getCourseLevel())
+                .upCoursetime(upCourse.getCourseUptime())
+                .upCourseLength(upCourse.getCourseLength())
+                .downCourseId(downCourse.getCourseId())
+                .downCourseName(downCourse.getCourseName())
+                .downCourseLevel(downCourse.getCourseLevel())
+                .downCoursetime(downCourse.getCourseDowntime())
+                .downCourseLength(downCourse.getCourseLength())
+                .build();
+
+        return crewHikingDetailResponse;
+    }
+
+    ////////////////////////////////////////////////////////////
     //현재 진행중인 크루><
     public List<Crew> getingCrews(User user) {
         return crewUserRepository.findByUserAndCrew_CrewIsDone(user, false).stream()

@@ -1,22 +1,27 @@
 package com.sansantek.sansanmulmul.ui.view.register
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentGroupCreateViewPagerBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupCreateViewPagerAdapter
+import com.sansantek.sansanmulmul.ui.viewmodel.CreateGroupViewModel
 
-private const val TAG = "GroupCreateViewPagerFragment"
+private const val TAG = "GroupCreateViewPagerFragment_싸피"
 
 class GroupCreateViewPagerFragment : BaseFragment<FragmentGroupCreateViewPagerBinding>(
     FragmentGroupCreateViewPagerBinding::bind,
     R.layout.fragment_group_create_view_pager
 ) {
-
+    private val viewModel: CreateGroupViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,7 +35,7 @@ class GroupCreateViewPagerFragment : BaseFragment<FragmentGroupCreateViewPagerBi
 
         Log.d(TAG, "onViewCreated: View created")
 
-        val adapter = GroupCreateViewPagerAdapter(requireActivity())
+        val adapter = GroupCreateViewPagerAdapter(this)
         binding.vpCreateGroup.adapter = adapter
         binding.vpCreateGroup.isUserInputEnabled = false
         binding.createGroupSpringDotsIndicator.attachTo(binding.vpCreateGroup)
@@ -65,5 +70,26 @@ class GroupCreateViewPagerFragment : BaseFragment<FragmentGroupCreateViewPagerBi
             binding.createGroupNextButton.visibility = View.VISIBLE
             binding.createGroupPrevButton.visibility = View.VISIBLE
         }
+    }
+
+    fun enableNextButton(enable: Boolean) {
+        if (enable) {
+            binding.createGroupNextButton.imageTintList =
+                ContextCompat.getColorStateList(requireContext(), R.color.white)
+            binding.createGroupNextButton.background.setTintList(
+                ContextCompat.getColorStateList(
+                    requireContext(),
+                    R.color.green
+                )
+            )
+        } else {
+            binding.createGroupNextButton.imageTintList = ColorStateList.valueOf(Color.parseColor("#FF373737"))
+            binding.createGroupNextButton.background.setTintList(
+                null
+            )
+            binding.createGroupNextButton.background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.gray_border_rounded_box)
+        }
+        binding.createGroupNextButton.isEnabled = enable
     }
 }

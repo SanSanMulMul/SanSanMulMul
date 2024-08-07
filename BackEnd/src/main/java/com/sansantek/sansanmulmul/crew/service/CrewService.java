@@ -75,7 +75,7 @@ public class CrewService {
                     int styleId = crew.getCrewStyles().get(i).getStyle().getHikingStylesId();
                     styles.add(styleId);
                 }
-
+                // 5. 방장 정보
                 CrewResponse cr = CrewResponse.builder()
                         .crewId(crew.getCrewId())
                         .crewName(crew.getCrewName())
@@ -83,13 +83,16 @@ public class CrewService {
                         .crewStartDate(crew.getCrewStartDate())
                         .crewEndDate(crew.getCrewEndDate())
                         .crewMaxMembers(crew.getCrewMaxMembers())
-                        .crewCurrentMembers(currentMember) // Assuming this method exists
-                        .isUserJoined(isUserJoined) // This needs to be determined based on the current user
+                        .crewCurrentMembers(currentMember)
+                        .isUserJoined(isUserJoined)
                         .mountainImg(crew.getMountain().getMountainImg())
                         .crewMinAge(crew.getCrewMinAge())
                         .crewMaxAge(crew.getCrewMaxAge())
                         .crewGender(crew.getCrewGender())
                         .crewStyles(styles)
+                        .userName(currentUser.getUserName())
+                        .userNickname(currentUser.getUserNickname())
+                        .userProfileImg(currentUser.getUserProfileImg())
                         .build();
 
                 crews.add(cr);
@@ -100,7 +103,7 @@ public class CrewService {
     }
 
     // 그룹 {스타일 } 검색 시 그룹 조회
-    @Transactional(readOnly = true)
+/*    @Transactional(readOnly = true)
     public List<CrewResponse> getCrewListbyStyle(int styleId, String userProviderId) {
         List<CrewResponse> crews = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now(); //현재시간
@@ -140,7 +143,7 @@ public class CrewService {
         }
 
         return crews;
-    }
+    }*/
 
     // 그룹 {성별} 검색 시 그룹 조회
 //    public List<CrewResponse> getCrewsListbyStyle(CrewRestriction gender) {

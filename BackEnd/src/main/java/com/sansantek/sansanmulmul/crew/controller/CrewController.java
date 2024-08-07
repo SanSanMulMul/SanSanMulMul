@@ -1,13 +1,11 @@
 package com.sansantek.sansanmulmul.crew.controller;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
-import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequest;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewCreateRequest;
-import com.sansantek.sansanmulmul.crew.domain.Crew;
-import com.sansantek.sansanmulmul.crew.dto.response.CrewDetailResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewMyResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
-import com.sansantek.sansanmulmul.crew.dto.response.CrewUserResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewUserResponse;
 import com.sansantek.sansanmulmul.crew.service.CrewService;
 import com.sansantek.sansanmulmul.crew.service.request.CrewRequestService;
 import com.sansantek.sansanmulmul.exception.auth.InvalidTokenException;
@@ -15,8 +13,6 @@ import com.sansantek.sansanmulmul.exception.style.GroupNotFoundException;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -148,22 +144,22 @@ public class CrewController {
 
 
     /* 3. 그룹 상세 보기 */
-//    @GetMapping("/detail")
-//    @Operation(summary = "그룹 상세 정보 조회", description = "해당 그룹에 대한 상세 정보를 조회")
-//    public ResponseEntity<?> getCrewDetail(@RequestParam("crewId") int crewId) {
-//        HttpStatus status = HttpStatus.ACCEPTED;
-//
-//        try {
-//            CrewDetailResponse crewDetailResponse = crewService.getCrewDetail(crewId);
-//
-//            return new ResponseEntity<>(crewDetailResponse, status);
-//        } catch (Exception e) {
-//
-//            status = HttpStatus.BAD_REQUEST; // 400
-//
-//            return new ResponseEntity<>(e.getMessage(), status);
-//        }
-//    }
+    @GetMapping("/detail/{crewId}")
+    @Operation(summary = "그룹 상세 정보 조회", description = "해당 그룹에 대한 상세 정보를 조회")
+    public ResponseEntity<?> getCrewDetail(@PathVariable int crewId) {
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        try {
+            CrewDetailResponse crewDetailResponse = crewService.getCrewDetail(crewId);
+
+            return new ResponseEntity<>(crewDetailResponse, status);
+        } catch (Exception e) {
+
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
 
 
     @GetMapping("/member/{crewId}")

@@ -1,8 +1,7 @@
-package com.sansantek.sansanmulmul.crew.dto.response;
+package com.sansantek.sansanmulmul.crew.dto.response.crewdetail;
 
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -17,7 +16,12 @@ import java.util.List;
 @AllArgsConstructor
 public class CrewDetailResponse {
 
-    /* 특정 그룹 상세보기 응답 */
+    /* 그룹 '그룹 정보' 상세보기 응답 */
+    //공통
+    // 그룹 시작시간, 그룹 끝, 그룹 이름, [참여중 인원], 그룹 최대인원
+    // 방장인지 여부 true/false도 **
+    // 그룹 설명, 그룹hikingstyles 'name'으로,
+
     @Schema(description = "그룹 고유 번호", example = "1")
     private int crewId;
     @Schema(description = "그룹 이름", example = "한사랑 산악회")
@@ -33,19 +37,5 @@ public class CrewDetailResponse {
     @Schema(description = "그룹 참여 최대 인원", example = "10")
     private int crewMaxMembers;
 
-    // 멤버
-    // 참여 멤버 수
-    // 방장 정보
-    // 멤버 목록 (방장포함)
 
-    // 산 정보
-    @Schema(description = "산 고유 번호", example = "1")
-    private int mountainId;
-    @Schema(description = "산 이름", example = "금오산")
-    private String mountainName;
-    @Schema(description = "산 상세 설명", example = "금오산은 구미를 대표하는 산중하나이다.")
-    private String mountainDescription;
-    @Schema(description = "산 이미지", example = "0")
-    private String mountainImg;
-    // 코스
 }

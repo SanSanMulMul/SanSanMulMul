@@ -119,7 +119,10 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     }
 
 
-    private fun initMountainData(nearbyMountains: List<Mountain>, mountainCourses: Map<Int, MountainCourse>): List<SearchMountainListItem> {
+    private fun initMountainData(
+        nearbyMountains: List<Mountain>,
+        mountainCourses: Map<Int, MountainCourse>
+    ): List<SearchMountainListItem> {
         return nearbyMountains.map { mountainDto ->
             val courseCount = mountainCourses[mountainDto.mountainId]?.courseCount ?: 0
             SearchMountainListItem(
@@ -201,7 +204,14 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
 
     private fun requestLocationUpdates() {
         locationSource.activate { provider ->
-            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 return@activate
             }
             locationClient.lastLocation.addOnSuccessListener { location: Location? ->
@@ -221,8 +231,10 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     }
 
     private fun moveCameraToLocation(location: Location) {
-        val cameraUpdate = CameraUpdate.scrollTo(LatLng(location.latitude, location.longitude)).animate(
-            CameraAnimation.Fly, 1000)
+        val cameraUpdate =
+            CameraUpdate.scrollTo(LatLng(location.latitude, location.longitude)).animate(
+                CameraAnimation.Fly, 1000
+            )
         naverMap.moveCamera(cameraUpdate)
     }
 
@@ -233,7 +245,12 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         val currentLon = currentLocation.longitude
 
         val nearbyMountains = mountainList.filter { mountain ->
-            val distance = calculateDistance(currentLat, currentLon, mountain.mountainLat, mountain.mountainLon)
+            val distance = calculateDistance(
+                currentLat,
+                currentLon,
+                mountain.mountainLat,
+                mountain.mountainLon
+            )
             distance <= 50 // 50km 이내에 있는 산 필터링
         }
 
@@ -266,26 +283,43 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
             }
         }
         Log.d(TAG, "showNearbyMountains: $nearbyMountains")
-        
+
         // 코스 수 받아오기
         val nearbyMountainIds = nearbyMountains.map { it.mountainId }
         lifecycleScope.launch {
             val mountainCourse = mutableMapOf<Int, MountainCourse>()
             nearbyMountainIds.forEach { mountainId ->
-                val mountainCourseInfo = mountainService.getMountainCourse(mountainId)
-                mountainCourse[mountainId] = mountainCourseInfo
-                Log.d(TAG, "mountainCourseInfo for mountainId $mountainId: $mountainCourseInfo")
+                try {
+                    val response = mountainService.getMountainCourse(mountainId)
+                    if (response.isSuccessful) {
+                        val mountainCourseInfo = response.body()
+                        if (mountainCourseInfo != null) {
+                            mountainCourse[mountainId] = mountainCourseInfo
+                            Log.d(TAG, " $mountainId: $mountainCourseInfo")
+                        } else {
+                            Log.e(TAG, " $mountainId")
+                        }
+                    } else {
+                        Log.e(TAG, " $mountainId: ${response.errorBody()}")
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, " $mountainId: ${e.message}")
+                    e.printStackTrace()
+                }
             }
             val mountains = initMountainData(nearbyMountains, mountainCourse)
             initMountainListRecyclerView(mountains)
         }
+
     }
 
     private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val radius = 6371 // 지구 반지름 (단위: km)
         val dLat = Math.toRadians(lat2 - lat1)
         val dLon = Math.toRadians(lon2 - lon1)
-        val a = Math.sin(dLat / 2).pow(2.0) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2).pow(2.0)
+        val a = Math.sin(dLat / 2).pow(2.0) + Math.cos(Math.toRadians(lat1)) * Math.cos(
+            Math.toRadians(lat2)
+        ) * Math.sin(dLon / 2).pow(2.0)
         val c = 2 * Math.atan2(sqrt(a), sqrt(1 - a))
         return radius * c
     }

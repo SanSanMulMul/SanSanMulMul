@@ -204,6 +204,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         try {
+            Log.d(TAG, "onActivityResult: 여기를 왜가?")
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                 bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     ImageDecoder.decodeBitmap(
@@ -219,8 +220,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         } catch (e: IOException) {
             null
         }
-        val fragment =
-            supportFragmentManager.findFragmentById(R.id.fragment_view) as HikingRecordingTabFragment
         Log.d(TAG, "onActivityResult: $bitmap")
 //        fragment.setImageBitmap(bitmap)
     }

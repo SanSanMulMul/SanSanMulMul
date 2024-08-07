@@ -7,12 +7,15 @@ import com.sansantek.sansanmulmul.data.model.MyPageInfo
 import com.sansantek.sansanmulmul.data.model.ProfileUpdateData
 import com.sansantek.sansanmulmul.data.model.User
 import com.sansantek.sansanmulmul.data.model.UserToken
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -37,8 +40,9 @@ interface UserService {
     suspend fun getMyPageInfo(@Header("Authorization") accessToken: String): MyPageInfo
     @GET("user/badge")
     suspend fun getMyBadgeList(@Header("Authorization") accessToken: String) : List<String>
+    @Multipart
     @PATCH("user/info")
-    suspend fun updateUserProfile(@Header("Authorization") accessToken: String, @Body profileUpdateData: ProfileUpdateData) : Response<Boolean>
+    suspend fun updateUserProfile(@Header("Authorization") accessToken: String, @Part image: MultipartBody.Part, @Part("updateUserRequest") profileUpdateData: ProfileUpdateData) : Response<Boolean>
     @GET("user/chknick")
     suspend fun chkDuplicateNickname(@Header("Authorization") accessToken: String, @Query("userNickname") nickName: String): Response<Boolean>
 }

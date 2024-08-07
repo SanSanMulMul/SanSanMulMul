@@ -1,17 +1,22 @@
 package com.sansantek.sansanmulmul.ui.view.mypagetab
 
+import android.Manifest
+import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.graphics.Rect
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
-import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,12 +31,18 @@ import com.sansantek.sansanmulmul.data.model.ProfileUpdateData
 import com.sansantek.sansanmulmul.databinding.FragmentMyPageEditBinding
 import com.sansantek.sansanmulmul.ui.adapter.MyPageEditHikingStyleListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.GridSpaceItemDecoration
+import com.sansantek.sansanmulmul.ui.util.PermissionChecker
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
+import com.sansantek.sansanmulmul.ui.util.Util.getRealPathFromURI
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 private const val TAG = "MyPageEditTabFragment 싸피"
 
@@ -39,19 +50,39 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
     FragmentMyPageEditBinding::bind,
     R.layout.fragment_my_page_edit
 ) {
+    private val permissionList = arrayOf(Manifest.permission.CAMERA)
     private val activityViewModel: MainActivityViewModel by activityViewModels()
     private var hikeStyleList =
         mutableListOf<HikingStyle>() //mutableListOf(HikingStyle(HIKINGSTYLE[], true), HikingStyle("등산도 식후경", false), HikingStyle("어쩌구", true), HikingStyle("저쩌구", false), HikingStyle("어쩌구저쩌구", false))
     private lateinit var hikeAdapter: MyPageEditHikingStyleListAdapter
     private lateinit var titleList: List<String>
     private lateinit var myPageAdapter: ArrayAdapter<String>
+    private lateinit var permissionChecker: PermissionChecker
+    private lateinit var activity: Context
+    private lateinit var uri: Uri
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity = context
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        permissionChecker = PermissionChecker(this)
+        binding.ivProfileImg.setOnClickListener {
+            if (permissionChecker.checkPermission(activity, permissionList)) {
+                permissionChecker.setOnGrantedListener { //퍼미션 획득 성공일때
+                    openGallery()
+                }
+                permissionChecker.requestPermissionLauncher.launch(permissionList) // 권한없으면 창 띄움
+            } else {
+                openGallery()
+            }
+        }
         binding.root.setOnClickListener {
             hideKeyboard()
         }
 
         binding.etNickname.setOnEditorActionListener { textView, action, keyEvent ->
-            if(action == EditorInfo.IME_ACTION_DONE ){
+            if (action == EditorInfo.IME_ACTION_DONE) {
                 hideKeyboard()
             }
             false
@@ -85,6 +116,7 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
         }
 
 
+
         binding.btnSave.setOnClickListener {
             lifecycleScope.launch {
                 val styleList = hikeStyleList.filter {
@@ -99,15 +131,23 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
                         binding.etNickname.text.toString()
                     )
                     if (isValid.code() != 409) {
-                        val result = userService.updateUserProfile(
-                            makeHeaderByAccessToken(it.accessToken),
-                            ProfileUpdateData(
-                                binding.etNickname.text.toString(),
-                                activityViewModel.userProfileImgUrl,
-                                activityViewModel.userTitle,
-                                styleList
+
+                        var result = getRealPathFromURI(requireContext(), uri)?.let { file ->
+                            val file = File(file)
+                            val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+                            val body =
+                                MultipartBody.Part.createFormData("image", file.name, requestBody)
+                            userService.updateUserProfile(
+                                makeHeaderByAccessToken(it.accessToken),
+                                body,
+                                ProfileUpdateData(
+                                    binding.etNickname.text.toString(),
+                                    activityViewModel.userTitle,
+                                    styleList
+                                )
                             )
-                        )
+
+                        }
 
                         lifecycleScope.launch {
 
@@ -186,7 +226,17 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
 
     }
 
-    private fun checkValidNickname(){
+    private fun openGallery() {
+        val gallery = Intent(Intent.ACTION_PICK)
+        gallery.setDataAndType(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            "image/*"
+        )
+        pickImageLauncher.launch(gallery)
+        Log.d(TAG, "openGallery: 사진 추가")
+    }
+
+    private fun checkValidNickname() {
         val inputText = binding.etNickname.text.toString()
         lifecycleScope.launch {
             activityViewModel.token?.let {
@@ -237,5 +287,18 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
             }
         }
     }
+
+    private val pickImageLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val data: Intent? = result.data
+                data?.data?.let { it ->
+                    Log.d(TAG, "수신 양호: $it")
+                    val image = it
+                    uri = it
+                    binding.ivProfileImg.setImageURI(image)
+                }
+            }
+        }
 
 }

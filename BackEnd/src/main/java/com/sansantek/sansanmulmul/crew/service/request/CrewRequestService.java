@@ -38,14 +38,14 @@ public class CrewRequestService {
     @Transactional
     public CrewRequest requestJoinCrew(int crewId, String userProviderId) {
         Crew crew = crewRepository.findById(crewId)
-                .orElseThrow(() -> new RuntimeException("크루를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("그룹를 찾을 수 없습니다."));
 
         User user = userRepository.findByUserProviderId(userProviderId)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("회원를 찾을 수 없습니다."));
 
         // 사용자가 크루의 리더인지 확인
         if (crew.getLeader().equals(user)) {
-            throw new RuntimeException("크루의 리더입니다.");
+            throw new RuntimeException("그룹의 방장입니다.");
         }
 
         // 이미 요청이 존재하는지 확인
@@ -69,7 +69,7 @@ public class CrewRequestService {
         User leader = crewRequest.getCrew().getLeader();
 
         if (!leader.getUserProviderId().equals(userProviderId)) {
-            throw new RuntimeException("크루 리더만 가입 요청을 처리할 수 있습니다.");
+            throw new RuntimeException("그룹 방장만 가입 요청을 처리할 수 있습니다.");
         }
 
         crewRequest.setCrewRequestStatus(status);
@@ -91,18 +91,18 @@ public class CrewRequestService {
     @Transactional
     public void OutUser(int crewId, int userId, String leaderProviderId) {
         Crew crew = crewRepository.findById(crewId)
-                .orElseThrow(() -> new RuntimeException("크루를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("그룹을 찾을 수 없습니다."));
 
         User leader = crew.getLeader();
         if (!leader.getUserProviderId().equals(leaderProviderId)) {
-            throw new RuntimeException("크루 리더만 사용자를 강퇴할 수 있습니다.");
+            throw new RuntimeException("그룹 방장만 사용자를 강퇴할 수 있습니다.");
         }
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         CrewUser crewUser = crewUserRepository.findByCrewAndUser(crew, user)
-                .orElseThrow(() -> new RuntimeException("크루 회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("그룹 회원을 찾을 수 없습니다."));
 
         crewUserRepository.delete(crewUser);
     }
@@ -110,7 +110,7 @@ public class CrewRequestService {
     @Transactional
     public List<CrewUserResponse> getCrewMembers(int crewId) {
         Crew crew = crewRepository.findById(crewId)
-                .orElseThrow(() -> new RuntimeException("크루를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("그룹을 찾을 수 없습니다."));
 
         List<CrewUser> crewUsers = crewUserRepository.findByCrew(crew);
         List<CrewUserResponse> userResponses = new ArrayList<>();
@@ -132,11 +132,11 @@ public class CrewRequestService {
     @Transactional
     public List<CrewRequestResponse> getCrewRequests(int crewId, String userProviderId) {
         Crew crew = crewRepository.findById(crewId)
-                .orElseThrow(() -> new RuntimeException("크루를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("그룹을 찾을 수 없습니다."));
 
         User leader = crew.getLeader();
         if (!leader.getUserProviderId().equals(userProviderId)) {
-            throw new RuntimeException("리더만 이 정보를 볼 수 있습니다.");
+            throw new RuntimeException("방장만 이 정보를 볼 수 있습니다.");
         }
 
         List<CrewRequest> requests = crewRequestRepository.findByCrewAndCrewRequestStatus(crew, CrewRequestStatus.R);
@@ -153,5 +153,24 @@ public class CrewRequestService {
         }
 
         return responseList;
+
+    }
+    @Transactional
+    public void exitCrew(int crewId, int userId, String userProviderId) {
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("그룹을 찾을 수 없습니다."));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        // 리더는 방을 나갈 수 없도록 체크
+        if (crew.getLeader().getUserProviderId().equals(userProviderId)) {
+            throw new RuntimeException("방장은 방을 나갈 수 없습니다. 방장을 위임하세요");
+        }
+
+        CrewUser crewUser = crewUserRepository.findByCrewAndUser(crew, user)
+                .orElseThrow(() -> new RuntimeException("그룹 회원을 찾을 수 없습니다."));
+
+        crewUserRepository.delete(crewUser);
     }
 }

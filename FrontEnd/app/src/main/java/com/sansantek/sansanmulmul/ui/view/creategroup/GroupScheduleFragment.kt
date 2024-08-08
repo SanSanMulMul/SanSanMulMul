@@ -5,33 +5,32 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.BaseFragment
+import com.sansantek.sansanmulmul.databinding.FragmentGroupHikingStyleBinding
 import com.sansantek.sansanmulmul.databinding.FragmentGroupScheduleBinding
+import com.sansantek.sansanmulmul.ui.viewmodel.CreateGroupViewModel
 
-class GroupScheduleFragment : Fragment() {
+private const val TAG = "GroupScheduleFragment_싸피"
+class GroupScheduleFragment : BaseFragment<FragmentGroupScheduleBinding>(
+    FragmentGroupScheduleBinding::bind,
+    R.layout.fragment_group_schedule
+) {
 
-    private var _binding: FragmentGroupScheduleBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentGroupScheduleBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    private val viewModel : CreateGroupViewModel by activityViewModels()
+    override fun onResume() {
+        super.onResume()
         // 전달 받은 상행 코스와 하행 코스 설정
-        val upCourse = arguments?.getString("upCourse")
-        val downCourse = arguments?.getString("downCourse")
-
+        val upCourse = viewModel.groupUpCourseName
+        val downCourse = viewModel.groupDownCourseName
+        Log.d(TAG, "onViewCreated: $upCourse  $downCourse")
         val upCourseText = "상행코스 | $upCourse"
         val downCourseText = "하행코스 | $downCourse"
 
@@ -49,17 +48,10 @@ class GroupScheduleFragment : Fragment() {
         binding.tvLastDownCourse.text = spanDownCourse
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     companion object {
-        fun newInstance(upCourse: String, downCourse: String): GroupScheduleFragment {
+        fun newInstance(): GroupScheduleFragment {
             val fragment = GroupScheduleFragment()
             val args = Bundle()
-            args.putString("upCourse", upCourse)
-            args.putString("downCourse", downCourse)
             fragment.arguments = args
             return fragment
         }

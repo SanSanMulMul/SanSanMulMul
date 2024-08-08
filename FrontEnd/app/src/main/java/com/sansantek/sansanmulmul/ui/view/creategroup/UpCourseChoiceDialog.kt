@@ -14,9 +14,9 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,11 +26,9 @@ import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.data.model.MountainCourse
 import com.sansantek.sansanmulmul.databinding.DialogGroupUpcourseChoiceBinding
 import com.sansantek.sansanmulmul.ui.adapter.CreateGroupCourseSelectAdapter
-import com.sansantek.sansanmulmul.ui.adapter.GroupCourceSearchListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.DividerItemDecorator
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
 import com.sansantek.sansanmulmul.ui.viewmodel.CreateGroupViewModel
-import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
 
 private const val TAG = "UpCourseChoiceDialog 싸피"
@@ -38,12 +36,10 @@ class UpCourseChoiceDialog(private val mountain: Mountain) : DialogFragment() {
 
     private var _binding: DialogGroupUpcourseChoiceBinding? = null
     private val binding get() = _binding!!
-    private var selectedLayout: View? = null
-    private var selectedUpCourse: String? = null
     private var courseList: MutableList<CourseDetail> = mutableListOf()
     private var adapter: CreateGroupCourseSelectAdapter = CreateGroupCourseSelectAdapter()
-    private val activityViewModel: MainActivityViewModel by viewModels()
-    private val viewModel: CreateGroupViewModel by viewModels()
+    private val viewModel: CreateGroupViewModel by activityViewModels()
+    private var selectedCourseId: Long = -1
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -74,10 +70,12 @@ class UpCourseChoiceDialog(private val mountain: Mountain) : DialogFragment() {
     }
 
     private fun initAdapter(){
+        viewModel.setGroupUpCourseId(-1)
+        viewModel.setGroupDownCourseId(-1)
         binding.rvUpCourse.adapter = adapter.apply {
             setItemClickListener(object: CreateGroupCourseSelectAdapter.ItemClickListener{
                 override fun onClick(courseDetail: CourseDetail) {
-                    viewModel.setGroupUpCourseId(courseDetail.courseId)
+                    selectedCourseId = courseDetail.courseId
                 }
             })
         }
@@ -131,10 +129,13 @@ class UpCourseChoiceDialog(private val mountain: Mountain) : DialogFragment() {
 
         // '다음' 버튼 클릭 이벤트 설정
         binding.btnNext.setOnClickListener {
+            if(selectedCourseId!=-1L){
+                viewModel.setGroupUpCourseId(selectedCourseId)
+            }
             // 선택된 코스를 저장하고 다음 동작 수행
-            if (viewModel.groupUpCourseId != -1L) {
+            if (viewModel.groupUpCourseId.value != -1L) {
                 dismiss()
-                showDownCourseChoiceDialog()
+                showDownCourseChoiceDialog(mountain)
             } else {
                 // 선택된 코스가 없을 경우 처리
                 // 예: 메시지 표시
@@ -142,8 +143,8 @@ class UpCourseChoiceDialog(private val mountain: Mountain) : DialogFragment() {
         }
     }
 
-    private fun showDownCourseChoiceDialog() {
-        val downCourseChoiceDialog = DownCourseChoiceDialog.newInstance()
+    private fun showDownCourseChoiceDialog(mountain:Mountain) {
+        val downCourseChoiceDialog = DownCourseChoiceDialog.newInstance(mountain)
         downCourseChoiceDialog.show(parentFragmentManager, "DownCourseChoiceDialog")
     }
 

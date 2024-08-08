@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.ui.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class CreateGroupViewModel : ViewModel() {
@@ -73,17 +74,31 @@ class CreateGroupViewModel : ViewModel() {
         _groupMountainId = groupMountainId
     }
 
-    private var _groupUpCourseId: Long = -1
-    val groupUpCourseId: Long
+    private var _groupUpCourseId: MutableLiveData<Long> = MutableLiveData(-1)
+    val groupUpCourseId: MutableLiveData<Long>
         get() = _groupUpCourseId
     fun setGroupUpCourseId(groupUpCourseId: Long){
-        _groupUpCourseId = groupUpCourseId
+        _groupUpCourseId.value = groupUpCourseId
     }
 
-    private var _groupDownCourseId: Long = -1
-    val groupDownCourseId: Long
+    private var _groupDownCourseId: MutableLiveData<Long> = MutableLiveData(-1)
+    val groupDownCourseId: MutableLiveData<Long>
         get() = _groupDownCourseId
     fun setGroupDownCourseId(groupDownCourseId: Long){
-        _groupDownCourseId = groupDownCourseId
+        _groupDownCourseId.value = groupDownCourseId
+    }
+
+    private var _groupUpCourseName: String = ""
+    val groupUpCourseName: String
+        get() = _groupUpCourseName
+    fun setGroupUpCourseName(groupUpCourseName: String){
+        _groupUpCourseName = groupUpCourseName
+    }
+
+    private var _groupDownCourseName: String = ""
+    val groupDownCourseName: String
+        get() = _groupDownCourseName
+    fun setGroupDownCourseName(groupDownCourseName: String){
+        _groupDownCourseName = groupDownCourseName
     }
 }

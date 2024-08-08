@@ -49,61 +49,37 @@ public class UserMountainController {
 
     @PostMapping("/{mountainId}")
     @Operation(summary = "회원 즐겨찾기 추가", description = "액세스 토큰을 사용해 회원 즐겨찾기 추가")
-    public ResponseEntity<Map<String, Object>> addLikedMountain
-            (Authentication authentication,
-             @PathVariable("mountainId") int mountainId) {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.ACCEPTED;
-
-
-
+    public ResponseEntity<String> addLikedMountain(
+            Authentication authentication,
+            @PathVariable("mountainId") int mountainId) {
         try {
             String userProviderId = authentication.getName();
-
             userMountainService.addLikedMountain(userProviderId, mountainId);
-            resultMap.put("message", "산 즐겨찾기 성공");
-            status = HttpStatus.OK;
-
+            return new ResponseEntity<>("산 즐겨찾기 성공", HttpStatus.OK);
         } catch (InvalidTokenException e) {
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
-            resultMap.put("error", "Invalid or expired token");
-            status = HttpStatus.UNAUTHORIZED;
+            return new ResponseEntity<>("Invalid or expired token", HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             log.error("회원 즐겨찾기 추가 실패: {}", e.getMessage());
-            resultMap.put("error", "An unexpected error occurred");
-            status = HttpStatus.BAD_REQUEST;
+            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<>(resultMap, status);
     }
 
     @DeleteMapping("/{mountainId}")
     @Operation(summary = "회원 즐겨찾기 삭제", description = "액세스 토큰을 사용해 회원 즐겨찾기 삭제")
-    public ResponseEntity<Map<String, Object>> removeLikedMountain
-            (Authentication authentication,
-             @PathVariable("mountainId") int mountainId) {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.ACCEPTED;
-
-
-
+    public ResponseEntity<String> removeLikedMountain(
+            Authentication authentication,
+            @PathVariable("mountainId") int mountainId) {
         try {
-            
             String userProviderId = authentication.getName();
             userMountainService.removeLikedMountain(userProviderId, mountainId);
-            resultMap.put("message", "즐겨찾기 제거");
-            status = HttpStatus.OK;
-
+            return new ResponseEntity<>("즐겨찾기 제거", HttpStatus.OK);
         } catch (InvalidTokenException e) {
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
-            resultMap.put("error", "Invalid or expired token");
-            status = HttpStatus.UNAUTHORIZED;
+            return new ResponseEntity<>("Invalid or expired token", HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             log.error("회원 즐겨찾기 삭제 실패: {}", e.getMessage());
-            resultMap.put("error", "An unexpected error occurred");
-            status = HttpStatus.BAD_REQUEST;
+            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<>(resultMap, status);
     }
 }

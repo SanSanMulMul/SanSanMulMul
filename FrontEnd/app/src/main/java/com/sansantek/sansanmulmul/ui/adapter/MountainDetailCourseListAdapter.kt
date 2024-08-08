@@ -21,6 +21,7 @@ class MountainDetailCourseListAdapter(
 
   interface OnItemClickListener {
     fun onItemClick(course: CourseDetail)
+    fun onCourseInfoBtnClick(course: CourseDetail)
   }
 
   companion object Comparator : DiffUtil.ItemCallback<CourseDetail>() {
@@ -41,7 +42,7 @@ class MountainDetailCourseListAdapter(
       Log.d(TAG, "bindInfo: $item")
       binding.tvDifficulty.text = item.courseLevel
       binding.tvCourseName.text = item.courseName
-      binding.tvDistance.text = "총" + item.courseLength + "km"
+      binding.tvDistance.text = "총 " + item.courseLength + " km"
       binding.tvDifficulty.also {
         if (it.text == "HARD") {
           it.text = "어려움"
@@ -55,6 +56,10 @@ class MountainDetailCourseListAdapter(
         }
       }
       binding.root.setOnClickListener { itemClickListener.onItemClick(item) }
+      binding.btnCourseInfo.setOnClickListener {
+        Log.d(TAG, "bindInfo: ${item.courseName} 클릭!")
+        itemClickListener.onCourseInfoBtnClick(item)
+      }
     }
   }
 

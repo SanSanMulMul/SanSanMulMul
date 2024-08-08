@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -115,20 +114,12 @@ class MountainDetailTabSecondCourseFragment :
         val trackPaths =
             course.tracks[0].trackPaths.map { LatLng(it.trackPathLat, it.trackPathLon) }
 
-        val polylineOutLine = PolylineOverlay().apply {
-            map = null
-            coords = trackPaths
-            color = resources.getColor(R.color.white, null)
-            width = 70
-            zIndex = 0
-        }
-        polylineOutLine.map = naverMap
 
         val polyline = PolylineOverlay().apply {
             map = null
             coords = trackPaths
             color = resources.getColor(R.color.group_detail_second_tab_temperature_min_color, null)
-            width = 30
+            width = 20
             zIndex = 1
         }
         polyline.map = naverMap
@@ -183,7 +174,7 @@ class MountainDetailTabSecondCourseFragment :
                 if (selectedChips.contains("ALL")) {
                     selectedChips = listOf("ALL")
                 }
-                Toast.makeText(context, "$selectedChips", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "$selectedChips", Toast.LENGTH_SHORT).show()
                 filterCourses(selectedChips)
             } else {
                 filterCourses(listOf())

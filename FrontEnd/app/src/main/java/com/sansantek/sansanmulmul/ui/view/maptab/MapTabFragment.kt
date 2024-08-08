@@ -5,7 +5,11 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -35,8 +39,10 @@ import com.sansantek.sansanmulmul.databinding.FragmentMapTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.BottomSheetMountainListAdapter
 import com.sansantek.sansanmulmul.ui.util.PermissionChecker
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
+import com.sansantek.sansanmulmul.ui.view.hometab.MountainSearchResultFragment
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
+import com.sansantek.sansanmulmul.ui.viewmodel.MountainSearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -57,6 +63,8 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     private lateinit var mountainList: List<Mountain>
     private lateinit var mountainCourseInfo: List<MountainCourse>
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
+    private lateinit var searchEditTextView: EditText
+    private val searchViewModel: MountainSearchViewModel by activityViewModels()
 
     // 권한 코드
     private val LOCATION_PERMISSION_REQUEST_CODE = 5000
@@ -87,6 +95,7 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         }
         init()
 //        onMapReady(naverMap)
+        searchMountain()
 
     }
 
@@ -95,6 +104,27 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         if (this::naverMap.isInitialized) {
             fetchMountainListAndUpdateLocation()
         }
+    }
+
+    private fun searchMountain() {
+        searchEditTextView = binding.layoutSearchMountain.etSearchMountain
+
+        // 검색 완료 시 프래그먼트 이동
+        searchEditTextView.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE ||
+                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
+            ) {
+                val mountainSearchResultFragment = MountainSearchResultFragment()
+                val searchKeyword = searchEditTextView.text.toString()
+                searchViewModel.setSearchKeyword(searchKeyword)
+
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.fragment_view, mountainSearchResultFragment).commit()
+                return@OnEditorActionListener true
+            }
+            false
+        })
     }
 
     private fun init() {

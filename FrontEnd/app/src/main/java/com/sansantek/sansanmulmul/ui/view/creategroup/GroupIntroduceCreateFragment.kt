@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentGroupIntroduceCreateBinding
 import com.sansantek.sansanmulmul.ui.view.register.GroupCreateViewPagerFragment
-import com.sansantek.sansanmulmul.ui.view.register.ViewPagerFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.CreateGroupViewModel
 
 private const val TAG = "GroupIntroduceCreateFragment_싸피"
@@ -20,7 +19,7 @@ class GroupIntroduceCreateFragment : BaseFragment<FragmentGroupIntroduceCreateBi
     private val viewPagerFragment by lazy {
         parentFragment as GroupCreateViewPagerFragment
     }
-    private val viewModel : CreateGroupViewModel by viewModels()
+    private val viewModel : CreateGroupViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

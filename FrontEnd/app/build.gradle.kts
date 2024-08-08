@@ -69,7 +69,7 @@ android {
 }
 
 dependencies {
-  implementation ("com.github.Kunzisoft:Android-SwitchDateTimePicker:2.1")
+  implementation("com.github.Kunzisoft:Android-SwitchDateTimePicker:2.1")
 
   //Room 의존성 추가
   implementation(libs.androidx.room.runtime)

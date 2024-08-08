@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlin.math.min
 
 class CreateGroupViewModel : ViewModel() {
     private var _groupTitle: String = ""
@@ -15,14 +16,21 @@ class CreateGroupViewModel : ViewModel() {
     val groupDescription: String
         get() = _groupDescription
     fun setGroupDescription(description: String){
-        _groupTitle = description
+        _groupDescription = description
     }
 
     private var _maxMember: Int = -1
     val maxMember: Int
         get() = _maxMember
     fun setMaxMember(maxMember: Int){
-        _maxMember = maxMember
+        _maxMember = min(maxMember, 10)
+    }
+
+    private var _crewStyle: MutableLiveData<List<Int>> = MutableLiveData(mutableListOf())
+    val crewStyle: MutableLiveData<List<Int>>
+        get() = _crewStyle
+    fun setCrewStyle(newStyle: List<Int>){
+        _crewStyle.value = newStyle
     }
 
     private var _groupGender: String = "A"
@@ -100,5 +108,19 @@ class CreateGroupViewModel : ViewModel() {
         get() = _groupDownCourseName
     fun setGroupDownCourseName(groupDownCourseName: String){
         _groupDownCourseName = groupDownCourseName
+    }
+
+    private var _startDate: MutableLiveData<String> = MutableLiveData("")
+    val startDate: MutableLiveData<String>
+        get() = _startDate
+    fun setStartDate(startDate: String){
+        _startDate.value = startDate
+    }
+
+    private var _endDate: MutableLiveData<String> = MutableLiveData("")
+    val endDate: MutableLiveData<String>
+        get() = _endDate
+    fun setEndDate(endDate: String){
+        _endDate.value = endDate
     }
 }

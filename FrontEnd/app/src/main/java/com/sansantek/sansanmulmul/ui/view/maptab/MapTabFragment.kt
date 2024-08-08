@@ -90,6 +90,7 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     override fun onResume() {
         super.onResume()
         if (this::naverMap.isInitialized) {
+            fetchMountainListAndUpdateLocation()
         }
     }
 
@@ -187,35 +188,39 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     override fun onMapReady(naverMap: NaverMap) {
         Log.d(TAG, "onMapReady: 실행 중")
         this.naverMap = naverMap
-        initLocationSource()
-        Log.d(TAG, "onMapReady: 마지막 위치 ${locationSource.lastLocation}")
+        if(isAdded){
+            initLocationSource()
+            Log.d(TAG, "onMapReady: 마지막 위치 ${locationSource.lastLocation}")
 
-        // 위치 추적 모드 설정
-        naverMap.locationTrackingMode = LocationTrackingMode.Follow
+            // 위치 추적 모드 설정
+            naverMap.locationTrackingMode = LocationTrackingMode.Follow
 
-        // 위치 버튼 활성화
-        naverMap.uiSettings.isLocationButtonEnabled = true
+            // 위치 버튼 활성화
+            naverMap.uiSettings.isLocationButtonEnabled = true
 
-        // 줌 버튼 비활성화
-        val uiSettings: UiSettings = naverMap.uiSettings
-        uiSettings.isZoomControlEnabled = false
+            // 줌 버튼 비활성화
+            val uiSettings: UiSettings = naverMap.uiSettings
+            uiSettings.isZoomControlEnabled = false
 
-        // 기본 카메라 위치 설정
-        naverMap.moveCamera(CameraUpdate.zoomTo(10.0))
+            // 기본 카메라 위치 설정
+            naverMap.moveCamera(CameraUpdate.zoomTo(10.0))
 
-        requestLocationUpdates()
+            requestLocationUpdates()
+        }
     }
 
     private fun requestLocationUpdates() {
         locationSource.activate { provider ->
-            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return@activate
-            }
-            locationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    updateLocation(location)
-                } else {
-                    Log.d(TAG, "requestLocationUpdates: 위치 정보를 가져올 수 없습니다.")
+            activity?.let {
+                if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return@activate
+                }
+                locationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                    if (location != null) {
+                        updateLocation(location)
+                    } else {
+                        Log.d(TAG, "requestLocationUpdates: 위치 정보를 가져올 수 없습니다.")
+                    }
                 }
             }
         }
@@ -235,9 +240,11 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
 
     private fun showNearbyMountains(location: Location) {
         // mountainList가 초기화되었는지 확인
-        if (!::mountainList.isInitialized) {
+        if (!::mountainList.isInitialized || activity == null) {
             Log.e(TAG, "mountainList가 초기화되지 않았습니다.")
+            fetchMountainListAndUpdateLocation()
         } else {
+
             // 현재 위치를 가져옴
             val currentLocation = locationSource.lastLocation ?: return
 
@@ -250,7 +257,6 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
                 distance <= 50 // 50km 이내에 있는 산 필터링
             }
 
-            // 마운틴 리스트가 초기화되었는지 확인하고 초기화되었으면 아래 로직을 실행
             nearbyMountains.forEach { mountain ->
                 val marker = Marker().apply {
                     position = LatLng(mountain.mountainLat, mountain.mountainLon)
@@ -284,11 +290,12 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
                     true
                 }
             }
+
             Log.d(TAG, "showNearbyMountains: $nearbyMountains")
 
             // 코스 수 받아오기
             val nearbyMountainIds = nearbyMountains.map { it.mountainId }
-            lifecycleScope.launch {
+            viewLifecycleOwner.lifecycleScope.launch {
                 val mountainCourse = mutableMapOf<Int, MountainCourse>()
                 nearbyMountainIds.forEach { mountainId ->
                     try {
@@ -310,7 +317,40 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
                     }
                 }
                 val mountains = initMountainData(nearbyMountains, mountainCourse)
-                initMountainListRecyclerView(mountains)
+                safeCall{
+                    initMountainListRecyclerView(mountains)
+                }
+            }
+
+        }
+    }
+
+
+    private fun fetchMountainListAndUpdateLocation() {
+        if(isAdded){
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+                lifecycleScope.launch {
+                    try {
+                        // 산 리스트를 가져와서 초기화
+                        mountainList = mountainService.getMountainList()
+
+                        // 위치 정보를 가져와서 업데이트
+                        locationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                            if (location != null) {
+                                updateLocation(location)
+                            } else {
+                                Log.d(TAG, "fetchMountainListAndUpdateLocation: 위치 정보를 가져올 수 없습니다.")
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "fetchMountainListAndUpdateLocation: 산 리스트를 가져오는 중 오류 발생", e)
+                    }
+                }
+            } else {
+                Log.e(TAG, "fetchMountainListAndUpdateLocation: 위치 권한이 없습니다.")
+                // 필요한 경우 권한 요청 코드를 추가할 수 있음
             }
         }
     }

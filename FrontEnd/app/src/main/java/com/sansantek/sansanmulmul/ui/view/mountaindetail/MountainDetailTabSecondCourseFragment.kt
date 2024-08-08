@@ -1,34 +1,71 @@
 package com.sansantek.sansanmulmul.ui.view.mountaindetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
-import com.sansantek.sansanmulmul.data.model.Course
+import com.sansantek.sansanmulmul.data.model.CourseDetail
 import com.sansantek.sansanmulmul.databinding.FragmentMountainDetailTabSecondCourseBinding
 import com.sansantek.sansanmulmul.ui.adapter.MountainDetailCourseListAdapter
 import com.sansantek.sansanmulmul.ui.view.coursedetail.CourseDetailFragment
+import com.sansantek.sansanmulmul.ui.viewmodel.CourseDetailViewModel
+import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
 
-private const val TAG = "산산물물_MountainDetailTabSecond"
+private const val TAG = "싸피_MountainDetailTabSecond"
 
 class MountainDetailTabSecondCourseFragment :
   BaseFragment<FragmentMountainDetailTabSecondCourseBinding>(
     FragmentMountainDetailTabSecondCourseBinding::bind,
     R.layout.fragment_mountain_detail_tab_second_course
   ) {
+  private lateinit var courseList: MutableList<CourseDetail>
+  private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
+  private val courseDetailViewModel: CourseDetailViewModel by activityViewModels()
+  private lateinit var courseListAdapter: MountainDetailCourseListAdapter
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     init()
   }
 
   private fun init() {
 //    initCourseDifficultyChipGroup()
-    initCourseRecyclerView()
 
+    var mountainId = mountainDetailViewModel.mountainID.value
+    courseList = mutableListOf()
+
+    mountainDetailViewModel.mountainID.observe(viewLifecycleOwner) {
+      mountainId = it
+    }
+
+    mountainDetailViewModel.mountainCourse.observe(viewLifecycleOwner) { mountainCourse ->
+      if (mountainCourse != null) {
+        mountainCourse.courseIds.forEach { courseId ->
+          mountainId?.let { courseDetailViewModel.fetchCourseDetail(it, courseId) }
+        }
+      } else {
+        Log.d(TAG, "initCourseData: mountain course 비었음")
+      }
+    }
+
+    courseDetailViewModel.courseDetail.observe(viewLifecycleOwner) { courseDetail ->
+      if (courseDetail != null) {
+        courseList.add(courseDetail)
+        courseListAdapter.submitList(courseList.toList())
+        Log.d(TAG, "initCourseData: $courseDetail")
+      } else {
+        Log.d(TAG, "initCourseData: course detail 없음")
+      }
+    }
+
+    initCourseRecyclerView()
   }
+
 
   private fun initCourseDifficultyChipGroup() {
     binding.cgCourseDifficulty.setOnCheckedStateChangeListener { group, checkedIds ->
@@ -58,12 +95,11 @@ class MountainDetailTabSecondCourseFragment :
   }
 
   private fun initCourseRecyclerView() {
-    val courseList = initCourseData()
     val courseRecyclerView = binding.rvMountainDetailCourses
-    val courseListAdapter = MountainDetailCourseListAdapter(
-      courseList,
+
+    courseListAdapter = MountainDetailCourseListAdapter(
       object : MountainDetailCourseListAdapter.OnItemClickListener {
-        override fun onItemClick(course: Course) {
+        override fun onItemClick(course: CourseDetail) {
           requireActivity().supportFragmentManager.beginTransaction()
             .addToBackStack(null)
             .replace(R.id.fragment_view, CourseDetailFragment()).commit()
@@ -73,31 +109,20 @@ class MountainDetailTabSecondCourseFragment :
     courseRecyclerView.layoutManager = LinearLayoutManager(context)
     courseRecyclerView.adapter = courseListAdapter
 
-//    courseRecyclerView.setOnTouchListener { v, event ->
-//      v.parent.requestDisallowInterceptTouchEvent(true)
-//      false
-//    }
-
     val dividerDrawable = activity?.getDrawable(R.drawable.recyclerview_divider_lightgray)
     val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
     if (dividerDrawable != null) dividerItemDecoration.setDrawable(dividerDrawable)
     courseRecyclerView.addItemDecoration(dividerItemDecoration)
   }
 
-  private fun initCourseData(): List<Course> {
-    return listOf(
-      Course("가야산코스1", "어려움", "출발지1", "목적지1", 4.0),
-      Course("가야산코스2", "보통", "출발지2", "목적지2", 2.5),
-      Course("가야산코스3", "쉬움", "출발지3", "목적지3", 3.0),
-      Course("가야산코스4", "어려움", "출발지4", "목적지4", 6.0),
-    )
+  override fun onPause() {
+    super.onPause()
+    courseList.clear()
   }
 
-  companion object {
-    const val DIFFICULTY_ALL = 0
-    const val DIFFICULTY_EASY = 1
-    const val DIFFICULTY_MEDIUM = 2
-    const val DIFFICULTY_HARD = 3
+  override fun onResume() {
+    super.onResume()
+    courseList.clear()
   }
 
 }

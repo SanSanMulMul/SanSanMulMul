@@ -8,8 +8,8 @@ import com.sansantek.sansanmulmul.data.local.entity.StepCount
 
 @Dao
 interface StepCounterDao {
-    @Query("select * from StepCounter where day = (:day) and month = (:month) and year = (:year) and status = (:status)")
-    suspend fun getStep(year: Int, month: Int, day: Int, status: String): StepCount?
+    @Query("select * from StepCounter where day = (:day) and month = (:month) and year = (:year)")
+    suspend fun getStep(year: Int, month: Int, day: Int): StepCount?
 
     @Insert
     suspend fun insertStep(stepCount: StepCount)

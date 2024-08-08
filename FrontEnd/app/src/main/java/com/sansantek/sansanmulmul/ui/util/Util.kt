@@ -2,8 +2,11 @@ package com.sansantek.sansanmulmul.ui.util
 
 import android.content.Context
 import android.content.res.Resources
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
+import android.provider.MediaStore
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
@@ -156,6 +159,17 @@ object Util {
         result.add(HIKINGSTYLE[it])
       }
       return result
+  }
+
+  fun getRealPathFromURI(context: Context, contentUri: Uri): String? {
+    val projection = arrayOf(MediaStore.Images.Media.DATA)
+    val cursor: Cursor? = context.contentResolver.query(contentUri, projection, null, null, null)
+    cursor?.use {
+      val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+      it.moveToFirst()
+      return it.getString(columnIndex)
+    }
+    return null
   }
 
 }

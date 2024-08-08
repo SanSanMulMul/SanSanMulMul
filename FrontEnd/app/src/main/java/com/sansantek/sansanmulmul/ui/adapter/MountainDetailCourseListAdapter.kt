@@ -1,38 +1,56 @@
 package com.sansantek.sansanmulmul.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sansantek.sansanmulmul.R
-import com.sansantek.sansanmulmul.data.model.Course
+import com.sansantek.sansanmulmul.data.model.CourseDetail
 import com.sansantek.sansanmulmul.databinding.ItemMountainDetailCourseBinding
 
+private const val TAG = "싸피_MountainDetailCourseLis"
+
 class MountainDetailCourseListAdapter(
-  private val courseList: List<Course>,
   private val itemClickListener: OnItemClickListener
 ) :
-  RecyclerView.Adapter<MountainDetailCourseListAdapter.MountainDetailCourseViewHolder>() {
+  ListAdapter<CourseDetail, MountainDetailCourseListAdapter.MountainDetailCourseViewHolder>(
+    Comparator
+  ) {
 
   interface OnItemClickListener {
-    fun onItemClick(course: Course)
+    fun onItemClick(course: CourseDetail)
+  }
+
+  companion object Comparator : DiffUtil.ItemCallback<CourseDetail>() {
+    override fun areItemsTheSame(oldItem: CourseDetail, newItem: CourseDetail): Boolean {
+      return System.identityHashCode(oldItem) == System.identityHashCode(newItem)
+    }
+
+    override fun areContentsTheSame(oldItem: CourseDetail, newItem: CourseDetail): Boolean {
+      return oldItem == newItem
+    }
   }
 
   inner class MountainDetailCourseViewHolder(private val binding: ItemMountainDetailCourseBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bindInfo(position: Int) {
-      val item = courseList[position]
-      binding.tvDifficulty.text = item.difficulty
-      binding.tvCourseName.text = item.courseName
-      binding.tvStart.text = item.start
-      binding.tvEnd.text = item.end
-      binding.tvDistance.text = "총" + item.distance + "km"
 
+    fun bindInfo(position: Int) {
+      val item = getItem(position)
+      Log.d(TAG, "bindInfo: $item")
+      binding.tvDifficulty.text = item.courseLevel
+      binding.tvCourseName.text = item.courseName
+      binding.tvDistance.text = "총" + item.courseLength + "km"
       binding.tvDifficulty.also {
-        if (it.text == "어려움") {
+        if (it.text == "HARD") {
+          it.text = "어려움"
           it.setBackgroundResource(R.drawable.rounded_difficulty_hard_circle)
-        } else if (it.text == "보통") {
+        } else if (it.text == "MEDIUM") {
+          it.text = "보통"
           it.setBackgroundResource(R.drawable.rounded_difficulty_medium_circle)
-        } else if (it.text == "쉬움") {
+        } else if (it.text == "EASY") {
+          it.text = "쉬움"
           it.setBackgroundResource(R.drawable.rounded_difficulty_easy_circle)
         }
       }
@@ -56,7 +74,5 @@ class MountainDetailCourseListAdapter(
   override fun onBindViewHolder(holder: MountainDetailCourseViewHolder, position: Int) {
     holder.bindInfo(position)
   }
-
-  override fun getItemCount() = courseList.size
 
 }

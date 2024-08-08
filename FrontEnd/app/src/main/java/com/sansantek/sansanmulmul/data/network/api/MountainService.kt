@@ -34,8 +34,25 @@ interface MountainService {
 
     // 산 코스 조회
     @GET("mountain/{mountainId}/course")
-    suspend fun getMountainCourse(@Path("mountainId") id: Int): MountainCourse
+    suspend fun getMountainCourse(@Path("mountainId") id: Int): Response<MountainCourse>
 
     @GET("/mountain/like")
     suspend fun getLikedMountainList(@Header("Authorization") accessToken: String) : Response<List<Mountain>>
+
+    // 산 추천 (봄)
+    @GET("mountain/recommend/spring")
+    suspend fun getMountainSpring(): List<Mountain>
+
+    // 산 추천 (여름)
+    @GET("mountain/recommend/summer")
+    suspend fun getMountainSummer(): List<Mountain>
+
+    // 산 추천 (가을)
+    @GET("mountain/recommend/fall")
+    suspend fun getMountainFall(): List<Mountain>
+
+    // 산 추천 (겨울)
+    @GET("mountain/recommend/winter")
+    suspend fun getMountainWinter(): List<Mountain>
+
 }

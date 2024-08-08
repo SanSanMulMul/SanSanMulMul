@@ -162,7 +162,8 @@ public class CrewService {
         User leader = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         //산
-        Mountain mountain = mountainRepository.findByMountainId(request.getMountainId());
+        Mountain mountain = mountainRepository.findByMountainId(request.getMountainId())
+                .orElseThrow(() -> new RuntimeException("해당 산을 찾을 수 없습니다."));
 
         //코스 (상행, 하행)
         Course upCourse = courseRepository.findByCourseId(request.getUpCourseId());

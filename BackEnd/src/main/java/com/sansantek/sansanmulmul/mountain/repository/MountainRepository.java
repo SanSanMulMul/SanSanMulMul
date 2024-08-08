@@ -5,12 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MountainRepository extends JpaRepository<Mountain, Integer> {
     List<Mountain> findByMountainNameContaining(String name);
 
-    Mountain findByMountainId(int mountainId);
+    Optional<Mountain> findByMountainId(int mountainId);
     Mountain findByMountainName(String mountainName);
     Mountain findByMountainCode(int mountainCode);
 

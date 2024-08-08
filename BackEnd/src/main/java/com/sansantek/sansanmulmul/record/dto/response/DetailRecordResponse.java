@@ -2,18 +2,17 @@ package com.sansantek.sansanmulmul.record.dto.response;
 
 import com.sansantek.sansanmulmul.crew.dto.response.CrewUserResponse;
 import com.sansantek.sansanmulmul.mountain.domain.course.Course;
-import com.sansantek.sansanmulmul.mountain.domain.course.Track;
-import com.sansantek.sansanmulmul.mountain.domain.course.TrackPath;
-import com.sansantek.sansanmulmul.mountain.dto.response.CourseResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Getter
@@ -37,9 +36,9 @@ public class DetailRecordResponse {
     @Schema(description = "하행 코스 길이(단위: m)", example = "1.23")
     private double downCourseLength;
     @Schema(description = "상행 코스 좌표", example = "trackpaths(고유번호, 위도, 경도)")
-    private Course upCourseTrackPaths; // TrackPathRepository 써야함
+    private List<Map<String, Object>>  upCourseTrackPaths = new ArrayList<>(); // TrackPathRepository 써야함
     @Schema(description = "하행 코스 좌표", example = "trackpaths(고유번호, 위도, 경도)")
-    private Course downCourseTrackPaths;
+    private List<Map<String, Object>>  downCourseTrackPaths = new ArrayList<>();
 
     // 참여 멤버(프로필, 닉네임)
     @Schema(description = "등산 참여 멤버 정보", example = "members(id, 이름, 닉네임, 성별, 프로필, 칭호)")

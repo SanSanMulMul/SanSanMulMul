@@ -107,4 +107,7 @@ public class BadgeService {
         // 업데이트한 회원 저장
         userRepository.save(user);
     }
+
+    public void chkBadge(int userId, int crewId) {
+    }
 }

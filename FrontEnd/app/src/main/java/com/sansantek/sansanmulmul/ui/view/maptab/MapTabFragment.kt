@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +36,7 @@ import com.sansantek.sansanmulmul.ui.adapter.BottomSheetMountainListAdapter
 import com.sansantek.sansanmulmul.ui.util.PermissionChecker
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
+import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -54,6 +56,7 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     private lateinit var locationClient: FusedLocationProviderClient
     private lateinit var mountainList: List<Mountain>
     private lateinit var mountainCourseInfo: List<MountainCourse>
+    private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
 
     // 권한 코드
     private val LOCATION_PERMISSION_REQUEST_CODE = 5000
@@ -97,6 +100,10 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     private fun init() {
         activity?.let { hideBottomNav(it.findViewById(R.id.main_layout_bottom_navigation), false) }
         initBottomSheet()
+        val dividerDrawable = activity?.getDrawable(R.drawable.recyclerview_divider_lightgray)
+        val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        if (dividerDrawable != null) dividerItemDecoration.setDrawable(dividerDrawable)
+        binding.rvBottomSheetMountain.addItemDecoration(dividerItemDecoration)
         requestPermissions()
     }
 
@@ -111,6 +118,8 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
             mountainList,
             object : BottomSheetMountainListAdapter.OnItemClickListener {
                 override fun onItemClick(mountain: SearchMountainListItem) {
+                    mountainDetailViewModel.setMountainID(mountain.mountainId)
+
                     requireActivity().supportFragmentManager.beginTransaction().addToBackStack(null)
                         .replace(R.id.fragment_view, MountainDetailFragment()).commit()
                 }
@@ -120,10 +129,8 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         mountainRecyclerView.layoutManager = LinearLayoutManager(context)
         mountainRecyclerView.adapter = mountainListAdapter
 
-        val dividerDrawable = activity?.getDrawable(R.drawable.recyclerview_divider_lightgray)
-        val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        if (dividerDrawable != null) dividerItemDecoration.setDrawable(dividerDrawable)
-        mountainRecyclerView.addItemDecoration(dividerItemDecoration)
+
+
     }
 
 
@@ -131,9 +138,10 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         return nearbyMountains.map { mountainDto ->
             val courseCount = mountainCourses[mountainDto.mountainId]?.courseCount ?: 0
             SearchMountainListItem(
-                mountainDto.mountainImg,
-                mountainDto.mountainName,
-                courseCount // 코스 수 추가
+                mountainId = mountainDto.mountainId,
+                mountainImg = mountainDto.mountainImg,
+                mountainName = mountainDto.mountainName,
+                courseCnt = courseCount // 코스 수 추가
             )
         }
     }
@@ -239,15 +247,23 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     }
 
     private fun showNearbyMountains(location: Location) {
+        Log.d(TAG, "showNearbyMountains: 메서드 호출됨")
+        // Fragment의 뷰가 아직 존재하는지 확인
+        if (view == null || !isAdded) {
+            Log.e(TAG, "Fragment의 뷰가 존재하지 않거나 추가되지 않았습니다.")
+            return
+        }
+
         // mountainList가 초기화되었는지 확인
         if (!::mountainList.isInitialized || activity == null) {
-            Log.e(TAG, "mountainList가 초기화되지 않았습니다.")
+            Log.d(TAG, "mountainList가 초기화되지 않았습니다.")
             fetchMountainListAndUpdateLocation()
         } else {
-
+            Log.d(TAG, "mountainList : ${mountainList}")
             // 현재 위치를 가져옴
-            val currentLocation = locationSource.lastLocation ?: return
-
+            Log.d(TAG, "showNearbyMountains: ${locationSource.lastLocation}")
+            val currentLocation = locationSource.lastLocation ?: location
+            
             val currentLat = currentLocation.latitude
             val currentLon = currentLocation.longitude
 
@@ -256,8 +272,15 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
                 val distance = calculateDistance(currentLat, currentLon, mountain.mountainLat, mountain.mountainLon)
                 distance <= 50 // 50km 이내에 있는 산 필터링
             }
+            Log.d(TAG, "필터 산 : ${nearbyMountains}")
+
+            if (nearbyMountains.isEmpty()) {
+                Log.d(TAG, "50km 이내에 산이 없습니다.")
+                return
+            }
 
             nearbyMountains.forEach { mountain ->
+                Log.d(TAG, "마커 추가: ${mountain.mountainName} at (${mountain.mountainLat}, ${mountain.mountainLon})")
                 val marker = Marker().apply {
                     position = LatLng(mountain.mountainLat, mountain.mountainLon)
                     map = naverMap

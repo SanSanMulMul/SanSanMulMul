@@ -17,7 +17,7 @@
       app:contentScrim="#FF6B60"
       app:expandedTitleGravity="center"
       app:layout_scrollFlags="scroll|exitUntilCollapsed"
-      app:title="collapse test">
+      >
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

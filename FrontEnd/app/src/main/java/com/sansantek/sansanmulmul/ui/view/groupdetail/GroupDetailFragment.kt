@@ -21,6 +21,7 @@ import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.Alarm
+import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.databinding.FragmentGroupDetailBinding
 import com.sansantek.sansanmulmul.databinding.PopupGroupDetailDrawerBinding
 import com.sansantek.sansanmulmul.databinding.PopupGroupDetailNotiBinding
@@ -29,12 +30,16 @@ import com.sansantek.sansanmulmul.ui.adapter.GroupDetailDrawerListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.DividerItemDecorator
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.view.groupchat.GroupChatFragment
-import com.sansantek.sansanmulmul.ui.view.register.GroupCreateViewPagerFragment
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 private const val TAG = "GroupTabFragment 싸피"
 
-class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
+class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDetailBinding>(
   FragmentGroupDetailBinding::bind,
   R.layout.fragment_group_detail
 ) {
@@ -45,26 +50,36 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         popupShow = false
-        changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment())
+
+        binding.tvGroupTitle.text = crew.crewName
+        val startDate =  formatToCustomPattern(crew.crewStartDate)
+        val endDate = formatToCustomPattern(crew.crewEndDate)
+        binding.tvGroupSchedule.text = "$startDate - $endDate"
+        binding.tvGroupPerson.text = "${crew.crewCurrentMembers} / ${crew.crewMaxMembers}"
+
+
+
+
+        changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment(crew))
         binding.layoutTab.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 Log.d(TAG, "onTabSelected: ${tab?.position}")
                 when (tab?.position) {
                      0 -> {
                         Log.d(TAG, "onTabSelected: groupInfoTab")
-                         changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment())
+                         changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment(crew))
                     }
                     1 -> {
                         Log.d(TAG, "onTabSelected: hikingInfoTab")
-                        changeGroupDetailFragmentView(GroupDetailTabSecondHikingInfoFragment())
+                        changeGroupDetailFragmentView(GroupDetailTabSecondHikingInfoFragment(crew))
                     }
                     2 -> {
                         Log.d(TAG, "onTabSelected: galleryTab")
-                        changeGroupDetailFragmentView(GroupDetailTabThirdGalleryInfoFragment())
+                        changeGroupDetailFragmentView(GroupDetailTabThirdGalleryInfoFragment(crew))
                     }
                     else -> {
                         Log.d(TAG, "onTabSelected: else")
-                        changeGroupDetailFragmentView(GroupDetailTabThirdGalleryInfoFragment())
+                        changeGroupDetailFragmentView(GroupDetailTabThirdGalleryInfoFragment(crew))
                     }
                 }
             }
@@ -255,4 +270,17 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
       displayMetrics.heightPixels
     }
   }
+
+    private fun formatToCustomPattern(isoDateTime: String): String {
+        // ISO 8601 형식의 문자열을 ZonedDateTime으로 파싱
+        val localDateTime = LocalDateTime.parse(isoDateTime, DateTimeFormatter.ISO_DATE_TIME)
+
+        // 원하는 형식으로 변환
+        val formattedDate = localDateTime.format(DateTimeFormatter.ofPattern("yy.MM.dd"))
+        val dayOfWeek = localDateTime.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN)
+        val time = localDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+        // 최종 포맷팅된 문자열 반환
+        return "$formattedDate($dayOfWeek) $time"
+    }
 }

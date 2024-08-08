@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.Const.Companion.HIKINGSTYLE
+import com.sansantek.sansanmulmul.config.Const.Companion.HikingBackgroundTintList
 import com.sansantek.sansanmulmul.data.model.HikingStyle
 import com.sansantek.sansanmulmul.databinding.ListGroupHikingStyleBinding
 
@@ -30,18 +31,9 @@ class GroupHikingStyleListAdapter():
         RecyclerView.ViewHolder(binding.root) {
 
         fun bindInfo(position: Int) {
-            val selectedBackgroundTintList = listOf(
-                ContextCompat.getColorStateList(binding.root.context, android.R.color.transparent),
-                ContextCompat.getColorStateList(binding.root.context, R.color.pink),
-                ContextCompat.getColorStateList(binding.root.context, R.color.light_green),
-                ContextCompat.getColorStateList(binding.root.context, R.color.light_blue),
-                ContextCompat.getColorStateList(binding.root.context, R.color.light_purple),
-                ContextCompat.getColorStateList(binding.root.context, R.color.orange),
-                ContextCompat.getColorStateList(binding.root.context, R.color.light_yellow),
-            )
             val item = getItem(position)
             binding.tvHikingStyle.text = HIKINGSTYLE[item]
-            binding.tvHikingStyle.backgroundTintList = selectedBackgroundTintList[item]
+            binding.tvHikingStyle.backgroundTintList = ContextCompat.getColorStateList(binding.root.context, HikingBackgroundTintList[position])
         }
     }
 

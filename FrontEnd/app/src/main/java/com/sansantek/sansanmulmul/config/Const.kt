@@ -1,5 +1,8 @@
 package com.sansantek.sansanmulmul.config
 
+import androidx.core.content.ContextCompat
+import com.sansantek.sansanmulmul.R
+
 class Const {
     companion object {
         // Hiking Recording
@@ -21,5 +24,15 @@ class Const {
         const val HIKINGSTYLESIZE = 6
         val HIKINGSTYLE = arrayListOf("", "설렁설렁", "열정열정", "등산은 식후경", "등산은 사진", "소심이", "괄괄이")
         val TITLE = arrayListOf("","👶 등린이", "🏃‍♂️ 엄홍길", "🦺 셰르파", "🌋 한라산 정복자", "🏞 지리산 정복자", "🏔 설악산 정복자", "🗻 무등산 정복자", "🛤 계룡산 정복자", "🧭 5대 명산 정복자", "🗺 영남 회장", "✈️ 1000", "🚀 10000", "⚡ 전국구", "🐿 낟다람쥐", "🌈 무지개")
+
+        val HikingBackgroundTintList = listOf(
+            android.R.color.transparent,
+            R.color.pink,
+            R.color.light_green,
+            R.color.light_blue,
+            R.color.light_purple,
+            R.color.orange,
+            R.color.light_yellow,
+        )
     }
 }

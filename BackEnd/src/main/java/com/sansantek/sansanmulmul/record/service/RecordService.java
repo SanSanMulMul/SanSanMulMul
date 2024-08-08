@@ -119,7 +119,7 @@ public class RecordService {
     
     // 회원의 개인 기록 만들기
     @Transactional
-    public void addRecords(int userId, RecordRequest request) {
+    public int addRecords(int userId, RecordRequest request) {
         // 해당 회원 확인
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException());
@@ -152,6 +152,10 @@ public class RecordService {
         // 회원의 records 리스트에 추가
         user.getRecords().add(record);
 
+        // 회원 영속성
         userRepository.save(user);
+
+        // 생성된 기록의 recordId를 반환
+        return record.getRecordId();
     }
 }

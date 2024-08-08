@@ -152,6 +152,9 @@ public class LoginController {
             for (int hikingStyleId : SignUpUserRequest.getUserStyles())
                 userStyleService.addStyle(user.getUserId(), hikingStyleId);
 
+            // chk_badge 테이블 추가
+            badgeService.setChkBadge(user.getUserId());
+
             // JSON 으로 token 전달
             resultMap.put("userId", user.getUserId());
             resultMap.put("accessToken", jwtToken.getAccessToken());

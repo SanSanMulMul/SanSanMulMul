@@ -16,6 +16,7 @@ import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.domain.course.Course;
 import com.sansantek.sansanmulmul.mountain.repository.MountainRepository;
 import com.sansantek.sansanmulmul.mountain.repository.course.CourseRepository;
+import com.sansantek.sansanmulmul.mountain.service.course.CourseService;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.domain.style.HikingStyle;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,6 +50,7 @@ public class CrewService {
     // service
     private final UserService userService;
     private final CourseRepository courseRepository;
+    private final CourseService courseService;
 
     /* 1. 그룹 전체 조회 */
     // 모든 그룹 조회
@@ -305,6 +308,15 @@ public class CrewService {
         // 3. 상행 코스, 하행 코스
         Course upCourse = crew.getUpCourse();
         Course downCourse = crew.getDownCourse();
+        // 4. 상행 코스, 하행 코스 - 좌표모음
+        // TrackPaths 정보 조회
+        Map<String, Object> upCourseDetail = courseService.getCourseDetail(upCourse.getMountain().getMountainId(), upCourse.getCourseId());
+        Map<String, Object> downCourseDetail = courseService.getCourseDetail(downCourse.getMountain().getMountainId(), downCourse.getCourseId());
+
+        // TrackPaths만 가져오기
+        List<Map<String, Object>> upTrackPaths = (List<Map<String, Object>>) upCourseDetail.get("tracks");
+        List<Map<String, Object>> downTrackPaths = (List<Map<String, Object>>) downCourseDetail.get("tracks");
+
 
         CrewHikingDetailResponse crewHikingDetailResponse = CrewHikingDetailResponse.builder()
                 .mountainId(mountain.getMountainId())
@@ -320,6 +332,8 @@ public class CrewService {
                 .downCourseLevel(downCourse.getCourseLevel())
                 .downCoursetime(downCourse.getCourseDowntime())
                 .downCourseLength(downCourse.getCourseLength())
+                .upCourseTrackPaths(upTrackPaths)
+                .downCourseTrackPaths(downTrackPaths)
                 .build();
 
         return crewHikingDetailResponse;

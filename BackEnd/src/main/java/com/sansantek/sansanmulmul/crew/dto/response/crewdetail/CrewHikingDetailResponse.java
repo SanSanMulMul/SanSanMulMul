@@ -4,6 +4,10 @@ import com.sansantek.sansanmulmul.mountain.domain.course.Level;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @Data
 @Builder
 @Getter
@@ -47,5 +51,11 @@ public class CrewHikingDetailResponse {
     private int downCoursetime; //courseDownTime 사용
     @Schema(description = "하행 코스길이", example = "3.58")
     private double downCourseLength; //courseLength 사용
+
+    // 상행, 하행 코스 좌표
+    @Schema(description = "상행 코스 좌표", example = "trackpaths(고유번호, 위도, 경도)")
+    private List<Map<String, Object>> upCourseTrackPaths = new ArrayList<>(); // TrackPathRepository 써야함
+    @Schema(description = "하행 코스 좌표", example = "trackpaths(고유번호, 위도, 경도)")
+    private List<Map<String, Object>>  downCourseTrackPaths = new ArrayList<>();
 
 }

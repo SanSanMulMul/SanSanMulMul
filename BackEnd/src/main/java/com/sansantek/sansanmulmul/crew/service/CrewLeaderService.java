@@ -5,6 +5,7 @@ import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewUpdateRequest;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
+import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.repository.MountainRepository;
 import com.sansantek.sansanmulmul.mountain.repository.course.CourseRepository;
 import com.sansantek.sansanmulmul.user.domain.User;
@@ -52,10 +53,15 @@ public class CrewLeaderService {
             throw new RuntimeException("크루의 리더가 아닙니다.");
         }
 
+        // 산
+        Mountain mountain = mountainRepository.findByMountainId(crewUpdateRequest.getMountainId())
+                .orElseThrow(() -> new RuntimeException("해당 산을 찾을 수 없습니다."));
+
+
         //정보 업데이트
         crew.setCrewStartDate(crewUpdateRequest.getCrewStartDate());
         crew.setCrewEndDate(crewUpdateRequest.getCrewEndDate());
-        crew.setMountain(mountainRepository.findByMountainId(crewUpdateRequest.getMountainId()));
+        crew.setMountain(mountain);
         crew.setUpCourse(courseRepository.findByCourseId(crewUpdateRequest.getUpCourseId()));
         crew.setDownCourse(courseRepository.findByCourseId(crewUpdateRequest.getDownCourseId()));
         crew.setCrewModifiedAt(LocalDateTime.now()); //변경시간 업데이트

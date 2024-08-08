@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.ui.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,6 +18,13 @@ class LoginActivityViewModel(private val savedStateHandle: SavedStateHandle): Vi
 
     fun setUser(user: User){
         _user = user
+    }
+
+    private lateinit var _uri: Uri
+        val uri: Uri
+            get() = _uri
+    fun setUri(uri: Uri){
+        _uri = uri
     }
 
     private var _userGender: MutableLiveData<String> = MutableLiveData("")

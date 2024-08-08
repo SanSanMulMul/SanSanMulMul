@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -27,6 +28,7 @@ class RegisterProfileFragment : BaseFragment<FragmentRegisterProfileBinding>(
     private lateinit var activity: LoginActivity
     private val permissionList = arrayOf(Manifest.permission.CAMERA)
     private lateinit var permissionChecker : PermissionChecker
+    private lateinit var uri: Uri
     override fun onAttach(context: Context) {
         super.onAttach(context)
         activity = context as LoginActivity
@@ -72,9 +74,8 @@ class RegisterProfileFragment : BaseFragment<FragmentRegisterProfileBinding>(
                 data?.data?.let { it ->
                     Log.d(TAG, "수신 양호: $it")
 
-                    val image = it
-                    binding.ivProfile.setImageURI(image)
-                    activityViewModel.setUserProfileImg(image.toString())
+                    activityViewModel.setUri(it)
+                    binding.ivProfile.setImageURI(it)
                 }
             }
         }

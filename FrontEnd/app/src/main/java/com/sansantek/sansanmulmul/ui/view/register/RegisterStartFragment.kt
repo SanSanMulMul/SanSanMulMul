@@ -46,7 +46,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             // 카카오 로그인 시도
             loginWithKakao()
 //                goRegister()
-            goMain()
+//            goMain()
         }
     }
 

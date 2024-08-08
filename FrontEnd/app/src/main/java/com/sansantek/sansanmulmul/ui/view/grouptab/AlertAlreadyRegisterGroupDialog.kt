@@ -13,12 +13,12 @@ import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import com.sansantek.sansanmulmul.databinding.DialogGroupRegisterSuccessBinding
-import com.sansantek.sansanmulmul.ui.adapter.GroupHikingStyleListAdapter
+import com.sansantek.sansanmulmul.databinding.DialogGroupAlreadyRegisterBinding
+import com.sansantek.sansanmulmul.databinding.DialogGroupRegisterBinding
 
-class ShowGroupRegisterSuccessDialog : DialogFragment() {
+class AlertAlreadyRegisterGroupDialog : DialogFragment() {
     // 뷰 바인딩 정의
-    private var _binding: DialogGroupRegisterSuccessBinding? = null
+    private var _binding: DialogGroupAlreadyRegisterBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -26,18 +26,17 @@ class ShowGroupRegisterSuccessDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogGroupRegisterSuccessBinding.inflate(inflater, container, false)
-
-        binding.ibCloseBtn.setOnClickListener {
-            dismiss()
-        }
-
+        _binding = DialogGroupAlreadyRegisterBinding.inflate(inflater, container, false)
         val view = binding.root
 
         // 레이아웃 배경을 투명하게 해줌, 필수 아님
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
         // 닫기 버튼 클릭
+
+        binding.btnClose.setOnClickListener {
+            dismiss()
+        }
 
         return view
     }
@@ -50,7 +49,7 @@ class ShowGroupRegisterSuccessDialog : DialogFragment() {
         val screenHeight = getScreenHeight(this.requireContext())
 
         val newWidth = (screenWidth * 0.8).toInt()
-        val newHeight = (screenHeight * 0.8).toInt()
+        val newHeight = (screenHeight * 0.5).toInt()
         val layoutParams = requireView().layoutParams
         layoutParams.width = newWidth
         layoutParams.height = newHeight

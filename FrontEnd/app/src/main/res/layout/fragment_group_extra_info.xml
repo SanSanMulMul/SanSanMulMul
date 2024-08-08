@@ -133,7 +133,7 @@
                     android:layout_height="50dp"
                     android:background="@drawable/rounded_rectangle_white_grey_10"
                     android:hint="1 - 10명 사이"
-                    android:inputType="text"
+                    android:inputType="numberDecimal"
                     android:paddingStart="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@id/group_people_number_text"
@@ -179,6 +179,7 @@
 
                 <RadioGroup
                     android:id="@+id/Group_Gender_RadioGroup"
+                    android:checkedButton="@id/anybody_Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="50dp"

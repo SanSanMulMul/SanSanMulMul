@@ -55,10 +55,10 @@ public class Course {
     private Mountain mountain;
 
     // 그룹(crew)의 상행/하행 코스 설정
-    @OneToMany(mappedBy = "upCourse")
-    private List<Crew> upCrews;
-    @OneToMany(mappedBy = "downCourse")
-    private List<Crew> downCrews;
+//    @OneToMany(mappedBy = "upCourse")
+//    private List<Crew> upCrews;
+//    @OneToMany(mappedBy = "downCourse")
+//    private List<Crew> downCrews;
 
 
 }

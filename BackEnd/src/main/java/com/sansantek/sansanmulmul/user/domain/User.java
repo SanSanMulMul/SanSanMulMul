@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.user.domain;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
+import com.sansantek.sansanmulmul.record.domain.HikingRecord;
 import com.sansantek.sansanmulmul.user.domain.badge.UserBadge;
 import com.sansantek.sansanmulmul.user.domain.follow.Follow;
 import com.sansantek.sansanmulmul.user.domain.style.UserHikingStyle;
@@ -8,7 +9,7 @@ import com.sansantek.sansanmulmul.user.domain.summitstone.UserSummitstone;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -36,7 +37,6 @@ public class User {
 
     @Column(name = "user_password", nullable = false)
     @Schema(description = "회원 비밀번호", example = "")
-    @ColumnDefault("")
     private String userPassword;
 
     @Column(name = "user_refresh_token")
@@ -66,68 +66,70 @@ public class User {
 
     @Column(name = "user_static_badge", nullable = false)
     @Schema(description = "회원 고정 칭호", example = "1")
-    @ColumnDefault("1")
     private int userStaticBadge;
 
     @Column(name = "user_total_length", nullable = false)
     @Schema(description = "회원 누적 이동거리", example = "0.0")
-    @ColumnDefault("0.0")
     private double userTotalLength;
 
     @Column(name = "user_total_elevation", nullable = false)
     @Schema(description = "회원 누적 고도", example = "0.0")
-    @ColumnDefault("0.0")
     private double userTotalElevation;
 
     @Column(name = "user_total_steps", nullable = false)
     @Schema(description = "회원 누적 걸음수", example = "0")
-    @ColumnDefault("0")
     private long userTotalSteps;
 
     @Column(name = "user_total_kcal", nullable = false)
     @Schema(description = "회원 누적 소모 칼로리", example = "0")
-    @ColumnDefault("0")
     private long userTotalKcal;
 
     @Column(name = "user_total_hiking", nullable = false)
     @Schema(description = "회원 누적 산행 횟수", example = "0")
-    @ColumnDefault("0")
     private long userTotalHiking;
 
     @Column(name = "user_stone_count", nullable = false)
     @Schema(description = "회원 획득 비석 개수", example = "0")
-    @ColumnDefault("0")
     private int userStoneCount;
 
     @Column(name = "user_is_admin")
     @Schema(description = "회원 관리자 유무", example = "false")
-    @ColumnDefault("false")
     private boolean userIsAdmin;
 
     // 회원 칭호
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserBadge> userBadges = new ArrayList<>();
 
     // 회원 인증 정상석
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSummitstone> userSummitstones = new ArrayList<>();
 
     // 회원 팔로잉
+    @JsonIgnore
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follow> followings = new ArrayList<>();
 
     // 회원 팔로워
+    @JsonIgnore
     @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follow> followers = new ArrayList<>();
 
     // 회원 등산 스타일
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserHikingStyle> userStyles = new ArrayList<>();
 
     // 회원이 방장으로 있는 그룹들
+    @JsonIgnore
     @OneToMany(mappedBy = "leader")
-    private List<Crew> leadingCrews;
+    private List<Crew> leadingCrews = new ArrayList<>();
 
+    // 회원 등산 기록
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HikingRecord> records = new ArrayList<>();
 
     public User(String userProviderId, String userPassword, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth, int userStaticBadge, boolean userIsAdmin) {
         this.userProviderId = userProviderId;
@@ -141,7 +143,7 @@ public class User {
         this.userIsAdmin = userIsAdmin;
     }
 
-        public User(String userProviderId, String userPassword, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth, int userStaticBadge, boolean userIsAdmin, List<UserHikingStyle> userStyles) {
+    public User(String userProviderId, String userPassword, String userName, String userNickname, GenderStatus userGender, String userProfileImg, LocalDate userBirth, int userStaticBadge, boolean userIsAdmin, List<UserHikingStyle> userStyles) {
         this.userProviderId = userProviderId;
         this.userPassword = userPassword;
         this.userName = userName;

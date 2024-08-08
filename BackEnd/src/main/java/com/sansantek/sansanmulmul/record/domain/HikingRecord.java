@@ -26,22 +26,22 @@ public class HikingRecord {
     private int recordId;
 
     @ManyToOne
-    @JoinColumn(name = "crew_id", nullable = false)
+    @JoinColumn(name = "crew_id")
     @Schema(description = "그룹 고유 번호", example = "1")
     private Crew crew;
 
     @ManyToOne
-    @JoinColumn(name = "mountain_id", nullable = false)
+    @JoinColumn(name = "mountain_id")
     @Schema(description = "산 고유 번호", example = "1")
     private Mountain mountain;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @Schema(description = "방장 user_id", example = "1")
+    @JoinColumn(name = "user_id")
+    @Schema(description = "회원 고유 번호", example = "1")
     private User user;
 
     @Column(name = "record_start_time", nullable = false)
-    @Schema(description = "등산 출발 일시", example = "YYYY-MM-DD 23:59:59")
+    @Schema(description = "실제 등산 출발 일시", example = "YYYY-MM-DD 23:59:59")
     private LocalDateTime recordStartTime;
 
     @Column(name = "record_up_distance", nullable = false)
@@ -74,4 +74,19 @@ public class HikingRecord {
     @Schema(description = "등산 소요 칼로리(단위: Kcal)", example = "0")
     private int recordKcal;
 
+    public HikingRecord(Crew crew, Mountain mountain, User user,
+                        LocalDateTime recordStartTime, long recordUpDistance,
+                        long recordDownDistance, long recordDuration,
+                        long recordSteps, double recordElevation, int recordKcal) {
+        this.crew = crew;
+        this.mountain = mountain;
+        this.user = user;
+        this.recordStartTime = recordStartTime;
+        this.recordUpDistance = recordUpDistance;
+        this.recordDownDistance = recordDownDistance;
+        this.recordDuration = recordDuration;
+        this.recordSteps = recordSteps;
+        this.recordElevation = recordElevation;
+        this.recordKcal = recordKcal;
+    }
 }

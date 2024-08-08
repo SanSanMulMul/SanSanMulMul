@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.data.network.api
 
+import com.sansantek.sansanmulmul.data.model.CreateCrew
 import com.sansantek.sansanmulmul.data.model.Crew
 import retrofit2.Response
 import retrofit2.http.Body
@@ -18,4 +19,6 @@ interface CrewService {
 
     @POST("crew/{crewId}/join")
     suspend fun registerCrew(@Header("Authorization") accessToken: String, @Path("crewId") crewId: Int): Response<String>
+    @POST("crew")
+    suspend fun createCrew(@Header("Authorization") accessToken: String, @Body crewCreateRequest: CreateCrew): Response<String>
 }

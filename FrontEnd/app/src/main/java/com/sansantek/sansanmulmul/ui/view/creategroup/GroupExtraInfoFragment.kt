@@ -3,6 +3,7 @@ package com.sansantek.sansanmulmul.ui.view.creategroup
 import android.os.Bundle
 import android.view.View
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
@@ -19,7 +20,7 @@ class GroupExtraInfoFragment : BaseFragment<FragmentGroupExtraInfoBinding>(
         parentFragment as GroupCreateViewPagerFragment
     }
 
-    private val viewModel: CreateGroupViewModel by viewModels()
+    private val viewModel: CreateGroupViewModel by activityViewModels()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

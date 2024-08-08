@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.crew.service;
 
+import com.sansantek.sansanmulmul.common.ApiResponse;
 import com.sansantek.sansanmulmul.common.service.S3Service;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 
@@ -352,18 +353,39 @@ public class CrewService {
     /* 4. [탭3] 그룹 갤러리 */
     // 4-1. 이미지 업로드
     @Transactional
-    public Boolean uploadImg(int crewId, User user, MultipartFile image)  throws IOException {
+    public void uploadImg(int crewId, User user, MultipartFile image)  throws IOException {
+
         // 1. 해당 crew 가져옴
         Crew crew = crewRepository.findById(crewId)
                 .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
-
+        // user가 해당 crew에 가입되어있지 않은 경우 에러 처리
+        boolean isMember = crewUserRepository.existsByCrewAndUser(crew, user);
+        if (!isMember) {
+            throw new RuntimeException("해당 그룹에 가입되어 있지 않습니다.");
+        }
+        // 2. 이미지를 s3에 업로드함
         String imgUrl = "";
         if (image != null) {
             imgUrl = s3Service.uploadS3(image, "group/"+Integer.toString(crewId));
-
-            return true;
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        // 3. 이미지 객체 하나 생성
+        CrewGallery crewPic = CrewGallery.builder()
+                .crew(crew)
+                .user(user)
+                .imgUrl(imgUrl)
+                .imgCreatedAt(LocalDateTime.now())
+                .build();
+
+        // 4. crewGallery 레파지토리에 이미지 객체 저장
+        CrewGallery savedCrewPic = crewGalleryRepository.save(crewPic);
+
+        // 5. 저장이 성공적으로 이루어졌는지 확인
+        if (savedCrewPic == null || savedCrewPic.getImgUrl() == null) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "DB에 이미지 저장에 실패했습니다.");
+        }
+
+
     }
 
     // 4-2. 갤러리 전부 가져오기

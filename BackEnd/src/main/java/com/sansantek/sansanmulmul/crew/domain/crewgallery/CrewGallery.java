@@ -11,20 +11,23 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "crew_gallery")
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-@IdClass(CrewUserId.class)
 public class CrewGallery {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pic_id", nullable = false)
+    @Schema(description = "그룹 갤러리 사진 고유번호" , example = "1")
+    private int requestId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id" ,nullable = false)
     private User user;
 
-    @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crew_id" ,nullable = false)
     private Crew crew;

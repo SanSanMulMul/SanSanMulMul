@@ -43,7 +43,9 @@ class GroupExtraInfoFragment : BaseFragment<FragmentGroupExtraInfoBinding>(
             val values = ageRangeSlider.values
             val minAge = values[0].toInt()
             val maxAge = values[1].toInt()
-
+            viewModel.setGroupMinAge(minAge)
+            viewModel.setGroupMaxAge(maxAge)
+            checkValid()
             minageblank.setText(minAge.toString())
             maxageblank.setText(maxAge.toString())
         }
@@ -71,7 +73,7 @@ class GroupExtraInfoFragment : BaseFragment<FragmentGroupExtraInfoBinding>(
     }
 
     private fun checkValid() {
-        if (binding.groupPeopleNumberBlank.text.isNullOrBlank() || (binding.groupPeopleNumberBlank.text.toString().toIntOrNull() == null)) {
+        if (binding.groupPeopleNumberBlank.text.isNullOrBlank() || (binding.groupPeopleNumberBlank.text.toString().toIntOrNull() == null) || viewModel.groupMinAge == -1 || viewModel.groupMaxAge == -1) {
             viewPagerFragment.enableNextButton(false)
         } else {
             viewModel.setMaxMember(binding.groupPeopleNumberBlank.text.toString().toInt())
@@ -82,6 +84,7 @@ class GroupExtraInfoFragment : BaseFragment<FragmentGroupExtraInfoBinding>(
 
     private fun init() {
         activity?.let { hideBottomNav(it.findViewById(R.id.main_layout_bottom_navigation), true) }
+        binding.ageRangeSlider.setValues(0F, 100F)
         checkValid()
     }
 }

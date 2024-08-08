@@ -73,17 +73,17 @@ class CreateGroupViewModel : ViewModel() {
         _groupMountainId = groupMountainId
     }
 
-    private var _groupUpCourseId: Int = -1
-    val groupUpCourseId: Int
+    private var _groupUpCourseId: Long = -1
+    val groupUpCourseId: Long
         get() = _groupUpCourseId
-    fun setGroupUpCourseId(groupUpCourseId: Int){
+    fun setGroupUpCourseId(groupUpCourseId: Long){
         _groupUpCourseId = groupUpCourseId
     }
 
-    private var _groupDownCourseId: Int = -1
-    val groupDownCourseId: Int
+    private var _groupDownCourseId: Long = -1
+    val groupDownCourseId: Long
         get() = _groupDownCourseId
-    fun setGroupDownCourseId(groupDownCourseId: Int){
+    fun setGroupDownCourseId(groupDownCourseId: Long){
         _groupDownCourseId = groupDownCourseId
     }
 }

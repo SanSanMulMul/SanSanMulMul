@@ -15,7 +15,7 @@ import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
 
 // TODO : 코스 상세에서 뒤로가기 했을 때 무조건 첫번째 Tab으로 돌아오는 거 수정하기
 
-private const val TAG = "마운틴디테일 번들"
+private const val TAG = "싸피_MountainDetailFragment"
 
 class MountainDetailFragment : BaseFragment<FragmentMountainDetailTabBinding>(
     FragmentMountainDetailTabBinding::bind,

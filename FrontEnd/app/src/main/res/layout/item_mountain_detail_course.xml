@@ -1,95 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginVertical="10dp"
+  android:layout_marginStart="30dp"
+  android:layout_marginEnd="20dp">
+
+  <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/tv_difficulty"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:layout_marginVertical="10dp"
+    android:gravity="center"
+    android:textColor="@color/white"
+    android:textSize="11sp"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/tv_course_name"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:background="@drawable/rounded_difficulty_easy_circle"
+    tools:text="어려움" />
+
+  <!-- 코스 이름 -->
+  <TextView
+    android:id="@+id/tv_course_name"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="30dp"
-    android:layout_marginVertical="10dp">
+    android:layout_marginStart="20dp"
+    android:textSize="16sp"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toEndOf="@id/tv_difficulty"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_chainStyle="packed"
+    tools:text="가야산국립공원가야산소리길" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_difficulty"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginVertical="10dp"
-        android:background="@drawable/rounded_difficulty_easy_circle"
-        android:gravity="center"
-        android:text="어려움"
-        android:textColor="@color/white"
-        android:textSize="11sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tv_course_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+  <!-- 총 거리 -->
+  <TextView
+    android:id="@+id/tv_distance"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="10dp"
+    android:textSize="11sp"
+    app:layout_constraintBottom_toBottomOf="@id/tv_course_name"
+    app:layout_constraintEnd_toStartOf="@id/btn_course_info"
+    app:layout_constraintStart_toEndOf="@id/tv_course_name"
+    app:layout_constraintTop_toTopOf="@id/tv_course_name"
+    tools:text="총 4.0km" />
 
-    <!-- 코스 이름 -->
-    <TextView
-        android:id="@+id/tv_course_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="가야산국립공원가야산소리길"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_difficulty"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <!-- 코스 출발지&목적지 -->
-    <!--  <androidx.constraintlayout.widget.ConstraintLayout-->
-    <!--    android:id="@+id/layout_destination"-->
-    <!--    android:layout_width="wrap_content"-->
-    <!--    android:layout_height="wrap_content"-->
-    <!--    android:layout_marginTop="2dp"-->
-    <!--    app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--    app:layout_constraintEnd_toStartOf="@id/tv_distance"-->
-    <!--    app:layout_constraintHorizontal_chainStyle="spread_inside"-->
-    <!--    app:layout_constraintStart_toStartOf="@id/tv_course_name"-->
-    <!--    app:layout_constraintTop_toBottomOf="@id/tv_course_name">-->
-
-    <!--    <TextView-->
-    <!--      android:id="@+id/tv_start"-->
-    <!--      android:layout_width="wrap_content"-->
-    <!--      android:layout_height="wrap_content"-->
-    <!--      android:text="소리길 입구"-->
-    <!--      android:textSize="11sp"-->
-    <!--      app:layout_constraintStart_toStartOf="parent"-->
-    <!--      app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--    <TextView-->
-    <!--      android:id="@+id/tv_arrow"-->
-    <!--      android:layout_width="wrap_content"-->
-    <!--      android:layout_height="wrap_content"-->
-    <!--      android:text=" ↔ "-->
-    <!--      android:textSize="11sp"-->
-    <!--      app:layout_constraintBottom_toBottomOf="@id/tv_start"-->
-    <!--      app:layout_constraintStart_toEndOf="@id/tv_start"-->
-    <!--      app:layout_constraintTop_toTopOf="@id/tv_start" />-->
-
-    <!--    <TextView-->
-    <!--      android:id="@+id/tv_end"-->
-    <!--      android:layout_width="wrap_content"-->
-    <!--      android:layout_height="wrap_content"-->
-    <!--      android:text="영산교"-->
-    <!--      android:textSize="11sp"-->
-    <!--      app:layout_constraintBottom_toBottomOf="@id/tv_start"-->
-    <!--      app:layout_constraintEnd_toEndOf="parent"-->
-    <!--      app:layout_constraintStart_toEndOf="@id/tv_arrow"-->
-    <!--      app:layout_constraintTop_toTopOf="@id/tv_start" />-->
-    <!--  </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-    <!-- 총 거리 -->
-    <TextView
-        android:id="@+id/tv_distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="총 4.0km"
-        android:textSize="11sp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_course_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_course_name"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1" />
+  <ImageView
+    android:id="@+id/btn_course_info"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:adjustViewBounds="true"
+    android:src="@drawable/info"
+    app:layout_constraintBottom_toBottomOf="@id/tv_course_name"
+    app:layout_constraintDimensionRatio="1:1"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toEndOf="@id/tv_distance"
+    app:layout_constraintTop_toTopOf="@id/tv_course_name"
+    app:tint="@color/grey" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,6 +14,9 @@ import kotlinx.coroutines.launch
 class MountainDetailViewModel : ViewModel() {
   private val repository = MountainRepository()
 
+  private val _prevTab = MutableLiveData<Int>()
+  val prevTab: LiveData<Int> get() = _prevTab
+
   private val _mountainID = MutableLiveData<Int>()
   val mountainID: LiveData<Int> get() = _mountainID
 
@@ -31,6 +34,10 @@ class MountainDetailViewModel : ViewModel() {
 
   private val _mountainCourse = MutableLiveData<MountainCourse?>()
   val mountainCourse: LiveData<MountainCourse?> get() = _mountainCourse
+
+  fun setPrevTab(prevTab: Int) {
+    _prevTab.value = prevTab
+  }
 
   fun setMountainID(mountainID: Int) {
     _mountainID.value = mountainID

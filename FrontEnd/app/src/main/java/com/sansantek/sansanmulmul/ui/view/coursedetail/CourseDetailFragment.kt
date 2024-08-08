@@ -19,4 +19,5 @@ class CourseDetailFragment : BaseFragment<FragmentCourseDetailBinding>(
   private fun init() {
     activity?.let { hideBottomNav(it.findViewById(R.id.main_layout_bottom_navigation), true) }
   }
+
 }

@@ -79,9 +79,12 @@
   <color name="my_page_edit_hiking_fifth_style_color">#CEBDFF</color>
   <color name="my_page_edit_hiking_sixth_style_color">#FFCC33</color>
 
-
   <color name="hiking_recording_tab_button_pink">#F8ACAC</color>
   <color name="hiking_recording_tab_button_purple">#C0ADF6</color>
+
+  <color name="chip_course_difficulty_easy">#20B75D</color>
+  <color name="chip_course_difficulty_medium">#FFD234</color>
+  <color name="chip_course_difficulty_hard">#C81F1F</color>
 
 
 </resources>

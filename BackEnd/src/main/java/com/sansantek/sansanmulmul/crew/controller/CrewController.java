@@ -1,5 +1,7 @@
 package com.sansantek.sansanmulmul.crew.controller;
 
+import com.sansantek.sansanmulmul.common.ApiResponse;
+import com.sansantek.sansanmulmul.common.ErrorCode;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewCreateRequest;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewGalleryResponse;
@@ -215,15 +217,18 @@ public class CrewController {
     // 4-1. 이미지 업로드
     @PostMapping(value = "/detail/{crewId}/gallery", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "그룹 상세 조회 [탭3] 갤러리 사진 올리기",  description = "그룹 상세보기 - 그룹 갤러리에 사진 업로드")
-    public ResponseEntity<?> uploadImg(Authentication authentication, @PathVariable int crewId, @RequestPart(value = "image") MultipartFile image) throws IOException {
-//        HttpStatus status = HttpStatus.OK;
-        //사용자 정보
-        String userProviderId = authentication.getName();
-        User user = userService.getUser(userProviderId);
+    public ApiResponse<?> uploadImg(Authentication authentication, @PathVariable int crewId, @RequestPart(value = "image") MultipartFile image) throws IOException {
+        try {
+            //사용자 정보
+            String userProviderId = authentication.getName();
+            User user = userService.getUser(userProviderId);
 
-        boolean flag = crewService.uploadImg(crewId, user, image);
+            crewService.uploadImg(crewId, user, image);
 
-        return ResponseEntity.ok(flag);
+            return ApiResponse.createSuccessWithNoContent("이미지 업로드를 성공했습니다.");
+        } catch (Exception e) {
+            return ApiResponse.createError("FAIL", e.getMessage());
+        }
 
     }
 

@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.ui.view.mountaindetail
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -50,11 +51,13 @@ class MountainDetailTabFirstInfoFragment : BaseFragment<FragmentMountainDetailTa
     }
 
     mountainDetailViewModel.mountainDetail.observe(viewLifecycleOwner) { mountainDetail ->
+      Log.d(TAG, "initMountainData: 옵저버1")
       val mountainCourse = mountainDetailViewModel.mountainCourse.value
       mountainDetail?.let { setMountainDetailInfo(it, mountainCourse) }
     }
 
     mountainDetailViewModel.mountainCourse.observe(viewLifecycleOwner) { mountainCourse ->
+      Log.d(TAG, "initMountainData: 옵저버2")
       mountainDetailViewModel.mountainDetail.value?.let { mountainDetail ->
         setMountainDetailInfo(mountainDetail, mountainCourse)
       }

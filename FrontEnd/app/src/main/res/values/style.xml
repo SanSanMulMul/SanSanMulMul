@@ -23,28 +23,29 @@
     <item name="android:textSize">14sp</item>
   </style>
 
-    <style name="group_detail_tab_mountain_info_selected_text" parent="@android:style/TextAppearance.Widget.TabWidget">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">15sp</item>
-    </style>
+  <style name="group_detail_tab_mountain_info_selected_text" parent="@android:style/TextAppearance.Widget.TabWidget">
+    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">15sp</item>
+  </style>
 
-    <style name="group_detail_tab_mountain_info_unselected_text" parent="@android:style/TextAppearance.Widget.TabWidget">
-        <item name="android:textSize">15sp</item>
-    </style>
+  <style name="group_detail_tab_mountain_info_unselected_text" parent="@android:style/TextAppearance.Widget.TabWidget">
+    <item name="android:textSize">15sp</item>
+  </style>
 
-    <style name="GroupDetailMemberApproveBtnStyle" parent="Widget.AppCompat.TextView">
-        <item name="android:text">수락</item>
-        <item name="android:textColor">@color/group_detail_group_positive_btn</item>
-        <item name="android:textSize">13sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="marginHorizontal">5dp</item>
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
-        <item name="android:paddingTop">5dp</item>
-        <item name="android:paddingBottom">5dp</item>
-        <item name="android:stateListAnimator">@null</item>
-        <item name="android:background">@drawable/group_detail_round_green_radius_20_rectangle</item>
-    </style>
+  <style name="GroupDetailMemberApproveBtnStyle" parent="Widget.AppCompat.TextView">
+    <item name="android:text">수락</item>
+    <item name="android:textColor">@color/group_detail_group_positive_btn</item>
+    <item name="android:textSize">13sp</item>
+    <item name="android:textStyle">bold</item>
+    <item name="marginHorizontal">5dp</item>
+    <item name="android:paddingStart">16dp</item>
+    <item name="android:paddingEnd">16dp</item>
+    <item name="android:paddingTop">5dp</item>
+    <item name="android:paddingBottom">5dp</item>
+    <item name="android:stateListAnimator">@null</item>
+    <item name="android:background">@drawable/group_detail_round_green_radius_20_rectangle
+    </item>
+  </style>
 
   <style name="GroupDetailMemberDeclineBtnStyle" parent="Widget.AppCompat.TextView">
     <item name="android:text">거절</item>
@@ -72,7 +73,8 @@
     <item name="android:paddingTop">5dp</item>
     <item name="android:paddingBottom">5dp</item>
     <item name="android:stateListAnimator">@null</item>
-    <item name="android:background">@drawable/group_detail_round_green_radius_20_rectangle</item>
+    <item name="android:background">@drawable/group_detail_round_green_radius_20_rectangle
+    </item>
   </style>
 
   <style name="GroupDetailMemberKickMemberBtnStyle" parent="Widget.AppCompat.TextView">
@@ -97,7 +99,7 @@
   <!-- 난이도 Chip 버튼 : 전체 -->
   <style name="CustomChipChoice.ALL" parent="@style/Widget.MaterialComponents.Chip.Choice">
     <item name="chipSurfaceColor">@android:color/transparent</item>
-    <item name="chipStrokeColor">@color/white</item>
+    <item name="chipStrokeColor">@color/black</item>
     <item name="chipStrokeWidth">1dp</item>
     <item name="chipBackgroundColor">@color/chip_all_bg</item>
     <item name="android:textColor">@color/chip_all_text</item>
@@ -105,8 +107,8 @@
 
   <!-- 난이도 Chip 버튼 : 쉬움 -->
   <style name="CustomChipChoice.Easy" parent="@style/Widget.MaterialComponents.Chip.Choice">
-    <item name="chipSurfaceColor">@android:color/transparent</item>
-    <item name="chipStrokeColor">#20B75D</item>
+    <item name="chipSurfaceColor">@color/white</item>
+    <item name="chipStrokeColor">@color/chip_course_difficulty_easy</item>
     <item name="chipStrokeWidth">1dp</item>
     <item name="chipBackgroundColor">@color/chip_easy_bg</item>
     <item name="android:textColor">@color/chip_easy_text</item>
@@ -114,8 +116,8 @@
 
   <!-- 난이도 Chip 버튼 : 보통 -->
   <style name="CustomChipChoice.Medium" parent="@style/Widget.MaterialComponents.Chip.Choice">
-    <item name="chipSurfaceColor">@android:color/transparent</item>
-    <item name="chipStrokeColor">#FFD234</item>
+    <item name="chipSurfaceColor">@color/white</item>
+    <item name="chipStrokeColor">@color/chip_course_difficulty_medium</item>
     <item name="chipStrokeWidth">1dp</item>
     <item name="chipBackgroundColor">@color/chip_medium_bg</item>
     <item name="android:textColor">@color/chip_medium_text</item>
@@ -123,17 +125,17 @@
 
   <!-- 난이도 Chip 버튼 : 어려움-->
   <style name="CustomChipChoice.Hard" parent="@style/Widget.MaterialComponents.Chip.Choice">
-    <item name="chipSurfaceColor">@android:color/transparent</item>
-    <item name="chipStrokeColor">#C81F1F</item>
+    <item name="chipSurfaceColor">@color/white</item>
+    <item name="chipStrokeColor">@color/chip_course_difficulty_hard</item>
     <item name="chipStrokeWidth">1dp</item>
     <item name="chipBackgroundColor">@color/chip_hard_bg</item>
     <item name="android:textColor">@color/chip_hard_text</item>
   </style>
 
-    <style name="GroupDetailSecondTabTextAppeareance" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">15sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
+  <style name="GroupDetailSecondTabTextAppeareance" parent="TextAppearance.Design.Tab">
+    <item name="android:textSize">15sp</item>
+    <item name="android:textStyle">bold</item>
+  </style>
 
   <style name="ImageView.Round" parent="">
     <item name="cornerSize">50%</item>
@@ -149,8 +151,8 @@
   </style>
 
   <style name="MyAlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
-<!--    <item name="android:buttonBarPositiveButtonStyle">@color/black</item>-->
-<!--    <item name=""-->
+    <!--    <item name="android:buttonBarPositiveButtonStyle">@color/black</item>-->
+    <!--    <item name=""-->
   </style>
 
   <style name="MyAlertDialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">

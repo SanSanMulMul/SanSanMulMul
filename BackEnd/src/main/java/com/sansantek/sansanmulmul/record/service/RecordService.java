@@ -1,7 +1,7 @@
 package com.sansantek.sansanmulmul.record.service;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
-import com.sansantek.sansanmulmul.crew.dto.response.CrewUserResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewUserResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
 import com.sansantek.sansanmulmul.crew.service.request.CrewRequestService;

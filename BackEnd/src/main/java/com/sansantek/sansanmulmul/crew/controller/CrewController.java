@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.crew.controller;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewCreateRequest;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewGalleryResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailCommonResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewMyResponse;
@@ -19,10 +20,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +41,7 @@ public class CrewController {
     * 1. 그룹 전체 조회
     * 2. 그룹 생성
     * 3. 그룹 상세 보기
+    * 4. 그룹 상세 보기 - 그룹 갤러리
     * */
 
     // service
@@ -205,6 +210,45 @@ public class CrewController {
             return new ResponseEntity<>(e.getMessage(), status);
         }
     }
+
+    /* 4. [탭3] 그룹 갤러리 */
+    // 4-1. 이미지 업로드
+    @PostMapping(value = "/detail/{crewId}/gallery", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "그룹 상세 조회 [탭3] 갤러리 사진 올리기",  description = "그룹 상세보기 - 그룹 갤러리에 사진 업로드")
+    public ResponseEntity<?> uploadImg(Authentication authentication, @PathVariable int crewId, @RequestPart(value = "image") MultipartFile image) throws IOException {
+//        HttpStatus status = HttpStatus.OK;
+        //사용자 정보
+        String userProviderId = authentication.getName();
+        User user = userService.getUser(userProviderId);
+
+        boolean flag = crewService.uploadImg(crewId, user, image);
+
+        return ResponseEntity.ok(flag);
+
+    }
+
+    // 4-2. 갤러리 전부 가져오기
+    @GetMapping(value = "/detail/{crewId}/gallery")
+    @Operation(summary = "그룹 상세 조회 [탭3] 그룹 갤러리 조회",  description = "그룹 상세보기 - (탭3) 그룹 갤러리")
+    public ResponseEntity<?> getCrewDetailGallery(Authentication authentication, @PathVariable int crewId) {
+        HttpStatus status = HttpStatus.OK;
+        try {
+            //사용자 정보
+            String userProviderId = authentication.getName();
+            User user = userService.getUser(userProviderId);
+
+            List<CrewGalleryResponse> crewGalleryResponse = crewService.getCrewDetailGallery(crewId, user);
+            return new ResponseEntity<>(crewGalleryResponse, status); //ok 200
+
+        } catch (Exception e) {
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
+
+
+
 
     ////////////////////////////////////////////////////////////
     @GetMapping("/member/{crewId}")

@@ -1,14 +1,18 @@
 package com.sansantek.sansanmulmul.crew.service;
 
+import com.sansantek.sansanmulmul.common.service.S3Service;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 
+import com.sansantek.sansanmulmul.crew.domain.crewgallery.CrewGallery;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewCreateRequest;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewGalleryResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailCommonResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewHikingDetailResponse;
+import com.sansantek.sansanmulmul.crew.repository.CrewGalleryRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewHikingStyleRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
@@ -22,11 +26,15 @@ import com.sansantek.sansanmulmul.user.domain.style.HikingStyle;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import com.sansantek.sansanmulmul.user.repository.style.HikingStyleRepository;
 import com.sansantek.sansanmulmul.user.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +54,13 @@ public class CrewService {
     private final UserRepository userRepository;
     private final CrewUserRepository crewUserRepository;
     private final HikingStyleRepository hikingStyleRepository;
+    private final CrewGalleryRepository crewGalleryRepository;
 
     // service
     private final UserService userService;
     private final CourseRepository courseRepository;
     private final CourseService courseService;
+    private final S3Service s3Service;
 
     /* 1. 그룹 전체 조회 */
     // 모든 그룹 조회
@@ -338,6 +348,60 @@ public class CrewService {
 
         return crewHikingDetailResponse;
     }
+
+    /* 4. [탭3] 그룹 갤러리 */
+    // 4-1. 이미지 업로드
+    @Transactional
+    public Boolean uploadImg(int crewId, User user, MultipartFile image)  throws IOException {
+        // 1. 해당 crew 가져옴
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
+
+        String imgUrl = "";
+        if (image != null) {
+            imgUrl = s3Service.uploadS3(image, "group/"+Integer.toString(crewId));
+
+            return true;
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    // 4-2. 갤러리 전부 가져오기
+    public List<CrewGalleryResponse> getCrewDetailGallery(int crewId, User user) {
+        // 1. 해당 crew 가져옴
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
+        // user가 해당 crew에 가입되어있지 않은 경우 에러 처리
+        boolean isMember = crewUserRepository.existsByCrewAndUser(crew, user);
+        if (!isMember) {
+            throw new RuntimeException("해당 그룹에 가입되어 있지 않습니다.");
+        }
+
+        // 2. crewId에 해당하는 모든 CrewGallery 가져오기
+        List<CrewGallery> crewGalleries = crewGalleryRepository.findByCrew(crew);
+
+        // 3. 응답 dto 리스트 생성
+        List<CrewGalleryResponse> responses = new ArrayList<>();
+
+        for (CrewGallery gallery : crewGalleries) {
+            boolean isOwner = gallery.getUser().equals(user);
+
+            CrewGalleryResponse response = CrewGalleryResponse.builder()
+                    .crewId(crewId)
+                    .userNickname(gallery.getUser().getUserNickname())
+                    .userProfileImg(gallery.getUser().getUserProfileImg())
+                    .isOwner(isOwner)
+                    .imgUrl(gallery.getImgUrl())
+                    .createdAt(gallery.getImgCreatedAt())
+                    .build();
+
+            responses.add(response);
+        }
+
+        return responses;
+    }
+
+
 
     ////////////////////////////////////////////////////////////
     //현재 진행중인 크루><

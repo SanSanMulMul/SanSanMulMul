@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
+import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.data.model.Picture
 import com.sansantek.sansanmulmul.databinding.FragmentGroupDetailTabThirdGalleryInfoFragmentBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupDetailTabGalleryInfoListAdapter
@@ -22,7 +23,7 @@ import okhttp3.internal.format
 
 
 private const val TAG = "GroupDetailTabThirdGalleryInfoFragment_싸피"
-class GroupDetailTabThirdGalleryInfoFragment() : BaseFragment<FragmentGroupDetailTabThirdGalleryInfoFragmentBinding>(
+class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) : BaseFragment<FragmentGroupDetailTabThirdGalleryInfoFragmentBinding>(
     FragmentGroupDetailTabThirdGalleryInfoFragmentBinding::bind,
     R.layout.fragment_group_detail_tab_third_gallery_info_fragment
 ) {

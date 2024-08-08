@@ -249,4 +249,13 @@ public class CrewService {
             throw new IllegalArgumentException("Crew not found");
         }
     }
+    // 사용자가 그룹에 가입되어 있는지 확인
+    public boolean isUserInCrew(String userProviderId, int crewId) {
+        User user = userRepository.findByUserProviderId(userProviderId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("그룹을 찾을 수 없습니다."));
+        return crewUserRepository.existsByCrewAndUser(crew, user);
+    }
+
 }

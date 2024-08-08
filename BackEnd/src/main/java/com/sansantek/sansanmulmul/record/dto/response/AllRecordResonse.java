@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class AllRecordResonse {
 
+    @Schema(description = "기록 고유 번호", example = "1")
+    private int recordId;
     @Schema(description = "산 이름", example = "금오산")
     private String mountainName;
     @Schema(description = "그룹 시작 일시", example = "2024-08-01 23:59:59")

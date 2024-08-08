@@ -48,5 +48,9 @@ abstract class BaseFragment<B : ViewBinding>(
       View.VISIBLE
   }
 
-
+  protected fun safeCall(action: () -> Unit) {
+    if (_binding != null) {
+      action()
+    }
+  }
 }

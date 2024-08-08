@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <style name="RangeSliderStyle" parent="Widget.MaterialComponents.Slider">
-    <item name="materialThemeOverlay">@style/ThemeOverlay.Slider</item>
-    <item name="thumbColor">@color/green</item>
-    <item name="trackColorActive">@color/green</item>
-    <item name="trackColorInactive">@color/lightgray</item>
-  </style>
+    <style name="RangeSliderStyle" parent="Widget.MaterialComponents.Slider">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Slider</item>
+        <item name="thumbColor">@color/green</item>
+        <item name="trackColorActive">@color/green</item>
+        <item name="trackColorInactive">@color/lightgray</item>
+    </style>
 
-  <style name="ThemeOverlay.Slider" parent="">
-    <item name="colorOnPrimary">@color/black</item>
-    <item name="colorOnBackground">@android:color/white</item>
-    <item name="colorSurface">@color/green</item>
-  </style>
+    <style name="ThemeOverlay.Slider" parent="">
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnBackground">@android:color/white</item>
+        <item name="colorSurface">@color/green</item>
+    </style>
 
-  <style name="tab_selected_text" parent="@android:style/TextAppearance.Widget.TabWidget">
-    <item name="android:textStyle">bold</item>
-    <item name="android:textSize">14sp</item>
-  </style>
+    <style name="tab_selected_text" parent="@android:style/TextAppearance.Widget.TabWidget">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
 
-  <style name="tab_unselected_text" parent="@android:style/TextAppearance.Widget.TabWidget">
-    <item name="android:textSize">14sp</item>
-  </style>
+    <style name="tab_unselected_text" parent="@android:style/TextAppearance.Widget.TabWidget">
+        <item name="android:textSize">14sp</item>
+    </style>
 
     <style name="group_detail_tab_mountain_info_selected_text" parent="@android:style/TextAppearance.Widget.TabWidget">
         <item name="android:textStyle">bold</item>
@@ -43,117 +43,119 @@
         <item name="android:paddingTop">5dp</item>
         <item name="android:paddingBottom">5dp</item>
         <item name="android:stateListAnimator">@null</item>
-        <item name="android:background">@drawable/group_detail_round_green_radius_20_rectangle</item>
+        <item name="android:background">@drawable/group_detail_round_green_radius_20_rectangle
+        </item>
     </style>
 
-  <style name="GroupDetailMemberDeclineBtnStyle" parent="Widget.AppCompat.TextView">
-    <item name="android:text">거절</item>
-    <item name="android:textColor">@color/group_detail_group_negative_btn</item>
-    <item name="android:textSize">13sp</item>
-    <item name="android:textStyle">bold</item>
-    <item name="marginHorizontal">5dp</item>
-    <item name="android:paddingStart">16dp</item>
-    <item name="android:paddingEnd">16dp</item>
-    <item name="android:paddingTop">5dp</item>
-    <item name="android:paddingBottom">5dp</item>
-    <item name="android:stateListAnimator">@null</item>
-    <item name="android:background">@drawable/group_detail_round_red_radius_20_rectangle</item>
-  </style>
+    <style name="GroupDetailMemberDeclineBtnStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:text">거절</item>
+        <item name="android:textColor">@color/group_detail_group_negative_btn</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="marginHorizontal">5dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@drawable/group_detail_round_red_radius_20_rectangle</item>
+    </style>
 
 
-  <style name="GroupDetailMemberDelegateAdminBtnStyle" parent="Widget.AppCompat.TextView">
-    <item name="android:text">위임</item>
-    <item name="android:textColor">@color/group_detail_group_positive_btn</item>
-    <item name="android:textSize">13sp</item>
-    <item name="android:textStyle">bold</item>
-    <item name="marginHorizontal">5dp</item>
-    <item name="android:paddingStart">16dp</item>
-    <item name="android:paddingEnd">16dp</item>
-    <item name="android:paddingTop">5dp</item>
-    <item name="android:paddingBottom">5dp</item>
-    <item name="android:stateListAnimator">@null</item>
-    <item name="android:background">@drawable/group_detail_round_green_radius_20_rectangle</item>
-  </style>
+    <style name="GroupDetailMemberDelegateAdminBtnStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:text">위임</item>
+        <item name="android:textColor">@color/group_detail_group_positive_btn</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="marginHorizontal">5dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@drawable/group_detail_round_green_radius_20_rectangle
+        </item>
+    </style>
 
-  <style name="GroupDetailMemberKickMemberBtnStyle" parent="Widget.AppCompat.TextView">
-    <item name="android:text">강퇴</item>
-    <item name="android:textColor">@color/group_detail_group_negative_btn</item>
-    <item name="android:textSize">13sp</item>
-    <item name="android:textStyle">bold</item>
-    <item name="marginHorizontal">5dp</item>
-    <item name="android:paddingStart">16dp</item>
-    <item name="android:paddingEnd">16dp</item>
-    <item name="android:paddingTop">5dp</item>
-    <item name="android:paddingBottom">5dp</item>
-    <item name="android:stateListAnimator">@null</item>
-    <item name="android:background">@drawable/group_detail_round_red_radius_20_rectangle</item>
-  </style>
+    <style name="GroupDetailMemberKickMemberBtnStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:text">강퇴</item>
+        <item name="android:textColor">@color/group_detail_group_negative_btn</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="marginHorizontal">5dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@drawable/group_detail_round_red_radius_20_rectangle</item>
+    </style>
 
-  <style name="popup_window_animation">
-    <item name="android:windowEnterAnimation">@anim/popup_anim</item>
-    <item name="android:windowExitAnimation">@anim/popdown_anim</item>
-  </style>
+    <style name="popup_window_animation">
+        <item name="android:windowEnterAnimation">@anim/popup_anim</item>
+        <item name="android:windowExitAnimation">@anim/popdown_anim</item>
+    </style>
 
-  <!-- 난이도 Chip 버튼 : 전체 -->
-  <style name="CustomChipChoice.ALL" parent="@style/Widget.MaterialComponents.Chip.Choice">
-    <item name="chipSurfaceColor">@android:color/transparent</item>
-    <item name="chipStrokeColor">@color/white</item>
-    <item name="chipStrokeWidth">1dp</item>
-    <item name="chipBackgroundColor">@color/chip_all_bg</item>
-    <item name="android:textColor">@color/chip_all_text</item>
-  </style>
+    <!-- 난이도 Chip 버튼 : 전체 -->
+    <style name="CustomChipChoice.ALL" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <item name="chipSurfaceColor">@android:color/transparent</item>
+        <item name="chipStrokeColor">@color/black</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipBackgroundColor">@color/chip_all_bg</item>
+        <item name="android:textColor">@color/chip_all_text</item>
+    </style>
 
-  <!-- 난이도 Chip 버튼 : 쉬움 -->
-  <style name="CustomChipChoice.Easy" parent="@style/Widget.MaterialComponents.Chip.Choice">
-    <item name="chipSurfaceColor">@android:color/transparent</item>
-    <item name="chipStrokeColor">#20B75D</item>
-    <item name="chipStrokeWidth">1dp</item>
-    <item name="chipBackgroundColor">@color/chip_easy_bg</item>
-    <item name="android:textColor">@color/chip_easy_text</item>
-  </style>
+    <!-- 난이도 Chip 버튼 : 쉬움 -->
+    <style name="CustomChipChoice.Easy" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <item name="chipSurfaceColor">@color/white</item>
+        <item name="chipStrokeColor">#20B75D</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipBackgroundColor">@color/chip_easy_bg</item>
+        <item name="android:textColor">@color/chip_easy_text</item>
+    </style>
 
-  <!-- 난이도 Chip 버튼 : 보통 -->
-  <style name="CustomChipChoice.Medium" parent="@style/Widget.MaterialComponents.Chip.Choice">
-    <item name="chipSurfaceColor">@android:color/transparent</item>
-    <item name="chipStrokeColor">#FFD234</item>
-    <item name="chipStrokeWidth">1dp</item>
-    <item name="chipBackgroundColor">@color/chip_medium_bg</item>
-    <item name="android:textColor">@color/chip_medium_text</item>
-  </style>
+    <!-- 난이도 Chip 버튼 : 보통 -->
+    <style name="CustomChipChoice.Medium" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <item name="chipSurfaceColor">@color/white</item>
+        <item name="chipStrokeColor">#FFD234</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipBackgroundColor">@color/chip_medium_bg</item>
+        <item name="android:textColor">@color/chip_medium_text</item>
+    </style>
 
-  <!-- 난이도 Chip 버튼 : 어려움-->
-  <style name="CustomChipChoice.Hard" parent="@style/Widget.MaterialComponents.Chip.Choice">
-    <item name="chipSurfaceColor">@android:color/transparent</item>
-    <item name="chipStrokeColor">#C81F1F</item>
-    <item name="chipStrokeWidth">1dp</item>
-    <item name="chipBackgroundColor">@color/chip_hard_bg</item>
-    <item name="android:textColor">@color/chip_hard_text</item>
-  </style>
+    <!-- 난이도 Chip 버튼 : 어려움-->
+    <style name="CustomChipChoice.Hard" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <item name="chipSurfaceColor">@color/white</item>
+        <item name="chipStrokeColor">#C81F1F</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipBackgroundColor">@color/chip_hard_bg</item>
+        <item name="android:textColor">@color/chip_hard_text</item>
+    </style>
 
     <style name="GroupDetailSecondTabTextAppeareance" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">15sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-  <style name="ImageView.Round" parent="">
-    <item name="cornerSize">50%</item>
-  </style>
+    <style name="ImageView.Round" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
 
-  <style name="CustomTitleSpinnerStyle" parent="Widget.AppCompat.Spinner">
-    <item name="android:overlapAnchor">false</item>
-    <item name="android:spinnerMode">dropdown</item>
-    <item name="android:background">@drawable/spinner_title_background</item>
-    <item name="android:popupBackground">@drawable/spinner_title_popup_background</item>
-    <item name="android:popupElevation">0dp</item>
-    <item name="android:dropDownVerticalOffset">3dp</item>
-  </style>
+    <style name="CustomTitleSpinnerStyle" parent="Widget.AppCompat.Spinner">
+        <item name="android:overlapAnchor">false</item>
+        <item name="android:spinnerMode">dropdown</item>
+        <item name="android:background">@drawable/spinner_title_background</item>
+        <item name="android:popupBackground">@drawable/spinner_title_popup_background</item>
+        <item name="android:popupElevation">0dp</item>
+        <item name="android:dropDownVerticalOffset">3dp</item>
+    </style>
 
-  <style name="MyAlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
-<!--    <item name="android:buttonBarPositiveButtonStyle">@color/black</item>-->
-<!--    <item name=""-->
-  </style>
+    <style name="MyAlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+        <!--    <item name="android:buttonBarPositiveButtonStyle">@color/black</item>-->
+        <!--    <item name=""-->
+    </style>
 
-  <style name="MyAlertDialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-    <item name="android:textColor">@color/black</item> <!-- 버튼 텍스트 색상 -->
-  </style>
+    <style name="MyAlertDialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/black</item> <!-- 버튼 텍스트 색상 -->
+    </style>
 </resources>

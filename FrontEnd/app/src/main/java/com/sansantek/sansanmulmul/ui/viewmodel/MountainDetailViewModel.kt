@@ -95,10 +95,10 @@ class MountainDetailViewModel : ViewModel() {
     viewModelScope.launch {
       try {
         val response = repository.getMountainCourse(mountainId)
-        if (response != null && response.courseCount > 0) {
+        if (response != null) {
           _mountainCourse.postValue(response)
         } else {
-          _mountainCourse.postValue(MountainCourse(emptyList(), 0, emptyList()))
+//          _mountainCourse.postValue(MountainCourse(emptyList(), 0, emptyList()))
           _error.postValue("코스 데이터가 없습니다.")
         }
       } catch (e: Exception) {

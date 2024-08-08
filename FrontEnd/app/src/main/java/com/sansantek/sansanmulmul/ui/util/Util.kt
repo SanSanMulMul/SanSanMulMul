@@ -143,22 +143,28 @@ object Util {
     return "$hour:$minute"
   }
 
+  fun formatMinutesToHoursAndMinutes(minutes: Int): String {
+    val hours = minutes / 60
+    val remainingMinutes = minutes % 60
+    return "${hours}h ${remainingMinutes}m"
+  }
+
   // 숫자 단위에 맞게 세자리마다 콤마를 찍어주는 메소드
   fun getNumberWithCommas(number: Int): String {
     val numberFormat = NumberFormat.getNumberInstance(Locale.US)
     return numberFormat.format(number)
   }
 
-  fun makeHeaderByAccessToken(accessToken: String): String{
+  fun makeHeaderByAccessToken(accessToken: String): String {
     return "Bearer $accessToken"
   }
 
-  fun convertHikingStyleIntListToStringList(hikingStyle : List<Int>) : List<String>{
-      val result = mutableListOf<String>()
-      hikingStyle.forEach {
-        result.add(HIKINGSTYLE[it])
-      }
-      return result
+  fun convertHikingStyleIntListToStringList(hikingStyle: List<Int>): List<String> {
+    val result = mutableListOf<String>()
+    hikingStyle.forEach {
+      result.add(HIKINGSTYLE[it])
+    }
+    return result
   }
 
   fun getRealPathFromURI(context: Context, contentUri: Uri): String? {

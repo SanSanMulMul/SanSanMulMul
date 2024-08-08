@@ -18,6 +18,7 @@ import com.naver.maps.map.overlay.PolylineOverlay
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.config.Const.Companion.COURSE_TAB
+import com.sansantek.sansanmulmul.config.Const.Companion.INFO_TAB
 import com.sansantek.sansanmulmul.data.model.CourseDetail
 import com.sansantek.sansanmulmul.databinding.FragmentMountainDetailTabSecondCourseBinding
 import com.sansantek.sansanmulmul.ui.adapter.MountainDetailCourseListAdapter
@@ -34,7 +35,7 @@ class MountainDetailTabSecondCourseFragment :
     R.layout.fragment_mountain_detail_tab_second_course
   ), OnMapReadyCallback {
   private lateinit var rootActivity: MainActivity
-  private lateinit var courseList: MutableList<CourseDetail>
+  private lateinit var courseList: List<CourseDetail>
   private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
   private val courseDetailViewModel: CourseDetailViewModel by activityViewModels()
   private lateinit var courseListAdapter: MountainDetailCourseListAdapter
@@ -60,30 +61,19 @@ class MountainDetailTabSecondCourseFragment :
   }
 
   private fun initCourse() {
-    var mountainId = mountainDetailViewModel.mountainID.value
-    courseList = mutableListOf()
+    val mountainId = mountainDetailViewModel.mountainID.value
 
-    mountainDetailViewModel.mountainID.observe(viewLifecycleOwner) {
-      mountainId = it
-    }
-
-    mountainDetailViewModel.mountainCourse.observe(viewLifecycleOwner) { mountainCourse ->
-      if (mountainCourse != null) {
-        mountainCourse.courseIds.forEach { courseId ->
-          mountainId?.let { courseDetailViewModel.fetchCourseDetail(it, courseId) }
-        }
-      } else {
-        Log.d(TAG, "initCourseData: mountain course 비었음")
+    if (mountainId != null) {
+      mountainDetailViewModel.mountainCourse.value?.let {
+        courseDetailViewModel.fetchCourseDetail(mountainId, it.courseIds)
       }
     }
 
-    courseDetailViewModel.courseDetail.observe(viewLifecycleOwner) { courseDetail ->
-      if (courseDetail != null) {
-        courseList.add(courseDetail)
-        courseListAdapter.submitList(courseList.toList())
-        Log.d(TAG, "initCourseData: $courseDetail")
-      } else {
-        Log.d(TAG, "initCourseData: course detail 없음")
+    courseDetailViewModel.courseDetails.observe(viewLifecycleOwner) {
+      val courseDetails = courseDetailViewModel.courseDetails.value
+      if (courseDetails != null) {
+        courseList = courseDetails
+        courseListAdapter.submitList(courseList)
       }
     }
 
@@ -102,9 +92,9 @@ class MountainDetailTabSecondCourseFragment :
 
         override fun onCourseInfoBtnClick(course: CourseDetail) {
           mountainDetailViewModel.setPrevTab(COURSE_TAB)
-          requireActivity().supportFragmentManager.beginTransaction()
-            .addToBackStack(null)
-            .replace(R.id.fragment_view, CourseDetailFragment()).commit()
+          courseDetailViewModel.setCourseID(course.courseId)
+          Log.d(TAG, "onCourseInfoBtnClick: ${course.courseId}")
+          changeFragmentWithSlideRightAnimation(CourseDetailFragment())
         }
       })
 
@@ -115,6 +105,11 @@ class MountainDetailTabSecondCourseFragment :
     val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
     if (dividerDrawable != null) dividerItemDecoration.setDrawable(dividerDrawable)
     courseRecyclerView.addItemDecoration(dividerItemDecoration)
+  }
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    mountainDetailViewModel.setPrevTab(INFO_TAB)
   }
 
   private fun drawPolyLineOnMap(course: CourseDetail) {
@@ -147,11 +142,6 @@ class MountainDetailTabSecondCourseFragment :
         resources.getColor(R.color.grey)
       }
     }
-  }
-
-  override fun onPause() {
-    super.onPause()
-    courseList.clear()
   }
 
   private fun initCourseMap() {

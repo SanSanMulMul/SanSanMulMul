@@ -114,9 +114,8 @@ class DownCourseChoiceDialog : DialogFragment() {
     }
 
     companion object {
-        fun newInstance(selectedUpCourse: String): DownCourseChoiceDialog {
+        fun newInstance(): DownCourseChoiceDialog {
             val args = Bundle()
-            args.putString("selectedUpCourse", selectedUpCourse)
             val fragment = DownCourseChoiceDialog()
             fragment.arguments = args
             return fragment

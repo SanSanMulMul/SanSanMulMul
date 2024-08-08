@@ -19,6 +19,7 @@ import com.sansantek.sansanmulmul.databinding.FragmentGroupCourseSearchBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupCourceSearchListAdapter
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.view.register.GroupCreateViewPagerFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.CreateGroupViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
@@ -34,16 +35,20 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
     private lateinit var adapter: GroupCourceSearchListAdapter
     private var isSearchViewClicked = false
     private val activityViewModel: MainActivityViewModel by activityViewModels()
-    private val viewModel: CreateGroupViewModel by viewModels()
+    private val viewModel: CreateGroupViewModel by activityViewModels()
+    private val viewPagerFragment by lazy {
+        parentFragment as GroupCreateViewPagerFragment
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initSearchView()
-
+        registerObserver()
         adapter = GroupCourceSearchListAdapter()
         binding.rvListSearchMountain.adapter = adapter.apply {
             setItemClickListener(object : GroupCourceSearchListAdapter.ItemClickListener {
                 override fun onMountainClick(mountain: Mountain) {
+                    viewModel.setGroupMountainId(mountain.mountainId)
                     showUpCourseChoiceDialog(mountain)
                 }
 
@@ -91,13 +96,25 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
         adapter.submitList(dataList)
     }
 
+    override fun onResume() {
+        super.onResume()
+        init()
+    }
 
-    private fun showKeyboard(view: View) {
-        view.post {
-            view.requestFocus()
-            val imm =
-                context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    private fun showGroupScheduleFragment() {
+        val fragment = GroupScheduleFragment.newInstance()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.vp_create_group, fragment)
+            .commitAllowingStateLoss()
+        Log.d("DownCourseDialog", "showGroupScheduleFragment: 레이아웃 변경 완료")
+    }
+
+    private fun registerObserver(){
+        viewModel.groupUpCourseId.observe(viewLifecycleOwner){
+            checkValid()
+        }
+        viewModel.groupDownCourseId.observe(viewLifecycleOwner){
+            checkValid()
         }
     }
 
@@ -131,8 +148,9 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
         }
         searchView.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(newText: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                // Filter the data based on the search query
+            override fun onTextChanged(newText: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(newText: Editable?) {
                 dataList = mutableListOf()
                 Log.d(TAG, "onTextChanged: $newText")
                 if (newText.isNullOrEmpty()) {
@@ -152,8 +170,6 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
                     }
                 }
             }
-
-            override fun afterTextChanged(p0: Editable?) {}
         }
         )
 
@@ -165,13 +181,33 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
     }
 
     private fun checkValid() {
-//        if (binding.groupPeopleNumberBlank.text.isNullOrBlank() || (binding.groupPeopleNumberBlank.text.toString().toIntOrNull() == null) || viewModel.groupMinAge == -1 || viewModel.groupMaxAge == -1) {
-//            viewPagerFragment.enableNextButton(false)
-//        } else {
-//            viewModel.setMaxMember(binding.groupPeopleNumberBlank.text.toString().toInt())
-//            viewPagerFragment.enableNextButton(true)
-//
-//        }
+        if(viewModel.groupUpCourseId.value != -1L && viewModel.groupDownCourseId.value != -1L){
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.groupUpCourseId.value?.let {
+                    val result = mountainService.getCourseDetail(viewModel.groupMountainId, it)
+                    if(result.isSuccessful){
+                        result.body()?.let { course ->
+                            viewModel.setGroupUpCourseName(course.courseName)
+                        }
+                    }
+                }
+                viewModel.groupDownCourseId.value?.let {
+                    val result = mountainService.getCourseDetail(viewModel.groupMountainId, it)
+                    if(result.isSuccessful){
+                        result.body()?.let { course ->
+                            viewModel.setGroupDownCourseName(course.courseName)
+                        }
+                    }
+                }
+            }
+            Log.d(TAG, "checkValid: 유효성 검사 통과")
+            viewPagerFragment.enableNextButton(true)
+
+        }
+        else{
+            Log.d(TAG, "checkValid: 유효성 검사 실패 : ${viewModel.groupUpCourseId.value}   ${viewModel.groupDownCourseId.value}")
+            viewPagerFragment.enableNextButton(false)
+        }
     }
 
     private fun init() {
@@ -181,6 +217,8 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
                 true
             )
         }
+        viewModel.setGroupUpCourseId(-1)
+        viewModel.setGroupDownCourseId(-1)
         checkValid()
     }
 

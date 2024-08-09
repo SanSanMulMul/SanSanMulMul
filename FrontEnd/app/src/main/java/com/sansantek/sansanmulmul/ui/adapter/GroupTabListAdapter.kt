@@ -33,16 +33,21 @@ class GroupTabListAdapter(private val isAllGroupLayout:Boolean):
 
         fun bindInfo(position: Int) {
             val item = getItem(position)
+            Log.d(TAG, "bindInfo: $item")
             if(!isAllGroupLayout){
+                Log.d(TAG, "bindInfo: 여기서??")
                 binding.btnRegisterGroup.visibility = View.GONE
                 binding.root.setOnClickListener{
                     itemClickListener.onGroupClick(item)
                 }
+            }else{
+                if(item.userJoined){
+                    Log.d(TAG, "bindInfo: 여기서??????")
+                    binding.btnRegisterGroup.visibility = View.GONE
+                }else{
+                    binding.btnRegisterGroup.visibility = View.VISIBLE
+                }
             }
-            if(item.userJoined){
-                binding.btnRegisterGroup.visibility = View.GONE
-            }
-            Log.d(TAG, "bindInfo: $item")
             Glide.with(binding.root).load(item.mountainImg).into(binding.groupImage)
             binding.groupTitle.text = item.crewName
 

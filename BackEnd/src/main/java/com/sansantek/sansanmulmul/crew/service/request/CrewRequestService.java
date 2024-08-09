@@ -53,6 +53,9 @@ public class CrewRequestService {
             throw new RuntimeException("이미 가입 요청이 존재합니다.");
         }
 
+        // 그룹의 최대 인원 수 초과 시 가입 못한다고 에러 던지기
+
+
         CrewRequest crewRequest = new CrewRequest();
         crewRequest.setCrew(crew);
         crewRequest.setUser(user);

@@ -30,6 +30,7 @@ import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainSearchViewModel
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import kotlin.math.abs
 
 private const val TAG = "HomeTabFragment 싸피"
@@ -57,6 +58,7 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
     private fun init() {
         searchEditTextView = binding.includeEditText.etSearch
 
+        setGreeting()
         loadUserProfile()
 
         // 검색 완료 시 프래그먼트 이동
@@ -73,6 +75,21 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
             }
             false
         })
+    }
+
+    private fun setGreeting() {
+        val calendar = Calendar.getInstance()
+        val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+
+        val timePeriod = when (currentHour) {
+            in 5..8 -> "좋은 아침이에요,"
+            in 9..11 -> "활기찬 오전 보내세요,"
+            in 12..17 -> "오늘 오후도 화이팅!"
+            in 18..20 -> "남은 하루도 화이팅~!"
+            else -> "편안한 밤 되세요,"
+        }
+
+        binding.tvGreeting.text = timePeriod
     }
 
     private fun loadUserProfile() {

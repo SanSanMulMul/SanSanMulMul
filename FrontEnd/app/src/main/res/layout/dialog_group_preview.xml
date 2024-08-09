@@ -85,6 +85,7 @@
                                 app:layout_constraintDimensionRatio="1:1"
                                 >
                                 <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/iv_group_leader_img"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:adjustViewBounds="true"
@@ -165,6 +166,7 @@
                     app:layout_constraintBottom_toBottomOf="parent">
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/acb_btn_close"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -173,6 +175,7 @@
                         android:textColor="@color/group_tab_register_alert_grey" />
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/acb_btn_register"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="4"

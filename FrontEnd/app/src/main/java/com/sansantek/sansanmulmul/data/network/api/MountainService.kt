@@ -1,12 +1,16 @@
 package com.sansantek.sansanmulmul.data.network.api
 
 
+import com.sansantek.sansanmulmul.data.model.CourseDetail
 import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.data.model.MountainSunriseSunset
 import com.sansantek.sansanmulmul.data.model.MountainCourse
 import com.sansantek.sansanmulmul.data.model.MountainWeather
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -35,6 +39,9 @@ interface MountainService {
     @GET("mountain/{mountainId}/course")
     suspend fun getMountainCourse(@Path("mountainId") id: Int): Response<MountainCourse>
 
+    @GET("/mountain/like")
+    suspend fun getLikedMountainList(@Header("Authorization") accessToken: String) : Response<List<Mountain>>
+
     // 산 추천 (봄)
     @GET("mountain/recommend/spring")
     suspend fun getMountainSpring(): List<Mountain>
@@ -50,4 +57,14 @@ interface MountainService {
     // 산 추천 (겨울)
     @GET("mountain/recommend/winter")
     suspend fun getMountainWinter(): List<Mountain>
+
+    @POST("mountain/{mountainId}")
+    suspend fun addLikeMountain(@Header("Authorization") accessToken: String, @Path("mountainId") mountainId: Int) : Response<String>
+
+    @DELETE("mountain/{mountainId}")
+    suspend fun deleteLikeMountain(@Header("Authorization") accessToken: String, @Path("mountainId") mountainId: Int) : Response<String>
+
+
+    @GET("mountain/{mountainId}/course/{courseId}")
+    suspend fun getCourseDetail(@Path("mountainId") mountainId: Int, @Path("courseId") courseId: Long) : Response<CourseDetail>
 }

@@ -112,7 +112,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
             when (currentStatus) {
                 // 아직 기록 시작 안했을 때 => 상행으로 바뀜 버튼은 하행 버튼으로
                 BEFORE_HIKING -> {
-                    launchChronometer()
                     tryRecordingServiceByStatus("상행")
                     hikingRecordingTabViewModel.setRecordingStatus(HIKING)
                 }
@@ -120,7 +119,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                 HIKING -> {
                     deActivateRecordingService()
                     resetChronometerTime()
-                    launchChronometer()
                     tryRecordingServiceByStatus("하행")
                     hikingRecordingTabViewModel.setRecordingStatus(AFTER_HIKING)
                 }
@@ -219,6 +217,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         if(permissionChecker.checkPermission(rootActivity, PERMISSION)){
             //권한있는 경우
             if(checkRecordingService() == "종료"){
+                launchChronometer()
                 activateRecordingService(status)
             }
         }else{

@@ -2,14 +2,18 @@ package com.sansantek.sansanmulmul.ui.util
 
 import android.content.Context
 import android.content.res.Resources
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
+import android.provider.MediaStore
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.TypedValue
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.Const.Companion.HIKINGSTYLE
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.text.NumberFormat
@@ -139,14 +143,39 @@ object Util {
     return "$hour:$minute"
   }
 
+  fun formatMinutesToHoursAndMinutes(minutes: Int): String {
+    val hours = minutes / 60
+    val remainingMinutes = minutes % 60
+    return "${hours}h ${remainingMinutes}m"
+  }
+
   // 숫자 단위에 맞게 세자리마다 콤마를 찍어주는 메소드
   fun getNumberWithCommas(number: Int): String {
     val numberFormat = NumberFormat.getNumberInstance(Locale.US)
     return numberFormat.format(number)
   }
 
-  fun makeHeaderByAccessToken(accessToken: String): String{
+  fun makeHeaderByAccessToken(accessToken: String): String {
     return "Bearer $accessToken"
+  }
+
+  fun convertHikingStyleIntListToStringList(hikingStyle: List<Int>): List<String> {
+    val result = mutableListOf<String>()
+    hikingStyle.forEach {
+      result.add(HIKINGSTYLE[it])
+    }
+    return result
+  }
+
+  fun getRealPathFromURI(context: Context, contentUri: Uri): String? {
+    val projection = arrayOf(MediaStore.Images.Media.DATA)
+    val cursor: Cursor? = context.contentResolver.query(contentUri, projection, null, null, null)
+    cursor?.use {
+      val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+      it.moveToFirst()
+      return it.getString(columnIndex)
+    }
+    return null
   }
 
 }

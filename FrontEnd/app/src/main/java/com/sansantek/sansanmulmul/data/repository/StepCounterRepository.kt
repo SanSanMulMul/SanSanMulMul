@@ -15,8 +15,8 @@ class StepCounterRepository private constructor(context: Context) {
 
     private val stepCounterDao = database.stepCounterDao()
 
-    suspend fun getStepCount(year: Int, month: Int, day: Int, status: String): StepCount? {
-        return stepCounterDao.getStep(year, month, day, status)
+    suspend fun getStepCount(year: Int, month: Int, day: Int): StepCount? {
+        return stepCounterDao.getStep(year, month, day)
     }
 
     suspend fun insertStepCount(stepCount: StepCount){

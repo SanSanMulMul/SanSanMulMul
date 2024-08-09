@@ -22,7 +22,7 @@ import com.sansantek.sansanmulmul.ui.view.register.RegisterStartFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-private const val TAG = "MainActivity 싸피"
+private const val TAG = "LoginActivity 싸피"
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::inflate) {
     private var token : KakaoLoginToken? = null
@@ -36,7 +36,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
                 Log.d(TAG, "onCreate: token: $token")
                 val newToken = userService.refreshToken(makeHeaderByAccessToken(token!!.accessToken))
                 Log.d(TAG, "onCreate: result : ${newToken.code()}")
-                if(newToken.code() == 202){
+                if(newToken.code() == 200){
                     launch(Dispatchers.IO) {
                         newToken.body()?.let {
                             sharedPreferencesUtil.saveKakaoLoginToken(it)
@@ -45,7 +45,10 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
                     val intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                     }
-                    launch(Dispatchers.Main){ startActivity(intent) }
+                    launch(Dispatchers.Main){
+                        startActivity(intent)
+                        finish()
+                    }
                 }
                 else{
                     launch(Dispatchers.Main) {
@@ -64,6 +67,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
     private fun checkAlreadyLogin(): Boolean{
         token = sharedPreferencesUtil.getKakaoLoginToken()
         return token != null
+    }
+
+    override fun onDestroy() {
+        Log.d(TAG, "onDestroy: Login Activity 종료")
+        super.onDestroy()
     }
 }
 

@@ -15,56 +15,86 @@ import android.view.WindowManager
 import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.Alarm
+import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.databinding.FragmentGroupDetailBinding
 import com.sansantek.sansanmulmul.databinding.PopupGroupDetailDrawerBinding
 import com.sansantek.sansanmulmul.databinding.PopupGroupDetailNotiBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupDetailAlarmListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.GroupDetailDrawerListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.DividerItemDecorator
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.crewService
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.view.groupchat.GroupChatFragment
-import com.sansantek.sansanmulmul.ui.view.register.GroupCreateViewPagerFragment
+import com.sansantek.sansanmulmul.ui.viewmodel.GroupDetailViewModel
+import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 private const val TAG = "GroupTabFragment 싸피"
 
-class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
+class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDetailBinding>(
   FragmentGroupDetailBinding::bind,
   R.layout.fragment_group_detail
 ) {
     private var popupShow = false
     private var drawerShow = false
+    private val activityViewModel: MainActivityViewModel by activityViewModels()
+    private val viewModel: GroupDetailViewModel by activityViewModels()
     private lateinit var popUp : PopupWindow
     private lateinit var drawerUp : PopupWindow
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         popupShow = false
-        changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment())
+
+        binding.tvGroupTitle.text = crew.crewName
+        val startDate =  formatToCustomPattern(crew.crewStartDate)
+        val endDate = formatToCustomPattern(crew.crewEndDate)
+        binding.tvGroupSchedule.text = "$startDate - $endDate"
+        binding.tvGroupPerson.text = "${crew.crewCurrentMembers} / ${crew.crewMaxMembers}"
+
+        lifecycleScope.launch {
+            activityViewModel.token?.let {
+                val result = crewService.getCrewGalleryList(makeHeaderByAccessToken(it.accessToken), crew.crewId)
+                if(result.isSuccessful){
+                    viewModel.setPictureList(result.body()!!)
+                }else{
+                    Log.d(TAG, "onViewCreated: 갤러리 정보 가저오기 에러")
+                }
+            }
+        }
+
+
+        changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment(crew))
         binding.layoutTab.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 Log.d(TAG, "onTabSelected: ${tab?.position}")
                 when (tab?.position) {
                      0 -> {
                         Log.d(TAG, "onTabSelected: groupInfoTab")
-                         changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment())
+                         changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment(crew))
                     }
                     1 -> {
                         Log.d(TAG, "onTabSelected: hikingInfoTab")
-                        changeGroupDetailFragmentView(GroupDetailTabSecondHikingInfoFragment())
+                        changeGroupDetailFragmentView(GroupDetailTabSecondHikingInfoFragment(crew))
                     }
                     2 -> {
                         Log.d(TAG, "onTabSelected: galleryTab")
-                        changeGroupDetailFragmentView(GroupDetailTabThirdGalleryInfoFragment())
+                        changeGroupDetailFragmentView(GroupDetailTabThirdGalleryInfoFragment(crew))
                     }
                     else -> {
                         Log.d(TAG, "onTabSelected: else")
-                        changeGroupDetailFragmentView(GroupDetailTabThirdGalleryInfoFragment())
+                        changeGroupDetailFragmentView(GroupDetailTabThirdGalleryInfoFragment(crew))
                     }
                 }
             }
@@ -255,4 +285,17 @@ class GroupDetailFragment : BaseFragment<FragmentGroupDetailBinding>(
       displayMetrics.heightPixels
     }
   }
+
+    private fun formatToCustomPattern(isoDateTime: String): String {
+        // ISO 8601 형식의 문자열을 ZonedDateTime으로 파싱
+        val localDateTime = LocalDateTime.parse(isoDateTime, DateTimeFormatter.ISO_DATE_TIME)
+
+        // 원하는 형식으로 변환
+        val formattedDate = localDateTime.format(DateTimeFormatter.ofPattern("yy.MM.dd"))
+        val dayOfWeek = localDateTime.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN)
+        val time = localDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+        // 최종 포맷팅된 문자열 반환
+        return "$formattedDate($dayOfWeek) $time"
+    }
 }

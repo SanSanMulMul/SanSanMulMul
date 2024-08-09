@@ -20,8 +20,6 @@ class ShowGroupRegisterSuccessDialog : DialogFragment() {
     // 뷰 바인딩 정의
     private var _binding: DialogGroupRegisterSuccessBinding? = null
     private val binding get() = _binding!!
-    private val styleList = mutableListOf("#등산도 식후경", "#등산에 집중","#어쩌구", "#저쩌구")
-    private lateinit var groupHikingStyleListAdapter: GroupHikingStyleListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,8 +28,9 @@ class ShowGroupRegisterSuccessDialog : DialogFragment() {
     ): View {
         _binding = DialogGroupRegisterSuccessBinding.inflate(inflater, container, false)
 
-
-        groupHikingStyleListAdapter = GroupHikingStyleListAdapter()
+        binding.ibCloseBtn.setOnClickListener {
+            dismiss()
+        }
 
         val view = binding.root
 

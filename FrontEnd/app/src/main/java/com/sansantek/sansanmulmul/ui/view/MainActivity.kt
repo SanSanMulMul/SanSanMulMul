@@ -13,11 +13,11 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import androidx.activity.viewModels
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.sansantek.sansanmulmul.R
-import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.config.BaseActivity
 import com.sansantek.sansanmulmul.config.Const.Companion.REQUEST_IMAGE_CAPTURE
 import com.sansantek.sansanmulmul.databinding.ActivityMainBinding
@@ -27,7 +27,11 @@ import com.sansantek.sansanmulmul.ui.view.hometab.HomeTabFragment
 import com.sansantek.sansanmulmul.ui.view.maptab.MapTabFragment
 import com.sansantek.sansanmulmul.ui.view.mypagetab.MyPageTabFragment
 import com.sansantek.sansanmulmul.ui.util.PermissionChecker
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
@@ -41,6 +45,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     private var photoURI: Uri? = null
     private lateinit var currentPhotoPath: String
     private var bitmap: Bitmap? = null
+    private val activityViewModel : MainActivityViewModel by viewModels()
 
     /** permission check **/
     private val checker = PermissionChecker(this)
@@ -63,9 +68,99 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        lifecycleScope.launch(Dispatchers.IO) {
+            launch(Dispatchers.IO) {
+                loadUserProfile()
+            }
+            launch(Dispatchers.IO) {
+                loadUserHikingStyle()
+            }
+            launch(Dispatchers.IO) {
+                loadFollowInfo()
+            }
+            launch(Dispatchers.IO) {
+                loadLikedMountainList()
+            }
+            launch(Dispatchers.IO) {
+                loadMyPageInfo()
+            }
+            launch(Dispatchers.Main) {
+                initBottomNav()
+            }
+            changeFragment(HomeTabFragment())
+        }
+    }
 
-        initBottomNav()
-        changeFragment(HomeTabFragment())
+    private fun loadLikedMountainList(){
+        lifecycleScope.launch(Dispatchers.IO) {
+            activityViewModel.token?.let {
+                launch(Dispatchers.IO) {
+                    val likedMountains = mountainService.getLikedMountainList(makeHeaderByAccessToken(it.accessToken))
+                    if(likedMountains.code() == 200){
+                        launch(Dispatchers.Main){
+                            likedMountains.body()?.let {
+                                activityViewModel.setLikedMountainList(it)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun loadMyPageInfo(){
+        lifecycleScope.launch(Dispatchers.IO) {
+            activityViewModel.token?.let {
+                launch(Dispatchers.IO) {
+                    val myPageInfo = userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
+                    launch (Dispatchers.Main){
+                        activityViewModel.setMyPageInfo(myPageInfo)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun loadFollowInfo(){
+        lifecycleScope.launch(Dispatchers.IO) {
+            activityViewModel.token?.let {
+                launch(Dispatchers.IO) {
+                    val followerResult = userService.getUserFollower(makeHeaderByAccessToken(it.accessToken))
+                    launch(Dispatchers.Main){
+                        activityViewModel.setFollowerList(followerResult)
+                    }
+                }
+                launch(Dispatchers.IO) {
+                    val followingResult = userService.getUserFollowing(makeHeaderByAccessToken(it.accessToken))
+                    launch(Dispatchers.Main) {
+                        activityViewModel.setFollowingList(followingResult)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun loadUserProfile(){
+        lifecycleScope.launch(Dispatchers.IO) {
+            activityViewModel.token?.let {
+                val user = userService.loadUserProfile(makeHeaderByAccessToken(it.accessToken))
+                if (user.code() == 200) {
+                    user.body()?.let { usr ->
+                        activityViewModel.setUser(usr)
+                        activityViewModel.setUserProfileImgUrl(usr.userProfileImg)
+                        activityViewModel.setUserTitle(usr.userStaticBadge)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun loadUserHikingStyle(){
+        activityViewModel.token?.let {
+            lifecycleScope.launch(Dispatchers.Main) {
+                activityViewModel.setHikingStyles(userService.getHikingStyle(makeHeaderByAccessToken(it.accessToken)).sorted())
+            }
+        }
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -109,6 +204,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         try {
+            Log.d(TAG, "onActivityResult: 여기를 왜가?")
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                 bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     ImageDecoder.decodeBitmap(
@@ -124,8 +220,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         } catch (e: IOException) {
             null
         }
-        val fragment =
-            supportFragmentManager.findFragmentById(R.id.fragment_view) as HikingRecordingTabFragment
         Log.d(TAG, "onActivityResult: $bitmap")
 //        fragment.setImageBitmap(bitmap)
     }

@@ -13,8 +13,9 @@
     android:layout_height="0dp"
     android:background="@drawable/extra_info_gradient"
     app:layout_constraintBottom_toTopOf="@id/layout_course_detail_info"
-    app:layout_constraintHorizontal_chainStyle="packed"
-    app:layout_constraintTop_toTopOf="parent">
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_chainStyle="packed"
+    app:layout_constraintVertical_weight="0.25">
 
     <!-- 이전 버튼 -->
     <androidx.appcompat.widget.AppCompatImageButton
@@ -34,14 +35,14 @@
       android:id="@+id/tv_mountain_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="가야산"
       android:textColor="@color/white"
       android:textStyle="bold"
       app:layout_constraintBottom_toTopOf="@id/tv_course_name"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_chainStyle="packed" />
+      app:layout_constraintVertical_chainStyle="packed"
+      tools:text="가야산" />
 
     <!-- 코스 이름 -->
     <TextView
@@ -49,31 +50,31 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="5dp"
-      android:text="가야산국립공원남산제일봉2코스"
-      android:textSize="20sp"
+      android:textSize="22sp"
       android:textStyle="bold"
       app:layout_constraintBottom_toTopOf="@id/iv_course_difficulty"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/tv_mountain_name" />
+      app:layout_constraintTop_toBottomOf="@id/tv_mountain_name"
+      tools:text="가야산국립공원남산제일봉2코스" />
 
     <androidx.appcompat.widget.AppCompatTextView
       android:id="@+id/iv_course_difficulty"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="10dp"
+      android:layout_marginTop="20dp"
       android:background="@drawable/rounded_rectangle_white_20"
-      android:backgroundTint="@color/difficulty_hard"
       android:paddingHorizontal="20dp"
       android:paddingVertical="4dp"
-      android:text="어려움"
       android:textColor="@color/white"
       android:textSize="12sp"
       android:textStyle="bold"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="@id/tv_course_name"
       app:layout_constraintStart_toStartOf="@id/tv_course_name"
-      app:layout_constraintTop_toBottomOf="@id/tv_course_name" />
+      app:layout_constraintTop_toBottomOf="@id/tv_course_name"
+      tools:backgroundTint="@color/difficulty_hard"
+      tools:text="어려움" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -83,7 +84,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_constraintBottom_toTopOf="@id/course_detail_map"
-    app:layout_constraintTop_toBottomOf="@id/layout_course_detail_title">
+    app:layout_constraintTop_toBottomOf="@id/layout_course_detail_title"
+    app:layout_constraintVertical_weight="0.4">
 
     <!-- 출발지&목적지 -->
     <androidx.cardview.widget.CardView
@@ -106,14 +108,14 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:gravity="right"
-          android:text="청량동\n탐방지원센터"
           android:textSize="20sp"
           android:textStyle="bold"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toStartOf="@id/iv_arrow_left_and_right"
           app:layout_constraintHorizontal_chainStyle="packed"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
+          app:layout_constraintTop_toTopOf="parent"
+          tools:text="청량동\n탐방지원센터" />
 
         <ImageView
           android:id="@+id/iv_arrow_left_and_right"
@@ -132,13 +134,13 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:gravity="left"
-          android:text="남산제일봉"
           android:textSize="20sp"
           android:textStyle="bold"
           app:layout_constraintBottom_toBottomOf="@id/tv_start"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toEndOf="@id/iv_arrow_left_and_right"
-          app:layout_constraintTop_toTopOf="@id/tv_start" />
+          app:layout_constraintTop_toTopOf="@id/tv_start"
+          tools:text="남산제일봉" />
 
       </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -195,13 +197,13 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="10dp"
-          android:text="1h 31m"
           android:textSize="24sp"
           android:textStyle="bold"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="@id/tv_course_time_title"
           app:layout_constraintStart_toStartOf="@id/view_dot"
-          app:layout_constraintTop_toBottomOf="@id/tv_course_time_title" />
+          app:layout_constraintTop_toBottomOf="@id/tv_course_time_title"
+          tools:text="1h 31m" />
 
 
       </androidx.constraintlayout.widget.ConstraintLayout>
@@ -257,13 +259,13 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="10dp"
-          android:text="2.1km"
           android:textSize="24sp"
           android:textStyle="bold"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="@id/tv_course_length_title"
           app:layout_constraintStart_toStartOf="@id/view_dot2"
-          app:layout_constraintTop_toBottomOf="@id/tv_course_length_title" />
+          app:layout_constraintTop_toBottomOf="@id/tv_course_length_title"
+          tools:text="2.1km" />
 
 
       </androidx.constraintlayout.widget.ConstraintLayout>
@@ -273,13 +275,13 @@
   </androidx.constraintlayout.widget.ConstraintLayout>
 
   <!-- 지도 -->
-  <View
+  <com.naver.maps.map.MapView
     android:id="@+id/course_detail_map"
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_marginHorizontal="20dp"
     android:layout_marginBottom="20dp"
-    android:background="@drawable/rounded_rectangle_green_20"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/layout_course_detail_info" />
+    app:layout_constraintTop_toBottomOf="@id/layout_course_detail_info"
+    app:layout_constraintVertical_weight="0.4" />
 </androidx.constraintlayout.widget.ConstraintLayout>

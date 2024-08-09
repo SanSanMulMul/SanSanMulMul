@@ -45,11 +45,11 @@ class QRCodeDialog : DialogFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    
+    createQRCode()  // QR코드 생성
 
-    // QR코드 생성
-    // TODO : 방장인지 멤버인지에 따라 분기처리하기
-    createQRCode()
   }
+
 
   private fun createQRCode() {
     try {

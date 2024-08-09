@@ -14,5 +14,6 @@ import java.util.Optional;
 @Repository
 public interface CrewGalleryRepository extends JpaRepository<CrewGallery, Integer> {
     List<CrewGallery> findByCrew(Crew crew);
+    CrewGallery findByPictureId(Integer pictureId);
 }
 

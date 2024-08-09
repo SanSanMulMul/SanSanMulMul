@@ -50,10 +50,10 @@ interface CrewService {
     suspend fun getGroupDetailFirstTabData(@Path("crewId") groupId: Int): Response<GroupDetailFirstData>
 
     @DELETE("crew/{crewId}/{userId}")
-    suspend fun kickMember(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Path("userId")userId: Int) : Response<Any>
+    suspend fun kickMember(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Path("userId")userId: Int) : Response<String>
 
     @PUT("crew/{crewId}/leader")
-    suspend fun delegateLeader(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Body delegateUser: DelegateUser): Response<Any>
+    suspend fun delegateLeader(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Body delegateUser: DelegateUser): Response<String>
 
     @GET("crew/{crewId}/requests")
     suspend fun getRequestList(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int): Response<List<RequestMember>>

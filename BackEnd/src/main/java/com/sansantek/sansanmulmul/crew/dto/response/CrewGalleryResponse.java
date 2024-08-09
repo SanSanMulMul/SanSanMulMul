@@ -10,11 +10,13 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class CrewGalleryResponse {
-    // Crew - crewId
+    // Crew - crewId (없앰)
+    // pictureID
     // User - 닉네임, 프사, [본인 사진인지 여부]
     // Crew_Gallery - imgurl , createdAt
 
-    private int crewId;
+//    private int crewId;
+    private int picId;
     private String userNickname;
     private String userProfileImg;
     private boolean isOwner; //본인 사진인지 여부

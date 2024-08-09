@@ -180,10 +180,11 @@ public class CrewController {
     // (2) [탭1] 그룹 정보
     @GetMapping("/detail/{crewId}/info")
     @Operation(summary = "그룹 상세 조회 [탭1] 그룹 정보", description = "그룹 상세보기 - (탭1) 그룹 정보")
-    public ResponseEntity<?> getCrewDetailCrewInfo(@PathVariable int crewId) {
+    public ResponseEntity<?> getCrewDetailCrewInfo( @PathVariable int crewId) {
         HttpStatus status = HttpStatus.OK;
 
         try {
+
             CrewDetailResponse crewDetailResponse = crewService.getCrewDetailCrewInfo(crewId);
 
             return new ResponseEntity<>(crewDetailResponse, status);

@@ -122,7 +122,8 @@ public class CrewRequestService {
                     user.getUserNickname(),
                     user.getUserGender().toString(),
                     user.getUserProfileImg(),
-                    user.getUserStaticBadge()
+                    user.getUserStaticBadge(),
+                    crewUser.isLeader()
             );
             userResponses.add(userResponse);
         }

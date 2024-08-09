@@ -49,6 +49,7 @@ abstract class BaseFragment<B : ViewBinding>(
       View.VISIBLE
   }
 
+
   fun changeFragmentWithPopUpAnimation(toFragment: Fragment) {
     val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
     fragmentTransaction.setCustomAnimations(
@@ -85,4 +86,9 @@ abstract class BaseFragment<B : ViewBinding>(
       .replace(R.id.fragment_view, toFragment).commit()
   }
 
+  protected fun safeCall(action: () -> Unit) {
+    if (_binding != null) {
+      action()
+    }
+  }
 }

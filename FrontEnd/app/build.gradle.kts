@@ -2,9 +2,9 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-  alias(libs.plugins.android.application)
-  alias(libs.plugins.jetbrains.kotlin.android)
-  id("com.google.devtools.ksp")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.devtools.ksp")
 }
 // local에서 키를 가져옴
 val properties = Properties()
@@ -17,137 +17,147 @@ val BUILD_NATIVE_APP_KEY: String = properties.getProperty("BUILD_NATIVE_APP_KEY"
 val SERVER_IP: String = properties.getProperty("SERVER_IP")
 val DATABASE_NAME: String = properties.getProperty("DATABASE_NAME")
 android {
-  namespace = "com.sansantek.sansanmulmul"
-  compileSdk = 34
+    namespace = "com.sansantek.sansanmulmul"
+    compileSdk = 34
 
-  defaultConfig {
-    applicationId = "com.sansantek.sansanmulmul"
-    minSdk = 26
-    targetSdk = 34
-    versionCode = 1
-    versionName = "1.0"
+    defaultConfig {
+        applicationId = "com.sansantek.sansanmulmul"
+        minSdk = 26
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
 
-    //    AndroidManifest에서 쓰기 위한 placeHolder
-    manifestPlaceholders["naverClientId"]= naverClientId
+        //    AndroidManifest에서 쓰기 위한 placeHolder
+        manifestPlaceholders["naverClientId"] = naverClientId
 
-    manifestPlaceholders["NATIVE_APP_KEY"]= NATIVE_APP_KEY
+        manifestPlaceholders["NATIVE_APP_KEY"] = NATIVE_APP_KEY
 
-    buildConfigField("String", "NATIVE_APP_KEY", BUILD_NATIVE_APP_KEY)
-    buildConfigField("String", "SERVER_IP", SERVER_IP)
-    buildConfigField("String", "DATABASE_NAME", DATABASE_NAME)
+        buildConfigField("String", "NATIVE_APP_KEY", BUILD_NATIVE_APP_KEY)
+        buildConfigField("String", "SERVER_IP", SERVER_IP)
+        buildConfigField("String", "DATABASE_NAME", DATABASE_NAME)
 
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  }
-
-  buildFeatures {
-    buildConfig = true
-  }
-
-  buildTypes {
-    release {
-      isMinifyEnabled = false
-      proguardFiles(
-        getDefaultProguardFile("proguard-android-optimize.txt"),
-        "proguard-rules.pro"
-      )
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-  }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-  }
-  kotlinOptions {
-    jvmTarget = "1.8"
-  }
 
-  dataBinding {
-    enable = true
-  }
-  viewBinding {
-    enable = true
-  }
+    buildFeatures {
+        buildConfig = true
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    dataBinding {
+        enable = true
+    }
+    viewBinding {
+        enable = true
+    }
 }
 
 dependencies {
-  //Room 의존성 추가
-  implementation(libs.androidx.room.runtime)
-  implementation(libs.room.ktx)
-  annotationProcessor(libs.room.compiler)
-  ksp(libs.room.compiler)
+    //Room 의존성 추가
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.room.ktx)
+    annotationProcessor(libs.room.compiler)
+    ksp(libs.room.compiler)
 
-  // Retrofit 관련 의존
-  implementation(libs.retrofit)
-  implementation(libs.converter.gson)
+    // Retrofit 관련 의존
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
-  //'com.github.bumptech.glide:glide:4.11.0'
-  implementation(libs.glide.v4110)
+    //'com.github.bumptech.glide:glide:4.11.0'
+    implementation(libs.glide.v4110)
 
-  //'com.github.bumptech.glide:compiler:4.11.0'
-  annotationProcessor(libs.compiler)
-  // sdk 24 버전에서 LocalDate를 쓸 수 없는 것에 대한 대안을 위한 추가
-  implementation (libs.threetenabp)
+    //'com.github.bumptech.glide:compiler:4.11.0'
+    annotationProcessor(libs.compiler)
+    // sdk 24 버전에서 LocalDate를 쓸 수 없는 것에 대한 대안을 위한 추가
+    implementation(libs.threetenabp)
 
 //  "com.google.android.gms:play-services-location:21.0.1"
-  implementation(libs.play.services.location)
+    implementation(libs.play.services.location)
 
-  //  카카오 관련 전체 모듈 설치
-  // com.kakao.sdk:v2-all:2.20.3
-  implementation(libs.v2.all)
+    //  카카오 관련 전체 모듈 설치
+    // com.kakao.sdk:v2-all:2.20.3
+    implementation(libs.v2.all)
 
-  // 코루틴
-  implementation(libs.kotlinx.coroutines.android)
-
-
-  implementation (libs.glide)
-
-  implementation(libs.google.flexbox)
-
-  implementation(libs.android.segmented)
-  implementation(fileTree(mapOf("dir" to "libs/android-segmented-control-master", "include" to listOf("*.aar", "*.jar"))))
+    // 코루틴
+    implementation(libs.kotlinx.coroutines.android)
 
 
-  implementation(libs.dotsindicator)
+    implementation(libs.glide)
 
-  //framework ktx dependency 추가
-  implementation(libs.androidx.fragment.ktx)
+    implementation(libs.google.flexbox)
 
-  // https://github.com/square/retrofit
-  implementation(libs.retrofit)
-  implementation(libs.converter.scalars)
-
-  // https://github.com/square/okhttp
-  implementation(libs.okhttp)
-
-  // https://github.com/square/retrofit/tree/master/retrofit-converters/gson
-  implementation(libs.converter.gson)
-  implementation(libs.converter.scalars)
+    implementation(libs.android.segmented)
+    implementation(
+        fileTree(
+            mapOf(
+                "dir" to "libs/android-segmented-control-master",
+                "include" to listOf("*.aar", "*.jar")
+            )
+        )
+    )
 
 
-  // https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor
-  implementation(libs.logging.interceptor)
+    implementation(libs.dotsindicator)
 
-  // gson
-  implementation(libs.gson)
+    //framework ktx dependency 추가
+    implementation(libs.androidx.fragment.ktx)
+
+    // https://github.com/square/retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.scalars)
+
+    // https://github.com/square/okhttp
+    implementation(libs.okhttp)
+
+    // https://github.com/square/retrofit/tree/master/retrofit-converters/gson
+    implementation(libs.converter.gson)
+    implementation(libs.converter.scalars)
 
 
-  implementation(libs.androidx.constraintlayout)
+    // https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor
+    implementation(libs.logging.interceptor)
 
-  implementation(libs.androidx.core.ktx)
+    // gson
+    implementation(libs.gson)
 
-  // RecyclerView
-  implementation(libs.androidx.recyclerview)
 
-  // 네이버 지도 SDK
-  implementation(libs.map.sdk)
+    implementation(libs.androidx.constraintlayout)
 
-  implementation(libs.androidx.activity)
-  implementation(libs.androidx.constraintlayout)
-  implementation(libs.androidx.viewbinding)
-  implementation(libs.androidx.core.ktx)
-  implementation(libs.androidx.appcompat)
-  implementation(libs.material)
-  testImplementation(libs.junit)
-  androidTestImplementation(libs.androidx.junit)
-  androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.core.ktx)
+
+    // RecyclerView
+    implementation(libs.androidx.recyclerview)
+
+    // 네이버 지도 SDK
+    implementation(libs.map.sdk)
+
+    implementation(libs.google.core)
+    implementation(libs.zxing.android.embedded)
+
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.viewbinding)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 
 }

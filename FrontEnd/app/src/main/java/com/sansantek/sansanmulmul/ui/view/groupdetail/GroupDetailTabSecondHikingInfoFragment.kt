@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
+import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.data.model.Weather
 import com.sansantek.sansanmulmul.databinding.FragmentGroupDetailTabSecondHikingInfoFragmentBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupDetailTabWeatherInfoListAdapter
@@ -17,7 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 private const val TAG = "GroupDetailTabSecondHikingInfoFragment_싸피"
-class GroupDetailTabSecondHikingInfoFragment() : BaseFragment<FragmentGroupDetailTabSecondHikingInfoFragmentBinding>(
+class GroupDetailTabSecondHikingInfoFragment(private val crew: Crew) : BaseFragment<FragmentGroupDetailTabSecondHikingInfoFragmentBinding>(
     FragmentGroupDetailTabSecondHikingInfoFragmentBinding::bind,
     R.layout.fragment_group_detail_tab_second_hiking_info_fragment
 ) {

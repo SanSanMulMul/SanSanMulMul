@@ -24,6 +24,8 @@
   <color name="light_green">#C5D275</color>
   <color name="light_blue">#BEDDFA</color>
   <color name="light_purple">#D5BEFA</color>
+  <color name="orange">#FFCC33</color>
+  <color name="light_yellow">#FFECAA</color>
   <color name="gradientStartColor">#51D767</color>
   <color name="gradientEndColor">#B690E9</color>
   <color name="sansanmulmul_green">#A1CCA8</color>
@@ -77,10 +79,14 @@
   <color name="my_page_edit_hiking_third_style_color">#C6ECB5</color>
   <color name="my_page_edit_hiking_fourth_style_color">#BDE7FF</color>
   <color name="my_page_edit_hiking_fifth_style_color">#CEBDFF</color>
-
+  <color name="my_page_edit_hiking_sixth_style_color">#FFCC33</color>
 
   <color name="hiking_recording_tab_button_pink">#F8ACAC</color>
   <color name="hiking_recording_tab_button_purple">#C0ADF6</color>
+
+  <color name="chip_course_difficulty_easy">#20B75D</color>
+  <color name="chip_course_difficulty_medium">#FFD234</color>
+  <color name="chip_course_difficulty_hard">#C81F1F</color>
 
 
 </resources>

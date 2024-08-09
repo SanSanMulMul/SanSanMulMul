@@ -8,18 +8,22 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.Const
+import com.sansantek.sansanmulmul.config.Const.Companion.HIKINGSTYLE
+import com.sansantek.sansanmulmul.config.Const.Companion.HikingBackgroundTintList
+import com.sansantek.sansanmulmul.data.model.CrewInfo
 import com.sansantek.sansanmulmul.databinding.ListGroupHikingStyleBinding
 
 private const val TAG = "GroupDetailTabHikingSty 싸피"
 class GroupDetailTabHikingStyleListAdapter():
-    ListAdapter<String, GroupDetailTabHikingStyleListAdapter.GroupHikingStyleListHolder>(Comparator) {
+    ListAdapter<Int, GroupDetailTabHikingStyleListAdapter.GroupHikingStyleListHolder>(Comparator) {
 
-    companion object Comparator : DiffUtil.ItemCallback<String>() {
-        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+    companion object Comparator : DiffUtil.ItemCallback<Int>() {
+        override fun areItemsTheSame(oldItem: Int, newItem: Int): Boolean {
             return System.identityHashCode(oldItem) == System.identityHashCode(newItem)
         }
 
-        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+        override fun areContentsTheSame(oldItem: Int, newItem: Int): Boolean {
             return oldItem == newItem
         }
     }
@@ -29,25 +33,10 @@ class GroupDetailTabHikingStyleListAdapter():
 
         fun bindInfo(position: Int) {
             val item = getItem(position)
-            binding.tvHikingStyle.text = item.toString()
+            binding.tvHikingStyle.text = HIKINGSTYLE[item]
+            binding.tvHikingStyle.backgroundTintList = ContextCompat.getColorStateList(binding.root.context, HikingBackgroundTintList[position])
+            binding.tvHikingStyle.text = "#${HIKINGSTYLE[item]}"
             Log.d(TAG, "bindInfo: ${binding.tvHikingStyle.text}")
-            when(item){
-                "#등산도 식후경" ->{
-                    binding.tvHikingStyle.backgroundTintList = ContextCompat.getColorStateList(binding.root.context, R.color.pink)
-                }
-                "#등산에 집중" -> {
-                    binding.tvHikingStyle.backgroundTintList = ContextCompat.getColorStateList(binding.root.context, R.color.light_green)
-                }
-                "#어쩌구" -> {
-                    binding.tvHikingStyle.backgroundTintList = ContextCompat.getColorStateList(binding.root.context, R.color.light_blue)
-                }
-                "#저쩌구" -> {
-                    binding.tvHikingStyle.backgroundTintList = ContextCompat.getColorStateList(binding.root.context, R.color.light_purple)
-                }
-                else -> {
-
-                }
-            }
         }
     }
 

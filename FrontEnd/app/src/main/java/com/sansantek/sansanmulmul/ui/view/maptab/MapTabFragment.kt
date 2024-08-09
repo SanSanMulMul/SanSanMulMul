@@ -5,8 +5,13 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +39,10 @@ import com.sansantek.sansanmulmul.databinding.FragmentMapTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.BottomSheetMountainListAdapter
 import com.sansantek.sansanmulmul.ui.util.PermissionChecker
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
+import com.sansantek.sansanmulmul.ui.view.hometab.MountainSearchResultFragment
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
+import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
+import com.sansantek.sansanmulmul.ui.viewmodel.MountainSearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -54,6 +62,9 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     private lateinit var locationClient: FusedLocationProviderClient
     private lateinit var mountainList: List<Mountain>
     private lateinit var mountainCourseInfo: List<MountainCourse>
+    private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
+    private lateinit var searchEditTextView: EditText
+    private val searchViewModel: MountainSearchViewModel by activityViewModels()
 
     // 권한 코드
     private val LOCATION_PERMISSION_REQUEST_CODE = 5000
@@ -84,6 +95,7 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         }
         init()
 //        onMapReady(naverMap)
+        searchMountain()
 
     }
 
@@ -94,9 +106,34 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         }
     }
 
+    private fun searchMountain() {
+        searchEditTextView = binding.layoutSearchMountain.etSearchMountain
+
+        // 검색 완료 시 프래그먼트 이동
+        searchEditTextView.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE ||
+                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
+            ) {
+                val mountainSearchResultFragment = MountainSearchResultFragment()
+                val searchKeyword = searchEditTextView.text.toString()
+                searchViewModel.setSearchKeyword(searchKeyword)
+
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.fragment_view, mountainSearchResultFragment).commit()
+                return@OnEditorActionListener true
+            }
+            false
+        })
+    }
+
     private fun init() {
         activity?.let { hideBottomNav(it.findViewById(R.id.main_layout_bottom_navigation), false) }
         initBottomSheet()
+        val dividerDrawable = activity?.getDrawable(R.drawable.recyclerview_divider_lightgray)
+        val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        if (dividerDrawable != null) dividerItemDecoration.setDrawable(dividerDrawable)
+        binding.rvBottomSheetMountain.addItemDecoration(dividerItemDecoration)
         requestPermissions()
     }
 
@@ -111,6 +148,8 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
             mountainList,
             object : BottomSheetMountainListAdapter.OnItemClickListener {
                 override fun onItemClick(mountain: SearchMountainListItem) {
+                    mountainDetailViewModel.setMountainID(mountain.mountainId)
+
                     requireActivity().supportFragmentManager.beginTransaction().addToBackStack(null)
                         .replace(R.id.fragment_view, MountainDetailFragment()).commit()
                 }
@@ -120,10 +159,8 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         mountainRecyclerView.layoutManager = LinearLayoutManager(context)
         mountainRecyclerView.adapter = mountainListAdapter
 
-        val dividerDrawable = activity?.getDrawable(R.drawable.recyclerview_divider_lightgray)
-        val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        if (dividerDrawable != null) dividerItemDecoration.setDrawable(dividerDrawable)
-        mountainRecyclerView.addItemDecoration(dividerItemDecoration)
+
+
     }
 
 
@@ -131,9 +168,10 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         return nearbyMountains.map { mountainDto ->
             val courseCount = mountainCourses[mountainDto.mountainId]?.courseCount ?: 0
             SearchMountainListItem(
-                mountainDto.mountainImg,
-                mountainDto.mountainName,
-                courseCount // 코스 수 추가
+                mountainId = mountainDto.mountainId,
+                mountainImg = mountainDto.mountainImg,
+                mountainName = mountainDto.mountainName,
+                courseCnt = courseCount // 코스 수 추가
             )
         }
     }
@@ -188,35 +226,39 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     override fun onMapReady(naverMap: NaverMap) {
         Log.d(TAG, "onMapReady: 실행 중")
         this.naverMap = naverMap
-        initLocationSource()
-        Log.d(TAG, "onMapReady: 마지막 위치 ${locationSource.lastLocation}")
+        if(isAdded){
+            initLocationSource()
+            Log.d(TAG, "onMapReady: 마지막 위치 ${locationSource.lastLocation}")
 
-        // 위치 추적 모드 설정
-        naverMap.locationTrackingMode = LocationTrackingMode.Follow
+            // 위치 추적 모드 설정
+            naverMap.locationTrackingMode = LocationTrackingMode.Follow
 
-        // 위치 버튼 활성화
-        naverMap.uiSettings.isLocationButtonEnabled = true
+            // 위치 버튼 활성화
+            naverMap.uiSettings.isLocationButtonEnabled = true
 
-        // 줌 버튼 비활성화
-        val uiSettings: UiSettings = naverMap.uiSettings
-        uiSettings.isZoomControlEnabled = false
+            // 줌 버튼 비활성화
+            val uiSettings: UiSettings = naverMap.uiSettings
+            uiSettings.isZoomControlEnabled = false
 
-        // 기본 카메라 위치 설정
-        naverMap.moveCamera(CameraUpdate.zoomTo(10.0))
+            // 기본 카메라 위치 설정
+            naverMap.moveCamera(CameraUpdate.zoomTo(10.0))
 
-        requestLocationUpdates()
+            requestLocationUpdates()
+        }
     }
 
     private fun requestLocationUpdates() {
         locationSource.activate { provider ->
-            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return@activate
-            }
-            locationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    updateLocation(location)
-                } else {
-                    Log.d(TAG, "requestLocationUpdates: 위치 정보를 가져올 수 없습니다.")
+            activity?.let {
+                if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return@activate
+                }
+                locationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                    if (location != null) {
+                        updateLocation(location)
+                    } else {
+                        Log.d(TAG, "requestLocationUpdates: 위치 정보를 가져올 수 없습니다.")
+                    }
                 }
             }
         }
@@ -235,28 +277,40 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     }
 
     private fun showNearbyMountains(location: Location) {
+        Log.d(TAG, "showNearbyMountains: 메서드 호출됨")
+        // Fragment의 뷰가 아직 존재하는지 확인
+        if (view == null || !isAdded) {
+            Log.e(TAG, "Fragment의 뷰가 존재하지 않거나 추가되지 않았습니다.")
+            return
+        }
+
         // mountainList가 초기화되었는지 확인
-        if (!::mountainList.isInitialized) {
-            Log.e(TAG, "mountainList가 초기화되지 않았습니다.")
-        } else {
+        if (!::mountainList.isInitialized || activity == null) {
+            Log.d(TAG, "mountainList가 초기화되지 않았습니다.")
             fetchMountainListAndUpdateLocation()
-        }
+        } else {
+            Log.d(TAG, "mountainList : ${mountainList}")
+            // 현재 위치를 가져옴
+            Log.d(TAG, "showNearbyMountains: ${locationSource.lastLocation}")
+            val currentLocation = locationSource.lastLocation ?: location
+            
+            val currentLat = currentLocation.latitude
+            val currentLon = currentLocation.longitude
 
-        // 현재 위치를 가져옴
-        val currentLocation = locationSource.lastLocation ?: return
+            // 50km 이내의 산들을 필터링
+            val nearbyMountains = mountainList.filter { mountain ->
+                val distance = calculateDistance(currentLat, currentLon, mountain.mountainLat, mountain.mountainLon)
+                distance <= 50 // 50km 이내에 있는 산 필터링
+            }
+            Log.d(TAG, "필터 산 : ${nearbyMountains}")
 
-        val currentLat = currentLocation.latitude
-        val currentLon = currentLocation.longitude
+            if (nearbyMountains.isEmpty()) {
+                Log.d(TAG, "50km 이내에 산이 없습니다.")
+                return
+            }
 
-        // 50km 이내의 산들을 필터링
-        val nearbyMountains = mountainList.filter { mountain ->
-            val distance = calculateDistance(currentLat, currentLon, mountain.mountainLat, mountain.mountainLon)
-            distance <= 50 // 50km 이내에 있는 산 필터링
-        }
-
-        // 마운틴 리스트가 초기화되었는지 확인하고 초기화되었으면 아래 로직을 실행
-        if (::mountainList.isInitialized) {
             nearbyMountains.forEach { mountain ->
+                Log.d(TAG, "마커 추가: ${mountain.mountainName} at (${mountain.mountainLat}, ${mountain.mountainLon})")
                 val marker = Marker().apply {
                     position = LatLng(mountain.mountainLat, mountain.mountainLon)
                     map = naverMap
@@ -289,11 +343,12 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
                     true
                 }
             }
+
             Log.d(TAG, "showNearbyMountains: $nearbyMountains")
 
             // 코스 수 받아오기
             val nearbyMountainIds = nearbyMountains.map { it.mountainId }
-            lifecycleScope.launch {
+            viewLifecycleOwner.lifecycleScope.launch {
                 val mountainCourse = mutableMapOf<Int, MountainCourse>()
                 nearbyMountainIds.forEach { mountainId ->
                     try {
@@ -315,37 +370,41 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
                     }
                 }
                 val mountains = initMountainData(nearbyMountains, mountainCourse)
-                initMountainListRecyclerView(mountains)
+                safeCall{
+                    initMountainListRecyclerView(mountains)
+                }
             }
-        } else {
-            Log.e(TAG, "Mountain list is not initialized")
+
         }
     }
 
+
     private fun fetchMountainListAndUpdateLocation() {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if(isAdded){
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            lifecycleScope.launch {
-                try {
-                    // 산 리스트를 가져와서 초기화
-                    mountainList = mountainService.getMountainList()
+                lifecycleScope.launch {
+                    try {
+                        // 산 리스트를 가져와서 초기화
+                        mountainList = mountainService.getMountainList()
 
-                    // 위치 정보를 가져와서 업데이트
-                    locationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                        if (location != null) {
-                            updateLocation(location)
-                        } else {
-                            Log.d(TAG, "fetchMountainListAndUpdateLocation: 위치 정보를 가져올 수 없습니다.")
+                        // 위치 정보를 가져와서 업데이트
+                        locationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                            if (location != null) {
+                                updateLocation(location)
+                            } else {
+                                Log.d(TAG, "fetchMountainListAndUpdateLocation: 위치 정보를 가져올 수 없습니다.")
+                            }
                         }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "fetchMountainListAndUpdateLocation: 산 리스트를 가져오는 중 오류 발생", e)
                     }
-                } catch (e: Exception) {
-                    Log.e(TAG, "fetchMountainListAndUpdateLocation: 산 리스트를 가져오는 중 오류 발생", e)
                 }
+            } else {
+                Log.e(TAG, "fetchMountainListAndUpdateLocation: 위치 권한이 없습니다.")
+                // 필요한 경우 권한 요청 코드를 추가할 수 있음
             }
-        } else {
-            Log.e(TAG, "fetchMountainListAndUpdateLocation: 위치 권한이 없습니다.")
-            // 필요한 경우 권한 요청 코드를 추가할 수 있습니다.
         }
     }
 

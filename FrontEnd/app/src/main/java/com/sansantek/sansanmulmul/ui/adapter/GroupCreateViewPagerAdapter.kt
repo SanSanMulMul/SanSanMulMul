@@ -12,8 +12,8 @@ import com.sansantek.sansanmulmul.ui.view.creategroup.GroupScheduleFragment
 import com.sansantek.sansanmulmul.ui.view.creategroup.GroupHikingStyleFragment
 
 
-class GroupCreateViewPagerAdapter(fragmentActivity: FragmentActivity) :
-    FragmentStateAdapter(fragmentActivity) {
+class GroupCreateViewPagerAdapter(fragment: Fragment) :
+    FragmentStateAdapter(fragment) {
 
     // 페이지 갯수 설정
     override fun getItemCount(): Int = 6

@@ -118,22 +118,22 @@ class MountainDetailTabSecondCourseFragment :
         val boundsBuilder = LatLngBounds.Builder()
 
         if (courses.isEmpty()) return
-        
+
         courses.forEach { course ->
             Log.d(TAG, "drawPolyLineOnMap: ${course.courseName}")
-            val trackPaths =
-                course.tracks[0].trackPaths.map { LatLng(it.trackPathLat, it.trackPathLon) }
-
-            val polyline = PolylineOverlay().apply {
-                coords = trackPaths
-                color = getPolyLineColor(course.courseLevel)
-                width = 20
-                zIndex = 1
+            course.tracks.forEach { track ->
+                val path =
+                    track.trackPaths.map { LatLng(it.trackPathLat, it.trackPathLon) }
+                val polyline = PolylineOverlay().apply {
+                    coords = path
+                    color = getPolyLineColor(course.courseLevel)
+                    width = 20
+                    zIndex = 1
+                }
+                polyline.map = naverMap
+                polylines.add(polyline)
+                path.forEach { latLng -> boundsBuilder.include(latLng) }
             }
-            polyline.map = naverMap
-            polylines.add(polyline)
-
-            trackPaths.forEach { latLng -> boundsBuilder.include(latLng) }
         }
         val latLngBounds = boundsBuilder.build()
         naverMap?.moveCamera(CameraUpdate.fitBounds(latLngBounds, 100))
@@ -186,7 +186,7 @@ class MountainDetailTabSecondCourseFragment :
                 }
                 filterCourses(selectedChips)
             } else {
-                filterCourses(listOf())
+                binding.chipAll.isChecked = true
             }
         }
     }

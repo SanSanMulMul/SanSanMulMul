@@ -4,14 +4,20 @@ import com.sansantek.sansanmulmul.data.model.CreateCrew
 import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.data.model.CrewGallery
 import com.sansantek.sansanmulmul.data.model.CrewInfo
+import com.sansantek.sansanmulmul.data.model.DelegateUser
+import com.sansantek.sansanmulmul.data.model.GroupDetailFirstData
 import com.sansantek.sansanmulmul.data.model.ProfileUpdateData
+import com.sansantek.sansanmulmul.data.model.RequestMember
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -39,4 +45,22 @@ interface CrewService {
     @Multipart
     @POST("crew/detail/{crewId}/gallery")
     suspend fun postPictureToGallery(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Part image: MultipartBody.Part) : Response<Boolean>
+
+    @GET("crew/detail/{crewId}/info")
+    suspend fun getGroupDetailFirstTabData(@Path("crewId") groupId: Int): Response<GroupDetailFirstData>
+
+    @DELETE("crew/{crewId}/{userId}")
+    suspend fun kickMember(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Path("userId")userId: Int) : Response<Any>
+
+    @PUT("crew/{crewId}/leader")
+    suspend fun delegateLeader(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Body delegateUser: DelegateUser): Response<Any>
+
+    @GET("crew/{crewId}/requests")
+    suspend fun getRequestList(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int): Response<List<RequestMember>>
+
+    @PATCH("crew/{requestId}/refuse")
+    suspend fun refuseRegister(@Header("Authorization") accessToken: String, @Path("requestId")requestId: Int) : Response<String>
+
+    @PATCH("crew/{requestId}/accept")
+    suspend fun acceptRegister(@Header("Authorization") accessToken: String, @Path("requestId")requestId: Int) : Response<String>
 }

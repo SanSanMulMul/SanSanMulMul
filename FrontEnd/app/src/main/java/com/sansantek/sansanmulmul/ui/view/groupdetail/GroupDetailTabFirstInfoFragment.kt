@@ -122,7 +122,7 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
                                     val result = crewService.delegateLeader(
                                         makeHeaderByAccessToken(it.accessToken),
                                         crew.crewId,
-                                        DelegateUser(crew.crewId, user.userId)
+                                        user.userId
                                     )
                                     if (result.isSuccessful) {
                                         showToast("위임에 성공했습니다!")
@@ -130,6 +130,8 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
                                         groupDetailFirstTabMemberListAdapter.refreshList()
                                         return true
                                     }else{
+                                        Log.d(TAG, "onLeaderDelegateClick: $result")
+                                        showToast("위임에 실패했습니다!")
                                         return false
                                     }
                                 }

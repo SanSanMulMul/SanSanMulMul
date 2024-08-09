@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.net.Uri
-import android.net.UrlQuerySanitizer.IllegalCharacterValueSanitizer.LT_OK
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -42,6 +41,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
@@ -115,9 +115,7 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
                 checkValidNickname()
             }
         }
-
-
-
+        
         binding.btnSave.setOnClickListener {
             lifecycleScope.launch {
                 val styleList = hikeStyleList.filter {
@@ -128,16 +126,35 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
                 Log.d(TAG, "onViewCreated: styleList $styleList")
                 activityViewModel.token?.let {
                     val isValid = userService.chkDuplicateNickname(
-                        it.accessToken,
+                        makeHeaderByAccessToken(it.accessToken),
                         binding.etNickname.text.toString()
                     )
                     if (isValid.code() != 409) {
-
-                        var result = getRealPathFromURI(requireContext(), uri)?.let { file ->
-                            val file = File(file)
-                            val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
-                            val body =
+                        if (!::uri.isInitialized) {
+                            uri = Uri.EMPTY
+                        }
+                        Log.d(TAG, "onViewCreated: uri정보 : $uri")
+                        Log.d(
+                            TAG, "onViewCreated: uri의 진짜 경로 ${
+                                getRealPathFromURI(
+                                    requireContext(),
+                                    uri
+                                )
+                            }"
+                        )
+                        var result = getRealPathFromURI(requireContext(), uri).let { file ->
+                            val body = if (file == null) {
+                                MultipartBody.Part.createFormData(
+                                    "image",
+                                    "",
+                                    RequestBody.create("image/*".toMediaTypeOrNull(), ByteArray(0))
+                                )
+                            } else {
+                                val file = File(file)
+                                val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
                                 MultipartBody.Part.createFormData("image", file.name, requestBody)
+                            }
+                            Log.d(TAG, "onViewCreated: 여기도 실행")
                             userService.updateUserProfile(
                                 makeHeaderByAccessToken(it.accessToken),
                                 body,
@@ -147,7 +164,6 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
                                     styleList
                                 )
                             )
-
                         }
 
                         lifecycleScope.launch {

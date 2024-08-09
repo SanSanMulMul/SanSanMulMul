@@ -16,16 +16,6 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
     FragmentMyPageFirstTabBinding::bind,
     R.layout.fragment_my_page_first_tab
 ) {
-//    private var favoriteMountainList = mutableListOf(
-//            Mountain(R.drawable.dummy1, "가야산", 6),
-//            Mountain(R.drawable.dummy2, "가리산", 3),
-//            Mountain(R.drawable.dummy3, "가리왕산", 2),
-//            Mountain(R.drawable.dummy3, "가리왕산", 2),
-//            Mountain(R.drawable.dummy3, "가리왕산", 2),
-//            Mountain(R.drawable.dummy3, "가리왕산", 2),
-//            Mountain(R.drawable.dummy3, "가리왕산", 2)
-//        )
-
     private var historyMountainList = mutableListOf(
         MountainHistory(R.drawable.dummy1, "가야산", Date()),
         MountainHistory(R.drawable.dummy2, "가리산", Date()),

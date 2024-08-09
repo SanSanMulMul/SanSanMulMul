@@ -1,3 +1,5 @@
+package com.sansantek.sansanmulmul.ui.view.hometab
+
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,15 +16,16 @@ import androidx.viewpager2.widget.ViewPager2
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.config.BaseFragment
+import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.data.model.News
 import com.sansantek.sansanmulmul.data.model.Recommendation
 import com.sansantek.sansanmulmul.databinding.FragmentHomeTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.FirstRecommendationViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.NewsViewPagerAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.HorizontalMarginItemDecoration
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.newsService
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
-import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService // mountainService 추가
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
@@ -39,7 +42,7 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
     private lateinit var searchEditTextView: EditText
     private val searchViewModel: MountainSearchViewModel by activityViewModels()
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
-    private lateinit var newsList: List<News>
+    private lateinit var newsList : List<News>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,8 +52,6 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         setNewsData {
             initNewsViewPager(binding.layoutCarouselNews, it)
         }
-
-        // 계절별 추천 데이터를 받아와서 ViewPager를 초기화합니다.
         loadSeasonalRecommendations()
     }
 
@@ -77,15 +78,16 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         })
     }
 
-    private fun loadUserProfile() {
+    private fun loadUserProfile(){
         sharedPreferencesUtil.getKakaoLoginToken()?.let {
             lifecycleScope.launch {
                 val user = userService.loadUserProfile(makeHeaderByAccessToken(it.accessToken))
-                if (user.code() == 200) {
+                if(user.code() == 200){
                     user.body()?.let {
                         binding.tvShared.text = it.userNickName
                     }
-                } else {
+                }
+                else{
                     Log.d(TAG, "loadUserProfile: result :${user.code()}")
                     Log.d(TAG, "loadUserProfile: ${user.body()}")
                 }
@@ -111,32 +113,14 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         autoScroll(viewPager, 5000)
     }
 
-    private fun loadSeasonalRecommendations() {
-        loadRecommendationData(binding.vpRecommendation1, "spring", 3000)
-        loadRecommendationData(binding.vpRecommendation2, "summer", 3500)
-        loadRecommendationData(binding.vpRecommendation3, "fall", 4000)
-        loadRecommendationData(binding.vpRecommendation4, "winter", 4000)
-    }
-
-    private fun loadRecommendationData(viewPager: ViewPager2, season: String, autoScrollDelay: Long) {
-        lifecycleScope.launch {
-            val recommendationList = when (season) {
-                "spring" -> mountainService.getMountainSpring()
-                "summer" -> mountainService.getMountainSummer()
-                "fall" -> mountainService.getMountainFall()
-                "winter" -> mountainService.getMountainWinter()
-                else -> emptyList()
-            }.map { Recommendation(it.mountainName, "난이도", R.drawable.dummy1) } // 난이도와 이미지는 필요에 따라 수정
-
-            initRecommendationViewPager(viewPager, recommendationList, autoScrollDelay)
-        }
-    }
-
-    private fun initRecommendationViewPager(viewPager: ViewPager2, itemList: List<Recommendation>, autoScrollDelay: Long) {
+    private fun initRecommendationViewPager(viewPager: ViewPager2, recommendationList: List<Recommendation>, autoScrollDelay: Long) {
         val adapter = FirstRecommendationViewPagerAdapter(
-            itemList,
+            recommendationList,
             object : FirstRecommendationViewPagerAdapter.OnItemClickListener {
                 override fun onItemClick(item: Recommendation) {
+                    // 뷰모델을 가져와서 산 ID 넘겨주기
+                    mountainDetailViewModel.setMountainID(item.mountainId)
+
                     requireActivity().supportFragmentManager.beginTransaction()
                         .addToBackStack(null)
                         .replace(R.id.fragment_view, MountainDetailFragment()).commit()
@@ -157,7 +141,6 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
             val offset = position * -(2 * 180) // offset 값으로 간격 조정
             page.translationX = offset
         }
-
         autoScroll(viewPager, autoScrollDelay)
     }
 
@@ -165,9 +148,58 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         lifecycleScope.launch {
             newsList = newsService.getNewsKeyword("가리산")
             Log.d(TAG, "setNewsData: ${newsList}")
-            onNewsDataReady(newsList)
+
+            // 각 뉴스 항목에 산 이미지를 설정
+            val updatedNewsList = newsList.map { news ->
+                val mountainImg = getMountainImage(news.mountainName)
+                news.copy(mountainImg = mountainImg)
+            }
+
+            // 비동기 처리 후 결과를 콜백으로 전달
+            onNewsDataReady(updatedNewsList)
         }
     }
+
+    private suspend fun getMountainImage(mountainName: String): String {
+        val response = mountainService.searchMountainList(mountainName)
+        return if (response.isSuccessful) {
+            val mountainList = response.body() ?: emptyList()
+            if (mountainList.isNotEmpty()) {
+                mountainList[0].mountainImg ?: "@drawable/default_mountain" // 기본 이미지 URL
+            } else {
+                "@drawable/default_mountain" // 기본 이미지 URL
+            }
+        } else {
+            "@drawable/default_mountain" // 기본 이미지 URL
+        }
+    }
+
+    private fun loadSeasonalRecommendations() {
+        loadRecommendationData(binding.vpRecommendation1, "spring", 5000)
+        loadRecommendationData(binding.vpRecommendation2, "summer", 5000)
+        loadRecommendationData(binding.vpRecommendation3, "fall", 5000)
+        loadRecommendationData(binding.vpRecommendation4, "winter", 5000)
+    }
+
+    private fun loadRecommendationData(viewPager: ViewPager2, season: String, autoScrollDelay: Long) {
+        lifecycleScope.launch {
+            val recommendationList = when (season) {
+                "spring" -> mountainService.getMountainSpring()
+                "summer" -> mountainService.getMountainSummer()
+                "fall" -> mountainService.getMountainFall()
+                "winter" -> mountainService.getMountainWinter()
+                else -> emptyList()
+            }.map {
+                Recommendation(it.mountainId, it.mountainName, it.mountainHeight, it.mountainImg)
+            }
+
+            // 계절별 데이터를 로그로 출력
+            Log.d(TAG, "Season - $season, Data - $recommendationList")
+
+            initRecommendationViewPager(viewPager, recommendationList, autoScrollDelay)
+        }
+    }
+
 
     private fun autoScroll(viewPager: ViewPager2, delay: Long) {
         val handler = Handler(Looper.getMainLooper())

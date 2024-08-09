@@ -33,7 +33,7 @@ interface MountainService {
 
     // 산 코스 조회
     @GET("mountain/{mountainId}/course")
-    suspend fun getMountainCourse(@Path("mountainId") id: Int): MountainCourse
+    suspend fun getMountainCourse(@Path("mountainId") id: Int): Response<MountainCourse>
 
     // 산 추천 (봄)
     @GET("mountain/recommend/spring")

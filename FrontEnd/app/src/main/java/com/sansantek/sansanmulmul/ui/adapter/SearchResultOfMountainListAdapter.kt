@@ -10,19 +10,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.data.model.Mountain
+import com.sansantek.sansanmulmul.data.model.MountainWithCourseCnt
 import com.sansantek.sansanmulmul.databinding.ItemSearchResultOfMountainBinding
 
 class SearchResultOfMountainListAdapter :
-    ListAdapter<Mountain, SearchResultOfMountainListAdapter.MountainViewHolder>(
+    ListAdapter<MountainWithCourseCnt, SearchResultOfMountainListAdapter.MountainViewHolder>(
         Comparator
     ) {
 
-    companion object Comparator : DiffUtil.ItemCallback<Mountain>() {
-        override fun areItemsTheSame(oldItem: Mountain, newItem: Mountain): Boolean {
+    companion object Comparator : DiffUtil.ItemCallback<MountainWithCourseCnt>() {
+        override fun areItemsTheSame(
+            oldItem: MountainWithCourseCnt,
+            newItem: MountainWithCourseCnt
+        ): Boolean {
             return System.identityHashCode(oldItem) == System.identityHashCode(newItem)
         }
 
-        override fun areContentsTheSame(oldItem: Mountain, newItem: Mountain): Boolean {
+        override fun areContentsTheSame(
+            oldItem: MountainWithCourseCnt,
+            newItem: MountainWithCourseCnt
+        ): Boolean {
             return oldItem == newItem
         }
     }
@@ -42,22 +49,23 @@ class SearchResultOfMountainListAdapter :
         RecyclerView.ViewHolder(binding.root) {
         fun bindInfo(position: Int) {
             val item = getItem(position)
+            val mountain = item.mountain
 //            binding.ivMountainImg.setImageResource(item.mountainImg)
 //            binding.ivMountainImg.
-            if (item.mountainImg == null) {
+            if (mountain.mountainImg == null) {
                 // 없을 경우 기본 이미지. 글라이드 : 링크이미지 받아올 때
                 Glide.with(binding.root)
                     .load("https://images-ext-1.discordapp.net/external/9pyEBG4x_J2aG-j5BeoaA8edEpEpfQEOEO9SdmT9hIg/https/k.kakaocdn.net/dn/cwObI9/btsGqPcg5ic/UHYbwvy2M2154EdZSpK8B1/img_110x110.jpg%2C?format=webp")
                     .into(binding.ivMountainImg)
             } else {
                 Glide.with(binding.root)
-                    .load(item.mountainImg)
+                    .load(mountain.mountainImg)
                     .into(binding.ivMountainImg)
             }
-            binding.tvMountainName.text = item.mountainName
-            binding.tvCourseCnt.text = "코스 총 " + 6 + "개"
+            binding.tvMountainName.text = mountain.mountainName
+            binding.tvCourseCnt.text = "코스 총 ${item.courseCount}개"
 
-            binding.root.setOnClickListener { itemClickListener.onItemClick(item) }
+            binding.root.setOnClickListener { itemClickListener.onItemClick(mountain) }
         }
     }
 

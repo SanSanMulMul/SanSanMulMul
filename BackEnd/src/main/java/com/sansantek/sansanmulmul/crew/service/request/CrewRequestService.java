@@ -143,11 +143,15 @@ public class CrewRequestService {
         List<CrewRequestResponse> responseList = new ArrayList<>();
 
         for (CrewRequest request : requests) {
+            User user = request.getUser();
             CrewRequestResponse response = new CrewRequestResponse(
                     request.getRequestId(),
-                    request.getUser().getUserName(),
-                    request.getUser().getUserNickname(),
-                    request.getCrewRequestStatus().name()
+                    user.getUserName(),
+                    user.getUserNickname(),
+                    request.getCrewRequestStatus().name(),
+                    user.getUserGender().toString(),
+                    user.getUserProfileImg(),
+                    user.getUserStaticBadge()
             );
             responseList.add(response);
         }

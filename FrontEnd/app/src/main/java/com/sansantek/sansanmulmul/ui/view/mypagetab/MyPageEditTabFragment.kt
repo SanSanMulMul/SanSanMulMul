@@ -115,7 +115,7 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
                 checkValidNickname()
             }
         }
-        
+
         binding.btnSave.setOnClickListener {
             lifecycleScope.launch {
                 val styleList = hikeStyleList.filter {

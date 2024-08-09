@@ -2,6 +2,8 @@ package com.sansantek.sansanmulmul.ui.view.mypagetab
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
@@ -10,12 +12,17 @@ import com.sansantek.sansanmulmul.databinding.FragmentMyPageFirstTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.MyPageFirstTabFavoriteMountainListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.MyPageFirstTabHistoryMountainListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.SpaceItemDecoration
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
+import kotlinx.coroutines.launch
 import java.util.Date
 
 class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
     FragmentMyPageFirstTabBinding::bind,
     R.layout.fragment_my_page_first_tab
 ) {
+    private val activityViewModel : MainActivityViewModel by activityViewModels()
     private var historyMountainList = mutableListOf(
         MountainHistory(R.drawable.dummy1, "가야산", Date()),
         MountainHistory(R.drawable.dummy2, "가리산", Date()),
@@ -37,9 +44,7 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
                     isMeasurementCacheEnabled = false
                 }
             favoriteMountainAdapter = MyPageFirstTabFavoriteMountainListAdapter()
-//            favoriteMountainAdapter.apply {
-//                submitList(favoriteMountainList)
-//            }
+            loadMyFavoriteMountainList()
             adapter = favoriteMountainAdapter
             addItemDecoration(SpaceItemDecoration(30))
         }
@@ -61,6 +66,16 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
             }
             adapter = historyMountainAdapter
             addItemDecoration(SpaceItemDecoration(30))
+        }
+    }
+    fun loadMyFavoriteMountainList(){
+        activityViewModel.token?.let {
+            lifecycleScope.launch {
+                val result = mountainService.getLikedMountainList(makeHeaderByAccessToken(it.accessToken))
+                if(result.isSuccessful){
+                    favoriteMountainAdapter.submitList(result.body()!!)
+                }
+            }
         }
     }
 }

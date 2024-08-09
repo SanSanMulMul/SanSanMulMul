@@ -285,16 +285,16 @@ public class CrewController {
 
     ////////////////////////////////////////////////////////////
 
-    /* 1. 그룹 내 멤버들 */
-    @GetMapping("/member/{crewId}")
-    public ResponseEntity<?> getCrewMembers(@PathVariable int crewId) {
-        try {
-            List<CrewUserResponse> members = crewRequestService.getCrewMembers(crewId);
-            return ResponseEntity.ok(members);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+    /* 1. 그룹 내 멤버들 */  //-> 위에 [탭1] 그룹정보로 통합
+//    @GetMapping("/member/{crewId}")
+//    public ResponseEntity<?> getCrewMembers(@PathVariable int crewId) {
+//        try {
+//            List<CrewUserResponse> members = crewRequestService.getCrewMembers(crewId);
+//            return ResponseEntity.ok(members);
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
 
     /* [그룹 목록] // 내거 보여주는 목록 */
     /* 2. '내' 진행 중 그룹 */

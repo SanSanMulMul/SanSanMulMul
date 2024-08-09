@@ -33,8 +33,8 @@ class GroupDetailTabHikingStyleListAdapter():
 
         fun bindInfo(position: Int) {
             val item = getItem(position)
-            binding.tvHikingStyle.text = HIKINGSTYLE[item]
-            binding.tvHikingStyle.backgroundTintList = ContextCompat.getColorStateList(binding.root.context, HikingBackgroundTintList[position])
+            Log.d(TAG, "bindInfo: ${HIKINGSTYLE[item]}")
+            binding.tvHikingStyle.backgroundTintList = ContextCompat.getColorStateList(binding.root.context, HikingBackgroundTintList[item])
             binding.tvHikingStyle.text = "#${HIKINGSTYLE[item]}"
             Log.d(TAG, "bindInfo: ${binding.tvHikingStyle.text}")
         }

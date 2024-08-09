@@ -19,6 +19,7 @@ class NewsViewPagerAdapter(private val items: List<News>) :
     RecyclerView.Adapter<NewsViewPagerAdapter.RecommendationViewHolder>() {
 
     class RecommendationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val tvMountainNAme: TextView = view.findViewById(R.id.tv_mountain_name)
         val tvNewsTitle: TextView = view.findViewById(R.id.tv_news_title)
         val ivNewsImg: ImageView = view.findViewById(R.id.iv_news_img)
     }
@@ -35,6 +36,7 @@ class NewsViewPagerAdapter(private val items: List<News>) :
 //        holder.bind(items[actualPosition])
         val item = items[actualPosition]
         holder.tvNewsTitle.text = item.title
+        holder.tvMountainNAme.text = item.mountainName
         Log.d(TAG, "onBindViewHolder: ${item.title}")
         // 이미지 로드
         Glide.with(holder.itemView.context)

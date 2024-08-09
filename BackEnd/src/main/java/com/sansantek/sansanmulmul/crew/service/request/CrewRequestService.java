@@ -116,15 +116,14 @@ public class CrewRequestService {
         List<CrewUserResponse> userResponses = new ArrayList<>();
         for (CrewUser crewUser : crewUsers) {
             User user = crewUser.getUser();
-            CrewUserResponse userResponse = new CrewUserResponse(
-                    user.getUserId(),
-                    user.getUserName(),
-                    user.getUserNickname(),
-                    user.getUserGender().toString(),
-                    user.getUserProfileImg(),
-                    user.getUserStaticBadge(),
-                    crewUser.isLeader()
-            );
+            CrewUserResponse userResponse = CrewUserResponse.builder()
+                    .userId(user.getUserId())
+                    .userName(user.getUserName())
+                    .userNickname(user.getUserNickname())
+                    .userGender(user.getUserGender().toString())
+                    .userProfileImg(user.getUserProfileImg())
+                    .userStaticBadge(user.getUserStaticBadge())
+                    .build();
             userResponses.add(userResponse);
         }
         return userResponses;

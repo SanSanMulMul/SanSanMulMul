@@ -34,10 +34,10 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button"
-        android:background="@drawable/kakao_login_medium_wide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:background="@drawable/kakao_login_medium_wide"
         android:textColor="@color/button_text_color"
         android:textSize="@dimen/textSize_15"
         app:layout_constraintBottom_toTopOf="@id/viewGroup2"
@@ -56,9 +56,9 @@
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="45dp"
+            android:layout_width="wrap_content"
             android:layout_height="45dp"
-            android:src="@drawable/animalogo"
+            android:src="@drawable/sansanmulmul_logo"
             app:layout_constraintBottom_toTopOf="@id/textView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sansantek.sansanmulmul.R
@@ -52,27 +51,21 @@ class MountainSearchResultFragment : BaseFragment<FragmentMountainSearchResultBi
         searchViewModel.searchKeyword.observe(viewLifecycleOwner) { keyword ->
             binding.layoutSearch.findViewById<EditText>(R.id.et_search).setText(keyword)
             searchViewModel.searchMountainList(keyword)
-            searchViewModel.mountain.value?.get(0)
-                ?.let { searchViewModel.fetchMountainCourse(it.mountainId) }
         }
 
-        // 산 검색 결과 리스트 observe
-        searchViewModel.mountain.observe(viewLifecycleOwner) { mountains ->
-            if (mountains != null) {
-                this@MountainSearchResultFragment.searchResult = mountains
-                mountainListAdapter.submitList(searchResult)
-            } else {
-                Toast.makeText(context, searchViewModel.error.toString(), Toast.LENGTH_SHORT).show()
-            }
+        searchViewModel.mountainListWithCourses.observe(viewLifecycleOwner) { mountainWithCourses ->
+            mountainListAdapter.submitList(mountainWithCourses)
         }
 
-        // 산 코스 개수 observe
-        searchViewModel.mountainCourse.observe(viewLifecycleOwner) { mountainCourse ->
-            if (mountainCourse != null) {
-
-            }
-
-        }
+//        // 산 검색 결과 리스트 observe
+//        searchViewModel.mountain.observe(viewLifecycleOwner) { mountains ->
+//            if (mountains != null) {
+//                this@MountainSearchResultFragment.searchResult = mountains
+//                mountainListAdapter.submitList(searchResult)
+//            } else {
+//                Toast.makeText(context, searchViewModel.error.toString(), Toast.LENGTH_SHORT).show()
+//            }
+//        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

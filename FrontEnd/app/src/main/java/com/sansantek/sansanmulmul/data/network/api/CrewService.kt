@@ -53,7 +53,7 @@ interface CrewService {
     suspend fun kickMember(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Path("userId")userId: Int) : Response<String>
 
     @PUT("crew/{crewId}/leader")
-    suspend fun delegateLeader(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Body delegateUser: DelegateUser): Response<String>
+    suspend fun delegateLeader(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Query("nextLeaderId") nextLeaderId: Int): Response<String>
 
     @GET("crew/{crewId}/requests")
     suspend fun getRequestList(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int): Response<List<RequestMember>>

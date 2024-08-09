@@ -10,6 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -86,6 +87,13 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (this::naverMap.isInitialized) {
+            fetchMountainListAndUpdateLocation()
+        }
+    }
+
     private fun init() {
         activity?.let { hideBottomNav(it.findViewById(R.id.main_layout_bottom_navigation), false) }
         initBottomSheet()
@@ -123,7 +131,7 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         return nearbyMountains.map { mountainDto ->
             val courseCount = mountainCourses[mountainDto.mountainId]?.courseCount ?: 0
             SearchMountainListItem(
-                R.drawable.dummy1, // 이 부분은 실제 산의 이미지 리소스로 교체해야 합니다.
+                mountainDto.mountainImg,
                 mountainDto.mountainName,
                 courseCount // 코스 수 추가
             )
@@ -227,59 +235,120 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     }
 
     private fun showNearbyMountains(location: Location) {
+        // mountainList가 초기화되었는지 확인
+        if (!::mountainList.isInitialized) {
+            Log.e(TAG, "mountainList가 초기화되지 않았습니다.")
+        } else {
+            fetchMountainListAndUpdateLocation()
+        }
+
+        // 현재 위치를 가져옴
         val currentLocation = locationSource.lastLocation ?: return
 
         val currentLat = currentLocation.latitude
         val currentLon = currentLocation.longitude
 
+        // 50km 이내의 산들을 필터링
         val nearbyMountains = mountainList.filter { mountain ->
             val distance = calculateDistance(currentLat, currentLon, mountain.mountainLat, mountain.mountainLon)
             distance <= 50 // 50km 이내에 있는 산 필터링
         }
 
-        // 반목문으로 위치와 태그 지정
-        nearbyMountains.forEach { mountain ->
-            val marker = Marker().apply {
-                position = LatLng(mountain.mountainLat, mountain.mountainLon)
-                map = naverMap
-                tag = mountain.mountainName
-            }
+        // 마운틴 리스트가 초기화되었는지 확인하고 초기화되었으면 아래 로직을 실행
+        if (::mountainList.isInitialized) {
+            nearbyMountains.forEach { mountain ->
+                val marker = Marker().apply {
+                    position = LatLng(mountain.mountainLat, mountain.mountainLon)
+                    map = naverMap
+                    tag = mountain.mountainName
+                }
 
-            // 마커 클릭 리스너 설정
-            marker.setOnClickListener { overlay ->
-                val marker = overlay as Marker
-                val infoWindow = InfoWindow().apply {
-                    adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
-                        override fun getText(infoWindow: InfoWindow): CharSequence {
-                            return marker.tag as CharSequence
+                // 마커 클릭 리스너 설정
+                marker.setOnClickListener { overlay ->
+                    // Fragment가 Context에 연결되었는지 확인
+                    if (!isAdded || context == null) {
+                        Log.e(TAG, "Fragment가 Context에 연결되어 있지 않습니다.")
+                        return@setOnClickListener true
+                    }
+
+                    val marker = overlay as Marker
+                    val infoWindow = InfoWindow().apply {
+                        adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
+                            override fun getText(infoWindow: InfoWindow): CharSequence {
+                                return marker.tag as CharSequence
+                            }
                         }
                     }
-                }
 
-                // 이미 열려있는 InfoWindow가 있는 경우 닫음
-                if (marker.infoWindow != null) {
-                    marker.infoWindow?.close()
-                } else {
-                    infoWindow.open(marker)
+                    // 이미 열려있는 InfoWindow가 있는 경우 닫음
+                    if (marker.infoWindow != null) {
+                        marker.infoWindow?.close()
+                    } else {
+                        infoWindow.open(marker)
+                    }
+                    true
                 }
-                true
             }
-        }
-        Log.d(TAG, "showNearbyMountains: $nearbyMountains")
-        
-        // 코스 수 받아오기
-        val nearbyMountainIds = nearbyMountains.map { it.mountainId }
-        lifecycleScope.launch {
-            val mountainCourse = mutableMapOf<Int, MountainCourse>()
-            nearbyMountainIds.forEach { mountainId ->
-                val mountainCourseInfo = mountainService.getMountainCourse(mountainId)
-                mountainCourse[mountainId] = mountainCourseInfo
-                Log.d(TAG, "mountainCourseInfo for mountainId $mountainId: $mountainCourseInfo")
+            Log.d(TAG, "showNearbyMountains: $nearbyMountains")
+
+            // 코스 수 받아오기
+            val nearbyMountainIds = nearbyMountains.map { it.mountainId }
+            lifecycleScope.launch {
+                val mountainCourse = mutableMapOf<Int, MountainCourse>()
+                nearbyMountainIds.forEach { mountainId ->
+                    try {
+                        val response = mountainService.getMountainCourse(mountainId)
+                        if (response.isSuccessful) {
+                            val mountainCourseInfo = response.body()
+                            if (mountainCourseInfo != null) {
+                                mountainCourse[mountainId] = mountainCourseInfo
+                                Log.d(TAG, " $mountainId: $mountainCourseInfo")
+                            } else {
+                                Log.e(TAG, " $mountainId")
+                            }
+                        } else {
+                            Log.e(TAG, " $mountainId: ${response.errorBody()}")
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, " $mountainId: ${e.message}")
+                        e.printStackTrace()
+                    }
+                }
+                val mountains = initMountainData(nearbyMountains, mountainCourse)
+                initMountainListRecyclerView(mountains)
             }
-            val mountains = initMountainData(nearbyMountains, mountainCourse)
-            initMountainListRecyclerView(mountains)
+        } else {
+            Log.e(TAG, "Mountain list is not initialized")
         }
     }
+
+    private fun fetchMountainListAndUpdateLocation() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            lifecycleScope.launch {
+                try {
+                    // 산 리스트를 가져와서 초기화
+                    mountainList = mountainService.getMountainList()
+
+                    // 위치 정보를 가져와서 업데이트
+                    locationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                        if (location != null) {
+                            updateLocation(location)
+                        } else {
+                            Log.d(TAG, "fetchMountainListAndUpdateLocation: 위치 정보를 가져올 수 없습니다.")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "fetchMountainListAndUpdateLocation: 산 리스트를 가져오는 중 오류 발생", e)
+                }
+            }
+        } else {
+            Log.e(TAG, "fetchMountainListAndUpdateLocation: 위치 권한이 없습니다.")
+            // 필요한 경우 권한 요청 코드를 추가할 수 있습니다.
+        }
+    }
+
 
     private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val radius = 6371 // 지구 반지름 (단위: km)

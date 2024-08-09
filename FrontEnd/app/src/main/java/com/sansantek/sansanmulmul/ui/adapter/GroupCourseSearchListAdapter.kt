@@ -43,7 +43,7 @@ class GroupCourceSearchListAdapter(
         private var check = false
         fun bindInfo(position: Int) {
             val item = getItem(position)
-            Log.d(TAG, "bindInfo: ghcnf")
+            Log.d(TAG, "bindInfo: ${item}")
             runBlocking {
                 launch {
                     val result = mountainService.getMountainCourse(item.mountainId)
@@ -53,6 +53,7 @@ class GroupCourceSearchListAdapter(
                         }
                     }
                 }
+                // 즐겨찾기 로직
                 launch {
                     token?.let {
                         val result =

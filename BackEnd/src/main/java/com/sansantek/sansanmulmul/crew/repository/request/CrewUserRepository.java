@@ -21,4 +21,6 @@ public interface CrewUserRepository extends JpaRepository<CrewUser, Long> {
     boolean existsByCrewAndUser(Crew crew, User user);
     List<CrewUser> findByUserAndCrew_CrewIsDone(User user, boolean isDone);
     int countByCrewCrewId(int crewId);
+
+    Optional<CrewUser> findByUserAndCrew(User user, Crew crew);
 }

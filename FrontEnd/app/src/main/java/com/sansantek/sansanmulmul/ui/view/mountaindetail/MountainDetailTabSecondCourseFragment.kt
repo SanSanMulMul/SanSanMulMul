@@ -30,190 +30,219 @@ import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
 private const val TAG = "싸피_MountainDetailTabSecond"
 
 class MountainDetailTabSecondCourseFragment :
-  BaseFragment<FragmentMountainDetailTabSecondCourseBinding>(
-    FragmentMountainDetailTabSecondCourseBinding::bind,
-    R.layout.fragment_mountain_detail_tab_second_course
-  ), OnMapReadyCallback {
-  private lateinit var rootActivity: MainActivity
-  private lateinit var courseList: List<CourseDetail>
-  private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
-  private val courseDetailViewModel: CourseDetailViewModel by activityViewModels()
-  private lateinit var courseListAdapter: MountainDetailCourseListAdapter
-  private lateinit var naverMap: NaverMap
-  private val filteringMap = mapOf(
-    R.id.chip_easy to "EASY",
-    R.id.chip_medium to "MEDIUM",
-    R.id.chip_hard to "HARD",
-    R.id.chip_all to "ALL"
-  )
+    BaseFragment<FragmentMountainDetailTabSecondCourseBinding>(
+        FragmentMountainDetailTabSecondCourseBinding::bind,
+        R.layout.fragment_mountain_detail_tab_second_course
+    ), OnMapReadyCallback {
+    private lateinit var rootActivity: MainActivity
+    private var courseList: List<CourseDetail> = listOf()
+    private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
+    private val courseDetailViewModel: CourseDetailViewModel by activityViewModels()
+    private lateinit var courseListAdapter: MountainDetailCourseListAdapter
+    private var naverMap: NaverMap? = null
+    private val polylines: MutableList<PolylineOverlay> = mutableListOf() // 현재 그려진 polyline들
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    initCourse()
-    initCourseDifficultyChipGroup()
-    initCourseMap()
-  }
+    private val filteringMap = mapOf(
+        R.id.chip_easy to "EASY",
+        R.id.chip_medium to "MEDIUM",
+        R.id.chip_hard to "HARD",
+        R.id.chip_all to "ALL"
+    )
 
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    if (context is MainActivity) {
-      rootActivity = context
-    }
-  }
-
-  private fun initCourse() {
-    val mountainId = mountainDetailViewModel.mountainID.value
-
-    if (mountainId != null) {
-      mountainDetailViewModel.mountainCourse.value?.let {
-        courseDetailViewModel.fetchCourseDetail(mountainId, it.courseIds)
-      }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initCourseMap()
+        initCourse()
+        initCourseDifficultyChipGroup()
     }
 
-    courseDetailViewModel.courseDetails.observe(viewLifecycleOwner) {
-      val courseDetails = courseDetailViewModel.courseDetails.value
-      if (courseDetails != null) {
-        courseList = courseDetails
-        courseListAdapter.submitList(courseList)
-      }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainActivity) {
+            rootActivity = context
+        }
     }
 
-    initCourseRecyclerView()
-  }
+    private fun initCourse() {
+        val mountainId = mountainDetailViewModel.mountainID.value
 
-  private fun initCourseRecyclerView() {
-    val courseRecyclerView = binding.rvMountainDetailCourses
-
-    courseListAdapter = MountainDetailCourseListAdapter(
-      object : MountainDetailCourseListAdapter.OnItemClickListener {
-        override fun onItemClick(course: CourseDetail) {
-          courseDetailViewModel.setCourseID(course.courseId)
-          drawPolyLineOnMap(course)
+        if (mountainId != null) {
+            mountainDetailViewModel.mountainCourse.value?.let {
+                courseDetailViewModel.fetchCourseDetail(mountainId, it.courseIds)
+            }
         }
 
-        override fun onCourseInfoBtnClick(course: CourseDetail) {
-          mountainDetailViewModel.setPrevTab(COURSE_TAB)
-          courseDetailViewModel.setCourseID(course.courseId)
-          Log.d(TAG, "onCourseInfoBtnClick: ${course.courseId}")
-          changeFragmentWithSlideRightAnimation(CourseDetailFragment())
+        courseDetailViewModel.courseDetails.observe(viewLifecycleOwner) { courseDetails ->
+            if (courseDetails != null) {
+                courseList = courseDetails
+                courseListAdapter.submitList(courseList)
+            }
         }
-      })
-
-    courseRecyclerView.layoutManager = LinearLayoutManager(context)
-    courseRecyclerView.adapter = courseListAdapter
-
-    val dividerDrawable = activity?.getDrawable(R.drawable.recyclerview_divider_lightgray)
-    val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-    if (dividerDrawable != null) dividerItemDecoration.setDrawable(dividerDrawable)
-    courseRecyclerView.addItemDecoration(dividerItemDecoration)
-  }
-
-  override fun onDestroyView() {
-    super.onDestroyView()
-    mountainDetailViewModel.setPrevTab(INFO_TAB)
-  }
-
-  private fun drawPolyLineOnMap(course: CourseDetail) {
-    val trackPaths =
-      course.tracks[0].trackPaths.map { LatLng(it.trackPathLat, it.trackPathLon) }
-
-    val polyline = PolylineOverlay().apply {
-      map = null
-      coords = trackPaths
-      color = getPolyLineColor(course.courseLevel)
-      width = 20
-      zIndex = 1
+        initCourseRecyclerView()
     }
-    polyline.map = naverMap
 
-    if (trackPaths.isNotEmpty()) {
-      val boundsBuilder = LatLngBounds.Builder()
-      polyline.coords.forEach { latLng -> boundsBuilder.include(latLng) }
-      val latLngBounds = boundsBuilder.build()
-      naverMap.moveCamera(CameraUpdate.fitBounds(latLngBounds, 100))
+    private fun initCourseRecyclerView() {
+        val courseRecyclerView = binding.rvMountainDetailCourses
+
+        courseListAdapter = MountainDetailCourseListAdapter(
+            object : MountainDetailCourseListAdapter.OnItemClickListener {
+                override fun onItemClick(course: CourseDetail) {
+                    courseDetailViewModel.setCourseID(course.courseId)
+                    drawPolyLineOnMap(listOf(course))
+                }
+
+                override fun onCourseInfoBtnClick(courses: List<CourseDetail>) {
+                    mountainDetailViewModel.setPrevTab(COURSE_TAB)
+                    courseDetailViewModel.setCourseID(courses[0].courseId)
+                    Log.d(TAG, "onCourseInfoBtnClick: ${courses[0].courseId}")
+                    changeFragmentWithSlideRightAnimation(CourseDetailFragment())
+                }
+            })
+
+        courseRecyclerView.layoutManager = LinearLayoutManager(context)
+        courseRecyclerView.adapter = courseListAdapter
+
+        val dividerDrawable = activity?.getDrawable(R.drawable.recyclerview_divider_lightgray)
+        val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        if (dividerDrawable != null) dividerItemDecoration.setDrawable(dividerDrawable)
+        courseRecyclerView.addItemDecoration(dividerItemDecoration)
     }
-  }
 
-  private fun getPolyLineColor(difficulty: String): Int {
-    return when (difficulty) {
-      "EASY" -> resources.getColor(R.color.chip_course_difficulty_easy)
-      "MEDIUM" -> resources.getColor(R.color.chip_course_difficulty_medium)
-      "HARD" -> resources.getColor(R.color.chip_course_difficulty_hard)
-      else -> {
-        resources.getColor(R.color.grey)
-      }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mountainDetailViewModel.setPrevTab(INFO_TAB)
     }
-  }
 
-  private fun initCourseMap() {
-    binding.mountainDetailCourseMap.getMapAsync(this)
-  }
+    private fun drawPolyLineOnMap(courses: List<CourseDetail>) {
+        polylines.forEach { it.map = null }
+        polylines.clear()
+        val boundsBuilder = LatLngBounds.Builder()
 
-  private fun initCourseDifficultyChipGroup() {
-    binding.chipAll.also {
-      it.setOnCheckedChangeListener { compoundButton, b ->
-        if (b) {
-          unClickOtherChips(binding.cgCourseDifficulty)
+        if (courses.isEmpty()) return
+
+        courses.forEach { course ->
+            var zIterator = 1
+            course.tracks.forEach { track ->
+                val path =
+                    track.trackPaths.map { LatLng(it.trackPathLat, it.trackPathLon) }
+                val polyline = PolylineOverlay().apply {
+                    coords = path
+                    color = getPolyLineColor(course.courseLevel)
+                    width = 20
+                    zIndex = zIterator++
+                }
+                polyline.map = naverMap
+                polylines.add(polyline)
+                path.forEach { latLng -> boundsBuilder.include(latLng) }
+            }
         }
-      }
-      it.isChecked = true
+        val latLngBounds = boundsBuilder.build()
+        naverMap?.moveCamera(CameraUpdate.fitBounds(latLngBounds, 100))
     }
 
-    binding.chipEasy.setOnCheckedChangeListener { compoundButton, b ->
-      if (b) {
-        binding.chipAll.isChecked = false
-      }
-    }
-    binding.chipMedium.setOnCheckedChangeListener { compoundButton, b ->
-      if (b) {
-        binding.chipAll.isChecked = false
-      }
-    }
-    binding.chipHard.setOnCheckedChangeListener { compoundButton, b ->
-      if (b) {
-        binding.chipAll.isChecked = false
-      }
-    }
-
-    val chipGroup = binding.cgCourseDifficulty
-    chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
-      if (checkedIds.isNotEmpty()) {
-        var selectedChips: List<String> = checkedIds.map { id -> filteringMap[id] ?: id.toString() }
-        if (selectedChips.contains("ALL")) {
-          selectedChips = listOf("ALL")
+    private fun getPolyLineColor(difficulty: String): Int {
+        return when (difficulty) {
+            "EASY" -> resources.getColor(R.color.chip_course_difficulty_easy)
+            "MEDIUM" -> resources.getColor(R.color.chip_course_difficulty_medium)
+            "HARD" -> resources.getColor(R.color.chip_course_difficulty_hard)
+            else -> {
+                resources.getColor(R.color.grey)
+            }
         }
-        filterCourses(selectedChips)
-      } else {
-        filterCourses(listOf())
-      }
-    }
-  }
-
-  private fun filterCourses(difficultyList: List<String>) {
-    val filteredList: MutableList<CourseDetail> = mutableListOf()
-    if (difficultyList.isEmpty() || difficultyList.contains("ALL")) {
-      courseListAdapter.submitList(courseList)
-      return
     }
 
-    difficultyList.forEach { difficulty ->
-      val easyCourses = courseList.filter { it.courseLevel == difficulty }
-      filteredList.addAll(easyCourses)
-    }
-    courseListAdapter.submitList(filteredList)
-  }
+    private fun initCourseDifficultyChipGroup() {
+        binding.chipAll.also {
+            it.setOnCheckedChangeListener { compoundButton, b ->
+                if (b) {
+                    unClickOtherChips(binding.cgCourseDifficulty)
+                }
+            }
+            it.isChecked = true
+        }
 
-  private fun unClickOtherChips(chipGroup: ChipGroup) {
-    for (chipId in chipGroup.checkedChipIds) {
-      val chip = chipGroup.findViewById<Chip>(chipId)
-      if (chip.text != "전체") {
-        Log.d(TAG, "unClickOtherChips: ${chip.text}")
-        chip.isChecked = false
-      }
-    }
-  }
+        binding.chipEasy.setOnCheckedChangeListener { compoundButton, b ->
+            if (b) {
+                binding.chipAll.isChecked = false
+            }
+        }
+        binding.chipMedium.setOnCheckedChangeListener { compoundButton, b ->
+            if (b) {
+                binding.chipAll.isChecked = false
+            }
+        }
+        binding.chipHard.setOnCheckedChangeListener { compoundButton, b ->
+            if (b) {
+                binding.chipAll.isChecked = false
+            }
+        }
 
-  override fun onMapReady(naverMap: NaverMap) {
-    this.naverMap = naverMap
-  }
+        val chipGroup = binding.cgCourseDifficulty
+        chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+            if (checkedIds.isNotEmpty()) {
+                var selectedChips: List<String> =
+                    checkedIds.map { id -> filteringMap[id] ?: id.toString() }
+                if (selectedChips.contains("ALL")) {
+                    selectedChips = listOf("ALL")
+                }
+                filterCourses(selectedChips)
+            } else {
+                binding.chipAll.isChecked = true
+            }
+        }
+    }
+
+    private fun filterCourses(difficultyList: List<String>) {
+        val filteredList: MutableList<CourseDetail> = mutableListOf()
+        if (difficultyList.isEmpty() || difficultyList.contains("ALL")) {
+            courseListAdapter.submitList(courseList)
+            drawPolyLineOnMap(courseList)
+            return
+        }
+
+        difficultyList.forEach { difficulty ->
+            val filtered = courseList.filter { it.courseLevel == difficulty }
+            filteredList.addAll(filtered)
+        }
+        courseListAdapter.submitList(filteredList)
+        drawPolyLineOnMap(filteredList)
+    }
+
+    private fun unClickOtherChips(chipGroup: ChipGroup) {
+        for (chipId in chipGroup.checkedChipIds) {
+            val chip = chipGroup.findViewById<Chip>(chipId)
+            if (chip.text != "전체") {
+                Log.d(TAG, "unClickOtherChips: ${chip.text}")
+                chip.isChecked = false
+            }
+        }
+    }
+
+    private fun initCourseMap() {
+        binding.mountainDetailCourseMap.getMapAsync(this)
+    }
+
+    override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap
+
+        courseDetailViewModel.courseDetails.observe(viewLifecycleOwner) { courseDetails ->
+            if (courseDetails != null) {
+                courseList = courseDetails
+                courseListAdapter.submitList(courseList)
+                drawPolyLineOnMap(courseList)
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        releaseMap()
+    }
+
+    private fun releaseMap() {
+        polylines.forEach { it.map = null }
+        polylines.clear()
+
+        naverMap = null
+    }
 
 }

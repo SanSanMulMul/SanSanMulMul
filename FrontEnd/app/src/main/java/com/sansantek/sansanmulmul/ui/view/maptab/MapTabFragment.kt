@@ -15,7 +15,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -36,11 +35,14 @@ import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.data.model.MountainCourse
 import com.sansantek.sansanmulmul.data.model.SearchMountainListItem
 import com.sansantek.sansanmulmul.databinding.FragmentMapTabBinding
+import com.sansantek.sansanmulmul.databinding.ItemBottomSheetMountainBinding
 import com.sansantek.sansanmulmul.ui.adapter.BottomSheetMountainListAdapter
 import com.sansantek.sansanmulmul.ui.util.PermissionChecker
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.hometab.MountainSearchResultFragment
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
+import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainSearchViewModel
 import kotlinx.coroutines.launch
@@ -62,9 +64,11 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     private lateinit var locationClient: FusedLocationProviderClient
     private lateinit var mountainList: List<Mountain>
     private lateinit var mountainCourseInfo: List<MountainCourse>
+    private val activityViewModel: MainActivityViewModel by activityViewModels()
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
     private lateinit var searchEditTextView: EditText
     private val searchViewModel: MountainSearchViewModel by activityViewModels()
+    private lateinit var itemBottomSheetMountainBinding: ItemBottomSheetMountainBinding
 
     // 권한 코드
     private val LOCATION_PERMISSION_REQUEST_CODE = 5000
@@ -340,7 +344,15 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
                     } else {
                         infoWindow.open(marker)
                     }
+                    // 좋아요 버튼 클릭 시 호출될 리스너
+                    itemBottomSheetMountainBinding.ibFavoriteBtn.setOnClickListener {
+                        // 산 ID를 가져와서 좋아요 상태를 토글
+                        val mountainId = mountain.mountainId
+                        val isLiked = checkIfMountainLiked(mountainId) // 좋아요 상태 확인 메서드
+                        onLikeClick(mountain, !isLiked)
+                    }
                     true
+
                 }
             }
 
@@ -378,6 +390,47 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         }
     }
 
+    private fun onLikeClick(mountain: Mountain, check: Boolean) {
+        activityViewModel.token?.let {
+            if (check) {
+                lifecycleScope.launch {
+                    val result = mountainService.addLikeMountain(
+                        makeHeaderByAccessToken(it.accessToken),
+                        mountain.mountainId
+                    )
+                    if (result.isSuccessful) {
+                        if (result.body().equals("산 즐겨찾기 성공")) {
+                            showToast("즐겨찾기 등록 성공!")
+                        }
+                    } else {
+                        showToast("즐겨찾기 실패!")
+                        Log.d(TAG, "onLikeClick: 즐겨찾기 등록 오류")
+                    }
+                }
+            } else {
+                lifecycleScope.launch {
+                    val result = mountainService.deleteLikeMountain(
+                        makeHeaderByAccessToken(it.accessToken),
+                        mountain.mountainId
+                    )
+                    if (result.isSuccessful) {
+                        if (result.body().equals("즐겨찾기 제거")) {
+                            showToast("즐겨찾기 제거 성공!")
+                        }
+                    } else {
+                        showToast("즐겨찾기 실패!")
+                        Log.d(TAG, "onLikeClick: 즐겨찾기 제거 오류")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkIfMountainLiked(mountainId: Int): Boolean {
+        // 로컬 데이터나 API를 통해 해당 산이 즐겨찾기에 등록되어 있는지 확인하는 로직 구현
+        // 예를 들어, 로컬 DB나 SharedPreferences에서 확인할 수 있음
+        return false // 예시로 false를 반환, 실제 구현 필요
+    }
 
     private fun fetchMountainListAndUpdateLocation() {
         if(isAdded){

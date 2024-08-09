@@ -12,60 +12,114 @@ import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.Crew
-import com.sansantek.sansanmulmul.data.model.Picture
+import com.sansantek.sansanmulmul.data.model.CrewGallery
 import com.sansantek.sansanmulmul.databinding.FragmentGroupDetailTabThirdGalleryInfoFragmentBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupDetailTabGalleryInfoListAdapter
-import okhttp3.internal.format
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.crewService
+import com.sansantek.sansanmulmul.ui.util.Util.getRealPathFromURI
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.viewmodel.GroupDetailViewModel
+import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 
 private const val TAG = "GroupDetailTabThirdGalleryInfoFragment_싸피"
-class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) : BaseFragment<FragmentGroupDetailTabThirdGalleryInfoFragmentBinding>(
-    FragmentGroupDetailTabThirdGalleryInfoFragmentBinding::bind,
-    R.layout.fragment_group_detail_tab_third_gallery_info_fragment
-) {
+
+class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) :
+    BaseFragment<FragmentGroupDetailTabThirdGalleryInfoFragmentBinding>(
+        FragmentGroupDetailTabThirdGalleryInfoFragmentBinding::bind,
+        R.layout.fragment_group_detail_tab_third_gallery_info_fragment
+    ) {
     private lateinit var galleryAdapter: GroupDetailTabGalleryInfoListAdapter
-    private var pictureList = mutableListOf(Picture("박태우스"), Picture("윤가희"), Picture("노나현"), Picture("정민선"), Picture("곽대건"), Picture("신영민") )
+    private val activityViewModel: MainActivityViewModel by activityViewModels()
+    private val viewModel: GroupDetailViewModel by activityViewModels()
     private val REQ_STORAGE_PERMISSION = 0
     private var imageUri: Uri? = null
     private val galleryPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()){
-            if (it){
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
                 openGallery()
-            }else
+            } else
                 Log.d(TAG, "deny")
         }
     private val pickImageLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 val data: Intent? = result.data
-                val newList = mutableListOf<Picture>()
+                Log.d(TAG, "data가 널인거야?? $data: ")
                 data?.clipData?.let { it ->
-                    for (i in 0 until it.itemCount) {
-                        newList.add(Picture("박태우스", it.getItemAt(i).uri))
+                    Log.d(TAG, "여기까지는 오나?? 사진 선택 이후: ")
+                    for(i in 0 until it.itemCount){
+                        getRealPathFromURI(requireContext(), it.getItemAt(i).uri)?.let { path ->
+                            val file = File(path)
+                            val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+                            val body =
+                                MultipartBody.Part.createFormData("image", file.name, requestBody)
+                            activityViewModel.token?.let {
+                                lifecycleScope.launch {
+                                    val result = crewService.postPictureToGallery(
+                                        makeHeaderByAccessToken(it.accessToken),
+                                        crew.crewId,
+                                        body
+                                    )
+                                    if (result.isSuccessful) {
+                                        showToast("사진 추가 성공!")
+                                        val picture = crewService.getCrewGalleryList(
+                                            makeHeaderByAccessToken(it.accessToken),
+                                            crew.crewId
+                                        )
+                                        if (picture.isSuccessful) {
+                                            viewModel.setPictureList(picture.body()!!)
+                                        }
+                                    } else {
+                                        showToast("사진 추가 실패ㅠㅠ")
+                                        Log.d(TAG, "사진 추가 오류: ${result.code()}")
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-                Log.d(TAG, "imgUri: $imageUri")
-                pictureList = (pictureList + newList).toMutableList()
-                galleryAdapter.submitList(pictureList)
-                Log.d(TAG, "갤러리 추가 결과: 갤러리에 데이터 도작")
-                Log.d(TAG, ": $pictureList")
             }
         }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         galleryAdapter = GroupDetailTabGalleryInfoListAdapter()
+        registerObserver()
+        lifecycleScope.launch {
+            activityViewModel.token?.let {
+                val picture = crewService.getCrewGalleryList(
+                    makeHeaderByAccessToken(it.accessToken),
+                    crew.crewId
+                )
+                if (picture.isSuccessful) {
+                    viewModel.setPictureList(picture.body()!!)
+                }
+            }
+        }
+
         binding.rvGalleryList.apply {
             adapter = galleryAdapter.apply {
-                submitList(pictureList)
+                submitList(viewModel.pictureList.value)
                 layoutManager = GridLayoutManager(requireContext(), 3)
-                setItemClickListener(object : GroupDetailTabGalleryInfoListAdapter.ItemClickListener{
+                setItemClickListener(object :
+                    GroupDetailTabGalleryInfoListAdapter.ItemClickListener {
                     override fun onClick(position: Int) {
                         val groupDetailFragment = parentFragment as GroupDetailFragment
-                        groupDetailFragment.changeAddToBackStackGroupDetailFragmentView(GroupDetailTabThirdGalleryDetailFragment(position))
+                        groupDetailFragment.changeAddToBackStackGroupDetailFragmentView(
+                            GroupDetailTabThirdGalleryDetailFragment(position)
+                        )
                     }
                 })
             }
@@ -79,10 +133,20 @@ class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) : BaseFragm
             if (readPermission == PackageManager.PERMISSION_DENIED) {
                 Log.d(TAG, "onViewCreated: 권한 없음")
 
-                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_MEDIA_IMAGES), REQ_STORAGE_PERMISSION)
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
+                    REQ_STORAGE_PERMISSION
+                )
             } else {
                 galleryPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
             }
+        }
+    }
+
+    private fun registerObserver(){
+        viewModel.pictureList.observe(viewLifecycleOwner){
+            galleryAdapter.submitList(it)
         }
     }
 

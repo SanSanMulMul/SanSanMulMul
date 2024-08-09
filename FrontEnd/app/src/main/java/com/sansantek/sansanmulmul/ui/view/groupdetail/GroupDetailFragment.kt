@@ -157,7 +157,14 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
                                 }
 
                                 override fun onExitGroupClick() {
-                                    AlertExitGroupDialog().show(childFragmentManager, "dialog")
+                                    activityViewModel.token?.let {
+                                        lifecycleScope.launch {
+                                            val result = crewService.getCrewCommon(makeHeaderByAccessToken(it.accessToken), crew.crewId)
+                                            if(result.isSuccessful){
+                                                AlertExitGroupDialog(result.body()!!.leader, crew).show(childFragmentManager, "dialog")
+                                            }
+                                        }
+                                    }
                                 }
 
                             })

@@ -100,7 +100,7 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         val itemDecoration = HorizontalMarginItemDecoration(horizontalMarginInDp = 20)
         viewPager.addItemDecoration(itemDecoration)
         viewPager.setPageTransformer { page, position ->
-            val offsetX = position * -(2 * 100) // offset 값으로 간격 조정
+            val offsetX = position * -(2 * 120) // offset 값으로 간격 조정
             page.translationX = offsetX
 
             val scale = 1 - abs(position) // scale 값으로 양쪽 애들 높이 조정

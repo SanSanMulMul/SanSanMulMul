@@ -123,34 +123,47 @@
             style="@style/HomeTabRecommendationTitleStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="뉴스"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp"
+            android:text="📰 실시간 관심 산 뉴스"
+            app:layout_constraintBottom_toTopOf="@id/news_divider"
             app:layout_constraintStart_toStartOf="@id/iv_logo"
             app:layout_constraintTop_toBottomOf="@id/layout_greeting" />
+
+        <View
+            android:id="@+id/news_divider"
+            android:layout_width="20dp"
+            android:layout_height="2dp"
+            android:layout_marginVertical="5dp"
+            android:background="@color/light_grey"
+            app:layout_constraintBottom_toTopOf="@id/layout_carousel_news"
+            app:layout_constraintEnd_toEndOf="@id/tv_news_title"
+            app:layout_constraintStart_toStartOf="@id/tv_news_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_news_title" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/layout_carousel_news"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:clipChildren="false"
-            app:layout_constraintTop_toBottomOf="@id/tv_news_title" />
+            app:layout_constraintTop_toBottomOf="@id/news_divider" />
 
-        <!--        &lt;!&ndash; 구분선 &ndash;&gt;-->
-        <!--        <View-->
-        <!--            android:id="@+id/divider"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="8dp"-->
-        <!--            android:layout_marginTop="20dp"-->
-        <!--            android:background="@color/light_grey"-->
-        <!--            app:layout_constraintTop_toBottomOf="@id/layout_carousel_news" />-->
+        <!-- 구분선 -->
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="30dp"
+            android:background="@color/light_grey"
+            app:layout_constraintTop_toBottomOf="@id/layout_carousel_news" />
 
         <!-- 산 추천1 -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_recommendation1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="50dp"
             app:layout_constraintEnd_toEndOf="@id/layout_search"
             app:layout_constraintStart_toStartOf="@id/iv_logo"
             app:layout_constraintTop_toBottomOf="@id/layout_carousel_news">
@@ -160,7 +173,7 @@
                 style="@style/HomeTabRecommendationTitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🌼봄"
+                android:text="🌼 봄"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -169,7 +182,7 @@
                 style="@style/HomeTabRecommendationTitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="에 가기 좋은 산🌼"
+                android:text="에 가기 좋은 산 🌼"
                 app:layout_constraintBottom_toBottomOf="@id/tv_spring"
                 app:layout_constraintStart_toEndOf="@id/tv_spring"
                 app:layout_constraintTop_toTopOf="@id/tv_spring" />
@@ -190,6 +203,7 @@
             android:id="@+id/layout_recommendation2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             app:layout_constraintEnd_toEndOf="@id/layout_search"
             app:layout_constraintStart_toStartOf="@id/iv_logo"
             app:layout_constraintTop_toBottomOf="@id/layout_recommendation1">
@@ -199,8 +213,8 @@
                 style="@style/HomeTabRecommendationTitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:text="🌊여름"
+                android:layout_marginTop="5dp"
+                android:text="🌊 여름"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -209,7 +223,7 @@
                 style="@style/HomeTabRecommendationTitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="에 가기 좋은 산🌊"
+                android:text="에 가기 좋은 산 🌊"
                 app:layout_constraintBottom_toBottomOf="@id/tv_summer"
                 app:layout_constraintStart_toEndOf="@id/tv_summer"
                 app:layout_constraintTop_toTopOf="@id/tv_summer" />
@@ -230,7 +244,7 @@
             android:id="@+id/layout_recommendation3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             app:layout_constraintEnd_toEndOf="@id/layout_search"
             app:layout_constraintStart_toStartOf="@id/iv_logo"
             app:layout_constraintTop_toBottomOf="@id/layout_recommendation2">
@@ -241,7 +255,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="🍁가을"
+                android:text="🍁 가을"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -250,7 +264,7 @@
                 style="@style/HomeTabRecommendationTitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="에 가기 좋은 산🍁"
+                android:text="에 가기 좋은 산 🍁"
                 app:layout_constraintBottom_toBottomOf="@id/tv_fall"
                 app:layout_constraintStart_toEndOf="@id/tv_fall"
                 app:layout_constraintTop_toTopOf="@id/tv_fall" />
@@ -271,7 +285,7 @@
             android:id="@+id/layout_recommendation4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             app:layout_constraintEnd_toEndOf="@id/layout_search"
             app:layout_constraintStart_toStartOf="@id/iv_logo"
             app:layout_constraintTop_toBottomOf="@id/layout_recommendation3">
@@ -282,7 +296,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="❄겨울"
+                android:text="❄ 겨울"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -291,7 +305,7 @@
                 style="@style/HomeTabRecommendationTitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="에 가기 좋은 산❄"
+                android:text="에 가기 좋은 산 ❄"
                 app:layout_constraintBottom_toBottomOf="@id/tv_winter"
                 app:layout_constraintStart_toEndOf="@id/tv_winter"
                 app:layout_constraintTop_toTopOf="@id/tv_winter" />

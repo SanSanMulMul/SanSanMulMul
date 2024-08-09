@@ -94,6 +94,9 @@ dependencies {
   // com.kakao.sdk:v2-all:2.20.3
   implementation(libs.v2.all)
 
+  // 코루틴
+  implementation(libs.kotlinx.coroutines.android)
+
 
   implementation (libs.glide)
 

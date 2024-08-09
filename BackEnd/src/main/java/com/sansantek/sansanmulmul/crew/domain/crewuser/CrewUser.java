@@ -24,7 +24,6 @@ public class CrewUser {
     @JoinColumn(name = "user_id" ,nullable = false)
     private User user;
 
-
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crew_id" ,nullable = false)
@@ -33,4 +32,17 @@ public class CrewUser {
     @Column(name = "is_leader",nullable = false)
     @Schema(description = "사용자가 이 그룹의 방장인지 여부", example = "F")
     private boolean isLeader;
+
+    @Column(name = "user_lat", nullable = true)
+    @Schema(description = "사용자 위도", example = "123.123456")
+    private Double userLat;
+
+    @Column(name = "user_lon", nullable = true)
+    @Schema(description = "사용자 경도", example = "123.123456")
+    private Double userLon;
+
+    public CrewUser(double userLat, double userLon) {
+        this.userLat = userLat;
+        this.userLon = userLon;
+    }
 }

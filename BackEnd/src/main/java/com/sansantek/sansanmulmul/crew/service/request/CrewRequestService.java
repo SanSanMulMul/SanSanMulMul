@@ -129,6 +129,15 @@ public class CrewRequestService {
         return userResponses;
     }
 
+    public List<CrewUser> getCrewMembersInfo(int crewId) {
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("크루를 찾을 수 없습니다."));
+
+        List<CrewUser> crewUsers = crewUserRepository.findByCrew(crew);
+
+        return crewUsers;
+    }
+
     @Transactional
     public List<CrewRequestResponse> getCrewRequests(int crewId, String userProviderId) {
         Crew crew = crewRepository.findById(crewId)

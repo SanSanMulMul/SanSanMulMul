@@ -32,7 +32,7 @@ dependencies {
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.17.2'
-
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
     // swagger
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'

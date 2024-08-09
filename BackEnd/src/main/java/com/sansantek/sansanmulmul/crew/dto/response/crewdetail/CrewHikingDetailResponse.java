@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.crew.dto.response.crewdetail;
 
 import com.sansantek.sansanmulmul.mountain.domain.course.Level;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -27,6 +28,10 @@ public class CrewHikingDetailResponse {
     private String mountainName;
     @Schema(description = "산 상세 설명", example = "금오산은 구미를 대표하는 산중하나이다.")
     private String mountainDescription;
+    @Schema(description = "산 위도",example = "35.405006")
+    private double mountainLat; //위도
+    @Schema(description = "산 경도", example = "124.123456")
+    private double mountainLon; //경도
 
     // 코스 - 상행
     @Schema(description = "상행 코스 고유 번호" , example = "47190010101")

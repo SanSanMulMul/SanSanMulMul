@@ -13,6 +13,7 @@ import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailCommonR
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewHikingDetailResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewUserResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewGalleryRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewHikingStyleRepository;
@@ -286,27 +287,43 @@ public class CrewService {
         return crewDetailCommonResponse;
     }
 
-    // (2) [탭1] 그룹 정보
+    // (2) [탭1] 그룹 정보 + 그룹 내 속하는 멤버들
     public CrewDetailResponse getCrewDetailCrewInfo(int crewId) {
         // crewId에 해당하는 그룹 상세 조회
         // 1. 해당 crew 가져옴
         Crew crew = crewRepository.findById(crewId)
                 .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
-        // 2. 해당 crew의 hikingStyle들 string으로 가져오기
-        List<String> styles = new ArrayList<>();
-        for (int i = 0; i < crew.getCrewStyles().size() ; i++) {
-            String style = crew.getCrewStyles().get(i).getStyle().getHikingStylesName();
-            styles.add(style);
+        // 2. 해당 crew의 hikingStyle들 Integer List로
+        List<Integer> styles = new ArrayList<>();
+        for (int i = 0; i < crew.getCrewStyles().size(); i++) {
+            int styleId = crew.getCrewStyles().get(i).getStyle().getHikingStylesId();
+            styles.add(styleId);
         }
-
+        // 3. 그룹 내 속하는 멤버들
+        List<CrewUser> crewUsers = crewUserRepository.findByCrew(crew);
+        List<CrewUserResponse> crewUserResponses = new ArrayList<>();
+        for (CrewUser crewUser : crewUsers) {
+            User user = crewUser.getUser();
+            boolean isLeader = crewRepository.existsByCrewIdAndLeader_UserId(crewId, user.getUserId()); //방장여부
+            CrewUserResponse userResponse = CrewUserResponse.builder()
+                    .userId(user.getUserId())
+                    .userName(user.getUserName())
+                    .userNickname(user.getUserNickname())
+                    .userGender(user.getUserGender().toString())
+                    .userProfileImg(user.getUserProfileImg())
+                    .userStaticBadge(user.getUserStaticBadge())
+                    .isLeader(crewUser.isLeader())
+                    .build();
+            crewUserResponses.add(userResponse);
+        }
         CrewDetailResponse crewDetailResponse = CrewDetailResponse.builder()
                 .crewDescription(crew.getCrewDescription())
                 .crewHikingStyles(styles)
+                .members(crewUserResponses)
                 .build();
 
         return crewDetailResponse;
     }
-
 
     // (3) [탭2] 등산 정보
     public CrewHikingDetailResponse getCrewDetailHikingInfo(int crewId) {
@@ -409,7 +426,7 @@ public class CrewService {
             boolean isOwner = gallery.getUser().equals(user);
 
             CrewGalleryResponse response = CrewGalleryResponse.builder()
-                    .crewId(crewId)
+                    .picId(gallery.getPictureId())
                     .userNickname(gallery.getUser().getUserNickname())
                     .userProfileImg(gallery.getUser().getUserProfileImg())
                     .isOwner(isOwner)

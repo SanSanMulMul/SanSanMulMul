@@ -22,7 +22,7 @@ public class CrewGallery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pic_id", nullable = false)
     @Schema(description = "그룹 갤러리 사진 고유번호" , example = "1")
-    private int requestId;
+    private int pictureId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id" ,nullable = false)

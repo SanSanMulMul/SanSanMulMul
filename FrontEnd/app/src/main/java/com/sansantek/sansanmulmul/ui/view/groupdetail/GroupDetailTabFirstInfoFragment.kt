@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.ui.view.groupdetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -42,7 +43,7 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
         addItemDecoration(SpaceItemDecoration(15))
       }
     }
-
+    Log.d(TAG, "onViewCreated: $crew")
     for (i in 1..3) {
       val member = Member("엄홍길👑", "박태asssssssss우스", false)
       memberList.add(member)

@@ -350,6 +350,8 @@ public class CrewService {
                 .mountainId(mountain.getMountainId())
                 .mountainName(mountain.getMountainName())
                 .mountainDescription(mountain.getMountainDescription())
+                .mountainLat(mountain.getMountainLat())
+                .mountainLon(mountain.getMountainLon())
                 .upCourseId(upCourse.getCourseId())
                 .upCourseName(upCourse.getCourseName())
                 .upCourseLevel(upCourse.getCourseLevel())

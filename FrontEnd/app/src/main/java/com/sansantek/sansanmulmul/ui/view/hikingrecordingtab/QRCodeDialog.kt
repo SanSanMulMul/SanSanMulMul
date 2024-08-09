@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.ui.view.hikingrecordingtab
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -13,6 +14,8 @@ import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.qrcode.QRCodeWriter
 import com.sansantek.sansanmulmul.databinding.DialogQrCodeBinding
 
 class QRCodeDialog : DialogFragment() {
@@ -52,6 +55,13 @@ class QRCodeDialog : DialogFragment() {
         requireView().layoutParams = layoutParams
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val url = "https://www.sansanmulmul.com/openHikingRecordingFragment"
+        val qrCodeBitmap = generateQRCode(url)
+        binding.qrCode.setImageBitmap(qrCodeBitmap)
+    }
+
     private fun getScreenWidth(context: Context): Int {
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -83,5 +93,25 @@ class QRCodeDialog : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun generateQRCode(url: String): Bitmap? {
+        val writer = QRCodeWriter()
+        try {
+            val bitMatrix = writer.encode(url, BarcodeFormat.QR_CODE, 512, 512)
+            val width = bitMatrix.width
+            val height = bitMatrix.height
+            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    bitmap.setPixel(x, y, if (bitMatrix[x, y]) Color.BLACK else Color.WHITE)
+                }
+            }
+            return bitmap
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
     }
 }

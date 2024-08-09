@@ -75,7 +75,7 @@ class DateTimePickerDialog(private val status: String) : DialogFragment() {
             val selectedMinute = timePicker.minute
 
             // 선택한 날짜와 시간 전달
-            listener?.onDateTimeSelected(status, selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute)
+            listener?.onDateTimeSelected(status, selectedYear, selectedMonth+1, selectedDay, selectedHour, selectedMinute)
             dismiss() // 다이얼로그 닫기
         }
         negativeButton.setOnClickListener {

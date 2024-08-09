@@ -10,21 +10,26 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.Const.Companion.TITLE
+import com.sansantek.sansanmulmul.data.model.GroupDetailFirstData
+import com.sansantek.sansanmulmul.data.model.GroupUser
 import com.sansantek.sansanmulmul.data.model.Member
 import com.sansantek.sansanmulmul.databinding.ListGroupDetailFirstTabMemberListBinding
 import com.sansantek.sansanmulmul.ui.util.Util
+import kotlinx.coroutines.runBlocking
 
 private const val TAG = "GroupDetailFirstTabMemberListAdapter_싸피"
-class GroupDetailFirstTabMemberListAdapter():
-    ListAdapter<Member, GroupDetailFirstTabMemberListAdapter.MemberInfoListHolder>(Comparator) {
+class GroupDetailFirstTabMemberListAdapter(private var amILeader: Boolean, private val myId: Int):
+    ListAdapter<GroupUser, GroupDetailFirstTabMemberListAdapter.MemberInfoListHolder>(Comparator) {
 
-    companion object Comparator : DiffUtil.ItemCallback<Member>() {
-        override fun areItemsTheSame(oldItem: Member, newItem: Member): Boolean {
+    companion object Comparator : DiffUtil.ItemCallback<GroupUser>() {
+        override fun areItemsTheSame(oldItem: GroupUser, newItem: GroupUser): Boolean {
             return System.identityHashCode(oldItem) == System.identityHashCode(newItem)
         }
 
-        override fun areContentsTheSame(oldItem: Member, newItem: Member): Boolean {
+        override fun areContentsTheSame(oldItem: GroupUser, newItem: GroupUser): Boolean {
             return oldItem == newItem
         }
     }
@@ -34,32 +39,41 @@ class GroupDetailFirstTabMemberListAdapter():
 
         fun bindInfo(position: Int) {
             val item = getItem(position)
-            if(item.registration){
+            if (!amILeader || myId == item.userId){
                 binding.btnDelegateAdmin.visibility = View.GONE
                 binding.btnKickMember.visibility = View.GONE
             }
-            else{
-                binding.btnDecline.visibility = View.GONE
-                binding.btnApprove.visibility = View.GONE
-            }
-            Log.d(TAG, "bindInfo: $item")
-            val img = if(item.imageUri == null){
-                ContextCompat.getDrawable(binding.root.context, R.drawable.leader_picture)!!.toBitmap()
+            if(item.leader){
+                binding.ivLeader.visibility = View.VISIBLE
             }else{
-                binding.root.context.contentResolver.openInputStream(item.imageUri!!)?.use { inputStream ->
-                    BitmapFactory.decodeStream(inputStream)
+                binding.ivLeader.visibility = View.GONE
+            }
+            //}
+            Log.d(TAG, "bindInfo: $item")
+            Glide.with(binding.root).load(item.userProfileImg).into(binding.ivMemberImage)
+            binding.memberTitle.text = TITLE[item.userStaticBadge]
+            binding.memberName.text = item.userNickname
+
+            binding.btnDelegateAdmin.setOnClickListener {
+                runBlocking {
+                    val result = itemClickListener.onLeaderDelegateClick(item)
+                    if(result){
+                        amILeader = false
+                        refreshList()
+                    }
                 }
             }
-
-            binding.ivMemberImage.setImageBitmap(img)
-
-//            Glide.with(itemView)
-//                .load("${ApplicationClass.MENU_IMGS_URL}${item.menuImg}")
-//                .into(binding.groupImage)
-
-            binding.memberTitle.text = item.title
-            binding.memberName.text = item.name
+            binding.btnDelegateAdmin.setOnClickListener {
+                runBlocking {
+                    itemClickListener.onKickClick(item)
+                    refreshList()
+                }
+            }
         }
+    }
+
+    fun refreshList(){
+        submitList(currentList.toList())
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemberInfoListHolder {
@@ -78,8 +92,8 @@ class GroupDetailFirstTabMemberListAdapter():
 
 
     interface ItemClickListener {
-        fun onClick(position: Int) {
-        }
+        suspend fun onLeaderDelegateClick(user: GroupUser): Boolean
+        suspend fun onKickClick(user: GroupUser)
     }
 
     private lateinit var itemClickListener: ItemClickListener

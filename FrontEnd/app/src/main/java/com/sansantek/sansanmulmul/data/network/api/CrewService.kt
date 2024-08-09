@@ -73,4 +73,7 @@ interface CrewService {
 
     @GET("crew/detail/{crewId}/common")
     suspend fun getCrewCommon(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int) : Response<CrewCommon>
+
+    @DELETE("crew/detail/{crewId}/gallery")
+    suspend fun deleteGallery(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Query("picId") picId: Int) : Response<String>
 }

@@ -120,7 +120,7 @@ class MountainDetailTabSecondCourseFragment :
         if (courses.isEmpty()) return
 
         courses.forEach { course ->
-            Log.d(TAG, "drawPolyLineOnMap: ${course.courseName}")
+            var zIterator = 1
             course.tracks.forEach { track ->
                 val path =
                     track.trackPaths.map { LatLng(it.trackPathLat, it.trackPathLon) }
@@ -128,7 +128,7 @@ class MountainDetailTabSecondCourseFragment :
                     coords = path
                     color = getPolyLineColor(course.courseLevel)
                     width = 20
-                    zIndex = 1
+                    zIndex = zIterator++
                 }
                 polyline.map = naverMap
                 polylines.add(polyline)

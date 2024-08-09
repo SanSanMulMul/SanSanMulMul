@@ -73,7 +73,8 @@ class GroupDetailFirstTabMemberListAdapter(private var amILeader: Boolean, priva
     }
 
     fun refreshList(){
-        submitList(currentList.toList())
+        val newList = currentList.toMutableList()
+        submitList(newList)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemberInfoListHolder {

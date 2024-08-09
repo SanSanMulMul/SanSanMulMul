@@ -370,7 +370,7 @@ public class CrewService {
     /* 4. [탭3] 그룹 갤러리 */
     // 4-1. 이미지 업로드
     @Transactional
-    public void uploadImg(int crewId, User user, MultipartFile image)  throws IOException {
+    public boolean uploadImg(int crewId, User user, MultipartFile image)  throws IOException {
 
         // 1. 해당 crew 가져옴
         Crew crew = crewRepository.findById(crewId)
@@ -378,6 +378,7 @@ public class CrewService {
         // user가 해당 crew에 가입되어있지 않은 경우 에러 처리
         boolean isMember = crewUserRepository.existsByCrewAndUser(crew, user);
         if (!isMember) {
+//            return false;
             throw new RuntimeException("해당 그룹에 가입되어 있지 않습니다.");
         }
         // 2. 이미지를 s3에 업로드함
@@ -399,9 +400,10 @@ public class CrewService {
 
         // 5. 저장이 성공적으로 이루어졌는지 확인
         if (savedCrewPic == null || savedCrewPic.getImgUrl() == null) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "DB에 이미지 저장에 실패했습니다.");
+            return false;
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "DB에 이미지 저장에 실패했습니다.");
         }
-
+        return true;
 
     }
 

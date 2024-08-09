@@ -53,6 +53,7 @@ class GroupCourceSearchListAdapter(
                         }
                     }
                 }
+                // 즐겨찾기 로직
                 launch {
                     token?.let {
                         val result =

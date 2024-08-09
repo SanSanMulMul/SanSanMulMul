@@ -215,8 +215,10 @@ public class CrewController {
     /* 4. [탭3] 그룹 갤러리 */
     // 4-1. 이미지 업로드
     @PostMapping(value = "/detail/{crewId}/gallery", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "그룹 상세 조회 [탭3] 갤러리 사진 올리기",  description = "그룹 상세보기 - 그룹 갤러리에 사진 업로드")
-    public ResponseEntity<?> uploadImg(Authentication authentication, @PathVariable int crewId, @RequestPart(value = "image") MultipartFile image) throws IOException {
+    @Operation(summary = "그룹 상세 조회 [탭3] 갤러리 사진 '업로드'",  description = "그룹 상세보기 - 그룹 갤러리에 사진 업로드")
+    public ResponseEntity<?> uploadImg(Authentication authentication,
+                                       @PathVariable int crewId,
+                                       @RequestPart(value = "image") MultipartFile image) throws IOException {
         HttpStatus status = HttpStatus.OK;
         try {
             //사용자 정보
@@ -236,7 +238,7 @@ public class CrewController {
 
     // 4-2. 갤러리 전부 가져오기
     @GetMapping(value = "/detail/{crewId}/gallery")
-    @Operation(summary = "그룹 상세 조회 [탭3] 그룹 갤러리 조회",  description = "그룹 상세보기 - (탭3) 그룹 갤러리")
+    @Operation(summary = "그룹 상세 조회 [탭3] 그룹 갤러리 '전체 조회'",  description = "그룹 상세보기 - (탭3) 그룹 갤러리")
     public ResponseEntity<?> getCrewDetailGallery(Authentication authentication, @PathVariable int crewId) {
         HttpStatus status = HttpStatus.OK;
         try {
@@ -254,8 +256,28 @@ public class CrewController {
         }
     }
 
+    // 4-3. 이미지 삭제
+    @DeleteMapping(value="/detail/{crewId}/gallery")
+    @Operation(summary = "그룹 상세 조회 [탭3] 그룹 갤러리 '이미지 삭제'", description = "본인이 올린 사진 삭제")
+    public ResponseEntity<?> deleteCrewDetailGallery(Authentication authentication,
+                                                     @PathVariable int crewId,
+                                                    @RequestParam int picId) {
+        HttpStatus status = HttpStatus.OK;
+        try {
+            String userProviderId = authentication.getName();
+            User user = userService.getUser(userProviderId);
 
+            boolean flag = crewService.deleteImg(crewId, user, picId);
 
+            return new ResponseEntity<>(flag, status);
+
+        } catch (Exception e) {
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+
+    }
 
     ////////////////////////////////////////////////////////////
     @GetMapping("/member/{crewId}")

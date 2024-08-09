@@ -18,6 +18,8 @@ import com.sansantek.sansanmulmul.crew.repository.CrewGalleryRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewHikingStyleRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
+import com.sansantek.sansanmulmul.exception.auth.UserNotFoundException;
+import com.sansantek.sansanmulmul.exception.user.UserDeletionException;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.domain.course.Course;
 import com.sansantek.sansanmulmul.mountain.repository.MountainRepository;
@@ -370,7 +372,7 @@ public class CrewService {
     }
 
     /* 4. [탭3] 그룹 갤러리 */
-    // 4-1. 이미지 업로드
+    // 4-1. 이미지 업로드 (C)
     @Transactional
     public boolean uploadImg(int crewId, User user, MultipartFile image)  throws IOException {
 
@@ -386,7 +388,7 @@ public class CrewService {
         // 2. 이미지를 s3에 업로드함
         String imgUrl = "";
         if (image != null) {
-            imgUrl = s3Service.uploadS3(image, "group/"+Integer.toString(crewId));
+            imgUrl = s3Service.uploadS3(image, "group/"+Integer.toString(user.getUserId())+Integer.toString(crewId));
         }
 
         // 3. 이미지 객체 하나 생성
@@ -406,10 +408,9 @@ public class CrewService {
 //            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "DB에 이미지 저장에 실패했습니다.");
         }
         return true;
-
     }
 
-    // 4-2. 갤러리 전부 가져오기
+    // 4-2. 갤러리 전부 가져오기 (R)
     public List<CrewGalleryResponse> getCrewDetailGallery(int crewId, User user) {
         // 1. 해당 crew 가져옴
         Crew crew = crewRepository.findById(crewId)
@@ -442,6 +443,43 @@ public class CrewService {
         }
 
         return responses;
+    }
+
+    // 4-3. 갤러리에서 본인이 올린 사진 지우기 (D)
+    @Transactional
+    public boolean deleteImg(int crewId, User user, int picId) throws IOException{
+        try {
+            // 1. 해당 crew 가져옴
+            Crew crew = crewRepository.findById(crewId)
+                    .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
+            // user가 해당 crew에 가입되어있지 않은 경우 에러 처리
+            boolean isMember = crewUserRepository.existsByCrewAndUser(crew, user);
+            if (!isMember) {
+//            return false;
+                throw new RuntimeException("해당 그룹에 가입되어 있지 않습니다.");
+            }
+            // 지울 img가 현재 사용자가 올린 것이 아니라면 에러 처리
+            boolean isOwner = crewGalleryRepository.findByPictureId(picId).getUser().equals(user);
+            if (!isOwner) {
+//            return false;
+                throw new RuntimeException("해당 사진을 올린 유저가 아닙니다.");
+            }
+
+            // 2. 지울 imgurl
+            String imgUrl = crewGalleryRepository.findByPictureId(picId).getImgUrl();
+
+            // 3-1. S3에서 이미지 삭제
+            s3Service.deleteS3(imgUrl); //s3에서 이미지 삭제
+
+            // 3-2. DB에서 삭제
+            crewGalleryRepository.deleteById(picId);
+            return true;
+        } catch (Exception e) {
+
+            throw new UserDeletionException("이미지 삭제 실패 | 이미지id :  " + picId, e);
+
+        }
+
     }
 
 

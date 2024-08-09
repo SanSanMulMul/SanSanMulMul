@@ -50,8 +50,6 @@ class SearchResultOfMountainListAdapter :
         fun bindInfo(position: Int) {
             val item = getItem(position)
             val mountain = item.mountain
-//            binding.ivMountainImg.setImageResource(item.mountainImg)
-//            binding.ivMountainImg.
             if (mountain.mountainImg == null) {
                 // 없을 경우 기본 이미지. 글라이드 : 링크이미지 받아올 때
                 Glide.with(binding.root)

@@ -25,7 +25,6 @@ class MountainSearchResultFragment : BaseFragment<FragmentMountainSearchResultBi
     FragmentMountainSearchResultBinding::bind,
     R.layout.fragment_mountain_search_result
 ) {
-    private lateinit var searchResult: List<Mountain>
     private val searchViewModel: MountainSearchViewModel by activityViewModels()
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
 
@@ -35,7 +34,7 @@ class MountainSearchResultFragment : BaseFragment<FragmentMountainSearchResultBi
                 object : SearchResultOfMountainListAdapter.OnItemClickListener {
                     override fun onItemClick(mountain: Mountain) {
                         mountainDetailViewModel.setMountainID(mountain.mountainId)
-                        changeFragmentWithSlideRightAnimation(MountainDetailFragment())
+                        changeFragmentWithPopUpAnimation(MountainDetailFragment())
                     }
                 }
             )
@@ -56,16 +55,6 @@ class MountainSearchResultFragment : BaseFragment<FragmentMountainSearchResultBi
         searchViewModel.mountainListWithCourses.observe(viewLifecycleOwner) { mountainWithCourses ->
             mountainListAdapter.submitList(mountainWithCourses)
         }
-
-//        // 산 검색 결과 리스트 observe
-//        searchViewModel.mountain.observe(viewLifecycleOwner) { mountains ->
-//            if (mountains != null) {
-//                this@MountainSearchResultFragment.searchResult = mountains
-//                mountainListAdapter.submitList(searchResult)
-//            } else {
-//                Toast.makeText(context, searchViewModel.error.toString(), Toast.LENGTH_SHORT).show()
-//            }
-//        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

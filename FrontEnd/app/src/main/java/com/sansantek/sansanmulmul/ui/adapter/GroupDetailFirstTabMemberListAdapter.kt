@@ -63,7 +63,7 @@ class GroupDetailFirstTabMemberListAdapter(private var amILeader: Boolean, priva
                     }
                 }
             }
-            binding.btnDelegateAdmin.setOnClickListener {
+            binding.btnKickMember.setOnClickListener {
                 runBlocking {
                     itemClickListener.onKickClick(item)
                     refreshList()

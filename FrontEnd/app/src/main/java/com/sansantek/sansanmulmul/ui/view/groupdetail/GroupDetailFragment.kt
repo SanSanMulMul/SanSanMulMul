@@ -15,6 +15,7 @@ import android.view.WindowManager
 import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
@@ -28,11 +29,14 @@ import com.sansantek.sansanmulmul.databinding.PopupGroupDetailNotiBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupDetailAlarmListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.GroupDetailDrawerListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.DividerItemDecorator
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.crewService
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.view.groupchat.GroupChatFragment
+import com.sansantek.sansanmulmul.ui.viewmodel.GroupDetailViewModel
+import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
@@ -45,6 +49,8 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
 ) {
     private var popupShow = false
     private var drawerShow = false
+    private val activityViewModel: MainActivityViewModel by activityViewModels()
+    private val viewModel: GroupDetailViewModel by activityViewModels()
     private lateinit var popUp : PopupWindow
     private lateinit var drawerUp : PopupWindow
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,7 +63,16 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
         binding.tvGroupSchedule.text = "$startDate - $endDate"
         binding.tvGroupPerson.text = "${crew.crewCurrentMembers} / ${crew.crewMaxMembers}"
 
-
+        lifecycleScope.launch {
+            activityViewModel.token?.let {
+                val result = crewService.getCrewGalleryList(makeHeaderByAccessToken(it.accessToken), crew.crewId)
+                if(result.isSuccessful){
+                    viewModel.setPictureList(result.body()!!)
+                }else{
+                    Log.d(TAG, "onViewCreated: 갤러리 정보 가저오기 에러")
+                }
+            }
+        }
 
 
         changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment(crew))

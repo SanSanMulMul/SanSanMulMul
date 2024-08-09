@@ -51,7 +51,8 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
                     viewModel.setGroupMountainId(mountain.mountainId)
                     showUpCourseChoiceDialog(mountain)
                 }
-
+                
+                // 즐겨 찾기 로직
                 override fun onLikeClick(mountain: Mountain, check: Boolean) {
                     activityViewModel.token?.let {
                         if (check) {

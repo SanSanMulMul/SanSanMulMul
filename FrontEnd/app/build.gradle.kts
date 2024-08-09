@@ -22,15 +22,15 @@ android {
 
   defaultConfig {
     applicationId = "com.sansantek.sansanmulmul"
-    minSdk = 26
+    minSdk = 24
     targetSdk = 34
     versionCode = 1
     versionName = "1.0"
 
     //    AndroidManifest에서 쓰기 위한 placeHolder
-    manifestPlaceholders["naverClientId"]= naverClientId
+    manifestPlaceholders["naverClientId"] = naverClientId
 
-    manifestPlaceholders["NATIVE_APP_KEY"]= NATIVE_APP_KEY
+    manifestPlaceholders["NATIVE_APP_KEY"] = NATIVE_APP_KEY
 
     buildConfigField("String", "NATIVE_APP_KEY", BUILD_NATIVE_APP_KEY)
     buildConfigField("String", "SERVER_IP", SERVER_IP)
@@ -85,7 +85,7 @@ dependencies {
   //'com.github.bumptech.glide:compiler:4.11.0'
   annotationProcessor(libs.compiler)
   // sdk 24 버전에서 LocalDate를 쓸 수 없는 것에 대한 대안을 위한 추가
-  implementation (libs.threetenabp)
+  implementation(libs.threetenabp)
 
 //  "com.google.android.gms:play-services-location:21.0.1"
   implementation(libs.play.services.location)
@@ -98,12 +98,19 @@ dependencies {
   implementation(libs.kotlinx.coroutines.android)
 
 
-  implementation (libs.glide)
+  implementation(libs.glide)
 
   implementation(libs.google.flexbox)
 
   implementation(libs.android.segmented)
-  implementation(fileTree(mapOf("dir" to "libs/android-segmented-control-master", "include" to listOf("*.aar", "*.jar"))))
+  implementation(
+    fileTree(
+      mapOf(
+        "dir" to "libs/android-segmented-control-master",
+        "include" to listOf("*.aar", "*.jar")
+      )
+    )
+  )
 
 
   implementation(libs.dotsindicator)
@@ -139,6 +146,8 @@ dependencies {
 
   // 네이버 지도 SDK
   implementation(libs.map.sdk)
+
+  implementation(libs.com.journeyapps.zxing.android.embedded)
 
   implementation(libs.androidx.activity)
   implementation(libs.androidx.constraintlayout)

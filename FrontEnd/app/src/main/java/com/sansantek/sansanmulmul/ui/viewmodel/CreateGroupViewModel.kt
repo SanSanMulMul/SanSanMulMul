@@ -1,6 +1,8 @@
 package com.sansantek.sansanmulmul.ui.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlin.math.min
 
 class CreateGroupViewModel : ViewModel() {
     private var _groupTitle: String = ""
@@ -14,14 +16,21 @@ class CreateGroupViewModel : ViewModel() {
     val groupDescription: String
         get() = _groupDescription
     fun setGroupDescription(description: String){
-        _groupTitle = description
+        _groupDescription = description
     }
 
     private var _maxMember: Int = -1
     val maxMember: Int
         get() = _maxMember
     fun setMaxMember(maxMember: Int){
-        _maxMember = maxMember
+        _maxMember = min(maxMember, 10)
+    }
+
+    private var _crewStyle: MutableLiveData<List<Int>> = MutableLiveData(mutableListOf())
+    val crewStyle: MutableLiveData<List<Int>>
+        get() = _crewStyle
+    fun setCrewStyle(newStyle: List<Int>){
+        _crewStyle.value = newStyle
     }
 
     private var _groupGender: String = "A"
@@ -73,17 +82,45 @@ class CreateGroupViewModel : ViewModel() {
         _groupMountainId = groupMountainId
     }
 
-    private var _groupUpCourseId: Int = -1
-    val groupUpCourseId: Int
+    private var _groupUpCourseId: MutableLiveData<Long> = MutableLiveData(-1)
+    val groupUpCourseId: MutableLiveData<Long>
         get() = _groupUpCourseId
-    fun setGroupUpCourseId(groupUpCourseId: Int){
-        _groupUpCourseId = groupUpCourseId
+    fun setGroupUpCourseId(groupUpCourseId: Long){
+        _groupUpCourseId.value = groupUpCourseId
     }
 
-    private var _groupDownCourseId: Int = -1
-    val groupDownCourseId: Int
+    private var _groupDownCourseId: MutableLiveData<Long> = MutableLiveData(-1)
+    val groupDownCourseId: MutableLiveData<Long>
         get() = _groupDownCourseId
-    fun setGroupDownCourseId(groupDownCourseId: Int){
-        _groupDownCourseId = groupDownCourseId
+    fun setGroupDownCourseId(groupDownCourseId: Long){
+        _groupDownCourseId.value = groupDownCourseId
+    }
+
+    private var _groupUpCourseName: String = ""
+    val groupUpCourseName: String
+        get() = _groupUpCourseName
+    fun setGroupUpCourseName(groupUpCourseName: String){
+        _groupUpCourseName = groupUpCourseName
+    }
+
+    private var _groupDownCourseName: String = ""
+    val groupDownCourseName: String
+        get() = _groupDownCourseName
+    fun setGroupDownCourseName(groupDownCourseName: String){
+        _groupDownCourseName = groupDownCourseName
+    }
+
+    private var _startDate: MutableLiveData<String> = MutableLiveData("")
+    val startDate: MutableLiveData<String>
+        get() = _startDate
+    fun setStartDate(startDate: String){
+        _startDate.value = startDate
+    }
+
+    private var _endDate: MutableLiveData<String> = MutableLiveData("")
+    val endDate: MutableLiveData<String>
+        get() = _endDate
+    fun setEndDate(endDate: String){
+        _endDate.value = endDate
     }
 }

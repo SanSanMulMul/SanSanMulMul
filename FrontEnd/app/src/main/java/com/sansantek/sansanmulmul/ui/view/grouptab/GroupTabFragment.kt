@@ -248,9 +248,9 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                     }
                 }
 
-                override fun onGroupClick(position: Int) {
+                override fun onGroupClick(crew: Crew) {
                     val activity = requireActivity() as MainActivity
-                    activity.changeAddToBackstackFragment(GroupDetailFragment())
+                    activity.changeAddToBackstackFragment(GroupDetailFragment(crew))
                 }
             })
         }
@@ -315,7 +315,17 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
             } else {
                 binding.myGroupSpinner.visibility = View.VISIBLE
                 binding.allGroupTitle.visibility = View.GONE
-
+                lifecycleScope.launch {
+                    activityViewModel.token?.let {
+                        if(binding.myGroupSpinner.selectedItemPosition == 0){
+                            loadMyScheduledGroupList()
+                        }
+                        else{
+                            loadMyCompletedGroupList()
+                        }
+                        binding.groupList.adapter = groupTabListAdapter
+                    }
+                }
                 groupTabListAdapter = initGroupListAdapter()
 
 //          submitList(groupListInfoList)

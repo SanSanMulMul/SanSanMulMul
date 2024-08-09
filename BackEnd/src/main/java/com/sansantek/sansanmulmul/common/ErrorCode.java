@@ -39,6 +39,8 @@ public enum ErrorCode {
     FILE_UPLOAD_ERROR("I001",HttpStatus.INTERNAL_SERVER_ERROR, "첨부한 파일이 S3에 업로드 되지 않았습니다."),
     IMAGE_NOT_FOUND("I002", HttpStatus.NOT_FOUND, "이미지를 찾을 수 없습니다."),
 
+    //common
+    COMMON_ERROR("FAIL", HttpStatus.NOT_FOUND, "에러발생"),
 
 
 

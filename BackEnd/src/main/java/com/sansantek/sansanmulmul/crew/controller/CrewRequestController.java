@@ -6,6 +6,7 @@ import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequestStatus;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewRequestResponse;
 import com.sansantek.sansanmulmul.crew.service.request.CrewRequestService;
 import com.sansantek.sansanmulmul.user.domain.User;
+import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +22,11 @@ import java.util.stream.Collectors;
 public class CrewRequestController {
 
     private final CrewRequestService crewRequestService;
+    private final UserRepository userRepository;
 
-    public CrewRequestController(CrewRequestService crewRequestService) {
+    public CrewRequestController(CrewRequestService crewRequestService, UserRepository userRepository) {
         this.crewRequestService = crewRequestService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/{crewId}/join")
@@ -74,6 +77,19 @@ public class CrewRequestController {
             String leaderProviderId = authentication.getName();
             crewRequestService.OutUser(crewId, userId, leaderProviderId);
             return ResponseEntity.ok().body("사용자가 크루에서 강퇴되었습니다.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @DeleteMapping("/{crewId}/out")
+    @Operation(summary = "크루 탈퇴", description = "사용자가 크루를 나가는 기능입니다. 리더는 방을 나갈 수 없습니다.")
+    public ResponseEntity<?> exitCrew(@PathVariable int crewId, Authentication authentication) {
+        try {
+            String userProviderId = authentication.getName();
+            User user = userRepository.findByUserProviderId(userProviderId)
+                    .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+            crewRequestService.exitCrew(crewId, user.getUserId(), userProviderId);
+            return ResponseEntity.ok().body("크루에서 나가셨습니다.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

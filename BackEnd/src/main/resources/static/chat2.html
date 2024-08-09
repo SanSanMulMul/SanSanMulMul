@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Room</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script>
+        var stompClient = null;
+
+        function connect() {
+            var socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/public', function (messageOutput) {
+                    showMessageOutput(JSON.parse(messageOutput.body));
+                });
+            });
+        }
+
+        function sendMessage() {
+            var messageContent = document.getElementById('message').value;
+            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
+                'messageContent': messageContent,
+                'timestamp': new Date(),
+                'crewId': 1, // Example room ID
+                'userId': 3 // Example user ID
+            }));
+        }
+
+        function showMessageOutput(messageOutput) {
+            var response = document.getElementById('response');
+            var p = document.createElement('p');
+            p.style.wordWrap = 'break-word';
+            p.appendChild(document.createTextNode(messageOutput.user.userNickname + ": " + messageOutput.messageContent));
+            response.appendChild(p);
+        }
+
+        function loadChatHistory() {
+            fetch('/chat/history/1') // Example crew ID
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(message => {
+                        showMessageOutput(message);
+                    });
+                });
+        }
+
+        window.onload = function() {
+            connect();
+            loadChatHistory();
+        };
+    </script>
+</head>
+<body>
+<div id="response"></div>
+<input type="text" id="message" />
+<button onclick="sendMessage()">Send</button>
+</body>
+</html>

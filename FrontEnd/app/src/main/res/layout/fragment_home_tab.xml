@@ -63,34 +63,15 @@
             app:layout_constraintTop_toBottomOf="@id/layout_search">
 
             <TextView
-                android:id="@+id/tv_greeting1"
+                android:id="@+id/tv_greeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/mulish_bold"
-                android:text="좋은 "
                 android:textSize="@dimen/textSize_26"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="좋은 " />
 
-            <TextView
-                android:id="@+id/tv_greeting2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/mulish_bold"
-                android:text="아침"
-                android:textSize="@dimen/textSize_26"
-                app:layout_constraintStart_toEndOf="@id/tv_greeting1"
-                app:layout_constraintTop_toTopOf="@id/tv_greeting1" />
-
-            <TextView
-                android:id="@+id/tv_greeting3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/mulish_bold"
-                android:text="이에요,"
-                android:textSize="@dimen/textSize_26"
-                app:layout_constraintStart_toEndOf="@id/tv_greeting2"
-                app:layout_constraintTop_toTopOf="@id/tv_greeting1" />
 
             <TextView
                 android:id="@+id/tv_shared"
@@ -98,12 +79,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:fontFamily="@font/mulish_bold"
-                android:text="박태우스"
                 android:textColor="@color/sansanmulmul_green"
                 android:textSize="@dimen/textSize_26"
                 android:transitionName="shared_element_text"
-                app:layout_constraintStart_toStartOf="@id/tv_greeting1"
-                app:layout_constraintTop_toBottomOf="@id/tv_greeting1" />
+                app:layout_constraintStart_toStartOf="@id/tv_greeting"
+                app:layout_constraintTop_toBottomOf="@id/tv_greeting"
+                tools:text="박태우스" />
 
             <TextView
                 android:id="@+id/tv_greeting5"
@@ -126,20 +107,20 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="30dp"
             android:text="📰 실시간 관심 산 뉴스"
-            app:layout_constraintBottom_toTopOf="@id/news_divider"
+            app:layout_constraintBottom_toTopOf="@id/layout_carousel_news"
             app:layout_constraintStart_toStartOf="@id/iv_logo"
             app:layout_constraintTop_toBottomOf="@id/layout_greeting" />
 
-        <View
-            android:id="@+id/news_divider"
-            android:layout_width="20dp"
-            android:layout_height="2dp"
-            android:layout_marginVertical="5dp"
-            android:background="@color/light_grey"
-            app:layout_constraintBottom_toTopOf="@id/layout_carousel_news"
-            app:layout_constraintEnd_toEndOf="@id/tv_news_title"
-            app:layout_constraintStart_toStartOf="@id/tv_news_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_news_title" />
+        <!--        <View-->
+        <!--            android:id="@+id/news_divider"-->
+        <!--            android:layout_width="20dp"-->
+        <!--            android:layout_height="2dp"-->
+        <!--            android:layout_marginVertical="5dp"-->
+        <!--            android:background="@color/light_grey"-->
+        <!--            app:layout_constraintBottom_toTopOf="@id/layout_carousel_news"-->
+        <!--            app:layout_constraintEnd_toEndOf="@id/tv_news_title"-->
+        <!--            app:layout_constraintStart_toStartOf="@id/tv_news_title"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/tv_news_title" />-->
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/layout_carousel_news"
@@ -147,7 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:clipChildren="false"
-            app:layout_constraintTop_toBottomOf="@id/news_divider" />
+            app:layout_constraintTop_toBottomOf="@id/tv_news_title" />
 
         <!-- 구분선 -->
         <View

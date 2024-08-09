@@ -23,80 +23,89 @@ import com.sansantek.sansanmulmul.ui.viewmodel.MountainSearchViewModel
 private const val TAG = "번들"
 
 class MountainSearchResultFragment : BaseFragment<FragmentMountainSearchResultBinding>(
-  FragmentMountainSearchResultBinding::bind,
-  R.layout.fragment_mountain_search_result
+    FragmentMountainSearchResultBinding::bind,
+    R.layout.fragment_mountain_search_result
 ) {
+    private lateinit var searchResult: List<Mountain>
+    private val searchViewModel: MountainSearchViewModel by activityViewModels()
+    private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
 
-  private lateinit var searchResult: List<Mountain>
-  private val searchViewModel: MountainSearchViewModel by activityViewModels()
-  private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
-
-  private val mountainListAdapter by lazy {
-    SearchResultOfMountainListAdapter().apply {
-      setItemClickListener(
-        object : SearchResultOfMountainListAdapter.OnItemClickListener {
-          override fun onItemClick(mountain: Mountain) {
-            mountainDetailViewModel.setMountainID(mountain.mountainId)
-            changeFragmentWithSlideRightAnimation(MountainDetailFragment())
-          }
+    private val mountainListAdapter by lazy {
+        SearchResultOfMountainListAdapter().apply {
+            setItemClickListener(
+                object : SearchResultOfMountainListAdapter.OnItemClickListener {
+                    override fun onItemClick(mountain: Mountain) {
+                        mountainDetailViewModel.setMountainID(mountain.mountainId)
+                        changeFragmentWithSlideRightAnimation(MountainDetailFragment())
+                    }
+                }
+            )
         }
-      )
-    }
-  }
-
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    // 검색어 observe
-    searchViewModel.searchKeyword.observe(viewLifecycleOwner) { keyword ->
-      binding.layoutSearch.findViewById<EditText>(R.id.et_search).setText(keyword)
-      searchViewModel.searchMountainList(keyword)
     }
 
-    // 산 검색 결과 리스트 observe
-    searchViewModel.mountain.observe(viewLifecycleOwner) { mountains ->
-      if (mountains != null) {
-        this@MountainSearchResultFragment.searchResult = mountains
-        mountainListAdapter.submitList(searchResult)
-      } else {
-        Toast.makeText(context, searchViewModel.error.toString(), Toast.LENGTH_SHORT).show()
-      }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // 검색어 observe
+        searchViewModel.searchKeyword.observe(viewLifecycleOwner) { keyword ->
+            binding.layoutSearch.findViewById<EditText>(R.id.et_search).setText(keyword)
+            searchViewModel.searchMountainList(keyword)
+            searchViewModel.mountain.value?.get(0)
+                ?.let { searchViewModel.fetchMountainCourse(it.mountainId) }
+        }
+
+        // 산 검색 결과 리스트 observe
+        searchViewModel.mountain.observe(viewLifecycleOwner) { mountains ->
+            if (mountains != null) {
+                this@MountainSearchResultFragment.searchResult = mountains
+                mountainListAdapter.submitList(searchResult)
+            } else {
+                Toast.makeText(context, searchViewModel.error.toString(), Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // 산 코스 개수 observe
+        searchViewModel.mountainCourse.observe(viewLifecycleOwner) { mountainCourse ->
+            if (mountainCourse != null) {
+
+            }
+
+        }
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
-    return super.onCreateView(inflater, container, savedInstanceState)
-  }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    init()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        init()
 
-  }
+    }
 
-  private fun init() {
-    binding.layoutSearch.findViewById<EditText>(R.id.et_search)
-      .setText(searchViewModel.searchKeyword.value)
-    initSearchResultOfMountainListRecyclerView()
+    private fun init() {
+        binding.layoutSearch.findViewById<EditText>(R.id.et_search)
+            .setText(searchViewModel.searchKeyword.value)
+        initSearchResultOfMountainListRecyclerView()
 
-    // 새로고침 깜박임 방지
-    binding.rvMountain.itemAnimator = null
+        // 새로고침 깜박임 방지
+        binding.rvMountain.itemAnimator = null
 
-    // 새로 검색 시
-    binding.editText.etSearch.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, event ->
-      if (actionId == EditorInfo.IME_ACTION_DONE ||
-        (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
-      ) {
-        searchViewModel.setSearchKeyword(binding.editText.etSearch.text.toString())
-        return@OnEditorActionListener true
-      }
-      false
-    })
-  }
+        // 새로 검색 시
+        binding.editText.etSearch.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE ||
+                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
+            ) {
+                searchViewModel.setSearchKeyword(binding.editText.etSearch.text.toString())
+                return@OnEditorActionListener true
+            }
+            false
+        })
+    }
 
-  private fun initSearchResultOfMountainListRecyclerView() {
-    val mountainRecyclerView = binding.rvMountain
-    mountainRecyclerView.layoutManager = LinearLayoutManager(context)
-    mountainRecyclerView.adapter = mountainListAdapter
-  }
+    private fun initSearchResultOfMountainListRecyclerView() {
+        val mountainRecyclerView = binding.rvMountain
+        mountainRecyclerView.layoutManager = LinearLayoutManager(context)
+        mountainRecyclerView.adapter = mountainListAdapter
+    }
 
 
 }

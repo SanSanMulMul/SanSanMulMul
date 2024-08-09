@@ -32,13 +32,13 @@ class GroupTabListAdapter(private val isAllGroupLayout:Boolean):
         RecyclerView.ViewHolder(binding.root) {
 
         fun bindInfo(position: Int) {
+            val item = getItem(position)
             if(!isAllGroupLayout){
                 binding.btnRegisterGroup.visibility = View.GONE
                 binding.root.setOnClickListener{
-                    itemClickListener.onGroupClick(position)
+                    itemClickListener.onGroupClick(item)
                 }
             }
-            val item = getItem(position)
             if(item.userJoined){
                 binding.btnRegisterGroup.visibility = View.GONE
             }
@@ -79,7 +79,7 @@ class GroupTabListAdapter(private val isAllGroupLayout:Boolean):
 
     interface ItemClickListener {
         fun onClick(crew: Crew)
-        fun onGroupClick(position: Int)
+        fun onGroupClick(crew: Crew)
     }
 
     private lateinit var itemClickListener: ItemClickListener

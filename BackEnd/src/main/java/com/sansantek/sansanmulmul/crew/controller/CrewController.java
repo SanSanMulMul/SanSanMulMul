@@ -42,6 +42,10 @@ public class CrewController {
     * 2. 그룹 생성
     * 3. 그룹 상세 보기
     * 4. 그룹 상세 보기 - 그룹 갤러리
+    * 
+    * 1. 그룹 내 멤버들
+    * 2. '내' 진행 중 그룹
+    * 3. '내' 완료된 그룹
     * */
 
     // service
@@ -280,6 +284,8 @@ public class CrewController {
     }
 
     ////////////////////////////////////////////////////////////
+
+    /* 1. 그룹 내 멤버들 */
     @GetMapping("/member/{crewId}")
     public ResponseEntity<?> getCrewMembers(@PathVariable int crewId) {
         try {
@@ -290,33 +296,34 @@ public class CrewController {
         }
     }
 
-    @Operation(summary = "진행 중인 그룹 조회", description = "회원의 진행 중인 그룹을 조회합니다.")
+    /* [그룹 목록] // 내거 보여주는 목록 */
+    /* 2. '내' 진행 중 그룹 */
+    @Operation(summary = "나의 진행 중인 그룹 조회", description = "회원의 진행 중인 그룹을 조회합니다.")
     @GetMapping("/ing")
     public ResponseEntity<?> getingCrews(Authentication authentication) {
         try {
             String userProviderId = authentication.getName();
             User user = userService.getUser(userProviderId);
-            List<Crew> ongoingCrews = crewService.getingCrews(user);
-            List<CrewMyResponse> response = ongoingCrews.stream()
-                    .map(crew -> CrewMyResponse.from(crew, crewService.getCurrentMemberCount(crew.getCrewId())))
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(response);
+
+            List<CrewResponse> crewResponse = crewService.getMyOnGoingCrews(user);
+
+            return ResponseEntity.ok(crewResponse);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @Operation(summary = "종료된 그룹 조회", description = "회원의 종료된 그룹을 조회합니다.")
+    /* 3. '내' 완료된 그룹 */
+    @Operation(summary = "나의 종료된 그룹 조회", description = "회원의 종료된 그룹을 조회합니다.")
     @GetMapping("/complete")
     public ResponseEntity<?> getCompletedCrews(Authentication authentication) {
         try {
             String userProviderId = authentication.getName();
             User user = userService.getUser(userProviderId);
-            List<Crew> completedCrews = crewService.getCompletedCrews(user);
-            List<CrewMyResponse> response = completedCrews.stream()
-                    .map(crew -> CrewMyResponse.from(crew, crewService.getCurrentMemberCount(crew.getCrewId())))
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(response);
+
+            List<CrewResponse> crewResponse = crewService.getMyCompletedCrews(user);
+
+            return ResponseEntity.ok(crewResponse);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

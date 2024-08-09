@@ -485,19 +485,112 @@ public class CrewService {
 
 
     ////////////////////////////////////////////////////////////
-    //현재 진행중인 크루><
-    public List<Crew> getingCrews(User user) {
-        return crewUserRepository.findByUserAndCrew_CrewIsDone(user, false).stream()
-                .map(CrewUser::getCrew)
-                .collect(Collectors.toList());
-    }
-    //종료된 크루><
-    public List<Crew> getCompletedCrews(User user) {
-        return crewUserRepository.findByUserAndCrew_CrewIsDone(user, true).stream()
-                .map(CrewUser::getCrew)
-                .collect(Collectors.toList());
+    /* [그룹 목록] // 내거 보여주는 목록 */
+
+    /* 2. '내' 진행 중 그룹 */
+    public List<CrewResponse> getMyOnGoingCrews(User user) {
+        List<CrewUser> myCrews =  crewUserRepository.findByUser(user);
+
+        List<CrewResponse> myResponses = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now(); //현재시간
+        for (CrewUser crewUser : myCrews) {
+            Crew myCrew = crewUser.getCrew(); //크루
+            // 1. 현재날짜 이후것 부터 가져와야함 (CrewStartDate사용)
+            if (myCrew.getCrewStartDate().isAfter(now)) {
+                // 2. 현재 그룹에 속한 인원 수 가져옴
+                int currentMember = crewUserRepository.countByCrew_CrewId(myCrew.getCrewId());
+                // 3. 현재 사용자(유저)가 이 그룹에 참여하고있는지 확인
+                boolean isUserJoined = crewUserRepository.existsByCrewAndUser(myCrew, user);
+                // 4. 그룹 스타일 Integer List로
+                List<Integer> styles = new ArrayList<>();
+                for (int i = 0; i < myCrew.getCrewStyles().size(); i++) {
+                    int styleId = myCrew.getCrewStyles().get(i).getStyle().getHikingStylesId();
+                    styles.add(styleId);
+                }
+                // 5. 방장 정보
+                User leader = myCrew.getLeader(); // 크루의 방장 정보
+                // 6. <응답 객체 생성>
+                CrewResponse response = CrewResponse.builder()
+                        .crewId(myCrew.getCrewId())
+                        .crewName(myCrew.getCrewName())
+                        .mountainName(myCrew.getMountain().getMountainName())
+                        .crewStartDate(myCrew.getCrewStartDate())
+                        .crewEndDate(myCrew.getCrewEndDate())
+                        .crewMaxMembers(myCrew.getCrewMaxMembers())
+                        .crewCurrentMembers(currentMember)
+                        .isUserJoined(isUserJoined)
+                        .mountainImg(myCrew.getMountain().getMountainImg())
+                        .crewMinAge(myCrew.getCrewMinAge())
+                        .crewMaxAge(myCrew.getCrewMaxAge())
+                        .crewGender(myCrew.getCrewGender())
+                        .crewStyles(styles)
+                        .userStaticBadge(leader.getUserStaticBadge())
+                        .userNickname(leader.getUserNickname())
+                        .userProfileImg(leader.getUserProfileImg())
+                        .build();
+
+                // 6. 응답에 추가
+                myResponses.add(response);
+            }
+
+        }
+        return myResponses;
     }
 
+
+    /* 3. '내' 완료된 그룹 */
+    public List<CrewResponse> getMyCompletedCrews(User user) {
+        List<CrewUser> myCrews =  crewUserRepository.findByUser(user);
+
+        List<CrewResponse> myResponses = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now(); //현재시간
+        for (CrewUser crewUser : myCrews) {
+            Crew myCrew = crewUser.getCrew(); //크루
+            // 1. 현재날짜 이후것 부터 가져와야함 (CrewStartDate사용)
+            if (myCrew.getCrewEndDate().isBefore(now)) {
+                // 2. 현재 그룹에 속한 인원 수 가져옴
+                int currentMember = crewUserRepository.countByCrew_CrewId(myCrew.getCrewId());
+                // 3. 현재 사용자(유저)가 이 그룹에 참여하고있는지 확인
+                boolean isUserJoined = crewUserRepository.existsByCrewAndUser(myCrew, user);
+                // 4. 그룹 스타일 Integer List로
+                List<Integer> styles = new ArrayList<>();
+                for (int i = 0; i < myCrew.getCrewStyles().size(); i++) {
+                    int styleId = myCrew.getCrewStyles().get(i).getStyle().getHikingStylesId();
+                    styles.add(styleId);
+                }
+                // 5. 방장 정보
+                User leader = myCrew.getLeader(); // 크루의 방장 정보
+                // 6. <응답 객체 생성>
+                CrewResponse response = CrewResponse.builder()
+                        .crewId(myCrew.getCrewId())
+                        .crewName(myCrew.getCrewName())
+                        .mountainName(myCrew.getMountain().getMountainName())
+                        .crewStartDate(myCrew.getCrewStartDate())
+                        .crewEndDate(myCrew.getCrewEndDate())
+                        .crewMaxMembers(myCrew.getCrewMaxMembers())
+                        .crewCurrentMembers(currentMember)
+                        .isUserJoined(isUserJoined)
+                        .mountainImg(myCrew.getMountain().getMountainImg())
+                        .crewMinAge(myCrew.getCrewMinAge())
+                        .crewMaxAge(myCrew.getCrewMaxAge())
+                        .crewGender(myCrew.getCrewGender())
+                        .crewStyles(styles)
+                        .userStaticBadge(leader.getUserStaticBadge())
+                        .userNickname(leader.getUserNickname())
+                        .userProfileImg(leader.getUserProfileImg())
+                        .build();
+
+                // 6. 응답에 추가
+                myResponses.add(response);
+            }
+
+        }
+        return myResponses;
+    }
+
+
+
+        /////////////////////////////////////////////
     // 현재 인원 수를 계산하는 메서드
     public int getCurrentMemberCount(int crewId) {
         return crewUserRepository.countByCrewCrewId(crewId);

@@ -19,6 +19,10 @@ public interface CrewUserRepository extends JpaRepository<CrewUser, Long> {
 
     //현재 사용자(user)가 그룹(crew)에 참여중인지 여부
     boolean existsByCrewAndUser(Crew crew, User user);
+
+    //내가 가입한 crew들 전부 가져오기
+    List<CrewUser> findByUser(User user);
+    //내가 가입한 crew들 중 종료여부에 따라 (crew의 isDone컬럼) 그룹들 가져오기
     List<CrewUser> findByUserAndCrew_CrewIsDone(User user, boolean isDone);
     int countByCrewCrewId(int crewId);
 }

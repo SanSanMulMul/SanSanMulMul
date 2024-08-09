@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ApiResponse<T> {
 
-    private static final String SUCCESS_STATUS = "C000";
+    private static final String SUCCESS_STATUS = "success";
 
     private String status;
     private T data;
@@ -25,6 +25,10 @@ public class ApiResponse<T> {
     // 예외 발생으로 API 호출 실패시 반환
     public static ApiResponse<?> createError(ErrorCode errorCode) {
         return new ApiResponse<>(errorCode.getCode(), null, errorCode.getMessage());
+    }
+
+    public static ApiResponse<?> createError(String errorCode, String message) {
+        return new ApiResponse<>(errorCode, null, message);
     }
 
     private ApiResponse(String status, T data, String message) {

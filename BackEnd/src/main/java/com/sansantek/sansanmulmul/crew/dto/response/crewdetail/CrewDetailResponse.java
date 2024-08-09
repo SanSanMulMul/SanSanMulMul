@@ -19,9 +19,11 @@ public class CrewDetailResponse {
 
     @Schema(description = "그룹 설명", example = "그룹설명부분입니다.")
     private String crewDescription;
-    @Schema(description = "그룹 등산 스타일", example = "['설렁설렁', '등산도 식후경']")
-    private List<String> crewHikingStyles = new ArrayList<>();
+    @Schema(description = "그룹 등산 스타일", example = "[1, 2]")
+    private List<Integer> crewHikingStyles = new ArrayList<>();
 
+    /* (1번탭) 그룹 내에 참여중인 멤버들 목록 */
+    List<CrewUserResponse> members = new ArrayList<>();
 
 
 }

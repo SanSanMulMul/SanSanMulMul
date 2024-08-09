@@ -12,4 +12,7 @@ public class CrewRequestResponse {
     private String userName;
     private String userNickname;
     private String requestStatus;
+    private String userGender;
+    private String userProfileImg;
+    private int userStaticBadge;
 }

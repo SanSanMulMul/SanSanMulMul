@@ -1,17 +1,25 @@
 package com.sansantek.sansanmulmul.crew.service;
 
+import com.sansantek.sansanmulmul.common.ApiResponse;
+import com.sansantek.sansanmulmul.common.service.S3Service;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 
+import com.sansantek.sansanmulmul.crew.domain.crewgallery.CrewGallery;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewCreateRequest;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewGalleryResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailCommonResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewHikingDetailResponse;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewUserResponse;
+import com.sansantek.sansanmulmul.crew.repository.CrewGalleryRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewHikingStyleRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
+import com.sansantek.sansanmulmul.exception.auth.UserNotFoundException;
+import com.sansantek.sansanmulmul.exception.user.UserDeletionException;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.domain.course.Course;
 import com.sansantek.sansanmulmul.mountain.repository.MountainRepository;
@@ -22,11 +30,15 @@ import com.sansantek.sansanmulmul.user.domain.style.HikingStyle;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import com.sansantek.sansanmulmul.user.repository.style.HikingStyleRepository;
 import com.sansantek.sansanmulmul.user.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +58,13 @@ public class CrewService {
     private final UserRepository userRepository;
     private final CrewUserRepository crewUserRepository;
     private final HikingStyleRepository hikingStyleRepository;
+    private final CrewGalleryRepository crewGalleryRepository;
 
     // service
     private final UserService userService;
     private final CourseRepository courseRepository;
     private final CourseService courseService;
+    private final S3Service s3Service;
 
     /* 1. 그룹 전체 조회 */
     // 모든 그룹 조회
@@ -275,27 +289,43 @@ public class CrewService {
         return crewDetailCommonResponse;
     }
 
-    // (2) [탭1] 그룹 정보
+    // (2) [탭1] 그룹 정보 + 그룹 내 속하는 멤버들
     public CrewDetailResponse getCrewDetailCrewInfo(int crewId) {
         // crewId에 해당하는 그룹 상세 조회
         // 1. 해당 crew 가져옴
         Crew crew = crewRepository.findById(crewId)
                 .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
-        // 2. 해당 crew의 hikingStyle들 string으로 가져오기
-        List<String> styles = new ArrayList<>();
-        for (int i = 0; i < crew.getCrewStyles().size() ; i++) {
-            String style = crew.getCrewStyles().get(i).getStyle().getHikingStylesName();
-            styles.add(style);
+        // 2. 해당 crew의 hikingStyle들 Integer List로
+        List<Integer> styles = new ArrayList<>();
+        for (int i = 0; i < crew.getCrewStyles().size(); i++) {
+            int styleId = crew.getCrewStyles().get(i).getStyle().getHikingStylesId();
+            styles.add(styleId);
         }
-
+        // 3. 그룹 내 속하는 멤버들
+        List<CrewUser> crewUsers = crewUserRepository.findByCrew(crew);
+        List<CrewUserResponse> crewUserResponses = new ArrayList<>();
+        for (CrewUser crewUser : crewUsers) {
+            User user = crewUser.getUser();
+            boolean isLeader = crewRepository.existsByCrewIdAndLeader_UserId(crewId, user.getUserId()); //방장여부
+            CrewUserResponse userResponse = CrewUserResponse.builder()
+                    .userId(user.getUserId())
+                    .userName(user.getUserName())
+                    .userNickname(user.getUserNickname())
+                    .userGender(user.getUserGender().toString())
+                    .userProfileImg(user.getUserProfileImg())
+                    .userStaticBadge(user.getUserStaticBadge())
+                    .isLeader(crewUser.isLeader())
+                    .build();
+            crewUserResponses.add(userResponse);
+        }
         CrewDetailResponse crewDetailResponse = CrewDetailResponse.builder()
                 .crewDescription(crew.getCrewDescription())
                 .crewHikingStyles(styles)
+                .members(crewUserResponses)
                 .build();
 
         return crewDetailResponse;
     }
-
 
     // (3) [탭2] 등산 정보
     public CrewHikingDetailResponse getCrewDetailHikingInfo(int crewId) {
@@ -322,6 +352,8 @@ public class CrewService {
                 .mountainId(mountain.getMountainId())
                 .mountainName(mountain.getMountainName())
                 .mountainDescription(mountain.getMountainDescription())
+                .mountainLat(mountain.getMountainLat())
+                .mountainLon(mountain.getMountainLon())
                 .upCourseId(upCourse.getCourseId())
                 .upCourseName(upCourse.getCourseName())
                 .upCourseLevel(upCourse.getCourseLevel())
@@ -339,20 +371,226 @@ public class CrewService {
         return crewHikingDetailResponse;
     }
 
-    ////////////////////////////////////////////////////////////
-    //현재 진행중인 크루><
-    public List<Crew> getingCrews(User user) {
-        return crewUserRepository.findByUserAndCrew_CrewIsDone(user, false).stream()
-                .map(CrewUser::getCrew)
-                .collect(Collectors.toList());
-    }
-    //종료된 크루><
-    public List<Crew> getCompletedCrews(User user) {
-        return crewUserRepository.findByUserAndCrew_CrewIsDone(user, true).stream()
-                .map(CrewUser::getCrew)
-                .collect(Collectors.toList());
+    /* 4. [탭3] 그룹 갤러리 */
+    // 4-1. 이미지 업로드 (C)
+    @Transactional
+    public boolean uploadImg(int crewId, User user, MultipartFile image)  throws IOException {
+
+        // 1. 해당 crew 가져옴
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
+        // user가 해당 crew에 가입되어있지 않은 경우 에러 처리
+        boolean isMember = crewUserRepository.existsByCrewAndUser(crew, user);
+        if (!isMember) {
+//            return false;
+            throw new RuntimeException("해당 그룹에 가입되어 있지 않습니다.");
+        }
+        // 2. 이미지를 s3에 업로드함
+        String imgUrl = "";
+        if (image != null) {
+            imgUrl = s3Service.uploadS3(image, "group/"+Integer.toString(user.getUserId())+Integer.toString(crewId));
+        }
+
+        // 3. 이미지 객체 하나 생성
+        CrewGallery crewPic = CrewGallery.builder()
+                .crew(crew)
+                .user(user)
+                .imgUrl(imgUrl)
+                .imgCreatedAt(LocalDateTime.now())
+                .build();
+
+        // 4. crewGallery 레파지토리에 이미지 객체 저장
+        CrewGallery savedCrewPic = crewGalleryRepository.save(crewPic);
+
+        // 5. 저장이 성공적으로 이루어졌는지 확인
+        if (savedCrewPic == null || savedCrewPic.getImgUrl() == null) {
+            return false;
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "DB에 이미지 저장에 실패했습니다.");
+        }
+        return true;
     }
 
+    // 4-2. 갤러리 전부 가져오기 (R)
+    public List<CrewGalleryResponse> getCrewDetailGallery(int crewId, User user) {
+        // 1. 해당 crew 가져옴
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
+        // user가 해당 crew에 가입되어있지 않은 경우 에러 처리
+        boolean isMember = crewUserRepository.existsByCrewAndUser(crew, user);
+        if (!isMember) {
+            throw new RuntimeException("해당 그룹에 가입되어 있지 않습니다.");
+        }
+
+        // 2. crewId에 해당하는 모든 CrewGallery 가져오기
+        List<CrewGallery> crewGalleries = crewGalleryRepository.findByCrew(crew);
+
+        // 3. 응답 dto 리스트 생성
+        List<CrewGalleryResponse> responses = new ArrayList<>();
+
+        for (CrewGallery gallery : crewGalleries) {
+            boolean isOwner = gallery.getUser().equals(user);
+
+            CrewGalleryResponse response = CrewGalleryResponse.builder()
+                    .picId(gallery.getPictureId())
+                    .userNickname(gallery.getUser().getUserNickname())
+                    .userProfileImg(gallery.getUser().getUserProfileImg())
+                    .isOwner(isOwner)
+                    .imgUrl(gallery.getImgUrl())
+                    .createdAt(gallery.getImgCreatedAt())
+                    .build();
+
+            responses.add(response);
+        }
+
+        return responses;
+    }
+
+    // 4-3. 갤러리에서 본인이 올린 사진 지우기 (D)
+    @Transactional
+    public boolean deleteImg(int crewId, User user, int picId) throws IOException{
+        try {
+            // 1. 해당 crew 가져옴
+            Crew crew = crewRepository.findById(crewId)
+                    .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
+            // user가 해당 crew에 가입되어있지 않은 경우 에러 처리
+            boolean isMember = crewUserRepository.existsByCrewAndUser(crew, user);
+            if (!isMember) {
+//            return false;
+                throw new RuntimeException("해당 그룹에 가입되어 있지 않습니다.");
+            }
+            // 지울 img가 현재 사용자가 올린 것이 아니라면 에러 처리
+            boolean isOwner = crewGalleryRepository.findByPictureId(picId).getUser().equals(user);
+            if (!isOwner) {
+//            return false;
+                throw new RuntimeException("해당 사진을 올린 유저가 아닙니다.");
+            }
+
+            // 2. 지울 imgurl
+            String imgUrl = crewGalleryRepository.findByPictureId(picId).getImgUrl();
+
+            // 3-1. S3에서 이미지 삭제
+            s3Service.deleteS3(imgUrl); //s3에서 이미지 삭제
+
+            // 3-2. DB에서 삭제
+            crewGalleryRepository.deleteById(picId);
+            return true;
+        } catch (Exception e) {
+
+            throw new UserDeletionException("이미지 삭제 실패 | 이미지id :  " + picId, e);
+
+        }
+
+    }
+
+
+
+    ////////////////////////////////////////////////////////////
+    /* [그룹 목록] // 내거 보여주는 목록 */
+
+    /* 2. '내' 진행 중 그룹 */
+    public List<CrewResponse> getMyOnGoingCrews(User user) {
+        List<CrewUser> myCrews =  crewUserRepository.findByUser(user);
+
+        List<CrewResponse> myResponses = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now(); //현재시간
+        for (CrewUser crewUser : myCrews) {
+            Crew myCrew = crewUser.getCrew(); //크루
+            // 1. 현재날짜 이후것 부터 가져와야함 (CrewStartDate사용)
+            if (myCrew.getCrewStartDate().isAfter(now)) {
+                // 2. 현재 그룹에 속한 인원 수 가져옴
+                int currentMember = crewUserRepository.countByCrew_CrewId(myCrew.getCrewId());
+                // 3. 현재 사용자(유저)가 이 그룹에 참여하고있는지 확인
+                boolean isUserJoined = crewUserRepository.existsByCrewAndUser(myCrew, user);
+                // 4. 그룹 스타일 Integer List로
+                List<Integer> styles = new ArrayList<>();
+                for (int i = 0; i < myCrew.getCrewStyles().size(); i++) {
+                    int styleId = myCrew.getCrewStyles().get(i).getStyle().getHikingStylesId();
+                    styles.add(styleId);
+                }
+                // 5. 방장 정보
+                User leader = myCrew.getLeader(); // 크루의 방장 정보
+                // 6. <응답 객체 생성>
+                CrewResponse response = CrewResponse.builder()
+                        .crewId(myCrew.getCrewId())
+                        .crewName(myCrew.getCrewName())
+                        .mountainName(myCrew.getMountain().getMountainName())
+                        .crewStartDate(myCrew.getCrewStartDate())
+                        .crewEndDate(myCrew.getCrewEndDate())
+                        .crewMaxMembers(myCrew.getCrewMaxMembers())
+                        .crewCurrentMembers(currentMember)
+                        .isUserJoined(isUserJoined)
+                        .mountainImg(myCrew.getMountain().getMountainImg())
+                        .crewMinAge(myCrew.getCrewMinAge())
+                        .crewMaxAge(myCrew.getCrewMaxAge())
+                        .crewGender(myCrew.getCrewGender())
+                        .crewStyles(styles)
+                        .userStaticBadge(leader.getUserStaticBadge())
+                        .userNickname(leader.getUserNickname())
+                        .userProfileImg(leader.getUserProfileImg())
+                        .build();
+
+                // 6. 응답에 추가
+                myResponses.add(response);
+            }
+
+        }
+        return myResponses;
+    }
+
+
+    /* 3. '내' 완료된 그룹 */
+    public List<CrewResponse> getMyCompletedCrews(User user) {
+        List<CrewUser> myCrews =  crewUserRepository.findByUser(user);
+
+        List<CrewResponse> myResponses = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now(); //현재시간
+        for (CrewUser crewUser : myCrews) {
+            Crew myCrew = crewUser.getCrew(); //크루
+            // 1. 현재날짜 이후것 부터 가져와야함 (CrewStartDate사용)
+            if (myCrew.getCrewEndDate().isBefore(now)) {
+                // 2. 현재 그룹에 속한 인원 수 가져옴
+                int currentMember = crewUserRepository.countByCrew_CrewId(myCrew.getCrewId());
+                // 3. 현재 사용자(유저)가 이 그룹에 참여하고있는지 확인
+                boolean isUserJoined = crewUserRepository.existsByCrewAndUser(myCrew, user);
+                // 4. 그룹 스타일 Integer List로
+                List<Integer> styles = new ArrayList<>();
+                for (int i = 0; i < myCrew.getCrewStyles().size(); i++) {
+                    int styleId = myCrew.getCrewStyles().get(i).getStyle().getHikingStylesId();
+                    styles.add(styleId);
+                }
+                // 5. 방장 정보
+                User leader = myCrew.getLeader(); // 크루의 방장 정보
+                // 6. <응답 객체 생성>
+                CrewResponse response = CrewResponse.builder()
+                        .crewId(myCrew.getCrewId())
+                        .crewName(myCrew.getCrewName())
+                        .mountainName(myCrew.getMountain().getMountainName())
+                        .crewStartDate(myCrew.getCrewStartDate())
+                        .crewEndDate(myCrew.getCrewEndDate())
+                        .crewMaxMembers(myCrew.getCrewMaxMembers())
+                        .crewCurrentMembers(currentMember)
+                        .isUserJoined(isUserJoined)
+                        .mountainImg(myCrew.getMountain().getMountainImg())
+                        .crewMinAge(myCrew.getCrewMinAge())
+                        .crewMaxAge(myCrew.getCrewMaxAge())
+                        .crewGender(myCrew.getCrewGender())
+                        .crewStyles(styles)
+                        .userStaticBadge(leader.getUserStaticBadge())
+                        .userNickname(leader.getUserNickname())
+                        .userProfileImg(leader.getUserProfileImg())
+                        .build();
+
+                // 6. 응답에 추가
+                myResponses.add(response);
+            }
+
+        }
+        return myResponses;
+    }
+
+
+
+        /////////////////////////////////////////////
     // 현재 인원 수를 계산하는 메서드
     public int getCurrentMemberCount(int crewId) {
         return crewUserRepository.countByCrewCrewId(crewId);
@@ -367,4 +605,13 @@ public class CrewService {
             throw new IllegalArgumentException("Crew not found");
         }
     }
+    // 사용자가 그룹에 가입되어 있는지 확인
+    public boolean isUserInCrew(String userProviderId, int crewId) {
+        User user = userRepository.findByUserProviderId(userProviderId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new RuntimeException("그룹을 찾을 수 없습니다."));
+        return crewUserRepository.existsByCrewAndUser(crew, user);
+    }
+
 }

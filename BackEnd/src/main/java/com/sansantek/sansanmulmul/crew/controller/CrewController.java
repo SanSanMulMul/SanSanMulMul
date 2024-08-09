@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.crew.controller;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewCreateRequest;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewGalleryResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailCommonResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewMyResponse;
@@ -19,10 +20,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +41,11 @@ public class CrewController {
     * 1. 그룹 전체 조회
     * 2. 그룹 생성
     * 3. 그룹 상세 보기
+    * 4. 그룹 상세 보기 - 그룹 갤러리
+    * 
+    * 1. 그룹 내 멤버들
+    * 2. '내' 진행 중 그룹
+    * 3. '내' 완료된 그룹
     * */
 
     // service
@@ -173,10 +182,11 @@ public class CrewController {
     // (2) [탭1] 그룹 정보
     @GetMapping("/detail/{crewId}/info")
     @Operation(summary = "그룹 상세 조회 [탭1] 그룹 정보", description = "그룹 상세보기 - (탭1) 그룹 정보")
-    public ResponseEntity<?> getCrewDetailCrewInfo(@PathVariable int crewId) {
+    public ResponseEntity<?> getCrewDetailCrewInfo( @PathVariable int crewId) {
         HttpStatus status = HttpStatus.OK;
 
         try {
+
             CrewDetailResponse crewDetailResponse = crewService.getCrewDetailCrewInfo(crewId);
 
             return new ResponseEntity<>(crewDetailResponse, status);
@@ -206,44 +216,114 @@ public class CrewController {
         }
     }
 
-    ////////////////////////////////////////////////////////////
-    @GetMapping("/member/{crewId}")
-    public ResponseEntity<?> getCrewMembers(@PathVariable int crewId) {
+    /* 4. [탭3] 그룹 갤러리 */
+    // 4-1. 이미지 업로드
+    @PostMapping(value = "/detail/{crewId}/gallery", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "그룹 상세 조회 [탭3] 갤러리 사진 '업로드'",  description = "그룹 상세보기 - 그룹 갤러리에 사진 업로드")
+    public ResponseEntity<?> uploadImg(Authentication authentication,
+                                       @PathVariable int crewId,
+                                       @RequestPart(value = "image") MultipartFile image) throws IOException {
+        HttpStatus status = HttpStatus.OK;
         try {
-            List<CrewUserResponse> members = crewRequestService.getCrewMembers(crewId);
-            return ResponseEntity.ok(members);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            //사용자 정보
+            String userProviderId = authentication.getName();
+            User user = userService.getUser(userProviderId);
+
+            boolean flag = crewService.uploadImg(crewId, user, image);
+
+            return new ResponseEntity<>(flag, status);
+        } catch (Exception e) {
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+
+    }
+
+    // 4-2. 갤러리 전부 가져오기
+    @GetMapping(value = "/detail/{crewId}/gallery")
+    @Operation(summary = "그룹 상세 조회 [탭3] 그룹 갤러리 '전체 조회'",  description = "그룹 상세보기 - (탭3) 그룹 갤러리")
+    public ResponseEntity<?> getCrewDetailGallery(Authentication authentication, @PathVariable int crewId) {
+        HttpStatus status = HttpStatus.OK;
+        try {
+            //사용자 정보
+            String userProviderId = authentication.getName();
+            User user = userService.getUser(userProviderId);
+
+            List<CrewGalleryResponse> crewGalleryResponse = crewService.getCrewDetailGallery(crewId, user);
+            return new ResponseEntity<>(crewGalleryResponse, status); //ok 200
+
+        } catch (Exception e) {
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
         }
     }
 
-    @Operation(summary = "진행 중인 그룹 조회", description = "회원의 진행 중인 그룹을 조회합니다.")
+    // 4-3. 이미지 삭제
+    @DeleteMapping(value="/detail/{crewId}/gallery")
+    @Operation(summary = "그룹 상세 조회 [탭3] 그룹 갤러리 '이미지 삭제'", description = "본인이 올린 사진 삭제")
+    public ResponseEntity<?> deleteCrewDetailGallery(Authentication authentication,
+                                                     @PathVariable int crewId,
+                                                    @RequestParam int picId) {
+        HttpStatus status = HttpStatus.OK;
+        try {
+            String userProviderId = authentication.getName();
+            User user = userService.getUser(userProviderId);
+
+            boolean flag = crewService.deleteImg(crewId, user, picId);
+
+            return new ResponseEntity<>(flag, status);
+
+        } catch (Exception e) {
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+
+    }
+
+    ////////////////////////////////////////////////////////////
+
+    /* 1. 그룹 내 멤버들 */  //-> 위에 [탭1] 그룹정보로 통합
+//    @GetMapping("/member/{crewId}")
+//    public ResponseEntity<?> getCrewMembers(@PathVariable int crewId) {
+//        try {
+//            List<CrewUserResponse> members = crewRequestService.getCrewMembers(crewId);
+//            return ResponseEntity.ok(members);
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
+
+    /* [그룹 목록] // 내거 보여주는 목록 */
+    /* 2. '내' 진행 중 그룹 */
+    @Operation(summary = "나의 진행 중인 그룹 조회", description = "회원의 진행 중인 그룹을 조회합니다.")
     @GetMapping("/ing")
     public ResponseEntity<?> getingCrews(Authentication authentication) {
         try {
             String userProviderId = authentication.getName();
             User user = userService.getUser(userProviderId);
-            List<Crew> ongoingCrews = crewService.getingCrews(user);
-            List<CrewMyResponse> response = ongoingCrews.stream()
-                    .map(crew -> CrewMyResponse.from(crew, crewService.getCurrentMemberCount(crew.getCrewId())))
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(response);
+
+            List<CrewResponse> crewResponse = crewService.getMyOnGoingCrews(user);
+
+            return ResponseEntity.ok(crewResponse);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @Operation(summary = "종료된 그룹 조회", description = "회원의 종료된 그룹을 조회합니다.")
+    /* 3. '내' 완료된 그룹 */
+    @Operation(summary = "나의 종료된 그룹 조회", description = "회원의 종료된 그룹을 조회합니다.")
     @GetMapping("/complete")
     public ResponseEntity<?> getCompletedCrews(Authentication authentication) {
         try {
             String userProviderId = authentication.getName();
             User user = userService.getUser(userProviderId);
-            List<Crew> completedCrews = crewService.getCompletedCrews(user);
-            List<CrewMyResponse> response = completedCrews.stream()
-                    .map(crew -> CrewMyResponse.from(crew, crewService.getCurrentMemberCount(crew.getCrewId())))
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(response);
+
+            List<CrewResponse> crewResponse = crewService.getMyCompletedCrews(user);
+
+            return ResponseEntity.ok(crewResponse);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

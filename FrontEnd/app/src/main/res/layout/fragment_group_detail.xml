@@ -205,6 +205,8 @@
       android:id="@+id/layout_tab"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/group_detail_tab_fragment_view"
       app:tabBackground="@drawable/group_detail_tab_background_color_selector"
       app:tabIndicatorHeight="0dp"
       app:tabSelectedTextAppearance="@style/tab_selected_text"

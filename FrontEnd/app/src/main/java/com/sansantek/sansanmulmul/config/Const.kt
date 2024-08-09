@@ -44,15 +44,14 @@ class Const {
         // Mountain Detail - Course Tab
         const val INFO_TAB = 0
         const val COURSE_TAB = 1
+        val HikingBackgroundTintList = listOf(
+            android.R.color.transparent,
+            R.color.pink,
+            R.color.light_green,
+            R.color.light_blue,
+            R.color.light_purple,
+            R.color.orange,
+            R.color.light_yellow,
+        )
     }
-
-    val HikingBackgroundTintList = listOf(
-        android.R.color.transparent,
-        R.color.pink,
-        R.color.light_green,
-        R.color.light_blue,
-        R.color.light_purple,
-        R.color.orange,
-        R.color.light_yellow,
-    )
 }

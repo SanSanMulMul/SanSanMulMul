@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.Const
 import com.sansantek.sansanmulmul.config.Const.Companion.HIKINGSTYLE
 import com.sansantek.sansanmulmul.config.Const.Companion.HikingBackgroundTintList
 import com.sansantek.sansanmulmul.data.model.CrewInfo

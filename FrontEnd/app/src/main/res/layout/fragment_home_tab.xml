@@ -1,309 +1,312 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  tools:context=".ui.view.hometab.HomeTabFragment">
-
-  <androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    tools:context=".ui.view.hometab.HomeTabFragment">
 
-    <!-- 로고 -->
-    <ImageView
-      android:id="@+id/iv_logo"
-      android:layout_width="@dimen/height_20"
-      android:layout_height="@dimen/height_20"
-      android:layout_marginStart="22dp"
-      android:layout_marginTop="20dp"
-      android:src="@drawable/animalogo"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- 앱이름 -->
-    <TextView
-      android:id="@+id/tv_app_name"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="10dp"
-      android:text="@string/app_name"
-      android:textColor="#B3B3B3"
-      android:textSize="16sp"
-      android:textStyle="bold"
-      app:layout_constraintBottom_toBottomOf="@+id/iv_logo"
-      app:layout_constraintStart_toEndOf="@+id/iv_logo"
-      app:layout_constraintTop_toTopOf="@+id/iv_logo" />
-
-    <!-- 검색 -->
     <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/layout_search"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="15dp"
-      android:layout_marginEnd="20dp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/iv_logo"
-      app:layout_constraintTop_toBottomOf="@id/tv_app_name">
-
-      <include android:id="@+id/include_edit_text" layout="@layout/component_search_grey" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- 인사말 -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/layout_greeting"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="25dp"
-      app:layout_constraintStart_toStartOf="@id/iv_logo"
-      app:layout_constraintTop_toBottomOf="@id/layout_search">
-
-      <TextView
-        android:id="@+id/tv_greeting1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/mulish_bold"
-        android:text="좋은 "
-        android:textSize="@dimen/textSize_26"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-      <TextView
-        android:id="@+id/tv_greeting2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/mulish_bold"
-        android:text="아침"
-        android:textSize="@dimen/textSize_26"
-        app:layout_constraintStart_toEndOf="@id/tv_greeting1"
-        app:layout_constraintTop_toTopOf="@id/tv_greeting1" />
-
-      <TextView
-        android:id="@+id/tv_greeting3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/mulish_bold"
-        android:text="이에요,"
-        android:textSize="@dimen/textSize_26"
-        app:layout_constraintStart_toEndOf="@id/tv_greeting2"
-        app:layout_constraintTop_toTopOf="@id/tv_greeting1" />
-
-      <TextView
-        android:id="@+id/tv_shared"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:fontFamily="@font/mulish_bold"
-        android:text="박태우스"
-        android:textColor="@color/sansanmulmul_green"
-        android:textSize="@dimen/textSize_26"
-        android:transitionName="shared_element_text"
-        app:layout_constraintStart_toStartOf="@id/tv_greeting1"
-        app:layout_constraintTop_toBottomOf="@id/tv_greeting1" />
-
-      <TextView
-        android:id="@+id/tv_greeting5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/mulish_bold"
-        android:text=" 님 :)"
-        android:textSize="@dimen/textSize_26"
-        app:layout_constraintStart_toEndOf="@id/tv_shared"
-        app:layout_constraintTop_toTopOf="@id/tv_shared" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!-- 뉴스 -->
-    <TextView
-        android:id="@+id/tv_news_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="뉴스"
-        style="@style/HomeTabRecommendationTitleStyle"
-        app:layout_constraintStart_toStartOf="@id/iv_logo"
-        app:layout_constraintTop_toBottomOf="@id/layout_greeting" />
-
-    <androidx.viewpager2.widget.ViewPager2
-      android:id="@+id/layout_carousel_news"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="10dp"
-      android:clipChildren="false"
-      app:layout_constraintTop_toBottomOf="@id/tv_news_title" />
-
-    <!--        &lt;!&ndash; 구분선 &ndash;&gt;-->
-    <!--        <View-->
-    <!--            android:id="@+id/divider"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="8dp"-->
-    <!--            android:layout_marginTop="20dp"-->
-    <!--            android:background="@color/light_grey"-->
-    <!--            app:layout_constraintTop_toBottomOf="@id/layout_carousel_news" />-->
-
-    <!-- 산 추천1 -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/layout_recommendation1"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="40dp"
-      app:layout_constraintEnd_toEndOf="@id/layout_search"
-      app:layout_constraintStart_toStartOf="@id/iv_logo"
-      app:layout_constraintTop_toBottomOf="@id/layout_carousel_news">
-
-      <TextView
-        android:id="@+id/tv_spring"
-        style="@style/HomeTabRecommendationTitleStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="🌼봄"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-      <TextView
-        android:id="@+id/tv_spring_1"
-        style="@style/HomeTabRecommendationTitleStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="에 가기 좋은 산🌼"
-        app:layout_constraintBottom_toBottomOf="@id/tv_spring"
-        app:layout_constraintStart_toEndOf="@id/tv_spring"
-        app:layout_constraintTop_toTopOf="@id/tv_spring" />
-
-      <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vp_recommendation1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/tv_spring" />
+        android:layout_height="wrap_content">
+
+        <!-- 로고 -->
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="20dp"
+            android:adjustViewBounds="true"
+            android:paddingTop="2dp"
+            android:src="@drawable/sansanmulmul_logo_without_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 앱이름 -->
+        <TextView
+            android:id="@+id/tv_app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="#B3B3B3"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_logo"
+            app:layout_constraintStart_toEndOf="@+id/iv_logo"
+            app:layout_constraintTop_toTopOf="@+id/iv_logo" />
+
+        <!-- 검색 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/iv_logo"
+            app:layout_constraintTop_toBottomOf="@id/tv_app_name">
+
+            <include
+                android:id="@+id/include_edit_text"
+                layout="@layout/component_search_grey" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 인사말 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_greeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            app:layout_constraintStart_toStartOf="@id/iv_logo"
+            app:layout_constraintTop_toBottomOf="@id/layout_search">
+
+            <TextView
+                android:id="@+id/tv_greeting1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mulish_bold"
+                android:text="좋은 "
+                android:textSize="@dimen/textSize_26"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_greeting2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mulish_bold"
+                android:text="아침"
+                android:textSize="@dimen/textSize_26"
+                app:layout_constraintStart_toEndOf="@id/tv_greeting1"
+                app:layout_constraintTop_toTopOf="@id/tv_greeting1" />
+
+            <TextView
+                android:id="@+id/tv_greeting3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mulish_bold"
+                android:text="이에요,"
+                android:textSize="@dimen/textSize_26"
+                app:layout_constraintStart_toEndOf="@id/tv_greeting2"
+                app:layout_constraintTop_toTopOf="@id/tv_greeting1" />
+
+            <TextView
+                android:id="@+id/tv_shared"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/mulish_bold"
+                android:text="박태우스"
+                android:textColor="@color/sansanmulmul_green"
+                android:textSize="@dimen/textSize_26"
+                android:transitionName="shared_element_text"
+                app:layout_constraintStart_toStartOf="@id/tv_greeting1"
+                app:layout_constraintTop_toBottomOf="@id/tv_greeting1" />
+
+            <TextView
+                android:id="@+id/tv_greeting5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mulish_bold"
+                android:text=" 님 :)"
+                android:textSize="@dimen/textSize_26"
+                app:layout_constraintStart_toEndOf="@id/tv_shared"
+                app:layout_constraintTop_toTopOf="@id/tv_shared" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <!-- 뉴스 -->
+        <TextView
+            android:id="@+id/tv_news_title"
+            style="@style/HomeTabRecommendationTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="뉴스"
+            app:layout_constraintStart_toStartOf="@id/iv_logo"
+            app:layout_constraintTop_toBottomOf="@id/layout_greeting" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/layout_carousel_news"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:clipChildren="false"
+            app:layout_constraintTop_toBottomOf="@id/tv_news_title" />
+
+        <!--        &lt;!&ndash; 구분선 &ndash;&gt;-->
+        <!--        <View-->
+        <!--            android:id="@+id/divider"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="8dp"-->
+        <!--            android:layout_marginTop="20dp"-->
+        <!--            android:background="@color/light_grey"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/layout_carousel_news" />-->
+
+        <!-- 산 추천1 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_recommendation1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            app:layout_constraintEnd_toEndOf="@id/layout_search"
+            app:layout_constraintStart_toStartOf="@id/iv_logo"
+            app:layout_constraintTop_toBottomOf="@id/layout_carousel_news">
+
+            <TextView
+                android:id="@+id/tv_spring"
+                style="@style/HomeTabRecommendationTitleStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🌼봄"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_spring_1"
+                style="@style/HomeTabRecommendationTitleStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="에 가기 좋은 산🌼"
+                app:layout_constraintBottom_toBottomOf="@id/tv_spring"
+                app:layout_constraintStart_toEndOf="@id/tv_spring"
+                app:layout_constraintTop_toTopOf="@id/tv_spring" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vp_recommendation1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/tv_spring" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- 산 추천2 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_recommendation2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/layout_search"
+            app:layout_constraintStart_toStartOf="@id/iv_logo"
+            app:layout_constraintTop_toBottomOf="@id/layout_recommendation1">
+
+            <TextView
+                android:id="@+id/tv_summer"
+                style="@style/HomeTabRecommendationTitleStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="🌊여름"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_summer_1"
+                style="@style/HomeTabRecommendationTitleStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="에 가기 좋은 산🌊"
+                app:layout_constraintBottom_toBottomOf="@id/tv_summer"
+                app:layout_constraintStart_toEndOf="@id/tv_summer"
+                app:layout_constraintTop_toTopOf="@id/tv_summer" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vp_recommendation2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/tv_summer" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- 산 추천3 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_recommendation3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="@id/layout_search"
+            app:layout_constraintStart_toStartOf="@id/iv_logo"
+            app:layout_constraintTop_toBottomOf="@id/layout_recommendation2">
+
+            <TextView
+                android:id="@+id/tv_fall"
+                style="@style/HomeTabRecommendationTitleStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="🍁가을"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_fall_1"
+                style="@style/HomeTabRecommendationTitleStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="에 가기 좋은 산🍁"
+                app:layout_constraintBottom_toBottomOf="@id/tv_fall"
+                app:layout_constraintStart_toEndOf="@id/tv_fall"
+                app:layout_constraintTop_toTopOf="@id/tv_fall" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vp_recommendation3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/tv_fall" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_recommendation4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="@id/layout_search"
+            app:layout_constraintStart_toStartOf="@id/iv_logo"
+            app:layout_constraintTop_toBottomOf="@id/layout_recommendation3">
+
+            <TextView
+                android:id="@+id/tv_winter"
+                style="@style/HomeTabRecommendationTitleStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="❄겨울"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_winter_1"
+                style="@style/HomeTabRecommendationTitleStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="에 가기 좋은 산❄"
+                app:layout_constraintBottom_toBottomOf="@id/tv_winter"
+                app:layout_constraintStart_toEndOf="@id/tv_winter"
+                app:layout_constraintTop_toTopOf="@id/tv_winter" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vp_recommendation4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/tv_winter" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <!-- 산 추천2 -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/layout_recommendation2"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      app:layout_constraintEnd_toEndOf="@id/layout_search"
-      app:layout_constraintStart_toStartOf="@id/iv_logo"
-      app:layout_constraintTop_toBottomOf="@id/layout_recommendation1">
-
-      <TextView
-        android:id="@+id/tv_summer"
-        style="@style/HomeTabRecommendationTitleStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:text="🌊여름"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-      <TextView
-        android:id="@+id/tv_summer_1"
-        style="@style/HomeTabRecommendationTitleStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="에 가기 좋은 산🌊"
-        app:layout_constraintBottom_toBottomOf="@id/tv_summer"
-        app:layout_constraintStart_toEndOf="@id/tv_summer"
-        app:layout_constraintTop_toTopOf="@id/tv_summer" />
-
-      <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vp_recommendation2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/tv_summer" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <!-- 산 추천3 -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/layout_recommendation3"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="20dp"
-      app:layout_constraintEnd_toEndOf="@id/layout_search"
-      app:layout_constraintStart_toStartOf="@id/iv_logo"
-      app:layout_constraintTop_toBottomOf="@id/layout_recommendation2">
-
-      <TextView
-        android:id="@+id/tv_fall"
-        style="@style/HomeTabRecommendationTitleStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="🍁가을"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-      <TextView
-        android:id="@+id/tv_fall_1"
-        style="@style/HomeTabRecommendationTitleStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="에 가기 좋은 산🍁"
-        app:layout_constraintBottom_toBottomOf="@id/tv_fall"
-        app:layout_constraintStart_toEndOf="@id/tv_fall"
-        app:layout_constraintTop_toTopOf="@id/tv_fall" />
-
-      <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vp_recommendation3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/tv_fall" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_recommendation4"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="@id/layout_search"
-        app:layout_constraintStart_toStartOf="@id/iv_logo"
-        app:layout_constraintTop_toBottomOf="@id/layout_recommendation3">
-
-      <TextView
-          android:id="@+id/tv_winter"
-          style="@style/HomeTabRecommendationTitleStyle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="5dp"
-          android:text="❄겨울"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
-
-      <TextView
-          android:id="@+id/tv_winter_1"
-          style="@style/HomeTabRecommendationTitleStyle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="에 가기 좋은 산❄"
-          app:layout_constraintBottom_toBottomOf="@id/tv_winter"
-          app:layout_constraintStart_toEndOf="@id/tv_winter"
-          app:layout_constraintTop_toTopOf="@id/tv_winter" />
-
-      <androidx.viewpager2.widget.ViewPager2
-          android:id="@+id/vp_recommendation4"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="15dp"
-          android:clipChildren="false"
-          android:clipToPadding="false"
-          android:orientation="horizontal"
-          app:layout_constraintTop_toBottomOf="@id/tv_winter" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-  </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

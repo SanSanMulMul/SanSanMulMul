@@ -1,6 +1,8 @@
 package com.sansantek.sansanmulmul.ui.view.grouptab
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -69,6 +71,18 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
 
         radioButtonClickListener()
 
+        binding.searchInputText.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.setSearchInputText(s.toString())
+            }
+
+        })
+
+
         // 그룹생성(플러스) 버튼 클릭시
         binding.btnFloating.setOnClickListener {
             val activity = requireActivity() as MainActivity
@@ -82,7 +96,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 position: Int,
                 id: Long
             ) {
-                Log.d(TAG, "myGroupSpinner: myGroupSpinner item selected Listener 작동")
+
                 //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
                 when (position) {
                     0 -> {
@@ -121,7 +135,6 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 position: Int,
                 id: Long
             ) {
-                Log.d(TAG, "myGroupSpinner: myGroupSpinner item selected Listener 작동")
                 loadList()
             }
             override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -148,8 +161,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 loadList()
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
         super.onViewCreated(view, savedInstanceState)
@@ -161,6 +173,10 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
     }
 
     private fun registerObserver(){
+        viewModel.searchInputText.observe(viewLifecycleOwner){
+            loadList()
+        }
+
         viewModel.myScheduledList.observe(viewLifecycleOwner){
             groupTabListAdapter = initGroupListAdapter()
             binding.groupList.adapter = groupTabListAdapter
@@ -280,6 +296,26 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 }
             }
         }
+        if(!binding.searchInputText.text.isNullOrBlank()){
+            when(binding.searchSpinner.selectedItemPosition ){
+                0 -> {
+                    list = list.filter {
+                        it.crewName == binding.searchInputText.text.toString()
+                    }
+                }
+                1 -> {
+                    list = list.filter {
+                        it.userNickname == binding.searchInputText.text.toString()
+                    }
+                }
+                2 -> {
+                    list = list.filter {
+                        it.mountainName == binding.searchInputText.text.toString()
+                    }
+                }
+            }
+        }
+
         return list
     }
 

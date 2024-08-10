@@ -39,4 +39,12 @@ class GroupTabViewModel : ViewModel() {
     fun setSelected(select: Int){
         _selected.value = select
     }
+
+    private val _searchInputText: MutableLiveData<String> = MutableLiveData("")
+    val searchInputText: MutableLiveData<String>
+        get() = _searchInputText
+
+    fun setSearchInputText(searchInputText: String){
+        _searchInputText.value = searchInputText
+    }
 }

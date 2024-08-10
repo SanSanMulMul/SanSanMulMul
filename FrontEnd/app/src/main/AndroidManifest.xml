@@ -56,7 +56,18 @@
     <activity
       android:name=".ui.view.MainActivity"
       android:exported="true"
-      android:windowSoftInputMode="adjustNothing" />
+      android:windowSoftInputMode="adjustNothing">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+          android:host="openFragment"
+          android:scheme="sansanmulmul" />
+      </intent-filter>
+    </activity>
     <activity
       android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
       android:exported="true">

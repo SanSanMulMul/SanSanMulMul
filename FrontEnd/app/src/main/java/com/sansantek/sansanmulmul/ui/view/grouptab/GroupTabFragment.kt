@@ -293,13 +293,13 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 val result = crewService.getAllActivatedList(makeHeaderByAccessToken(it.accessToken))
                 binding.choiceInfo.text = "현재 일정이 진행 중인 그룹만 보여드릴게요!"
                 groupTabListAdapter = initGroupListAdapter()
+                binding.groupList.adapter = groupTabListAdapter
                 if (result.isSuccessful) {
                     result.body()?.let {list ->
                         val newList = returnFilteringList(list)
                         viewModel.setAllList(newList)
                     }
                 }
-                binding.groupList.adapter = groupTabListAdapter
             }
         }
     }
@@ -395,27 +395,24 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
     private fun radioButtonClickListener() {
         binding.customRadioBtn.setOnCheckedChangeListener { p0, p1 ->
             Log.d(TAG, "onViewCreated: ${p0.checkedRadioButtonId} $p1")
+            groupTabListAdapter = initGroupListAdapter()
             if (p1 == binding.radioAllBtn.id) {
                 binding.myGroupSpinner.visibility = View.GONE
                 binding.allGroupTitle.visibility = View.VISIBLE
-                loadAllGroupList()
+                viewModel.setSelected(ALL)
             } else {
                 binding.myGroupSpinner.visibility = View.VISIBLE
                 binding.allGroupTitle.visibility = View.GONE
                 lifecycleScope.launch {
                     activityViewModel.token?.let {
                         if(binding.myGroupSpinner.selectedItemPosition == 0){
-                            loadMyScheduledGroupList()
+                            viewModel.setSelected(SCHEDULE)
                         }
                         else{
-                            loadMyCompletedGroupList()
+                            viewModel.setSelected(COMPLETE)
                         }
-                        binding.groupList.adapter = groupTabListAdapter
                     }
                 }
-                groupTabListAdapter = initGroupListAdapter()
-
-//          submitList(groupListInfoList)
             }
             binding.groupList.adapter = groupTabListAdapter
 

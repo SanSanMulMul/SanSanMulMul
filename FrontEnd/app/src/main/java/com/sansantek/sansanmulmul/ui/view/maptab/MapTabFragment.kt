@@ -148,17 +148,52 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
 
     private fun initMountainListRecyclerView(mountainList: List<SearchMountainListItem>) {
         val mountainRecyclerView = binding.rvBottomSheetMountain
-        val mountainListAdapter = BottomSheetMountainListAdapter(
-            mountainList,
-            object : BottomSheetMountainListAdapter.OnItemClickListener {
+        val mountainListAdapter = BottomSheetMountainListAdapter().apply {
+            submitList(mountainList)
+            setOnItemClickListener(object : BottomSheetMountainListAdapter.ItemClickListener {
                 override fun onItemClick(mountain: SearchMountainListItem) {
                     mountainDetailViewModel.setMountainID(mountain.mountainId)
-
                     requireActivity().supportFragmentManager.beginTransaction().addToBackStack(null)
                         .replace(R.id.fragment_view, MountainDetailFragment()).commit()
                 }
-            }
-        )
+
+                override fun onLikeClick(mountain: SearchMountainListItem, check: Boolean) {
+                    activityViewModel.token?.let {
+                        if (check) {
+                            lifecycleScope.launch {
+                                val result = mountainService.addLikeMountain(
+                                    makeHeaderByAccessToken(it.accessToken),
+                                    mountain.mountainId
+                                )
+                                if (result.isSuccessful) {
+                                    if (result.body().equals("산 즐겨찾기 성공")) {
+                                        showToast("즐겨찾기 등록 성공!")
+                                    }
+                                } else {
+                                    showToast("즐겨찾기 실패!")
+                                    Log.d(TAG, "onLikeClick: 즐겨찾기 등록 오류")
+                                }
+                            }
+                        } else {
+                            lifecycleScope.launch {
+                                val result = mountainService.deleteLikeMountain(
+                                    makeHeaderByAccessToken(it.accessToken),
+                                    mountain.mountainId
+                                )
+                                if (result.isSuccessful) {
+                                    if (result.body().equals("즐겨찾기 제거")) {
+                                        showToast("즐겨찾기 제거 성공!")
+                                    }
+                                } else {
+                                    showToast("즐겨찾기 실패!")
+                                    Log.d(TAG, "onLikeClick: 즐겨찾기 제거 오류")
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+        }
 
         mountainRecyclerView.layoutManager = LinearLayoutManager(context)
         mountainRecyclerView.adapter = mountainListAdapter

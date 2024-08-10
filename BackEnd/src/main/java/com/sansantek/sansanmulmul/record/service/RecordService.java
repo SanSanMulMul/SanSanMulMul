@@ -205,4 +205,19 @@ public class RecordService {
                 hikingRecord.getRecordKcal()
         );
     }
+
+    public boolean chkLeader(String userProviderId, int crewId) {
+        // 해당 회원 확인
+        User user = userRepository.findByUserProviderId(userProviderId)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        // 해당 그룹 확인
+        Crew crew = crewRepository.findByCrewId(crewId)
+                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
+
+        if (crew.getLeader().getUserId() == user.getUserId())
+            return true;
+        else
+            return false;
+    }
 }

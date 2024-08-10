@@ -45,7 +45,7 @@ class QRCodeDialog : DialogFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    
+
     createQRCode()  // QR코드 생성
 
   }
@@ -55,7 +55,7 @@ class QRCodeDialog : DialogFragment() {
     try {
       val barcodeEncoder = BarcodeEncoder()
       val qrBitmap = barcodeEncoder.encodeBitmap(
-        "https://www.naver.com/", // 포함될 내용
+        "sansanmulmul://openFragment?fragment=HikingRecordingFragment", // 포함될 내용
         BarcodeFormat.QR_CODE, // 바코드 유형
         400,
         400

@@ -87,17 +87,16 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 when (position) {
                     0 -> {
                         binding.choiceInfo.text = "현재 등산이 진행 중이거나 예정인 그룹만 보여드릴게요!"
+                        viewModel.setSelected(SCHEDULE)
                         loadMyScheduledGroupList()
                     }
 
                     1 -> {
                         binding.choiceInfo.text = "등산이 끝난 그룹만 보여드릴게요!"
-                        loadMyCompletedGroupList()
+                        viewModel.setSelected(COMPLETE)
                     }
-                    //...
                     else -> {}
                 }
-                loadAllGroupList()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -111,16 +110,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 id: Long
             ) {
                 loadList()
-//                //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
-//                when (position) {
-//                    0 -> {}
-//
-//                    1 -> {}
-//                    //...
-//                    else -> {}
-//                }
             }
-//
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
@@ -133,16 +123,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
             ) {
                 Log.d(TAG, "myGroupSpinner: myGroupSpinner item selected Listener 작동")
                 loadList()
-                //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
-//                when (position) {
-//                    0 -> {}
-//
-//                    1 -> {}
-//                    //...
-//                    else -> {}
-//                }
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
         binding.genderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -153,14 +134,6 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 id: Long
             ) {
                 loadList()
-//                //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
-//                when (position) {
-//                    0 -> {}
-//
-//                    1 -> {}
-//                    //...
-//                    else -> {}
-//                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -173,14 +146,6 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 id: Long
             ) {
                 loadList()
-//                //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
-//                when (position) {
-//                    0 -> {}
-//
-//                    1 -> {}
-//                    //...
-//                    else -> {}
-//                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -192,19 +157,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
 
     private fun init() {
         activity?.let { hideBottomNav(it.findViewById(R.id.main_layout_bottom_navigation), false) }
-        viewModel.setSelected(1)
-        lifecycleScope.launch {
-            activityViewModel.token?.let {
-                val result = crewService.getMyScheduledCrew(makeHeaderByAccessToken(it.accessToken))
-                if (result.isSuccessful) {
-                    result.body()?.let {
-                        ret -> initRecyclerViewData(ret)
-                    }
-                } else {
-                    Log.d(TAG, "init: 그룹 서치 에러!")
-                }
-            }
-        }
+        viewModel.setSelected(SCHEDULE)
     }
 
     private fun registerObserver(){

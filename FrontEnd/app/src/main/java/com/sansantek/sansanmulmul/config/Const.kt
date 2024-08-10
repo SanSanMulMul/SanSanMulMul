@@ -53,5 +53,9 @@ class Const {
             R.color.orange,
             R.color.light_yellow,
         )
+
+        const val SCHEDULE = 1
+        const val COMPLETE = 2
+        const val ALL = 3
     }
 }

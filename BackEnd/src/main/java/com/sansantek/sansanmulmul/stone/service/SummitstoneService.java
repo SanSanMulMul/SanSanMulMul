@@ -1,13 +1,13 @@
-package com.sansantek.sansanmulmul.user.service.summitstone;
+package com.sansantek.sansanmulmul.stone.service;
 
 import com.sansantek.sansanmulmul.exception.auth.UserNotFoundException;
-import com.sansantek.sansanmulmul.mountain.domain.summitstone.Summitstone;
-import com.sansantek.sansanmulmul.mountain.repository.summitstone.SummitstoneRepository;
+import com.sansantek.sansanmulmul.stone.domain.Summitstone;
+import com.sansantek.sansanmulmul.stone.repository.SummitstoneRepository;
 import com.sansantek.sansanmulmul.user.domain.User;
-import com.sansantek.sansanmulmul.user.domain.summitstone.UserSummitstone;
-import com.sansantek.sansanmulmul.user.dto.response.StoneResponse;
+import com.sansantek.sansanmulmul.stone.domain.UserSummitstone;
+import com.sansantek.sansanmulmul.stone.dto.response.StoneResponse;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
-import com.sansantek.sansanmulmul.user.repository.summitstone.UserSummitstoneRepository;
+import com.sansantek.sansanmulmul.stone.repository.UserSummitstoneRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +46,19 @@ public class SummitstoneService {
 
     }
 
+    // 특정 정상석 조회
+    public StoneResponse getStone(int stoneId) {
+        Summitstone stone = summitstoneRepository.findByStoneId(stoneId)
+                .orElseThrow(() -> new RuntimeException("해당 정상석을 찾을 수 없습니다."));
+
+        return new StoneResponse(
+                stone.getStoneId(),
+                stone.getMountain().getMountainName(),
+                stone.getStoneName(),
+                stone.getStoneImg()
+        );
+    }
+
     // 해당 회원 인증 정상석 추가
     @Transactional
     public boolean addStone(int userId, int stoneId) {
@@ -77,4 +90,34 @@ public class SummitstoneService {
             return false;
         }
     }
+
+    // 모든 정상석 조회
+    public List<StoneResponse> getStoneList() {
+        List<StoneResponse> stoneList = new ArrayList<>();
+
+        List<Summitstone> summitstones = summitstoneRepository.findAll();
+
+        for (Summitstone summitstone : summitstones) {
+            StoneResponse sr = new StoneResponse(
+                    summitstone.getStoneId(),
+                    summitstone.getMountain().getMountainName(),
+                    summitstone.getStoneName(),
+                    summitstone.getStoneImg()
+            );
+
+            stoneList.add(sr);
+        }
+
+        return stoneList;
+    }
+
+    // 해당 회원 인증 정상석 체크
+    public boolean chkUserStone(String userProviderId, int mountainId) {
+        User user = userRepository.findByUserProviderId(userProviderId)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        return userSummitstoneRepository.existsByUserUserIdAndSummitstoneStoneId(user.getUserId(), mountainId);
+    }
+
+    
 }

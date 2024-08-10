@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.mountain.domain.summitstone;
+package com.sansantek.sansanmulmul.stone.domain;
 
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import io.swagger.v3.oas.annotations.media.Schema;

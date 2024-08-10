@@ -1,6 +1,5 @@
-package com.sansantek.sansanmulmul.user.domain.summitstone;
+package com.sansantek.sansanmulmul.stone.domain;
 
-import com.sansantek.sansanmulmul.mountain.domain.summitstone.Summitstone;
 import com.sansantek.sansanmulmul.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;

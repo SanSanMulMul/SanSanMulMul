@@ -16,6 +16,13 @@ class GroupChatAdapter(private val messages: MutableList<Pair<String, Int>>) : R
         const val PINK_BUBBLE = 1
     }
 
+    fun updateMessages(newMessages: List<Pair<String, Int>>) {
+        messages.clear()
+        messages.addAll(newMessages)
+        notifyDataSetChanged()
+    }
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_message, parent, false)
         return MessageViewHolder(view)

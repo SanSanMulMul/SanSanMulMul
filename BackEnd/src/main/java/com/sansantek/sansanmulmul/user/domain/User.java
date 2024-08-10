@@ -5,7 +5,7 @@ import com.sansantek.sansanmulmul.record.domain.HikingRecord;
 import com.sansantek.sansanmulmul.user.domain.badge.UserBadge;
 import com.sansantek.sansanmulmul.user.domain.follow.Follow;
 import com.sansantek.sansanmulmul.user.domain.style.UserHikingStyle;
-import com.sansantek.sansanmulmul.user.domain.summitstone.UserSummitstone;
+import com.sansantek.sansanmulmul.stone.domain.UserSummitstone;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;

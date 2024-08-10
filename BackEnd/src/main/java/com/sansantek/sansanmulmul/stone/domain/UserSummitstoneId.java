@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.user.domain.summitstone;
+package com.sansantek.sansanmulmul.stone.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

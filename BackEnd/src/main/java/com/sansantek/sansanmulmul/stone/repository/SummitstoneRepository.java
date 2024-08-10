@@ -1,6 +1,6 @@
-package com.sansantek.sansanmulmul.mountain.repository.summitstone;
+package com.sansantek.sansanmulmul.stone.repository;
 
-import com.sansantek.sansanmulmul.mountain.domain.summitstone.Summitstone;
+import com.sansantek.sansanmulmul.stone.domain.Summitstone;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

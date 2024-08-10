@@ -1,4 +1,4 @@
-package com.sansantek.sansanmulmul.user.dto.response;
+package com.sansantek.sansanmulmul.stone.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

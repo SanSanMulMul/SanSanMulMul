@@ -94,11 +94,11 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     syncButtonStatus()
     initClickListener()
     Log.d(TAG, "onViewCreated: resume 종료")
+
+    
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-
     init()
     Log.d(TAG, "onViewCreated: init 종료")
   }
@@ -113,6 +113,13 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
 
   private fun setInitialView() {
     loadMyScheduledGroupListAndUpdateUI()
+
+    hikingRecordingTabViewModel.isQRScanned.observe(viewLifecycleOwner) { isQRScanned ->
+      Log.d(TAG, "setInitialView: isQRScanned = $isQRScanned")
+      if (isQRScanned == true) {
+        binding.fragmentHikingRecordingLayoutBanned.visibility = View.GONE
+      }
+    }
 
     hikingRecordingTabViewModel.onGoingCrewId.observe(viewLifecycleOwner) { crewId ->
       if (crewId > -1) {
@@ -132,11 +139,13 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         if (amILeader == true) {
           showLeaderQRCodeDialog()
         } else {
-          binding.fragmentHikingRecordingLayoutBanned.visibility = View.VISIBLE
-          binding.tvBannedTitle.text = "방장의 QR코드를 찍어주세요!"
-          binding.tvBannedDescriptionTime.visibility = View.GONE
-          binding.tvBannedDescription.text = "QR을 찍으면 회원님의 위치를 공유하기 시작합니다."
-          setViewAndChildrenEnabled(binding.fragmentHikingRecordingLayout, false)
+          if (hikingRecordingTabViewModel.isQRScanned.value == false) {
+            binding.fragmentHikingRecordingLayoutBanned.visibility = View.VISIBLE
+            binding.tvBannedTitle.text = "방장의 QR코드를 찍어주세요!"
+            binding.tvBannedDescriptionTime.visibility = View.GONE
+            binding.tvBannedDescription.text = "QR을 찍으면 회원님의 위치를 공유하기 시작합니다."
+            setViewAndChildrenEnabled(binding.fragmentHikingRecordingLayout, false)
+          }
         }
       }
     }

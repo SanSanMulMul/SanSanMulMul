@@ -30,6 +30,7 @@ import com.sansantek.sansanmulmul.ui.view.hikingrecordingtab.HikingRecordingTabF
 import com.sansantek.sansanmulmul.ui.view.hometab.HomeTabFragment
 import com.sansantek.sansanmulmul.ui.view.maptab.MapTabFragment
 import com.sansantek.sansanmulmul.ui.view.mypagetab.MyPageTabFragment
+import com.sansantek.sansanmulmul.ui.viewmodel.HikingRecordingTabViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,6 +48,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
   private lateinit var currentPhotoPath: String
   private var bitmap: Bitmap? = null
   private val activityViewModel: MainActivityViewModel by viewModels()
+  private val hikingRecordingTabViewModel: HikingRecordingTabViewModel by viewModels()
 
   /** permission check **/
   private val checker = PermissionChecker(this)
@@ -85,11 +87,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
       launch(Dispatchers.IO) {
         loadMyPageInfo()
       }
-      launch(Dispatchers.Main) {
-        initBottomNav()
-      }
+
       changeFragment(HomeTabFragment())
     }
+
+    initBottomNav()
 
     // QR코드 인식 후
     val intent = intent
@@ -98,21 +100,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
       if (uri != null) {
         val fragmentName = uri.getQueryParameter("fragment")
         if (fragmentName != null) {
-          openFragment(fragmentName)
+          hikingRecordingTabViewModel.setIsQRScanned(true)
+          binding.mainLayoutBottomNavigation.selectedItemId = R.id.mountain // 바로 등산기록 탭으로 이동
         }
       }
     }
-  }
-
-  private fun openFragment(fragmentName: String) {
-    val fragment: Fragment
-    Log.d(TAG, "openFragment: fragmentName = $fragmentName")
-
-    when (fragmentName) {
-      "HikingRecordingFragment" -> fragment = HikingRecordingTabFragment()
-      else -> fragment = HomeTabFragment()
-    }
-    changeFragment(fragment)
   }
 
   private fun loadLikedMountainList() {

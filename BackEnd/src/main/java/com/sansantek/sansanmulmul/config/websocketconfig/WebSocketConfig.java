@@ -29,6 +29,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("http://localhost:8080", "https://i11d111.p.ssafy.io")
                 .withSockJS();
-        registry.addEndpoint("/ws/websocket");
+        registry.addEndpoint("/websocket").setAllowedOrigins("*");
     }
 }

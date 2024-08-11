@@ -68,7 +68,18 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
             addItemDecoration(SpaceItemDecoration(30))
         }
     }
-    fun loadMyFavoriteMountainList(){
+    private fun loadMyFavoriteMountainList(){
+        activityViewModel.token?.let {
+            lifecycleScope.launch {
+                val result = mountainService.getLikedMountainList(makeHeaderByAccessToken(it.accessToken))
+                if(result.isSuccessful){
+                    favoriteMountainAdapter.submitList(result.body()!!)
+                }
+            }
+        }
+    }
+
+    private fun loadMyHikingHistory(){
         activityViewModel.token?.let {
             lifecycleScope.launch {
                 val result = mountainService.getLikedMountainList(makeHeaderByAccessToken(it.accessToken))

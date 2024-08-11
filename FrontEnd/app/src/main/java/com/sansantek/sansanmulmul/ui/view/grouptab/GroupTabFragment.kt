@@ -1,18 +1,23 @@
 package com.sansantek.sansanmulmul.ui.view.grouptab
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout.VERTICAL
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
+import com.sansantek.sansanmulmul.config.Const.Companion.ALL
+import com.sansantek.sansanmulmul.config.Const.Companion.COMPLETE
+import com.sansantek.sansanmulmul.config.Const.Companion.SCHEDULE
 import com.sansantek.sansanmulmul.data.model.Crew
-import com.sansantek.sansanmulmul.data.model.Group
 import com.sansantek.sansanmulmul.databinding.FragmentGroupTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupTabListAdapter
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.crewService
@@ -20,8 +25,10 @@ import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.view.groupdetail.GroupDetailFragment
 import com.sansantek.sansanmulmul.ui.view.register.GroupCreateViewPagerFragment
+import com.sansantek.sansanmulmul.ui.viewmodel.GroupTabViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.time.DateUtils.parseDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -31,11 +38,13 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
     FragmentGroupTabBinding::bind,
     R.layout.fragment_group_tab
 ) {
-    private val groupListInfoList = mutableListOf<Group>()
+    private val viewModel: GroupTabViewModel by activityViewModels()
     private val activityViewModel: MainActivityViewModel by activityViewModels()
     private lateinit var groupTabListAdapter: GroupTabListAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        registerObserver()
+
         init()
 
         val searchItems = resources.getStringArray(R.array.grouptab_search_spinner_menu_array)
@@ -62,6 +71,18 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
 
         radioButtonClickListener()
 
+        binding.searchInputText.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.setSearchInputText(s.toString())
+            }
+
+        })
+
+
         // 그룹생성(플러스) 버튼 클릭시
         binding.btnFloating.setOnClickListener {
             val activity = requireActivity() as MainActivity
@@ -75,25 +96,24 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 position: Int,
                 id: Long
             ) {
-                Log.d(TAG, "myGroupSpinner: myGroupSpinner item selected Listener 작동")
+
                 //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
                 when (position) {
                     0 -> {
                         binding.choiceInfo.text = "현재 등산이 진행 중이거나 예정인 그룹만 보여드릴게요!"
+                        viewModel.setSelected(SCHEDULE)
                         loadMyScheduledGroupList()
                     }
 
                     1 -> {
                         binding.choiceInfo.text = "등산이 끝난 그룹만 보여드릴게요!"
-                        loadMyCompletedGroupList()
+                        viewModel.setSelected(COMPLETE)
                     }
-                    //...
                     else -> {}
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
         binding.ageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -103,19 +123,9 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 position: Int,
                 id: Long
             ) {
-
-                //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
-                when (position) {
-                    0 -> {}
-
-                    1 -> {}
-                    //...
-                    else -> {}
-                }
+                loadList()
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
         binding.searchSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -125,17 +135,8 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 position: Int,
                 id: Long
             ) {
-                Log.d(TAG, "myGroupSpinner: myGroupSpinner item selected Listener 작동")
-                //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
-                when (position) {
-                    0 -> {}
-
-                    1 -> {}
-                    //...
-                    else -> {}
-                }
+                loadList()
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
         binding.genderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -145,15 +146,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 position: Int,
                 id: Long
             ) {
-
-                //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
-                when (position) {
-                    0 -> {}
-
-                    1 -> {}
-                    //...
-                    else -> {}
-                }
+                loadList()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -165,19 +158,10 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 position: Int,
                 id: Long
             ) {
-
-                //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
-                when (position) {
-                    0 -> {}
-
-                    1 -> {}
-                    //...
-                    else -> {}
-                }
+                loadList()
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
         super.onViewCreated(view, savedInstanceState)
@@ -185,27 +169,67 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
 
     private fun init() {
         activity?.let { hideBottomNav(it.findViewById(R.id.main_layout_bottom_navigation), false) }
-        lifecycleScope.launch {
-            activityViewModel.token?.let {
-                val result = crewService.getMyScheduledCrew(makeHeaderByAccessToken(it.accessToken))
-                if (result.isSuccessful) {
-                    result.body()?.let { ret -> initRecyclerViewData(ret) }
-                } else {
-                    Log.d(TAG, "init: 그룹 서치 에러!")
+        viewModel.setSelected(SCHEDULE)
+    }
+
+    private fun registerObserver(){
+        viewModel.searchInputText.observe(viewLifecycleOwner){
+            loadList()
+        }
+
+        viewModel.myScheduledList.observe(viewLifecycleOwner){
+            groupTabListAdapter = initGroupListAdapter()
+            binding.groupList.adapter = groupTabListAdapter
+            groupTabListAdapter.submitList(it)
+        }
+
+        viewModel.myCompletedList.observe(viewLifecycleOwner){
+            groupTabListAdapter = initGroupListAdapter()
+            binding.groupList.adapter = groupTabListAdapter
+            groupTabListAdapter.submitList(it)
+        }
+
+        viewModel.allList.observe(viewLifecycleOwner){
+            groupTabListAdapter = initGroupListAdapter()
+            binding.groupList.adapter = groupTabListAdapter
+            groupTabListAdapter.submitList(it)
+        }
+
+        viewModel.selected.observe(viewLifecycleOwner){
+            when(it){
+                SCHEDULE -> {
+                    loadMyScheduledGroupList()
+                }
+                COMPLETE -> {
+                    loadMyCompletedGroupList()
+                }
+                ALL -> {
+                    loadAllGroupList()
                 }
             }
         }
     }
-
+    private fun loadList(){
+        when (viewModel.selected.value) {
+            SCHEDULE -> {
+                loadMyScheduledGroupList()
+            }
+            COMPLETE -> {
+                loadMyCompletedGroupList()
+            }
+            else -> {
+                loadAllGroupList()
+            }
+        }
+    }
     private fun loadMyCompletedGroupList() {
         activityViewModel.token?.let {
             lifecycleScope.launch {
                 val result = crewService.getMyCompletedCrew(makeHeaderByAccessToken(it.accessToken))
                 if (result.isSuccessful) {
                     result.body()?.let { list ->
-                        groupTabListAdapter = initGroupListAdapter()
-                        binding.groupList.adapter = groupTabListAdapter
-                        groupTabListAdapter.submitList(list)
+                        val newList = returnFilteringList(list)
+                        viewModel.setMyCompletedList(newList)
                         Log.d(TAG, "loadMyCompletedGroupList: 내 완료된 그룹 리스트! $list")
                     }
                 } else {
@@ -221,9 +245,8 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 val result = crewService.getMyScheduledCrew(makeHeaderByAccessToken(it.accessToken))
                 if (result.isSuccessful) {
                     result.body()?.let { list ->
-                        groupTabListAdapter = initGroupListAdapter()
-                        binding.groupList.adapter = groupTabListAdapter
-                        groupTabListAdapter.submitList(list)
+                        val newList = returnFilteringList(list)
+                        viewModel.setMyScheduledList(newList)
                         Log.d(TAG, "loadMyScheduledGroupList: 내 계획된 그룹 리스트! $list")
                     }
                 } else {
@@ -231,6 +254,69 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 }
             }
         }
+    }
+
+    private fun loadAllGroupList(){
+        lifecycleScope.launch {
+            activityViewModel.token?.let {
+                val result = crewService.getAllActivatedList(makeHeaderByAccessToken(it.accessToken))
+                binding.choiceInfo.text = "현재 일정이 진행 중인 그룹만 보여드릴게요!"
+                groupTabListAdapter = initGroupListAdapter()
+                binding.groupList.adapter = groupTabListAdapter
+                if (result.isSuccessful) {
+                    result.body()?.let {list ->
+                        val newList = returnFilteringList(list)
+                        viewModel.setAllList(newList)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun returnFilteringList(crewList: List<Crew>): List<Crew>{
+        var list = crewList
+        if(binding.ageSpinner.selectedItemPosition != 0){
+            list = list.filter {
+                it.crewMinAge <= binding.ageSpinner.selectedItemPosition * 10 && it.crewMaxAge >= (binding.ageSpinner.selectedItemPosition + 1) * 10 - 1
+            }
+        }
+        if(binding.styleSpinner.selectedItemPosition != 0){
+            list = list.filter {
+                it.crewStyles.contains(binding.styleSpinner.selectedItemPosition)
+            }
+        }
+        if(binding.genderSpinner.selectedItemPosition != 0){
+            if(binding.genderSpinner.selectedItemPosition == 1){
+                list = list.filter {
+                    it.crewGender == "M"
+                }
+            }else{
+                list = list.filter {
+                    it.crewGender == "F"
+                }
+            }
+        }
+        if(!binding.searchInputText.text.isNullOrBlank()){
+            when(binding.searchSpinner.selectedItemPosition ){
+                0 -> {
+                    list = list.filter {
+                        it.crewName == binding.searchInputText.text.toString()
+                    }
+                }
+                1 -> {
+                    list = list.filter {
+                        it.userNickname == binding.searchInputText.text.toString()
+                    }
+                }
+                2 -> {
+                    list = list.filter {
+                        it.mountainName == binding.searchInputText.text.toString()
+                    }
+                }
+            }
+        }
+
+        return list
     }
 
     private fun initGroupListAdapter(): GroupTabListAdapter {
@@ -278,7 +364,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
         return false
     }
 
-    fun parseDate(dateString: String): LocalDateTime {
+    private fun parseDate(dateString: String): LocalDateTime {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         return LocalDateTime.parse(dateString, formatter)
     }
@@ -292,43 +378,30 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
         val decoration = DividerItemDecoration(requireContext(), VERTICAL)
         binding.groupList.addItemDecoration(decoration)
         binding.groupList.adapter = groupTabListAdapter
-        groupTabListAdapter.submitList(crewList)
+        viewModel.setMyScheduledList(crewList)
     }
 
     private fun radioButtonClickListener() {
         binding.customRadioBtn.setOnCheckedChangeListener { p0, p1 ->
             Log.d(TAG, "onViewCreated: ${p0.checkedRadioButtonId} $p1")
+            groupTabListAdapter = initGroupListAdapter()
             if (p1 == binding.radioAllBtn.id) {
                 binding.myGroupSpinner.visibility = View.GONE
                 binding.allGroupTitle.visibility = View.VISIBLE
-                lifecycleScope.launch {
-                    activityViewModel.token?.let {
-                        val result = crewService.getAllActivatedList(makeHeaderByAccessToken(it.accessToken))
-                        binding.choiceInfo.text = "현재 일정이 진행 중인 그룹만 보여드릴게요!"
-                        groupTabListAdapter = initGroupListAdapter()
-                        if (result.isSuccessful) {
-                            groupTabListAdapter.submitList(result.body())
-                        }
-                        binding.groupList.adapter = groupTabListAdapter
-                    }
-                }
+                viewModel.setSelected(ALL)
             } else {
                 binding.myGroupSpinner.visibility = View.VISIBLE
                 binding.allGroupTitle.visibility = View.GONE
                 lifecycleScope.launch {
                     activityViewModel.token?.let {
                         if(binding.myGroupSpinner.selectedItemPosition == 0){
-                            loadMyScheduledGroupList()
+                            viewModel.setSelected(SCHEDULE)
                         }
                         else{
-                            loadMyCompletedGroupList()
+                            viewModel.setSelected(COMPLETE)
                         }
-                        binding.groupList.adapter = groupTabListAdapter
                     }
                 }
-                groupTabListAdapter = initGroupListAdapter()
-
-//          submitList(groupListInfoList)
             }
             binding.groupList.adapter = groupTabListAdapter
 

@@ -9,18 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
-import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.databinding.ListSearchMountainBinding
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-
-data class CourseItem(
-    val name: String,
-    var isFavorite: Boolean = false // Default to not favorite
-)
 
 private const val TAG = "GroupCourceSearchListAd 싸피"
 

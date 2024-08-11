@@ -41,7 +41,7 @@ class GroupChatFragment(private val crew: Crew) : BaseFragment<FragmentGroupChat
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.tvGroupChatTitle.text = crew.crewName
         // ViewModel을 통해 실시간 메시지 관찰
         chatViewModel.chatList.observe(viewLifecycleOwner) {
             adapter.submitList(it){

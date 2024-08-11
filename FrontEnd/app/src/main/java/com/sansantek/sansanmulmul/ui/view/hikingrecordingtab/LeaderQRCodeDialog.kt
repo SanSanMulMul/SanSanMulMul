@@ -17,12 +17,12 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
-import com.sansantek.sansanmulmul.databinding.DialogQrCodeBinding
+import com.sansantek.sansanmulmul.databinding.DialogLeaderQrCodeBinding
 
 private const val TAG = "싸피_QRCodeDialog"
 
-class QRCodeDialog : DialogFragment() {
-  private var _binding: DialogQrCodeBinding? = null
+class LeaderQRCodeDialog : DialogFragment() {
+  private var _binding: DialogLeaderQrCodeBinding? = null
   private val binding get() = _binding!!
 
   override fun onCreateView(
@@ -30,7 +30,7 @@ class QRCodeDialog : DialogFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    _binding = DialogQrCodeBinding.inflate(inflater, container, false)
+    _binding = DialogLeaderQrCodeBinding.inflate(inflater, container, false)
     val view = binding.root
 
     dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -46,16 +46,16 @@ class QRCodeDialog : DialogFragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    // QR코드 생성
-    // TODO : 방장인지 멤버인지에 따라 분기처리하기
-    createQRCode()
+    createQRCode()  // QR코드 생성
+
   }
+
 
   private fun createQRCode() {
     try {
       val barcodeEncoder = BarcodeEncoder()
       val qrBitmap = barcodeEncoder.encodeBitmap(
-        "https://www.naver.com/", // 포함될 내용
+        "sansanmulmul://openFragment?fragment=HikingRecordingFragment", // 포함될 내용
         BarcodeFormat.QR_CODE, // 바코드 유형
         400,
         400
@@ -75,7 +75,7 @@ class QRCodeDialog : DialogFragment() {
     val screenHeight = getScreenHeight(this.requireContext())
 
     val newWidth = (screenWidth * 0.85).toInt()
-    val newHeight = (screenHeight * 0.55).toInt()
+    val newHeight = (screenHeight * 0.7).toInt()
     val layoutParams = requireView().layoutParams
     layoutParams.width = newWidth
     layoutParams.height = newHeight

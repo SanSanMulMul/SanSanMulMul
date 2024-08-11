@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "136025253604",
+    "project_id": "sansanmulmul-e5870",
+    "storage_bucket": "sansanmulmul-e5870.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:136025253604:android:230764cac0239dfcd7aef1",
+        "android_client_info": {
+          "package_name": "com.sansantek.sansanmulmul"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtmc_kRAXfHn602dsj8G4SN-SvssHBKog"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

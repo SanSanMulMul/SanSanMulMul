@@ -11,6 +11,7 @@ import com.sansantek.sansanmulmul.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
@@ -23,10 +24,11 @@ public class ChatController {
     private ChatService chatService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/chat.sendMessage")
-    @SendTo("/topic/public")
-    public ChatMessagesResponse sendMessage(ChatMessageDTO chatMessageDTO) {
+    public void sendMessage(ChatMessageDTO chatMessageDTO) {
         User user = userService.getUser(chatMessageDTO.getUserId());
         ChatMessage chatMessage = ChatMessage.builder()
                 .messageContent(chatMessageDTO.getMessageContent())
@@ -37,7 +39,7 @@ public class ChatController {
 
         chatService.saveChatMessage(chatMessage);
 
-        return ChatMessagesResponse.builder()
+        ChatMessagesResponse response = ChatMessagesResponse.builder()
                 .messageContent(chatMessage.getMessageContent())
                 .timestamp(chatMessage.getTimestamp())
                 .user(UserMessageResponse.builder()
@@ -46,6 +48,7 @@ public class ChatController {
                         .userProfileImg(chatMessage.getUser().getUserProfileImg())
                         .build())
                 .build();
+
+        messagingTemplate.convertAndSend("/topic/public/" + chatMessageDTO.getCrewId(), response);
     }
 }
-

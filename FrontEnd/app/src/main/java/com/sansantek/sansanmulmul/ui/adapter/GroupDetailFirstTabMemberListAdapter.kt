@@ -63,7 +63,7 @@ class GroupDetailFirstTabMemberListAdapter(private var amILeader: Boolean, priva
                     }
                 }
             }
-            binding.btnDelegateAdmin.setOnClickListener {
+            binding.btnKickMember.setOnClickListener {
                 runBlocking {
                     itemClickListener.onKickClick(item)
                     refreshList()
@@ -73,7 +73,14 @@ class GroupDetailFirstTabMemberListAdapter(private var amILeader: Boolean, priva
     }
 
     fun refreshList(){
-        submitList(currentList.toList())
+        val newList = currentList.toMutableList()
+        submitList(null)
+        submitList(newList)
+    }
+
+    fun setAmILeader(amILeader: Boolean){
+        this.amILeader = amILeader
+        Log.d(TAG, "setAmILeader: ${this.amILeader}")
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemberInfoListHolder {

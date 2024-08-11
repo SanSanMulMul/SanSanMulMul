@@ -26,6 +26,7 @@ class GroupHikingStyleFragment : BaseFragment<FragmentGroupHikingStyleBinding>(
     binding.cbHikingStyle3.setOnCheckedChangeListener(onCheckedChangeListener(R.color.blue))
     binding.cbHikingStyle4.setOnCheckedChangeListener(onCheckedChangeListener(R.color.pink))
     binding.cbHikingStyle5.setOnCheckedChangeListener(onCheckedChangeListener(R.color.yellow))
+    binding.cbHikingStyle6.setOnCheckedChangeListener(onCheckedChangeListener(R.color.light_orange))
   }
 
   private fun init() {
@@ -37,7 +38,7 @@ class GroupHikingStyleFragment : BaseFragment<FragmentGroupHikingStyleBinding>(
       override fun onCheckedChanged(compoundButton: CompoundButton?, isChecked: Boolean) {
         val checkBox = compoundButton as CheckBox
         if (isChecked) {
-          setGradient(checkBox, color)
+          setSolidColorBackground(checkBox, color)
         } else {
           // Reset to the original drawable background
           checkBox.background =
@@ -47,18 +48,13 @@ class GroupHikingStyleFragment : BaseFragment<FragmentGroupHikingStyleBinding>(
     }
   }
 
-  private fun setGradient(checkBox: CheckBox, color: Int) {
-    // Create a gradient drawable with stroke and corner radius
-    val gradientDrawable = GradientDrawable().apply {
-      orientation = GradientDrawable.Orientation.TOP_BOTTOM
-      colors = intArrayOf(
-        Color.WHITE, // Starting color
-        ContextCompat.getColor(requireContext(), color) // Dynamic color from resources
-      )
+  private fun setSolidColorBackground(checkBox: CheckBox, color: Int) {
+    val drawable = GradientDrawable().apply {
+      setColor(ContextCompat.getColor(requireContext(), color)) // 단색 배경 색상 설정
       val dp = 10f.dpToPx(this@GroupHikingStyleFragment.requireContext())
-      cornerRadius = dp // Set the corner radius
-      setStroke(1, Color.parseColor("#808080")) // Set stroke width and color
+      cornerRadius = dp // 모서리 반경 설정
+      setStroke(1, Color.parseColor("#808080")) // 테두리 너비와 색상 설정
     }
-    checkBox.background = gradientDrawable // Set the gradient as background
+    checkBox.background = drawable // 단색 배경을 설정
   }
 }

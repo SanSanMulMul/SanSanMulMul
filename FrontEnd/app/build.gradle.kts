@@ -69,6 +69,8 @@ android {
 }
 
 dependencies {
+  implementation ("io.reactivex.rxjava2:rxjava:2.2.8")
+  implementation ("com.github.NaikSoftware:StompProtocolAndroid:1.6.6")
   //Room 의존성 추가
   implementation(libs.androidx.room.runtime)
   implementation(libs.room.ktx)

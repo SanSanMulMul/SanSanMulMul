@@ -27,6 +27,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +80,7 @@ public class RecordService {
         List<CrewUser> crewMembers = crewRequestService.getCrewMembersInfo(crewId);
 
         // 멤버들의 좌표 가져오기
-        for(CrewUser cu : crewMembers) {
+        for (CrewUser cu : crewMembers) {
             LocationResponse lr = new LocationResponse(
                     cu.getUser().getUserId(),
                     cu.getUser().getUserNickname(),
@@ -107,16 +109,27 @@ public class RecordService {
         // 산 확인
         Mountain mountain = mountainRepository.findByMountainId(crew.getMountain().getMountainId())
                 .orElseThrow(() -> new RuntimeException("해당 산을 찾을 수 없습니다."));
+        
+        // 총 걸린 시간 계산
+        LocalDateTime recordStartTime = request.getRecordStartTime();
+        LocalDateTime recordEndTime = request.getRecordEndTime();
+
+        // Duration을 사용하여 두 시간 사이의 차이를 계산
+        Duration duration = Duration.between(recordStartTime, recordEndTime);
+
+        // getMinutes() 메서드를 사용하여 차이를 분 단위로 변환
+        long totalMinutes = duration.toMinutes();
 
         // 기록 객체 생성
         HikingRecord record = new HikingRecord(
                 crew,                // crew 설정
                 mountain,            // mountain 설정
                 user,                // user 설정
-                request.getRecordStartTime(),
+                recordStartTime,
+                recordEndTime,
                 request.getRecordUpDistance(),
                 request.getRecordDownDistance(),
-                request.getRecordDuration(),
+                totalMinutes,
                 request.getRecordSteps(),
                 request.getRecordElevation(),
                 request.getRecordKcal()
@@ -148,6 +161,7 @@ public class RecordService {
                     record.getRecordId(),
                     record.getMountain().getMountainName(),
                     record.getRecordStartTime(),
+                    record.getRecordEndTime(),
                     record.getMountain().getMountainImg()
             );
 
@@ -199,6 +213,7 @@ public class RecordService {
 
                 // 기록
                 hikingRecord.getRecordStartTime(),
+                hikingRecord.getRecordEndTime(),
                 hikingRecord.getRecordDuration(),
                 hikingRecord.getRecordSteps(),
                 hikingRecord.getRecordElevation(),

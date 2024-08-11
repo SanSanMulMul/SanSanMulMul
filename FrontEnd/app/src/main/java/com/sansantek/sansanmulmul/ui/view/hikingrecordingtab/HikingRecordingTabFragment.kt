@@ -79,6 +79,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     }
   }
 
+
   override fun onAttach(context: Context) {
     super.onAttach(context)
     if (context is MainActivity) {
@@ -96,7 +97,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    Log.d(TAG, "onViewCreated: init 시작")
+
+
     init()
     Log.d(TAG, "onViewCreated: init 종료")
   }
@@ -112,14 +114,31 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   private fun setInitialView() {
     loadMyScheduledGroupListAndUpdateUI()
 
-    val currentStatus = hikingRecordingTabViewModel.recordingStatus.value
-    if (currentStatus == BANNED) {
-
+    hikingRecordingTabViewModel.onGoingCrewId.observe(viewLifecycleOwner) { crewId ->
+      if (crewId > -1) {
+        Log.d(TAG, "setInitialView: ongoingCrewID = $crewId")
+        activityViewModel.token?.let { token ->
+          hikingRecordingTabViewModel.onGoingCrewId.value?.let { id ->
+            hikingRecordingTabViewModel.amILeader(makeHeaderByAccessToken(token.accessToken), id)
+          }
+        }
+      }
     }
 
-    val amILeader = true // TODO : 방장인지 여부 viewmodel로부터 받아와서 set하기
-    if (amILeader) {
-      showQRCodeDialog()
+    hikingRecordingTabViewModel.amILeader.observe(viewLifecycleOwner) { amILeader ->
+      Log.d(TAG, "setInitialView: amILeader = $amILeader")
+      val currentStatus = hikingRecordingTabViewModel.recordingStatus.value
+      if (currentStatus == BEFORE_HIKING) {
+        if (amILeader == true) {
+          showLeaderQRCodeDialog()
+        } else {
+          binding.fragmentHikingRecordingLayoutBanned.visibility = View.VISIBLE
+          binding.tvBannedTitle.text = "방장의 QR코드를 찍어주세요!"
+          binding.tvBannedDescriptionTime.visibility = View.GONE
+          binding.tvBannedDescription.text = "QR을 찍으면 회원님의 위치를 공유하기 시작합니다."
+          setViewAndChildrenEnabled(binding.fragmentHikingRecordingLayout, false)
+        }
+      }
     }
   }
 
@@ -135,7 +154,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
               binding.tvBannedDescription.visibility = View.GONE
               binding.tvBannedDescriptionTime.visibility = View.GONE
               binding.fragmentHikingRecordingLayoutBanned.visibility = View.VISIBLE
-            } else { // 등산 전 + 등산 중인 그룹이 하나 이상 있음
+            } else { // 상행 시작 전 + 등산 중인 그룹이 하나 이상 있음
               if (isExistOnGoingCrew(list)) { // 등산 중인 그룹이 있음
                 if (hikingRecordingTabViewModel.recordingStatus.value == BANNED) {
                   hikingRecordingTabViewModel.setRecordingStatus(BEFORE_HIKING)
@@ -186,6 +205,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
       )
 
       if (currentDateTime.isAfter(startDateTime) && currentDateTime.isBefore(endDateTime)) {
+        hikingRecordingTabViewModel.setOnGoingCrewId(crew.crewId) // 현재 진행중인 crewID 세팅
         return true
       }
     }
@@ -293,8 +313,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     )
   }
 
-  private fun showQRCodeDialog() {
-    QRCodeDialog().show(rootActivity.supportFragmentManager, "dialog")
+  private fun showLeaderQRCodeDialog() {
+    LeaderQRCodeDialog().show(rootActivity.supportFragmentManager, "dialog")
   }
 
   private fun activateRecordingService(status: String) {

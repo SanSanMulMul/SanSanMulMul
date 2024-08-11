@@ -280,6 +280,7 @@
       android:id="@+id/tv_banned_description"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginTop="30dp"
       android:gravity="center"
       android:text="에 다시 와주세요!"
       android:textColor="@color/white"
@@ -288,7 +289,7 @@
       app:layout_constraintBottom_toBottomOf="@id/tv_banned_description_time"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@id/tv_banned_description_time"
-      app:layout_constraintTop_toTopOf="@id/tv_banned_description_time" />
+      app:layout_constraintTop_toBottomOf="@id/tv_banned_title" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

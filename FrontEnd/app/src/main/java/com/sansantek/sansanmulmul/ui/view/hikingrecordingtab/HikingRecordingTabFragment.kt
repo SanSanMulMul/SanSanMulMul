@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
@@ -29,6 +30,7 @@ import com.sansantek.sansanmulmul.config.Const.Companion.AFTER_HIKING
 import com.sansantek.sansanmulmul.config.Const.Companion.BANNED
 import com.sansantek.sansanmulmul.config.Const.Companion.BEFORE_HIKING
 import com.sansantek.sansanmulmul.config.Const.Companion.HIKING
+import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.databinding.FragmentHikingRecordingTabBinding
 import com.sansantek.sansanmulmul.ui.service.HikingRecordingService
 import com.sansantek.sansanmulmul.ui.util.PermissionChecker
@@ -111,7 +113,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     loadMyScheduledGroupListAndUpdateUI()
 
     val currentStatus = hikingRecordingTabViewModel.recordingStatus.value
-    if (currentStatus == BEFORE_HIKING) {
+    if (currentStatus == BANNED) {
 
     }
 
@@ -121,24 +123,38 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     }
   }
 
+
   private fun loadMyScheduledGroupListAndUpdateUI() {
     activityViewModel.token?.let {
       lifecycleScope.launch {
         val result = crewService.getMyScheduledCrew(makeHeaderByAccessToken(it.accessToken))
         if (result.isSuccessful) {
           result.body()?.let { list ->
-            if (list.isEmpty()) { // 현재 진행 중인 그룹 없음
+            if (list.isEmpty()) { // 등산이 완료된 그룹 뿐임
               hikingRecordingTabViewModel.setRecordingStatus(BANNED)
-              binding.tvBannedDescriptionTime.text =
-                findClosestFutureDate(list.map { it.crewStartDate })
+              binding.tvBannedDescription.visibility = View.GONE
+              binding.tvBannedDescriptionTime.visibility = View.GONE
               binding.fragmentHikingRecordingLayoutBanned.visibility = View.VISIBLE
-            } else { // 현재 진행 중인 그룹 있음
-              if (hikingRecordingTabViewModel.recordingStatus.value == BANNED) {
-                hikingRecordingTabViewModel.setRecordingStatus(BEFORE_HIKING)
+            } else { // 등산 전 + 등산 중인 그룹이 하나 이상 있음
+              if (isExistOnGoingCrew(list)) { // 등산 중인 그룹이 있음
+                if (hikingRecordingTabViewModel.recordingStatus.value == BANNED) {
+                  hikingRecordingTabViewModel.setRecordingStatus(BEFORE_HIKING)
+                }
+                binding.fragmentHikingRecordingLayoutBanned.visibility = View.GONE
+              } else { // 등산 전인 그룹만 있음 -> 언제 다시 오라는 시간도 표시
+                hikingRecordingTabViewModel.setRecordingStatus(BANNED)
+                binding.tvBannedDescriptionTime.text =
+                  findClosestFutureDate(list.map { it.crewStartDate })
+                binding.fragmentHikingRecordingLayoutBanned.visibility = View.VISIBLE
               }
-              binding.fragmentHikingRecordingLayoutBanned.visibility = View.GONE
             }
           }
+          if (binding.fragmentHikingRecordingLayoutBanned.visibility == View.VISIBLE) {
+            setViewAndChildrenEnabled(binding.fragmentHikingRecordingLayout, false)
+          } else {
+            setViewAndChildrenEnabled(binding.fragmentHikingRecordingLayout, true)
+          }
+
         } else {
           Log.d(TAG, "loadMyScheduledGroupList: 실패")
         }
@@ -146,35 +162,51 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     }
   }
 
-//  private fun isCurrentTimeWithinRange(crewStartDate: String, crewEndDate: String): Boolean {
-//    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
-//    val startDateTime = LocalDateTime.parse(crewStartDate, formatter)
-//    val endDateTime = LocalDateTime.parse(crewEndDate, formatter)
-//    val currentDateTime = LocalDateTime.now()
-//
-//    Log.d(
-//      TAG,
-//      "isCurrentTimeWithinRange: start = $startDateTime, end = $endDateTime, now = $currentDateTime"
-//    )
-//    return currentDateTime.isAfter(startDateTime) && currentDateTime.isBefore(endDateTime)
-//  }
+  private fun setViewAndChildrenEnabled(view: View, enabled: Boolean) {
+    view.isEnabled = enabled
+    if (view is ViewGroup) {
+      for (i in 0 until view.childCount) {
+        val child = view.getChildAt(i)
+        setViewAndChildrenEnabled(child, enabled)
+      }
+    }
+  }
+
+  private fun isExistOnGoingCrew(crews: List<Crew>): Boolean {
+    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    val currentDateTime = LocalDateTime.now()
+
+    for (crew in crews) {
+      val startDateTime = LocalDateTime.parse(crew.crewStartDate, formatter)
+      val endDateTime = LocalDateTime.parse(crew.crewEndDate, formatter)
+
+      Log.d(
+        TAG,
+        "isCurrentTimeWithinRange: Crew ID = ${crew.crewId}, start = $startDateTime, end = $endDateTime, now = $currentDateTime"
+      )
+
+      if (currentDateTime.isAfter(startDateTime) && currentDateTime.isBefore(endDateTime)) {
+        return true
+      }
+    }
+    return false
+  }
 
   private fun findClosestFutureDate(dates: List<String>): String? { // 현재 시간과 가장 가까운 미래 날짜를 반환
-    Log.d(TAG, "findClosestFutureDate: $dates")
     val currentDateTime = LocalDateTime.now()
-    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    val inputFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분")
 
     return dates
-      .map { LocalDateTime.parse(it, formatter) }
+      .map { LocalDateTime.parse(it, inputFormatter) }
       .filter { it.isAfter(currentDateTime) }
       .minByOrNull { it }
-      ?.format(formatter)
+      ?.format(outputFormatter)
   }
 
   private fun initClickListener() {
     initButtonClickListener()
     initHikingInfoViewClickListener()
-    initBanLayoutClickListener()
   }
 
   private fun initButtonClickListener() {
@@ -230,18 +262,11 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     }
   }
 
-  private fun initBanLayoutClickListener() {
-    // 일단은 banned 화면 클릭하면 없어지도록..
-    binding.fragmentHikingRecordingLayoutBanned.setOnClickListener {
-      binding.fragmentHikingRecordingLayoutBanned.visibility = View.GONE
-    }
-  }
-
   private fun registerObserving() {
     hikingRecordingTabViewModel.recordingStatus.observe(viewLifecycleOwner) { status ->
       changeHikingButton(binding.btnHikingRecording, status)
       when (status) {
-        BEFORE_HIKING -> {
+        BANNED, BEFORE_HIKING -> {
           resetChronometerTime()
         }
 
@@ -317,7 +342,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
 
   private fun changeHikingButton(button: AppCompatButton, toState: Int) {
     when (toState) {
-      BEFORE_HIKING -> {
+      BANNED, BEFORE_HIKING -> {
         button.backgroundTintList = getColorStateList(R.color.hiking_recording_tab_button_pink)
         button.text = "상행 시작"
       }

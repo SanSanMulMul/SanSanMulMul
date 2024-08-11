@@ -48,15 +48,10 @@ public class HikingRecord {
     @Schema(description = "실제 등산 도착 일시", example = "YYYY-MM-DD 23:59:59")
     private LocalDateTime recordEndTime;
 
-    @Column(name = "record_up_distance", nullable = false)
+    @Column(name = "record_distance", nullable = false)
     @ColumnDefault("0")
-    @Schema(description = "등산 상행 코스 이동 거리(단위: m)", example = "0.0")
-    private long recordUpDistance;
-
-    @Column(name = "record_down_distance", nullable = false)
-    @ColumnDefault("0")
-    @Schema(description = "등산 하행 코스 이동 거리(단위: m)", example = "0.0")
-    private long recordDownDistance;
+    @Schema(description = "등산 전체 이동 거리(단위: m)", example = "0.0")
+    private long recordDistance;
 
     @Column(name = "record_duration", nullable = false)
     @ColumnDefault("0")
@@ -79,16 +74,15 @@ public class HikingRecord {
     private int recordKcal;
 
     public HikingRecord(Crew crew, Mountain mountain, User user,
-                        LocalDateTime recordStartTime, LocalDateTime recordEndTime, long recordUpDistance,
-                        long recordDownDistance, long recordDuration,
+                        LocalDateTime recordStartTime, LocalDateTime recordEndTime,
+                        long recordDistance, long recordDuration,
                         long recordSteps, double recordElevation, int recordKcal) {
         this.crew = crew;
         this.mountain = mountain;
         this.user = user;
         this.recordStartTime = recordStartTime;
         this.recordEndTime = recordEndTime;
-        this.recordUpDistance = recordUpDistance;
-        this.recordDownDistance = recordDownDistance;
+        this.recordDistance = recordDistance;
         this.recordDuration = recordDuration;
         this.recordSteps = recordSteps;
         this.recordElevation = recordElevation;

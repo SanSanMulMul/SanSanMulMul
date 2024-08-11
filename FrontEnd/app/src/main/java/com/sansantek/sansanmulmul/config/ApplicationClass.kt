@@ -9,6 +9,7 @@ import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.util.Utility
 import com.sansantek.sansanmulmul.BuildConfig
 import com.sansantek.sansanmulmul.data.local.SharedPreferencesUtil
+import com.sansantek.sansanmulmul.data.repository.LocationHistoryRepository
 import com.sansantek.sansanmulmul.data.repository.StepCounterRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -35,7 +36,7 @@ class ApplicationClass : Application() {
         //shared preference 초기화
         sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)
         StepCounterRepository.initialize(this)
-
+        LocationHistoryRepository.initialize(this)
 //        ViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(this)
 //            .create(MainActivityViewModel::class.java)
 

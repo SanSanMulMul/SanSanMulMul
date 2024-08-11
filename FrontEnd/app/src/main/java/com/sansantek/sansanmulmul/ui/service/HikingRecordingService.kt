@@ -1,39 +1,102 @@
 package com.sansantek.sansanmulmul.ui.service
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.sansantek.sansanmulmul.data.model.DateInfo
+import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.data.local.entity.LocationHistory
 import com.sansantek.sansanmulmul.data.local.entity.StepCount
+import com.sansantek.sansanmulmul.data.model.DateInfo
+import com.sansantek.sansanmulmul.data.repository.LocationHistoryRepository
 import com.sansantek.sansanmulmul.data.repository.StepCounterRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 private const val TAG = "HikingRecordingService_싸피"
+
 class HikingRecordingService : Service(), SensorEventListener {
 
     private var stepCountSensor: Sensor? = null
+    private val gpsSensor: Sensor? = null
     private val stepDetector = Sensor.TYPE_STEP_DETECTOR //보행 계수기
+    private lateinit var locationManager: LocationManager
     private lateinit var sensorManager: SensorManager
+    private var crewId: Int = -1
     private var status = "undefined"
 
-    private val repository by lazy {
+    private val stepCounterRepository by lazy {
         StepCounterRepository.get()
+    }
+    private val locationHistoryRepository by lazy {
+        LocationHistoryRepository.get()
+    }
+
+    private val locationListener = object : LocationListener {
+        override fun onLocationChanged(location: Location) {
+            // 위치가 변경될 때마다 호출됩니다.
+            val latitude = location.latitude
+            val longitude = location.longitude
+            val altitude = location.altitude
+            // TODO: 위치 정보를 사용하세요.
+            CoroutineScope(Dispatchers.IO).launch {
+                launch {
+                    Log.d(TAG, "onLocationChanged: 위치 변경 감지 ${LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude)} ")
+                    locationHistoryRepository.insertLocationHistory(LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude))
+                    Log.d(TAG, "onLocationChanged: 위치 변경 감지 피니tl ${locationHistoryRepository.getLocationHistory(crewId)}")
+
+                }
+                Log.d(TAG, "onLocationChanged: stepCounter레포지토리 호출 직전")
+                val step = stepCounterRepository.getStepCount(crewId) ?: StepCount()
+                Log.d(TAG, "onLocationChanged: stepCounter레포지토리 호출 직전")
+                Log.d(TAG, "onSensorChanged: stepcount 확인 $step")
+                if (step.stepCount == 0 && step.elevation == -1.0) {
+
+                    step.crewId = crewId
+                    step.elevation = altitude
+                    Log.d(TAG, "onSensorChanged: insert")
+                    CoroutineScope(Dispatchers.IO).launch {
+                        stepCounterRepository.insertStepCount(step)
+                    }
+                }else{
+                    step.elevation = altitude
+                    Log.d(TAG, "onSensorChanged: update")
+                    CoroutineScope(Dispatchers.IO).launch {
+                        stepCounterRepository.updateStepCount(step)
+                    }
+                }
+
+                val intent = Intent().apply {
+                    action = "step"
+                    putExtra("value", step)
+                }
+
+                LocalBroadcastManager.getInstance(this@HikingRecordingService).sendBroadcast(intent)
+            }
+        }
+
+        override fun onProviderEnabled(provider: String) {}
+        override fun onProviderDisabled(provider: String) {}
     }
 
     private fun getCurrentDateInfo(): DateInfo {
@@ -50,25 +113,44 @@ class HikingRecordingService : Service(), SensorEventListener {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand: 서비스 시작")
-        if(intent != null){
+        if (intent != null) {
             status = intent.getStringExtra("status") ?: "undefined"
-            Log.d(TAG, "onStartCommand: status $status")
-        }
-        else{
+            crewId = intent.getIntExtra("crewId", -1)
+            Log.d(TAG, "onStartCommand: status $status crewId $crewId")
+        } else {
             stopSelf()
         }
         Log.d(TAG, "onStartCommand: 서비스 진짜 시작 $status")
         CoroutineScope(Dispatchers.IO).launch {
-            sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-            stepCountSensor = sensorManager.getDefaultSensor(stepDetector)
-            sensorManager.registerListener(this@HikingRecordingService, stepCountSensor, SensorManager.SENSOR_DELAY_NORMAL)
-            if (stepCountSensor == null) {
-                launch(Dispatchers.Main) {
-                    Toast.makeText(this@HikingRecordingService, "No Step Detect Sensor!!", Toast.LENGTH_SHORT).show()
+            launch {
+                sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+                stepCountSensor = sensorManager.getDefaultSensor(stepDetector)
+                sensorManager.registerListener(this@HikingRecordingService, stepCountSensor, SensorManager.SENSOR_DELAY_NORMAL)
+                if (stepCountSensor == null) {
+                    launch(Dispatchers.Main) {
+                        Toast.makeText(this@HikingRecordingService, "No Step Detect Sensor!!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            launch {
+                if (!::locationManager.isInitialized) {
+                    locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+                }
+                if (ActivityCompat.checkSelfPermission(this@HikingRecordingService, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this@HikingRecordingService, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    launch(Dispatchers.Main) {
+                        Toast.makeText(this@HikingRecordingService, "기록이 되지 않습니다", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    launch(Dispatchers.Main) {
+                        Toast.makeText(this@HikingRecordingService, "기록이 시작됩니다", Toast.LENGTH_SHORT).show()
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 3F, locationListener)
+                    }
                 }
             }
             Log.d(TAG, "onStartCommand: 센서 등록 완료")
         }
+
 
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channel =
@@ -81,56 +163,50 @@ class HikingRecordingService : Service(), SensorEventListener {
         manager.createNotificationChannel(channel)
 
         val builder = NotificationCompat.Builder(this, "hiking_recording")
-        builder.setSmallIcon(android.R.drawable.ic_menu_search)
-        builder.setContentTitle("서비스 가동")
+        builder.setSmallIcon(R.drawable.sansanmulmul_logo)
+        builder.setContentTitle("${status} 기록 서비스 가동")
         // 알림을 밀어서 지우지 못하도록 설정
         builder.setOngoing(true)
 
         startForeground(111, builder.build()) // 서비스 가동시 알림 뜨고, 서비스 종료시 자동으로 사라짐 (종료 전엔 못 없앰)
 
-        return START_STICKY
+        return START_REDELIVER_INTENT
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
         Log.d(TAG, "onSensorChanged: 센서 이벤트 수신")
 
-        if(event?.sensor?.type == stepDetector){
+        if (event?.sensor?.type == stepDetector) {
             var step: StepCount
             CoroutineScope(Dispatchers.IO).launch {
-                val today = getCurrentDateInfo()
-                step = repository.getStepCount(today.year, today.month, today.day) ?: StepCount()
+                step = stepCounterRepository.getStepCount(crewId) ?: StepCount()
 
                 Log.d(TAG, "onSensorChanged: stepcount 확인 $step")
-                if (step.stepCount == -1) {
+                if (step.stepCount == 0 && step.elevation == -1.0) {
 
-                    val date = getCurrentDateInfo()
-
-                    step.year = date.year
-                    step.month = date.month
-                    step.day = date.day
+                    step.crewId = crewId
 
                     step.stepCount = 1
                     Log.d(TAG, "onSensorChanged: insert")
                     CoroutineScope(Dispatchers.IO).launch {
-                        repository.insertStepCount(step)
+                        stepCounterRepository.insertStepCount(step)
                     }
-                } else {
+                }else{
                     step.stepCount += 1
                     Log.d(TAG, "onSensorChanged: update")
                     CoroutineScope(Dispatchers.IO).launch {
-                        repository.updateStepCount(step)
+                        stepCounterRepository.updateStepCount(step)
                     }
                 }
 
                 val intent = Intent().apply {
                     action = "step"
-                    putExtra("value", step.stepCount)
+                    putExtra("value", step)
                 }
 
                 LocalBroadcastManager.getInstance(this@HikingRecordingService).sendBroadcast(intent)
             }
         }
-
     }
 
     override fun onDestroy() {
@@ -138,6 +214,7 @@ class HikingRecordingService : Service(), SensorEventListener {
         sensorManager.unregisterListener(this)
         super.onDestroy()
     }
+
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         // 정확도 바뀌었을 때 호출되는 함수인 듯?
         // 정확도 높이는 알고리즘을 짤 게 아니라면 건드릴 건 없을 듯

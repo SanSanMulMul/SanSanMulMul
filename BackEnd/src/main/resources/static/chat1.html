@@ -13,7 +13,7 @@
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function (frame) {
                 console.log('연결되었습니다: ' + frame);
-                stompClient.subscribe('/topic/public', function (messageOutput) {
+                stompClient.subscribe('/topic/public/1', function (messageOutput) {
                     showMessageOutput(JSON.parse(messageOutput.body));
                 });
             }, function (error) {
@@ -23,12 +23,13 @@
 
         function sendMessage() {
             var messageContent = document.getElementById('message').value;
-            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
+            var message = {
                 'messageContent': messageContent,
-                'timestamp': new Date(),
                 'crewId': 1, // Example room ID
                 'userId': 1 // Example user ID
-            }));
+            };
+            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(message));
+            document.getElementById('message').value = ''; // 메시지 전송 후 입력 필드 초기화
         }
 
         function showMessageOutput(messageOutput) {
@@ -40,7 +41,7 @@
         }
 
         function loadChatHistory() {
-            fetch('/chat/history/1') // Example crew ID
+            fetch('/chat/history/1')
                 .then(response => response.json())
                 .then(data => {
                     data.forEach(message => {

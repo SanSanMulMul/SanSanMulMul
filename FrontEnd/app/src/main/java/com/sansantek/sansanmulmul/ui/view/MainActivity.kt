@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.ui.view
 
 
+import ChatViewModel
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -32,15 +33,12 @@ import com.sansantek.sansanmulmul.ui.util.PermissionChecker
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
-import com.sansantek.sansanmulmul.ui.view.groupchat.ChatViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.Date
 
@@ -76,21 +74,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-//        val data = JSONObject()
-//        data.put("userKey", text.value)
-//        data.put("positionType", "1")
-//        data.put("content", "test")
-//        data.put("messageType", "CHAT")
-//        data.put("destRoomCode", "test0912")
-
-        chatViewModel.runStomp()
-        val gson = GsonBuilder().create()
-        val localDate = LocalDateTime.now()
-//                    "2024-08-11 17:45:00"
-        val messageData = MessageData("발표는 제가 할게용", LocalDateTime.now().toString(), 1, 7, )
-
-        Log.d(TAG, "onCreate: 보내려는 것 ${gson.toJson(messageData)}")
-        chatViewModel.stompClient.send("/app/chat.sendMessage",  gson.toJson(messageData).toString()).subscribe()
+//        chatViewModel.runStomp()
+//        val gson = GsonBuilder().create()
+//        val localDate = LocalDateTime.now()
+//        val messageData = MessageData("이번에는 crewId2번으로 보냈어요 진짜에요 -test - 모바일이에요", LocalDateTime.now().toString(), 2, 1)
+//
+//        Log.d(TAG, "onCreate: 보내려는 것 ${gson.toJson(messageData)}")
+//        chatViewModel.stompClient.send("/app/chat.sendMessage",  gson.toJson(messageData).toString()).subscribe()
         lifecycleScope.launch(Dispatchers.IO) {
             launch(Dispatchers.IO) {
                 loadUserProfile()

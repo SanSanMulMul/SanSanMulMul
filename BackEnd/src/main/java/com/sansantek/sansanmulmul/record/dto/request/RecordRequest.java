@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 public class RecordRequest {
     @Schema(description = "그룹 고유 번호", example = "1")
     private int crewId;
-    @Schema(description = "산 고유 번호", example = "1")
-    private int mountainId;
     @Schema(description = "실제 등산 출발 일시", example = "YYYY-MM-DD 23:59:59")
     private LocalDateTime recordStartTime;
     @Schema(description = "등산 상행 코스 이동 거리(단위: m)", example = "0.0")

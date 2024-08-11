@@ -106,6 +106,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
   private fun openFragment(fragmentName: String) {
     val fragment: Fragment
+    Log.d(TAG, "openFragment: fragmentName = $fragmentName")
 
     when (fragmentName) {
       "HikingRecordingFragment" -> fragment = HikingRecordingTabFragment()

@@ -15,9 +15,16 @@ class HikingRecordingTabViewModel() :
   ViewModel() {
   private val repository = HikingRecordingRepository()
   private val _recordingStatus =
-
-    MutableLiveData<Int>(sharedPreferencesUtil.getHikingRecordingState())
+    MutableLiveData(sharedPreferencesUtil.getHikingRecordingState())
   val recordingStatus: LiveData<Int> get() = _recordingStatus
+
+  private val _onGoingCrewId =
+    MutableLiveData(sharedPreferencesUtil.getHikingRecordingState())
+  val onGoingCrewId: LiveData<Int> get() = _onGoingCrewId
+
+  private val _isQRScanned =
+    MutableLiveData(sharedPreferencesUtil.ge())
+  val isQRScanned: LiveData<Int> get() = _isQRScanned
 
   private val _amILeader = MutableLiveData<Boolean?>()
   val amILeader: LiveData<Boolean?> get() = _amILeader
@@ -34,6 +41,15 @@ class HikingRecordingTabViewModel() :
     sharedPreferencesUtil.deleteHikingRecordingState()
   }
 
+  fun setOnGoingCrewId(crewId: Int) {
+    _onGoingCrewId.value = crewId
+    sharedPreferencesUtil.saveHikingRecordingOnGoingCrewId(crewId)
+  }
+
+  fun deleteOnGoingCrewId() {
+    sharedPreferencesUtil.deleteHikingRecordingOnGoingCrewId()
+  }
+
   fun amILeader(accessToken: String, crewId: Int) {
     viewModelScope.launch {
       try {
@@ -48,4 +64,5 @@ class HikingRecordingTabViewModel() :
       }
     }
   }
+
 }

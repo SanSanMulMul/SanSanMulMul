@@ -231,7 +231,7 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
         // 채팅 버튼 클릭 시 GroupChatFragment로 전환
         binding.layoutChatBtn.setOnClickListener {
             val activity = requireActivity() as MainActivity
-            activity.changeAddToBackstackFragment(GroupChatFragment())
+            activity.changeAddToBackstackFragment(GroupChatFragment(crew))
         }
     }
 

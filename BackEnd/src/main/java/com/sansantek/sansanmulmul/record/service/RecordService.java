@@ -127,8 +127,7 @@ public class RecordService {
                 user,                // user 설정
                 recordStartTime,
                 recordEndTime,
-                request.getRecordUpDistance(),
-                request.getRecordDownDistance(),
+                request.getRecordDistance(),
                 totalMinutes,
                 request.getRecordSteps(),
                 request.getRecordElevation(),
@@ -214,6 +213,7 @@ public class RecordService {
                 // 기록
                 hikingRecord.getRecordStartTime(),
                 hikingRecord.getRecordEndTime(),
+                hikingRecord.getRecordDistance(),
                 hikingRecord.getRecordDuration(),
                 hikingRecord.getRecordSteps(),
                 hikingRecord.getRecordElevation(),

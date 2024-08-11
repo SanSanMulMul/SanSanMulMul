@@ -1,13 +1,11 @@
 package com.sansantek.sansanmulmul.record.dto.response;
 
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewUserResponse;
-import com.sansantek.sansanmulmul.mountain.domain.course.Course;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,8 +43,10 @@ public class DetailRecordResponse {
     List<CrewUserResponse> crewMembers = new ArrayList<>(); // CrewUserRepository
 
     // 기록
-    @Schema(description = "등산 출발 일시", example = "YYYY-MM-DD 23:59:59")
+    @Schema(description = "실제 등산 출발 일시", example = "YYYY-MM-DD 23:59:59")
     private LocalDateTime recordStartTime;
+    @Schema(description = "실제 등산 도착 일시", example = "YYYY-MM-DD 23:59:59")
+    private LocalDateTime recordEndTime;
     @Schema(description = "등산 산행 소요 시간(단위: 분)", example = "0")
     private long recordDuration;
     @Schema(description = "등산 걸음 수(단위: 걸음)", example = "0")

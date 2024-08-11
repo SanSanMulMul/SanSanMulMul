@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.ui.util
 
 import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.retrofit
+import com.sansantek.sansanmulmul.data.network.api.ChatService
 import com.sansantek.sansanmulmul.data.network.api.CourseService
 import com.sansantek.sansanmulmul.data.network.api.CrewService
 import com.sansantek.sansanmulmul.data.network.api.MountainService
@@ -17,5 +18,6 @@ class RetrofiltUtil {
         val userService = retrofit.create(UserService::class.java)
         val newsService = retrofit.create(NewsService::class.java)
         val crewService = retrofit.create(CrewService::class.java)
+        val chatService = retrofit.create(ChatService::class.java)
     }
 }

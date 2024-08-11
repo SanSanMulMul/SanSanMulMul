@@ -105,7 +105,7 @@ public class RecordService {
                 .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
 
         // 산 확인
-        Mountain mountain = mountainRepository.findByMountainId(request.getMountainId())
+        Mountain mountain = mountainRepository.findByMountainId(crew.getMountain().getMountainId())
                 .orElseThrow(() -> new RuntimeException("해당 산을 찾을 수 없습니다."));
 
         // 기록 객체 생성

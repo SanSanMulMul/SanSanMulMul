@@ -22,4 +22,19 @@ class HikingRecordingRepository {
       null
     }
   }
+
+  suspend fun amILeader(accessToken: String, crewId: Int): Boolean? {
+    return try {
+      val response =
+        RetrofiltUtil.hikingRecordingService.amILeader(accessToken, crewId)
+      if (response.isSuccessful) {
+        response.body()
+      } else {
+        Log.d(TAG, "싸피_HikingRecordingRepository: amILeader response is null")
+        null
+      }
+    } catch (e: Exception) {
+      null
+    }
+  }
 }

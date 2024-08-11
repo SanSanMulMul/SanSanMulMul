@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.ui.view
 
 
+import ChatViewModel
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -17,9 +18,11 @@ import androidx.activity.viewModels
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.gson.GsonBuilder
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseActivity
 import com.sansantek.sansanmulmul.config.Const.Companion.REQUEST_IMAGE_CAPTURE
+import com.sansantek.sansanmulmul.data.model.MessageData
 import com.sansantek.sansanmulmul.databinding.ActivityMainBinding
 import com.sansantek.sansanmulmul.ui.view.grouptab.GroupTabFragment
 import com.sansantek.sansanmulmul.ui.view.hikingrecordingtab.HikingRecordingTabFragment
@@ -36,6 +39,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.Date
 
 private const val TAG = "MainActivity 싸피"
@@ -46,6 +50,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     private lateinit var currentPhotoPath: String
     private var bitmap: Bitmap? = null
     private val activityViewModel : MainActivityViewModel by viewModels()
+    private val chatViewModel: ChatViewModel by viewModels()
 
     /** permission check **/
     private val checker = PermissionChecker(this)
@@ -68,6 +73,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+//        chatViewModel.runStomp()
+//        val gson = GsonBuilder().create()
+//        val localDate = LocalDateTime.now()
+//        val messageData = MessageData("이번에는 crewId2번으로 보냈어요 진짜에요 -test - 모바일이에요", LocalDateTime.now().toString(), 2, 1)
+//
+//        Log.d(TAG, "onCreate: 보내려는 것 ${gson.toJson(messageData)}")
+//        chatViewModel.stompClient.send("/app/chat.sendMessage",  gson.toJson(messageData).toString()).subscribe()
         lifecycleScope.launch(Dispatchers.IO) {
             launch(Dispatchers.IO) {
                 loadUserProfile()

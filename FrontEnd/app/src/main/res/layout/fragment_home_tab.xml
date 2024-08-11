@@ -14,7 +14,7 @@
         <ImageView
             android:id="@+id/iv_logo"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="28dp"
             android:layout_marginStart="22dp"
             android:layout_marginTop="20dp"
             android:adjustViewBounds="true"
@@ -28,12 +28,23 @@
             android:id="@+id/tv_app_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textColor="#B3B3B3"
-            android:textSize="16sp"
+            android:text="산산"
+            android:textColor="#006b35"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/iv_logo"
             app:layout_constraintStart_toEndOf="@+id/iv_logo"
+            app:layout_constraintTop_toTopOf="@+id/iv_logo" />
+        <TextView
+            android:id="@+id/tv_app_name_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="물물"
+            android:textColor="@color/group_detail_second_tab_temperature_min_color"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_logo"
+            app:layout_constraintStart_toEndOf="@+id/tv_app_name"
             app:layout_constraintTop_toTopOf="@+id/iv_logo" />
 
         <!-- 검색 -->

@@ -13,7 +13,7 @@
         android:layout_height="@dimen/height_20"
         android:layout_marginStart="22dp"
         android:layout_marginTop="20dp"
-        android:src="@drawable/animalogo"
+        android:src="@drawable/sansanmulmul_logo_without_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

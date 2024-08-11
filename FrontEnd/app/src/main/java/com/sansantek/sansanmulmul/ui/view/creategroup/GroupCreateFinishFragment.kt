@@ -14,24 +14,26 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentGroupCreateFinishBinding
+import com.sansantek.sansanmulmul.databinding.FragmentGroupCreateViewPagerBinding
+import com.sansantek.sansanmulmul.ui.view.MainActivity
+import com.sansantek.sansanmulmul.ui.view.register.GroupCreateViewPagerFragment
 
-class GroupCreateFinishFragment : Fragment() {
-
-    private var _binding: FragmentGroupCreateFinishBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentGroupCreateFinishBinding.inflate(inflater, container, false)
-        return binding.root
+class GroupCreateFinishFragment : BaseFragment<FragmentGroupCreateFinishBinding>(
+    FragmentGroupCreateFinishBinding::bind,
+    R.layout.fragment_group_create_finish
+) {
+    private val viewPagerFragment by lazy {
+        parentFragment as GroupCreateViewPagerFragment
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.root.setOnClickListener{
+            val activity = requireActivity() as MainActivity
+            activity.supportFragmentManager.popBackStack()
+//            viewPagerFragment.parentFragmentManager.beginTransaction().remove(viewPagerFragment).commit()
+        }
         // 텍스트뷰에 그라데이션 적용
         setGradient(binding.tvGroupCreateFinish)
 
@@ -60,10 +62,5 @@ class GroupCreateFinishFragment : Fragment() {
             ), null, Shader.TileMode.CLAMP
         )
         textView.paint.shader = textShader
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

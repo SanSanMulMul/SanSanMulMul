@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.databinding.ListFavoriteMountainBinding
 
@@ -28,7 +29,7 @@ class MyPageFirstTabFavoriteMountainListAdapter() :
 
         fun bindInfo(position: Int) {
             val item = getItem(position)
-//            binding.mountainImage.setImageBitmap(ContextCompat.getDrawable(binding.root.context, item.mountainImg)!!.toBitmap())
+            Glide.with(binding.root).load(item.mountainImg).into(binding.mountainImage)
             binding.mountainTitle.text = item.mountainName
         }
     }

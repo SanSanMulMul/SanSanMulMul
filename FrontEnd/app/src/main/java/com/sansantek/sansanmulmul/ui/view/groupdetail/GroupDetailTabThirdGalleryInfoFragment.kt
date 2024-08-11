@@ -1,10 +1,15 @@
 package com.sansantek.sansanmulmul.ui.view.groupdetail
 
 import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_IMAGES
+import android.Manifest.permission.READ_MEDIA_VIDEO
+import android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -21,6 +26,7 @@ import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.data.model.CrewGallery
 import com.sansantek.sansanmulmul.databinding.FragmentGroupDetailTabThirdGalleryInfoFragmentBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupDetailTabGalleryInfoListAdapter
+import com.sansantek.sansanmulmul.ui.util.PermissionChecker
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.crewService
 import com.sansantek.sansanmulmul.ui.util.Util.getRealPathFromURI
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
@@ -40,18 +46,33 @@ class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) :
         FragmentGroupDetailTabThirdGalleryInfoFragmentBinding::bind,
         R.layout.fragment_group_detail_tab_third_gallery_info_fragment
     ) {
+    private lateinit var permissionChecker: PermissionChecker
     private lateinit var galleryAdapter: GroupDetailTabGalleryInfoListAdapter
     private val activityViewModel: MainActivityViewModel by activityViewModels()
     private val viewModel: GroupDetailViewModel by activityViewModels()
+    private val PERMISSIONLIST = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_VISUAL_USER_SELECTED)
+    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO)
+    } else {
+        arrayOf(READ_EXTERNAL_STORAGE)
+    }
     private val REQ_STORAGE_PERMISSION = 0
     private var imageUri: Uri? = null
     private val galleryPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it) {
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            if (isAllPermissionGranted(it)) {
                 openGallery()
             } else
                 Log.d(TAG, "deny")
         }
+    private fun isAllPermissionGranted(result: Map<String, Boolean>): Boolean{
+        result.values.forEach { check ->
+            if (!check) { return false }
+        }
+        return true
+    }
+
     private val pickImageLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -95,8 +116,26 @@ class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        permissionChecker = PermissionChecker(this)
         galleryAdapter = GroupDetailTabGalleryInfoListAdapter()
         registerObserver()
+
+        binding.fdPictureAddBtn.setOnClickListener {
+
+            if(permissionChecker.checkPermission(requireActivity(), PERMISSIONLIST)){
+                openGallery()
+            }else{
+                showToast("권한을 설정하셔야 기록 서비스를 이용 가능합니다!")
+                //ask for permission
+                galleryPermissionLauncher.launch(PERMISSIONLIST)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.setPictureList(listOf<CrewGallery>())
+        viewModel.setPosition(-1)
         lifecycleScope.launch {
             activityViewModel.token?.let {
                 val picture = crewService.getCrewGalleryList(
@@ -116,30 +155,13 @@ class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) :
                 setItemClickListener(object :
                     GroupDetailTabGalleryInfoListAdapter.ItemClickListener {
                     override fun onClick(position: Int) {
+                        viewModel.setPosition(position)
                         val groupDetailFragment = parentFragment as GroupDetailFragment
                         groupDetailFragment.changeAddToBackStackGroupDetailFragmentView(
-                            GroupDetailTabThirdGalleryDetailFragment(position)
+                            GroupDetailTabThirdGalleryDetailFragment(position, crew)
                         )
                     }
                 })
-            }
-        }
-        binding.fdPictureAddBtn.setOnClickListener {
-            val readPermission = ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.READ_MEDIA_IMAGES
-            )
-
-            if (readPermission == PackageManager.PERMISSION_DENIED) {
-                Log.d(TAG, "onViewCreated: 권한 없음")
-
-                ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
-                    REQ_STORAGE_PERMISSION
-                )
-            } else {
-                galleryPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
             }
         }
     }

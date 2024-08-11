@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "HikingRecordingTabViewModel_싸피"
 
-class HikingRecordingTabViewModel() :
+class HikingRecordingTabViewModel :
   ViewModel() {
   private val repository = HikingRecordingRepository()
   private val _recordingStatus =
@@ -23,8 +23,8 @@ class HikingRecordingTabViewModel() :
   val onGoingCrewId: LiveData<Int> get() = _onGoingCrewId
 
   private val _isQRScanned =
-    MutableLiveData(sharedPreferencesUtil.ge())
-  val isQRScanned: LiveData<Int> get() = _isQRScanned
+    MutableLiveData(sharedPreferencesUtil.getIsQRScanned())
+  val isQRScanned: LiveData<Boolean> get() = _isQRScanned
 
   private val _amILeader = MutableLiveData<Boolean?>()
   val amILeader: LiveData<Boolean?> get() = _amILeader

@@ -33,13 +33,15 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
             binding.cbHikingStyle3,
             binding.cbHikingStyle4,
             binding.cbHikingStyle5,
+            binding.cbHikingStyle6,
         )
         checkBoxEnableColorList = listOf(
             R.color.purple,
             R.color.lightgreen,
             R.color.blue,
             R.color.pink,
-            R.color.yellow
+            R.color.yellow,
+            R.color.light_orange
         )
         // Set listeners for each CheckBox
         binding.cbHikingStyle1.setOnCheckedChangeListener(onCheckedChangeListener(R.color.purple))
@@ -47,6 +49,7 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
         binding.cbHikingStyle3.setOnCheckedChangeListener(onCheckedChangeListener(R.color.blue))
         binding.cbHikingStyle4.setOnCheckedChangeListener(onCheckedChangeListener(R.color.pink))
         binding.cbHikingStyle5.setOnCheckedChangeListener(onCheckedChangeListener(R.color.yellow))
+        binding.cbHikingStyle6.setOnCheckedChangeListener(onCheckedChangeListener(R.color.light_orange))
 
         registerObserver()
     }
@@ -81,7 +84,7 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
     }
 
     private fun setCheckBoxEnable(style: Int){
-        setGradient(checkBoxList[style-1], checkBoxEnableColorList[style-1])
+        setSolidColorBackground(checkBoxList[style-1], checkBoxEnableColorList[style-1])
     }
 
     private fun addStyleById(selectedId: Int){
@@ -106,6 +109,10 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
                 activityViewModel.userStyles.value?.let{
                     addStyle(5)
                 }
+            }
+
+            R.id.cb_hiking_style_6 -> {
+                addStyle(6)
             }
         }
     }
@@ -139,6 +146,10 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
             R.id.cb_hiking_style_5 -> {
                 removeStyle(5)
             }
+
+            R.id.cb_hiking_style_6 -> {
+                removeStyle(6)
+            }
         }
     }
 
@@ -149,18 +160,13 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
         }
     }
 
-    private fun setGradient(checkBox: CheckBox, color: Int) {
-        // Create a gradient drawable with stroke and corner radius
-        val gradientDrawable = GradientDrawable().apply {
-            orientation = GradientDrawable.Orientation.TOP_BOTTOM
-            colors = intArrayOf(
-                Color.WHITE, // Starting color
-                ContextCompat.getColor(requireContext(), color) // Dynamic color from resources
-            )
+    private fun setSolidColorBackground(checkBox: CheckBox, color: Int) {
+        val drawable = GradientDrawable().apply {
+            setColor(ContextCompat.getColor(requireContext(), color)) // 단색 배경 색상 설정
             val dp = 10f.dpToPx(this@RegisterHikingStyleFragment.requireContext())
-            cornerRadius = dp // Set the corner radius
-            setStroke(1, Color.parseColor("#808080")) // Set stroke width and color
+            cornerRadius = dp // 모서리 반경 설정
+            setStroke(1, Color.parseColor("#808080")) // 테두리 너비와 색상 설정
         }
-        checkBox.background = gradientDrawable // Set the gradient as background
+        checkBox.background = drawable // 단색 배경을 설정
     }
 }

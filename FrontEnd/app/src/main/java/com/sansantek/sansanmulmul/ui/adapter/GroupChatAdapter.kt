@@ -3,46 +3,61 @@ package com.sansantek.sansanmulmul.ui.view.groupchat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.sansantek.sansanmulmul.R
-import java.text.SimpleDateFormat
-import java.util.*
+import com.bumptech.glide.Glide
+import com.sansantek.sansanmulmul.data.model.MessageHistory
+import com.sansantek.sansanmulmul.databinding.ItemMessageBinding
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
-class GroupChatAdapter(private val messages: MutableList<Pair<String, Int>>) : RecyclerView.Adapter<GroupChatAdapter.MessageViewHolder>() {
+class GroupChatAdapter(private val userProviderId: String) : ListAdapter<MessageHistory, GroupChatAdapter.MessageViewHolder>(
+    Comparator
+) {
 
-    companion object {
-        const val GREEN_BUBBLE = 0
-        const val PINK_BUBBLE = 1
+    companion object Comparator : DiffUtil.ItemCallback<MessageHistory>() {
+        override fun areItemsTheSame(oldItem: MessageHistory, newItem: MessageHistory): Boolean {
+            return System.identityHashCode(oldItem) == System.identityHashCode(newItem)
+        }
+
+        override fun areContentsTheSame(oldItem: MessageHistory, newItem: MessageHistory): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    inner class MessageViewHolder(private val binding: ItemMessageBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bindInfo(position: Int){
+            val item = getItem(position)
+            if(item.user.userProviderId == userProviderId){
+                binding.layoutOther.visibility = View.GONE
+                binding.layoutMine.visibility = View.VISIBLE
+                binding.tvMessage.text = item.messageContent
+
+                val dateTime = LocalDateTime.parse(item.timestamp)
+                val formatter = DateTimeFormatter.ofPattern("HH:mm")
+                val formatterDateTime = dateTime.format(formatter)
+                binding.tvTime.text = formatterDateTime
+            }else{
+                binding.layoutOther.visibility = View.VISIBLE
+                binding.layoutMine.visibility = View.GONE
+                binding.tvMessageOther.text = item.messageContent
+                binding.tvUserNickname.text = item.user.userNickname
+                val dateTime = LocalDateTime.parse(item.timestamp)
+                val formatter = DateTimeFormatter.ofPattern("HH:mm")
+                val formatterDateTime = dateTime.format(formatter)
+                binding.tvTimeOther.text = formatterDateTime
+                Glide.with(binding.root).load(item.user.userProfileImg).into(binding.ivProfile)
+            }
+
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_message, parent, false)
-        return MessageViewHolder(view)
+        return MessageViewHolder(ItemMessageBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
-        val message = messages[position]
-        holder.tvMessage.text = message.first
-
-        when (message.second) {
-            GREEN_BUBBLE -> holder.tvMessage.setBackgroundResource(R.drawable.message_background_green)
-            PINK_BUBBLE -> holder.tvMessage.setBackgroundResource(R.drawable.message_background_pink)
-        }
-
-        val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-        holder.tvTime.text = currentTime
-    }
-
-    override fun getItemCount(): Int = messages.size
-
-    fun addMessage(message: String, type: Int) {
-        messages.add(Pair(message, type))
-        notifyItemInserted(messages.size - 1)
-    }
-
-    class MessageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvMessage: TextView = view.findViewById(R.id.tv_message)
-        val tvTime: TextView = view.findViewById(R.id.tv_time)
+        holder.bindInfo(position)
     }
 }

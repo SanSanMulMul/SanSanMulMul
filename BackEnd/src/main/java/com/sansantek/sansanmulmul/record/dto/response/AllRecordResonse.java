@@ -18,8 +18,10 @@ public class AllRecordResonse {
     private int recordId;
     @Schema(description = "산 이름", example = "금오산")
     private String mountainName;
-    @Schema(description = "그룹 시작 일시", example = "2024-08-01 23:59:59")
-    private LocalDateTime crewStartDate;
+    @Schema(description = "실제 등산 출발 일시", example = "YYYY-MM-DD 23:59:59")
+    private LocalDateTime recordStartTime;
+    @Schema(description = "실제 등산 도착 일시", example = "YYYY-MM-DD 23:59:59")
+    private LocalDateTime recordEndTime;
     @Schema(description = "산 이미지", example = "0")
     private String mountainImg;
 

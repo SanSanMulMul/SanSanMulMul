@@ -50,6 +50,15 @@ class HikingRecordingTabViewModel :
     sharedPreferencesUtil.deleteHikingRecordingOnGoingCrewId()
   }
 
+  fun setIsQRScanned(isQRScanned: Boolean) {
+    _isQRScanned.value = isQRScanned
+    sharedPreferencesUtil.saveIsQRScanned(isQRScanned)
+  }
+
+  fun deleteIsQRScanned() {
+    sharedPreferencesUtil.deleteIsQRScanned()
+  }
+
   fun amILeader(accessToken: String, crewId: Int) {
     viewModelScope.launch {
       try {

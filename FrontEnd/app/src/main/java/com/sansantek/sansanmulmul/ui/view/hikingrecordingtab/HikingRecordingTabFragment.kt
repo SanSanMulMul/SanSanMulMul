@@ -30,6 +30,7 @@ import com.sansantek.sansanmulmul.config.Const.Companion.AFTER_HIKING
 import com.sansantek.sansanmulmul.config.Const.Companion.BANNED
 import com.sansantek.sansanmulmul.config.Const.Companion.BEFORE_HIKING
 import com.sansantek.sansanmulmul.config.Const.Companion.HIKING
+import com.sansantek.sansanmulmul.data.local.entity.StepCount
 import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.databinding.FragmentHikingRecordingTabBinding
 import com.sansantek.sansanmulmul.ui.service.HikingRecordingService
@@ -59,11 +60,11 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   private val hikingRecordingTabViewModel: HikingRecordingTabViewModel by viewModels()
   private val chronometerViewModel: ChronometerViewModel by viewModels()
   private val PERMISSION = if (Build.VERSION.SDK_INT >= 33) {
-    arrayOf(Manifest.permission.ACTIVITY_RECOGNITION, Manifest.permission.POST_NOTIFICATIONS)
+    arrayOf(Manifest.permission.ACTIVITY_RECOGNITION, Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
   } else if (Build.VERSION.SDK_INT >= 29) {
-    arrayOf(Manifest.permission.ACTIVITY_RECOGNITION)
+    arrayOf(Manifest.permission.ACTIVITY_RECOGNITION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
   } else {
-    arrayOf()
+    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
   }
   private val requestPermissionLauncher = registerForActivityResult(
     ActivityResultContracts.RequestMultiplePermissions()
@@ -73,9 +74,36 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   }
   private val mMessageReceiver = object : BroadcastReceiver() {
     override fun onReceive(p0: Context, intent: Intent) {
-      val message = intent.getIntExtra("value", -1)
+      val message = intent.getSerializableExtra("value") as StepCount
       Log.d(TAG, "Got message: " + message)
-      binding.tvStepCnt.text = message.toString()
+      safeCall {
+
+        binding.tvStepCnt.text = message.stepCount.toString()
+
+        val distance = (0.74 * message.stepCount)
+        binding.tvDistance.text = if(distance < 1000){
+          "${distance.toInt()} m"
+        }else{
+          "${String.format("%.2f", (distance / 1000))} km"
+        }
+
+        binding.tvHeight.text = if(message.elevation < 1000){
+          if(message.elevation != -1.0){
+            "${message.elevation.toInt()} m"
+          }else{
+            "0 km"
+          }
+        }else{
+          "${message.elevation.toInt() / 1000} km"
+        }
+
+        val kcal = (46.62 * message.stepCount)
+        binding.tvCalorie.text = if(kcal < 1000){
+          "${kcal.toInt()} cal"
+        }else{
+          "${String.format("%.2f", (kcal / 1000))} kcal"
+        }
+      }
     }
   }
 
@@ -328,7 +356,10 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
 
   private fun activateRecordingService(status: String) {
     val serviceIntent =
-      Intent(rootActivity, HikingRecordingService::class.java).apply { putExtra("status", status) }
+      Intent(rootActivity, HikingRecordingService::class.java).apply {
+        putExtra("status", status)
+        putExtra("crewId", hikingRecordingTabViewModel.onGoingCrewId.value)
+      }
     startForegroundService(rootActivity, serviceIntent)
     sharedPreferencesUtil.saveRecordingServiceState(status)
   }

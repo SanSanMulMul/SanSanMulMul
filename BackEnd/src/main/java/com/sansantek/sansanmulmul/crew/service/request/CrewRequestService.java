@@ -1,5 +1,8 @@
 package com.sansantek.sansanmulmul.crew.service.request;
 
+import com.sansantek.sansanmulmul.common.util.FcmMessage;
+import com.sansantek.sansanmulmul.common.util.FcmType;
+import com.sansantek.sansanmulmul.common.util.FcmUtil;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequest;
 import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequestStatus;
@@ -11,6 +14,8 @@ import com.sansantek.sansanmulmul.crew.repository.request.CrewRequestRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,21 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class CrewRequestService {
 
-    @Autowired
-    private CrewRepository crewRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
+    private final CrewRepository crewRepository;
+    private final UserRepository userRepository;
     private final CrewRequestRepository crewRequestRepository;
-    @Autowired
-    private CrewUserRepository crewUserRepository;
+    private final CrewUserRepository crewUserRepository;
+    private final FcmUtil fcmUtil;
 
-    public CrewRequestService(CrewRequestRepository crewRequestRepository) {
-        this.crewRequestRepository = crewRequestRepository;
-    }
 
     @Transactional
     public CrewRequest requestJoinCrew(int crewId, String userProviderId) {
@@ -60,6 +60,22 @@ public class CrewRequestService {
         crewRequest.setCrew(crew);
         crewRequest.setUser(user);
         crewRequest.setCrewRequestStatus(CrewRequestStatus.R);
+
+        // 가입요청 FCM알림
+        // FcmDTO 생성
+        String title = fcmUtil.makeFcmTitle(
+                crew.getCrewName(), FcmType.JOINREQUEST.getType()
+        );
+        String body = fcmUtil.makeJoinRequestBody(
+                user.getUserName(), crew.getCrewName()
+        );
+        FcmMessage.FcmDTO fcmDTO = fcmUtil.makeFcmDTO(title, body);
+        // FCM발송
+        fcmSendtoCrew(crew, fcmDTO);
+
+        // 가입 요청 알림 : 알람 테이블 update (추후 수정)
+
+
 
         return crewRequestRepository.save(crewRequest);
     }
@@ -188,5 +204,18 @@ public class CrewRequestService {
                 .orElseThrow(() -> new RuntimeException("그룹 회원을 찾을 수 없습니다."));
 
         crewUserRepository.delete(crewUser);
+    }
+
+    // 그룹 내 회원들에게 전체 알림
+    public void fcmSendtoCrew(Crew crew, FcmMessage.FcmDTO fcmDTO){
+
+        List<CrewUser> crewUsers = crewUserRepository.findByCrew(crew);// 그룹 내 속하는 멤버들
+
+        fcmUtil.multiFcmSend(
+                crewUsers.stream()
+                        .map(CrewUser::getUser)
+                        .toList(),
+                fcmDTO
+        );
     }
 }

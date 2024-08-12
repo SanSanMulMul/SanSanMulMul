@@ -3,6 +3,9 @@ package com.sansantek.sansanmulmul.ui.view
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -14,14 +17,21 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.ApplicationClass
+import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.config.BaseActivity
 import com.sansantek.sansanmulmul.config.Const.Companion.REQUEST_IMAGE_CAPTURE
+import com.sansantek.sansanmulmul.data.network.api.FCMService
 import com.sansantek.sansanmulmul.databinding.ActivityMainBinding
 import com.sansantek.sansanmulmul.ui.util.PermissionChecker
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.fcmService
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
@@ -34,6 +44,10 @@ import com.sansantek.sansanmulmul.ui.viewmodel.HikingRecordingTabViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.http.Header
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -90,7 +104,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
       changeFragment(HomeTabFragment())
     }
-
+    initFCM()
     initBottomNav()
 
     // QR코드 인식 후
@@ -105,6 +119,45 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
       }
     }
+  }
+
+  private fun initFCM() {
+    // FCM 토큰 수신
+    FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+      if (!task.isSuccessful) {
+        Log.d(TAG, "FCM 토큰 얻기에 실패하였습니다.", task.exception)
+        return@OnCompleteListener
+      }
+      // token log 남기기
+      Log.d(TAG, "FCMtoken: ${task.result ?: "task.result is null"}")
+        uploadToken(task.result)
+
+    })
+  }
+
+  private fun uploadToken(token: String){
+    // 새로운 토큰 수신 시 서버로 전송
+    activityViewModel.token?.let {
+      lifecycleScope.launch {
+        val result = fcmService.initFcmToken(makeHeaderByAccessToken(it.accessToken), token)
+        if(result.isSuccessful){
+          val res = result.body()
+          createNotificationChannel("noti", "noti")
+          Log.d(TAG, "FCMonResponse: $res")
+        }else{
+          Log.d(TAG, "FCMonResponse: Error Code ${result.code()}")
+        }
+      }
+    }
+  }
+
+  // NotificationChannel 설정
+  private fun createNotificationChannel(id: String, name: String) {
+    val importance = NotificationManager.IMPORTANCE_DEFAULT
+    val channel = NotificationChannel(id, name, importance)
+
+    val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    notificationManager.createNotificationChannel(channel)
   }
 
   private fun loadLikedMountainList() {

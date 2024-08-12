@@ -221,6 +221,7 @@ public class RecordService {
         );
     }
 
+    // 해당 그룹의 방장 유무 확인
     public boolean chkLeader(String userProviderId, int crewId) {
         // 해당 회원 확인
         User user = userRepository.findByUserProviderId(userProviderId)
@@ -234,5 +235,19 @@ public class RecordService {
             return true;
         else
             return false;
+    }
+
+    // 해당 그룹의 관한 기록 여부 확인
+    public boolean chkRecord(String userProviderId, int crewId) {
+        // 해당 회원 확인
+        User user = userRepository.findByUserProviderId(userProviderId)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        // 해당 그룹 확인
+        Crew crew = crewRepository.findByCrewId(crewId)
+                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
+
+        // 해당 사용자와 그룹에 대한 HikingRecord 존재 여부 확인
+        return hikingRecordRepository.existsByUserAndCrew(user, crew);
     }
 }

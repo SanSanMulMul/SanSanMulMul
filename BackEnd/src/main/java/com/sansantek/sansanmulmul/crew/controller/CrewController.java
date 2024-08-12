@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.crew.controller;
 
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewCreateRequest;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewAlarmResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewGalleryResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailCommonResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailResponse;
@@ -290,8 +291,8 @@ public class CrewController {
     public ResponseEntity<?> getCrewDetailAlarm(@PathVariable int crewId) {
         HttpStatus status = HttpStatus.OK;
         try {
-            boolean flag = crewService.getCrewDetailAlarm(crewId);
-            return new ResponseEntity<>(flag, HttpStatus.OK);
+            List<CrewAlarmResponse> crewAlarmResposne = crewService.getCrewDetailAlarm(crewId);
+            return new ResponseEntity<>(crewAlarmResposne, HttpStatus.OK);
         } catch (Exception e) {
             status = HttpStatus.BAD_REQUEST; // 400
 

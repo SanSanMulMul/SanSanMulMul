@@ -20,7 +20,7 @@ public class CrewAlarm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "alarm_id", nullable = false)
     @Schema(description = "그룹 알림 고유번호" , example = "1")
-    private int pictureId;
+    private int alarmId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crew_id" ,nullable = false)

@@ -4,16 +4,19 @@ import com.sansantek.sansanmulmul.common.ApiResponse;
 import com.sansantek.sansanmulmul.common.service.S3Service;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 
+import com.sansantek.sansanmulmul.crew.domain.crewalarm.CrewAlarm;
 import com.sansantek.sansanmulmul.crew.domain.crewgallery.CrewGallery;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewCreateRequest;
+import com.sansantek.sansanmulmul.crew.dto.response.CrewAlarmResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewGalleryResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailCommonResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewHikingDetailResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewUserResponse;
+import com.sansantek.sansanmulmul.crew.repository.CrewAlarmRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewGalleryRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewHikingStyleRepository;
@@ -65,6 +68,7 @@ public class CrewService {
     private final CourseRepository courseRepository;
     private final CourseService courseService;
     private final S3Service s3Service;
+    private final CrewAlarmRepository crewAlarmRepository;
 
     /* 1. 그룹 전체 조회 */
     // 모든 그룹 조회
@@ -483,8 +487,28 @@ public class CrewService {
     }
 
     /* 5. 그룹 내 알림들 */
-    public boolean getCrewDetailAlarm(int crewId) {
+    public List<CrewAlarmResponse> getCrewDetailAlarm(int crewId) {
         Crew crew = getCrewById(crewId);
+
+        // crewId에 해당하는 모든 CrewAlarm 가져오기
+        List<CrewAlarm> crewAlarms = crewAlarmRepository.findByCrew(crew);
+
+        // 3. 응답 dto 리스트 생성
+        List<CrewAlarmResponse> responses = new ArrayList<>();
+
+        for (CrewAlarm alarm : crewAlarms) {
+
+            CrewAlarmResponse response = CrewAlarmResponse.builder()
+                    .alarmId(alarm.getAlarmId())
+                    .alarmTitle(alarm.getAlarmTitle())
+                    .alarmBody(alarm.getAlarmBody())
+                    .createdAt(alarm.getAlarmCreatedAt())
+                    .build();
+
+            responses.add(response);
+        }
+
+        return responses;
 
     }
 

@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.crew.domain;
 
+import com.sansantek.sansanmulmul.crew.domain.crewalarm.CrewAlarm;
 import com.sansantek.sansanmulmul.crew.domain.crewgallery.CrewGallery;
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
@@ -127,6 +128,10 @@ public class Crew {
     // 그룹 갤러리 사진
     @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CrewGallery> pictures = new ArrayList<>();
+
+    // 그룹 알림들
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CrewAlarm> alarms = new ArrayList<>();
 
     // 그룹 방장 변경
     public void changeLeader(User newLeader) {

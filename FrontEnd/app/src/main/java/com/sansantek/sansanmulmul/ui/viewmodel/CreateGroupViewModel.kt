@@ -1,9 +1,11 @@
 package com.sansantek.sansanmulmul.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlin.math.min
 
+private const val TAG = "CreateGroupViewModel 싸피"
 class CreateGroupViewModel : ViewModel() {
     private var _groupTitle: String = ""
     val groupTitle: String
@@ -35,6 +37,7 @@ class CreateGroupViewModel : ViewModel() {
 
     fun setCrewStyle(newStyle: List<Int>) {
         _crewStyle.value = newStyle
+        Log.d(TAG, "setCrewStyle: crewStyle은 $crewStyle")
     }
 
     private var _groupGender: String = "A"

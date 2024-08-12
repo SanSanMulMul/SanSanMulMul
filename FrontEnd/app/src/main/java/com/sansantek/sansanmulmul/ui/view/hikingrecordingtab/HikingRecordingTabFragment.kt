@@ -30,6 +30,7 @@ import com.sansantek.sansanmulmul.config.Const.Companion.AFTER_HIKING
 import com.sansantek.sansanmulmul.config.Const.Companion.BANNED
 import com.sansantek.sansanmulmul.config.Const.Companion.BEFORE_HIKING
 import com.sansantek.sansanmulmul.config.Const.Companion.HIKING
+import com.sansantek.sansanmulmul.data.local.entity.StepCount
 import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.databinding.FragmentHikingRecordingTabBinding
 import com.sansantek.sansanmulmul.ui.service.HikingRecordingService
@@ -51,33 +52,60 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     FragmentHikingRecordingTabBinding::bind,
     R.layout.fragment_hiking_recording_tab
 ), OnMapReadyCallback {
-    private lateinit var permissionChecker: PermissionChecker
-    private var isHikingInfoViewExpanded = false
-    private lateinit var rootActivity: MainActivity
-    private val activityViewModel: MainActivityViewModel by activityViewModels()
-    private var currentCallback: ActivityResultCallback<Map<String, Boolean>>? = null
-    private val hikingRecordingTabViewModel: HikingRecordingTabViewModel by activityViewModels()
-    private val chronometerViewModel: ChronometerViewModel by viewModels()
-    private val PERMISSION = if (Build.VERSION.SDK_INT >= 33) {
-        arrayOf(Manifest.permission.ACTIVITY_RECOGNITION, Manifest.permission.POST_NOTIFICATIONS)
-    } else if (Build.VERSION.SDK_INT >= 29) {
-        arrayOf(Manifest.permission.ACTIVITY_RECOGNITION)
-    } else {
-        arrayOf()
-    }
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) {
-        Log.d(TAG, "requestPermissionLauncher: 건수 : ${it.size}")
-        currentCallback?.onActivityResult(it)
-    }
-    private val mMessageReceiver = object : BroadcastReceiver() {
-        override fun onReceive(p0: Context, intent: Intent) {
-            val message = intent.getIntExtra("value", -1)
-            Log.d(TAG, "Got message: " + message)
-            binding.tvStepCnt.text = message.toString()
+  private lateinit var permissionChecker: PermissionChecker
+  private var isHikingInfoViewExpanded = false
+  private lateinit var rootActivity: MainActivity
+  private val activityViewModel: MainActivityViewModel by activityViewModels()
+  private var currentCallback: ActivityResultCallback<Map<String, Boolean>>? = null
+  private val hikingRecordingTabViewModel: HikingRecordingTabViewModel by activityViewModels()
+  private val chronometerViewModel: ChronometerViewModel by viewModels()
+  private val PERMISSION = if (Build.VERSION.SDK_INT >= 33) {
+    arrayOf(Manifest.permission.ACTIVITY_RECOGNITION, Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+  } else if (Build.VERSION.SDK_INT >= 29) {
+    arrayOf(Manifest.permission.ACTIVITY_RECOGNITION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+  } else {
+    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+  }
+  private val requestPermissionLauncher = registerForActivityResult(
+    ActivityResultContracts.RequestMultiplePermissions()
+  ) {
+    Log.d(TAG, "requestPermissionLauncher: 건수 : ${it.size}")
+    currentCallback?.onActivityResult(it)
+  }
+  private val mMessageReceiver = object : BroadcastReceiver() {
+    override fun onReceive(p0: Context, intent: Intent) {
+      val message = intent.getSerializableExtra("value") as StepCount
+      Log.d(TAG, "Got message: " + message)
+      safeCall {
+
+        binding.tvStepCnt.text = message.stepCount.toString()
+
+        val distance = (0.74 * message.stepCount)
+        binding.tvDistance.text = if(distance < 1000){
+          "${distance.toInt()} m"
+        }else{
+          "${String.format("%.2f", (distance / 1000))} km"
         }
+
+        binding.tvHeight.text = if(message.elevation < 1000){
+          if(message.elevation != -1.0){
+            "${message.elevation.toInt()} m"
+          }else{
+            "0 km"
+          }
+        }else{
+          "${message.elevation.toInt() / 1000} km"
+        }
+
+        val kcal = (46.62 * message.stepCount)
+        binding.tvCalorie.text = if(kcal < 1000){
+          "${kcal.toInt()} cal"
+        }else{
+          "${String.format("%.2f", (kcal / 1000))} kcal"
+        }
+      }
     }
+  }
 
 
     override fun onAttach(context: Context) {
@@ -189,12 +217,12 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         val inputFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
         val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분")
 
-        return dates
-            .map { LocalDateTime.parse(it, inputFormatter) }
-            .filter { it.isAfter(currentDateTime) }
-            .minByOrNull { it }
-            ?.format(outputFormatter)
-    }
+    return dates
+      .map { LocalDateTime.parse(it, inputFormatter) }
+      .filter { it.isAfter(currentDateTime) }
+      .minByOrNull { it }
+      ?.format(outputFormatter)
+  }
 
     private fun initClickListener() {
         initButtonClickListener()
@@ -365,17 +393,15 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         dialog.show(rootActivity.supportFragmentManager, "dialog")
     }
 
-    private fun activateRecordingService(status: String) {
-        val serviceIntent =
-            Intent(rootActivity, HikingRecordingService::class.java).apply {
-                putExtra(
-                    "status",
-                    status
-                )
-            }
-        startForegroundService(rootActivity, serviceIntent)
-        sharedPreferencesUtil.saveRecordingServiceState(status)
-    }
+  private fun activateRecordingService(status: String) {
+    val serviceIntent =
+      Intent(rootActivity, HikingRecordingService::class.java).apply {
+        putExtra("status", status)
+        putExtra("crewId", hikingRecordingTabViewModel.onGoingCrewId.value)
+      }
+    startForegroundService(rootActivity, serviceIntent)
+    sharedPreferencesUtil.saveRecordingServiceState(status)
+  }
 
     private fun deActivateRecordingService() {
         val serviceIntent = Intent(rootActivity, HikingRecordingService::class.java)

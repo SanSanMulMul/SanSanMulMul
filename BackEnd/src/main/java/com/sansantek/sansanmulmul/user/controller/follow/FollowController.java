@@ -67,6 +67,31 @@ public class FollowController {
         }
     }
 
+    @GetMapping("/{userId}/followers")
+    @Operation(summary = "회원 팔로워 조회", description = "해당 회원의 팔로워 조회")
+    public ResponseEntity<?> getFollowers
+            (@PathVariable int userId) {
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        try {
+            // 해당 사용자 가져오기
+            User user = userService.getUser(userId);
+
+            // 사용자 팔로워 조회
+            List<FollowResponse> followers = followService.getFollowers(user.getUserId());
+
+            status = HttpStatus.OK; // 200
+            return new ResponseEntity<>(followers, status);
+
+        } catch (Exception e) {
+
+            log.error("회원 팔로워 조회 실패: {}", e.getMessage());
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
+
     @GetMapping("/followings")
     @Operation(summary = "회원 팔로잉 조회", description = "해당 회원의 팔로잉 조회")
     public ResponseEntity<?> getFollowings
@@ -101,7 +126,38 @@ public class FollowController {
         }
     }
 
-    @PostMapping("/follow")
+    @GetMapping("/{userId}/followings")
+    @Operation(summary = "회원 팔로잉 조회", description = "해당 회원의 팔로잉 조회")
+    public ResponseEntity<?> getFollowings
+            (@PathVariable int userId) {
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        try {
+            // 해당 사용자 가져오기
+            User user = userService.getUser(userId);
+
+            // 사용자 팔로워 조회
+            List<FollowResponse> followings = followService.getFollowings(user.getUserId());
+
+            status = HttpStatus.OK; // 200
+            return new ResponseEntity<>(followings, status);
+
+        } catch (InvalidTokenException e) {
+
+            log.error("토큰 유효성 검사 실패: {}", e.getMessage());
+            status = HttpStatus.UNAUTHORIZED; // 401
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        } catch (Exception e) {
+
+            log.error("회원 정상석 조회 실패: {}", e.getMessage());
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
+
+    @PostMapping("/{userId}/follow")
     @Operation(summary = "회원 팔로우 추가", description = "해당 회원이 followUserId에 해당하는 회원 팔로우 추가")
     public ResponseEntity<?> doFollow
             (Authentication authentication,

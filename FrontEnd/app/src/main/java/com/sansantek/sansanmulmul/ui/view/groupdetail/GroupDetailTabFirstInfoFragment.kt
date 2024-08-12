@@ -82,6 +82,13 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
                                     setItemClickListener(object: GroupDetailFirstTabRegistrationListAdapter.ItemClickListener{
                                         override suspend fun onDeclineClick(user: RequestMember): Boolean {
                                             val result = crewService.refuseRegister(makeHeaderByAccessToken(token.accessToken), user.requestId)
+                                            if(result.isSuccessful){
+                                                val newList = crewService.getRequestList(makeHeaderByAccessToken(token.accessToken), crew.crewId)
+                                                if(newList.isSuccessful){
+                                                    submitList(null)
+                                                    submitList(newList.body()!!)
+                                                }
+                                            }
                                             return result.isSuccessful
                                         }
 
@@ -90,8 +97,14 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
                                                 makeHeaderByAccessToken(token.accessToken), user.requestId)
                                             if(result.isSuccessful){
                                                 val newList = crewService.getRequestList(makeHeaderByAccessToken(token.accessToken), crew.crewId)
+                                                val memberNewList = crewService.getGroupDetailFirstTabData(crew.crewId)
                                                 if(newList.isSuccessful){
+                                                    submitList(null)
                                                     submitList(newList.body()!!)
+                                                    Log.d(TAG, "onApproveClick: 현재 요청 멤버 리스트는 ${newList.body()}")
+                                                    if(memberNewList.isSuccessful){
+                                                        groupDetailFirstTabMemberListAdapter.submitList(memberNewList.body()!!.members)
+                                                    }
                                                 }
                                             }
                                             return result.isSuccessful
@@ -122,14 +135,26 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
                                     val result = crewService.delegateLeader(
                                         makeHeaderByAccessToken(it.accessToken),
                                         crew.crewId,
-                                        DelegateUser(crew.crewId, user.userId)
+                                        user.userId
                                     )
                                     if (result.isSuccessful) {
                                         showToast("위임에 성공했습니다!")
-                                        binding.layoutRegistrationList.visibility = View.GONE
-                                        groupDetailFirstTabMemberListAdapter.refreshList()
-                                        return true
+                                        val newList = crewService.getGroupDetailFirstTabData(crew.crewId)
+                                        if(newList.isSuccessful){
+                                            Log.d(TAG, "onLeaderDelegateClick: 위임 후 값 설정 ${newList.body()!!.members.find { it.userId == activityViewModel.user.userId }?.leader?:false}")
+                                            setAmILeader(
+                                            newList.body()!!.members.find { it.userId == activityViewModel.user.userId }?.leader
+                                                ?: false)
+                                            binding.layoutRegistrationList.visibility = View.GONE
+                                            Log.d(TAG, "onLeaderDelegateClick: 위임 후 리스트 갱신")
+                                            groupDetailFirstTabMemberListAdapter.submitList(null)
+                                            groupDetailFirstTabMemberListAdapter.submitList(newList.body()!!.members)
+                                            return true
+                                        }
+                                        return false
                                     }else{
+                                        Log.d(TAG, "onLeaderDelegateClick: $result")
+                                        showToast("위임에 실패했습니다!")
                                         return false
                                     }
                                 }
@@ -146,7 +171,11 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
                                         )
                                         if(result.isSuccessful){
                                             showToast("멤버를 강퇴했습니다!")
-                                            groupDetailFirstTabMemberListAdapter.refreshList()
+                                            val newList = crewService.getGroupDetailFirstTabData(crew.crewId)
+                                            if(newList.isSuccessful){
+                                                groupDetailFirstTabMemberListAdapter.submitList(null)
+                                                groupDetailFirstTabMemberListAdapter.submitList(newList.body()!!.members)
+                                            }
                                         }
                                     }
                                 }

@@ -35,6 +35,7 @@
   <color name="tab_background_selected">#A1CCA8</color>
   <color name="tab_background_unselected">#FFFFFF</color>
   <color name="tab_divider_color">#E9E9E9</color>
+  <color name="light_orange">#E9B971</color>
 
   <color name="group_detail_green">#C0E2C6</color>
   <color name="group_detail_group_description_title">#A1CCA8</color>

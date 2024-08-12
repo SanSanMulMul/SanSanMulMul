@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.data.network.api
 
 import com.sansantek.sansanmulmul.data.model.CreateCrew
 import com.sansantek.sansanmulmul.data.model.Crew
+import com.sansantek.sansanmulmul.data.model.CrewCommon
 import com.sansantek.sansanmulmul.data.model.CrewGallery
 import com.sansantek.sansanmulmul.data.model.CrewInfo
 import com.sansantek.sansanmulmul.data.model.DelegateUser
@@ -53,7 +54,7 @@ interface CrewService {
     suspend fun kickMember(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Path("userId")userId: Int) : Response<String>
 
     @PUT("crew/{crewId}/leader")
-    suspend fun delegateLeader(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Body delegateUser: DelegateUser): Response<String>
+    suspend fun delegateLeader(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Query("nextLeaderId") nextLeaderId: Int): Response<String>
 
     @GET("crew/{crewId}/requests")
     suspend fun getRequestList(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int): Response<List<RequestMember>>
@@ -63,4 +64,16 @@ interface CrewService {
 
     @PATCH("crew/{requestId}/accept")
     suspend fun acceptRegister(@Header("Authorization") accessToken: String, @Path("requestId")requestId: Int) : Response<String>
+
+    @DELETE("crew/{crewId}/out")
+    suspend fun exitCrew(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int) : Response<String>
+
+    @DELETE("crew/{crewId}")
+    suspend fun deleteCrew(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int) : Response<String>
+
+    @GET("crew/detail/{crewId}/common")
+    suspend fun getCrewCommon(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int) : Response<CrewCommon>
+
+    @DELETE("crew/detail/{crewId}/gallery")
+    suspend fun deleteGallery(@Header("Authorization") accessToken: String, @Path("crewId")crewId: Int, @Query("picId") picId: Int) : Response<String>
 }

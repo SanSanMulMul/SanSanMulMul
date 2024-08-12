@@ -116,7 +116,7 @@
                     android:id="@+id/cb_hiking_style_1"
                     android:layout_width="128dp"
                     android:layout_height="95dp"
-                    android:text="등산에만 집중!!"
+                    android:text="설렁 설렁~"
                     android:gravity="center"
                     android:background="@drawable/check_box_background"
                     android:button="@null"
@@ -131,7 +131,7 @@
                     android:id="@+id/cb_hiking_style_2"
                     android:layout_width="128dp"
                     android:layout_height="95dp"
-                    android:text="등산도 식후경"
+                    android:text="열정 열정!"
                     android:gravity="center"
                     android:layout_marginStart="5dp"
                     android:button="@null"
@@ -152,18 +152,39 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 >
+
                 <CheckBox
                     android:id="@+id/cb_hiking_style_3"
-                    android:layout_width="266dp"
+                    android:layout_width="155dp"
                     android:layout_height="95dp"
-                    android:text="어쩌구"
+                    android:background="@drawable/check_box_background"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:layout_marginEnd="5dp"
+                    android:text="등산은 식후경!"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/cb_hiking_style_4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    />
+
+                <CheckBox
+                    android:id="@+id/cb_hiking_style_4"
+                    android:layout_width="96dp"
+                    android:layout_height="95dp"
+                    android:text="등산은 사진!"
                     android:gravity="center"
                     android:background="@drawable/check_box_background"
                     android:button="@null"
+                    android:layout_marginStart="5dp"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/cb_hiking_style_3"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     />
+
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -177,33 +198,33 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 >
                 <CheckBox
-                    android:id="@+id/cb_hiking_style_4"
+                    android:id="@+id/cb_hiking_style_5"
                     android:layout_width="96dp"
                     android:layout_height="95dp"
-                    android:text="저쩌구"
+                    android:text="소심이"
                     android:gravity="center"
                     android:background="@drawable/check_box_background"
                     android:button="@null"
                     android:layout_marginEnd="5dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/cb_hiking_style_5"
+                    app:layout_constraintEnd_toStartOf="@id/cb_hiking_style_6"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     />
 
                 <CheckBox
-                    android:id="@+id/cb_hiking_style_5"
+                    android:id="@+id/cb_hiking_style_6"
                     android:layout_width="155dp"
                     android:layout_height="95dp"
                     android:background="@drawable/check_box_background"
                     android:button="@null"
                     android:gravity="center"
                     android:layout_marginStart="5dp"
-                    android:text="어쩌구 저쩌구"
+                    android:text="괄괄이"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/cb_hiking_style_4"
+                    app:layout_constraintStart_toEndOf="@id/cb_hiking_style_5"
                     app:layout_constraintTop_toTopOf="parent"
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>

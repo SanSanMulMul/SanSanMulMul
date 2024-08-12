@@ -2,36 +2,100 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp"
-    android:gravity="end|bottom">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/layout_other"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="end|center_vertical">
+        android:padding="8dp"
+        android:gravity="start|bottom">
 
-        <TextView
-            android:id="@+id/tv_time"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/grey"
-            android:textSize="11sp"
-            android:padding="4dp"
-            android:layout_marginStart="8dp"
-            android:layout_gravity="bottom"/>
+            android:orientation="horizontal"
+            android:gravity="end|center_vertical">
 
-        <TextView
-            android:id="@+id/tv_message"
+            <ImageView
+                android:id="@+id/iv_profile"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/round_20_rectangle"
+                android:clipToOutline="true"
+                />
+            <TextView
+                android:id="@+id/tv_user_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/iv_profile"
+                app:layout_constraintBottom_toTopOf="@id/tv_message_other"
+                />
+            <TextView
+                android:id="@+id/tv_message_other"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/message_background_pink"
+                android:textColor="@color/white"
+                android:padding="10dp"
+                android:layout_margin="4dp"
+                android:maxWidth="250dp"
+                app:layout_constraintStart_toEndOf="@id/iv_profile"
+                app:layout_constraintTop_toBottomOf="@id/tv_user_nickname"
+                />
+            <TextView
+                android:id="@+id/tv_time_other"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey"
+                android:textSize="11sp"
+                android:padding="4dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toEndOf="@id/tv_message_other"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_gravity="bottom"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_mine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="end|bottom">
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/message_background_green"
-            android:textColor="@color/white"
-            android:padding="10dp"
-            android:layout_margin="4dp"
-            android:maxWidth="250dp"
-            />
+            android:orientation="horizontal"
+            android:gravity="end|center_vertical">
 
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey"
+                android:textSize="11sp"
+                android:padding="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_gravity="bottom"/>
+
+            <TextView
+                android:id="@+id/tv_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/message_background_green"
+                android:textColor="@color/white"
+                android:padding="10dp"
+                android:layout_margin="4dp"
+                android:maxWidth="250dp"
+                />
+
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

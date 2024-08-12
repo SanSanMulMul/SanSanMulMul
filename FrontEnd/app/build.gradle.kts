@@ -15,7 +15,8 @@ val naverClientId: String = properties.getProperty("naver_client_id")
 val NATIVE_APP_KEY: String = properties.getProperty("NATIVE_APP_KEY")
 val BUILD_NATIVE_APP_KEY: String = properties.getProperty("BUILD_NATIVE_APP_KEY")
 val SERVER_IP: String = properties.getProperty("SERVER_IP")
-val DATABASE_NAME: String = properties.getProperty("DATABASE_NAME")
+val LOCAL_HISTORY_DATABASE_DB: String = properties.getProperty("LOCAL_HISTORY_DATABASE_DB")
+val STEP_COUNTER_DATABASE_DB: String = properties.getProperty("STEP_COUNTER_DATABASE_DB")
 android {
   namespace = "com.sansantek.sansanmulmul"
   compileSdk = 34
@@ -34,7 +35,8 @@ android {
 
     buildConfigField("String", "NATIVE_APP_KEY", BUILD_NATIVE_APP_KEY)
     buildConfigField("String", "SERVER_IP", SERVER_IP)
-    buildConfigField("String", "DATABASE_NAME", DATABASE_NAME)
+    buildConfigField("String", "STEP_COUNTER_DATABASE_DB", STEP_COUNTER_DATABASE_DB)
+    buildConfigField("String", "LOCATION_HISTORY_DATABASE_DB", LOCAL_HISTORY_DATABASE_DB)
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }

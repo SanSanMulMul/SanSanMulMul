@@ -4,9 +4,11 @@ import com.sansantek.sansanmulmul.exception.auth.UserNotFoundException;
 import com.sansantek.sansanmulmul.exception.user.UserDeletionException;
 import com.sansantek.sansanmulmul.exception.user.UserUpdateException;
 import com.sansantek.sansanmulmul.user.domain.User;
+import com.sansantek.sansanmulmul.user.dto.request.PostFcmTokenReq;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserRequest;
 import com.sansantek.sansanmulmul.user.dto.response.MyPageResponse;
 import com.sansantek.sansanmulmul.user.dto.response.UserInfoResponse;
+import com.sansantek.sansanmulmul.user.repository.UserRepository;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +35,8 @@ public class UserController {
 
     // service
     private final UserService userService;
+
+    private final UserRepository userRepository; //fcm토큰 저장에 사용
 
     @GetMapping("/nickname")
     @Operation(summary = "닉네임 중복 확인", description = "회원가입 시 입력한 닉네임을 포함해 중복 확인")
@@ -208,5 +212,15 @@ public class UserController {
 
             return new ResponseEntity<>(e, status);
         }
+    }
+
+    @Operation(summary = "fcm 토큰 갱신")
+    @PostMapping("/fcm-token")
+    public ResponseEntity<?> renewalFCM(Authentication authentication, @RequestBody PostFcmTokenReq fcmToken) {
+        String userProviderId = authentication.getName();
+        User user = userRepository.findByUserProviderId(userProviderId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        return ResponseEntity.ok(userService.updateFCMById(user, fcmToken));
     }
 }

@@ -2,12 +2,14 @@ package com.sansantek.sansanmulmul.mountain.controller;
 
 import com.sansantek.sansanmulmul.exception.auth.InvalidTokenException;
 
+import com.sansantek.sansanmulmul.exception.auth.UserNotFoundException;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.service.UserMountainService;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -82,4 +84,19 @@ public class UserMountainController {
             return new ResponseEntity<>("An unexpected error occurred", HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping("/like/{userId}")
+    @Operation(summary = "회원 즐겨찾기 조회", description = "userId를 사용해 해당 회원의 즐겨찾기한 산 목록을 조회")
+    public ResponseEntity<List<Mountain>> getUserLikedMountainsById(@PathVariable int userId) {
+        try {
+            List<Mountain> likedMountains = userMountainService.getLikedMountainsByUserId(userId);
+            return ResponseEntity.ok(likedMountains);
+        } catch (EntityNotFoundException e) {
+            log.error("유저를 찾을 수 없습니다: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+        } catch (Exception e) {
+            log.error("회원 즐겨찾기 조회 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+        }
+    }
+
 }

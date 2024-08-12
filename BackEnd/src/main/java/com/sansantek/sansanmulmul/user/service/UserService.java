@@ -47,7 +47,7 @@ public class UserService {
     public User signUp(SignUpUserRequest signUpUserRequest, String password, MultipartFile image) throws IOException {
 
         // 프로필 이미지
-        String imgUrl = "";
+        String imgUrl = "https://sanmulbucket.s3.ap-northeast-2.amazonaws.com/common/defaultProfileImg.png";
         if (image != null) imgUrl = s3Service.uploadS3(image, "profileImg"); //S3 내 profileImg폴더로
         log.info("[S3저장됨] imgUrl: " + imgUrl);
 

@@ -19,6 +19,7 @@ import com.sansantek.sansanmulmul.ui.adapter.GroupDetailTabHikingStyleListAdapte
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.SpaceItemDecoration
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.crewService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
 
@@ -218,12 +219,14 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
 
                             override fun onMemberClick(user: GroupUser) {
                                 // 멤버 클릭 시 프래그먼트 전환
-                                val fragment = GroupMemberDetailPageFragment.newInstance(user)
-                                parentFragmentManager.beginTransaction()
-                                    .replace(R.id.rv_member_list, fragment)
-                                    .addToBackStack(null)
-                                    .commit()
+                                val fragment = GroupMemberDetailPageFragment.newInstance(user.userId)
+
+                                val activity = requireActivity() as MainActivity
+                                activity.changeAddToBackstackFragment(fragment)
+//
+                                Log.d(TAG, "onMemberClick: 클릭 완료")
                             }
+
                         })
                     }
                     binding.rvGroupMemberList.apply {

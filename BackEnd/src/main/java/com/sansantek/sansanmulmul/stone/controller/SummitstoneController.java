@@ -96,6 +96,37 @@ public class SummitstoneController {
         }
     }
 
+    @GetMapping("/{userId}")
+    @Operation(summary = "회원 인증 정상석 조회", description = "회원이 인증한 전체 정상석 조회")
+    public ResponseEntity<?> getUserIdStone
+            (@PathVariable int userId) {
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        try {
+            // 해당 사용자 가져오기
+            User user = userService.getUser(userId);
+
+            // 사용자 인증 정상석 조회
+            List<StoneResponse> userStoneList = summitstoneService.getStoneListByUser(user.getUserId());
+
+            status = HttpStatus.OK; // 200
+
+            return new ResponseEntity<>(userStoneList, status);
+        } catch (InvalidTokenException e) {
+
+            log.error("토큰 유효성 검사 실패: {}", e.getMessage());
+            status = HttpStatus.UNAUTHORIZED; // 401
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        } catch (Exception e) {
+
+            log.error("회원 정상석 조회 실패: {}", e.getMessage());
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
+
     @PostMapping("/user")
     @Operation(summary = "회원 인증 정상석 추가", description = "회원이 인증한 정상석 조회")
     public ResponseEntity<?> addUserStone

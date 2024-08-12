@@ -482,6 +482,12 @@ public class CrewService {
 
     }
 
+    /* 5. 그룹 내 알림들 */
+    public boolean getCrewDetailAlarm(int crewId) {
+        Crew crew = getCrewById(crewId);
+
+    }
+
 
 
     ////////////////////////////////////////////////////////////

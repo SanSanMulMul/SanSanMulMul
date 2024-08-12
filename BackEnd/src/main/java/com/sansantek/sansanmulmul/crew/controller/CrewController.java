@@ -42,6 +42,7 @@ public class CrewController {
     * 2. 그룹 생성
     * 3. 그룹 상세 보기
     * 4. 그룹 상세 보기 - 그룹 갤러리
+    * 5. 그룹 알림 보기
     * 
     * 1. 그룹 내 멤버들
     * 2. '내' 진행 중 그룹
@@ -282,6 +283,22 @@ public class CrewController {
         }
 
     }
+
+    /* 5. 그룹 알림 보기 */
+    @GetMapping(value="/detail/{crewId}/alarm")
+    @Operation(summary = "그룹 내 알림 조회", description = "가입요청/방장위임 알림")
+    public ResponseEntity<?> getCrewDetailAlarm(@PathVariable int crewId) {
+        HttpStatus status = HttpStatus.OK;
+        try {
+            boolean flag = crewService.getCrewDetailAlarm(crewId);
+            return new ResponseEntity<>(flag, HttpStatus.OK);
+        } catch (Exception e) {
+            status = HttpStatus.BAD_REQUEST; // 400
+
+            return new ResponseEntity<>(e.getMessage(), status);
+        }
+    }
+
 
     ////////////////////////////////////////////////////////////
 

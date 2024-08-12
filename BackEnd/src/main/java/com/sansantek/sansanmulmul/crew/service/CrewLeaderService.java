@@ -1,8 +1,13 @@
 package com.sansantek.sansanmulmul.crew.service;
 
+import com.sansantek.sansanmulmul.common.util.FcmMessage;
+import com.sansantek.sansanmulmul.common.util.FcmMessage.FcmDTO;
+import com.sansantek.sansanmulmul.common.util.FcmType;
+import com.sansantek.sansanmulmul.common.util.FcmUtil;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewUpdateRequest;
+import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewUserResponse;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
@@ -17,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +42,8 @@ public class CrewLeaderService {
     private final CrewUserRepository crewUserRepository;
     private final MountainRepository mountainRepository;
     private final CourseRepository courseRepository;
+
+    private final FcmUtil fcmUtil;
 
     // service
 
@@ -58,7 +67,7 @@ public class CrewLeaderService {
                 .orElseThrow(() -> new RuntimeException("해당 산을 찾을 수 없습니다."));
 
 
-        //정보 업데이트
+        //정보 업데이트 (시간)
         crew.setCrewStartDate(crewUpdateRequest.getCrewStartDate());
         crew.setCrewEndDate(crewUpdateRequest.getCrewEndDate());
         crew.setMountain(mountain);
@@ -68,6 +77,18 @@ public class CrewLeaderService {
 
         //변경 내용 저장
         crewRepository.save(crew);
+
+        // 변경 시 그룹 내 회원들에게 단체 FCM 발송
+        // FcmDTO 생성
+        String title = fcmUtil.makeFcmTitle(
+                crew.getCrewName(), FcmType.NOTICE.getType()
+        );
+        String body = fcmUtil.makeNoticeBody(
+                crew.getCrewName(), FcmType.NOTICE.getType()
+        );
+        FcmDTO fcmDTO = fcmUtil.makeFcmDTO(title, body);
+        // FCM발송
+        fcmSendtoCrew(crew, fcmDTO);
     }
 
     /* 2. 그룹 삭제 */
@@ -117,6 +138,20 @@ public class CrewLeaderService {
         crew.changeLeader(newLeader);
         crewRepository.save(crew);
     }
+
+    // 그룹 내 회원들에게 전체 알림
+    public void fcmSendtoCrew(Crew crew, FcmDTO fcmDTO){
+
+        List<CrewUser> crewUsers = crewUserRepository.findByCrew(crew);// 그룹 내 속하는 멤버들
+
+        fcmUtil.multiFcmSend(
+                crewUsers.stream()
+                        .map(CrewUser::getUser)
+                        .toList(),
+                fcmDTO
+        );
+    }
+
 
 
 }

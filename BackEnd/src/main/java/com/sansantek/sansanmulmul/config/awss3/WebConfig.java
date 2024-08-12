@@ -9,6 +9,8 @@ import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+    /* 이미지 전송 multipart 에러나서 만든 파일 */
+
     private OctetStreamReadMsgConverter octetStreamReadMsgConverter;
 
     @Autowired

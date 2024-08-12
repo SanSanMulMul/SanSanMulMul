@@ -52,9 +52,9 @@ interface UserService {
     @GET("user/{userId}/info")
     suspend fun getMemberInfo(@Path("userId") id: Int) : Response<User>
 
-    // 다른 멤버 팔로우 추가하기
+    // 다른 멤버 팔로우 추가하기. userId는 내 id, followUserId는 팔로우할 유저 id
     @POST("user/{userId}/follow")
-    suspend fun addMemberFollow(@Path("userId") id: Int) : Response<String>
+    suspend fun addMemberFollow(@Header("Authorization") accessToken: String, @Path("userId") id: Int, @Query("followUserId") followUserId: Int) : Response<String>
 
     // 다른 멤버의 팔로잉 조회
     @GET("user/{userId}/followings")
@@ -64,7 +64,7 @@ interface UserService {
     @GET("user/{userId}/followers")
     suspend fun getMemberFollower(@Path("userId") id : Int) : List<FollowUser>
 
-    // 다른 멤버 팔로우 취소
+    // 다른 멤버 팔로우 취소. unfollowUserId는 언팔로우할 유저의 id
     @DELETE("user/unfollow")
-    suspend fun deleteMemberFollow(@Header("Authorization") accessToken: String) : Response<String>
+    suspend fun deleteMemberFollow(@Header("Authorization") accessToken: String, @Query("unfollowUserId") unfollowUserId: Int) : Response<String>
 }

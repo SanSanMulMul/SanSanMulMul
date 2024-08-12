@@ -1,17 +1,23 @@
 package com.sansantek.sansanmulmul.ui.view.mountaindetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.databinding.FragmentMountainDetailTabBinding
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.MainActivity
+import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
+import kotlinx.coroutines.launch
 
 // TODO : 코스 상세에서 뒤로가기 했을 때 무조건 첫번째 Tab으로 돌아오는 거 수정하기
 
@@ -22,6 +28,8 @@ class MountainDetailFragment : BaseFragment<FragmentMountainDetailTabBinding>(
   R.layout.fragment_mountain_detail_tab
 ) {
   private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
+  private val activityViewModel: MainActivityViewModel by activityViewModels()
+  private var check = false
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
@@ -29,6 +37,45 @@ class MountainDetailFragment : BaseFragment<FragmentMountainDetailTabBinding>(
     requireActivity().supportFragmentManager.beginTransaction()
       .replace(binding.mountainDetailFragmentView.id, MountainDetailTabFirstInfoFragment())
       .commit()
+
+    binding.ibFavoriteBtn.setOnClickListener {
+      activityViewModel.token?.let {
+        check = !check
+        if (check) {
+          lifecycleScope.launch {
+            val result = mountainService.addLikeMountain(
+              makeHeaderByAccessToken(it.accessToken),
+              mountainDetailViewModel.mountainID.value!!
+            )
+            if (result.isSuccessful) {
+              if (result.body().equals("산 즐겨찾기 성공")) {
+                binding.ibFavoriteBtn.setImageResource(R.drawable.star_filled_favorite)
+                showToast("즐겨찾기 등록 성공!")
+              }
+            } else {
+              showToast("즐겨찾기 실패!")
+              Log.d(TAG, "onLikeClick: 즐겨찾기 등록 오류")
+            }
+          }
+        } else {
+          lifecycleScope.launch {
+            val result = mountainService.deleteLikeMountain(
+              makeHeaderByAccessToken(it.accessToken),
+              mountainDetailViewModel.mountainID.value!!
+            )
+            if (result.isSuccessful) {
+              if (result.body().equals("즐겨찾기 제거")) {
+                binding.ibFavoriteBtn.setImageResource(R.drawable.star_empty_favorite)
+                showToast("즐겨찾기 제거 성공!")
+              }
+            } else {
+              showToast("즐겨찾기 실패!")
+              Log.d(TAG, "onLikeClick: 즐겨찾기 제거 오류")
+            }
+          }
+        }
+      }
+    }
   }
 
   // 산 상세화면에서 나올 때 홈내비 다시 생기게
@@ -50,8 +97,28 @@ class MountainDetailFragment : BaseFragment<FragmentMountainDetailTabBinding>(
     (requireActivity() as MainActivity).changeBottomNavigationVisibility(false)
     initTabLayout()
     initMountainData()
+    loadLikeButton()
   }
-
+  private fun loadLikeButton(){
+    activityViewModel.token?.let {
+      lifecycleScope.launch {
+        val result =
+          mountainService.getLikedMountainList(makeHeaderByAccessToken(it.accessToken))
+        if (result.isSuccessful) {
+          result.body()?.let { ret ->
+            if (ret.any { search -> search.mountainId == mountainDetailViewModel. mountainID.value}) {
+              check = true
+              binding.ibFavoriteBtn.setImageResource(R.drawable.star_filled_favorite)
+            } else {
+              check = false
+              binding.ibFavoriteBtn.setImageResource(R.drawable.star_empty_favorite)
+            }
+            Log.d(TAG, "bindInfo: $check")
+          }
+        }
+      }
+    }
+  }
   private fun initMountainData() {
     val mountainID = mountainDetailViewModel.mountainID.value
     if (mountainID != null) {

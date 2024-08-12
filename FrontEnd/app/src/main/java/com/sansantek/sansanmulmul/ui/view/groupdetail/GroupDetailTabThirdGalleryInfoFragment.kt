@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.Crew
+import com.sansantek.sansanmulmul.data.model.CrewGallery
 import com.sansantek.sansanmulmul.databinding.FragmentGroupDetailTabThirdGalleryInfoFragmentBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupDetailTabGalleryInfoListAdapter
 import com.sansantek.sansanmulmul.ui.util.PermissionChecker
@@ -118,6 +119,23 @@ class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) :
         permissionChecker = PermissionChecker(this)
         galleryAdapter = GroupDetailTabGalleryInfoListAdapter()
         registerObserver()
+
+        binding.fdPictureAddBtn.setOnClickListener {
+
+            if(permissionChecker.checkPermission(requireActivity(), PERMISSIONLIST)){
+                openGallery()
+            }else{
+                showToast("권한을 설정하셔야 기록 서비스를 이용 가능합니다!")
+                //ask for permission
+                galleryPermissionLauncher.launch(PERMISSIONLIST)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.setPictureList(listOf<CrewGallery>())
+        viewModel.setPosition(-1)
         lifecycleScope.launch {
             activityViewModel.token?.let {
                 val picture = crewService.getCrewGalleryList(
@@ -137,22 +155,13 @@ class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) :
                 setItemClickListener(object :
                     GroupDetailTabGalleryInfoListAdapter.ItemClickListener {
                     override fun onClick(position: Int) {
+                        viewModel.setPosition(position)
                         val groupDetailFragment = parentFragment as GroupDetailFragment
                         groupDetailFragment.changeAddToBackStackGroupDetailFragmentView(
-                            GroupDetailTabThirdGalleryDetailFragment(position)
+                            GroupDetailTabThirdGalleryDetailFragment(position, crew)
                         )
                     }
                 })
-            }
-        }
-        binding.fdPictureAddBtn.setOnClickListener {
-
-            if(permissionChecker.checkPermission(requireActivity(), PERMISSIONLIST)){
-                openGallery()
-            }else{
-                showToast("권한을 설정하셔야 기록 서비스를 이용 가능합니다!")
-                //ask for permission
-                galleryPermissionLauncher.launch(PERMISSIONLIST)
             }
         }
     }

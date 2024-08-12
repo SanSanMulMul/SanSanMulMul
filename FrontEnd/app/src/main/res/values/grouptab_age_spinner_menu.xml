@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="grouptab_age_spinner_menu_array">
-        <item>그룹명</item>
-        <item>닉네임</item>
-        <item>산이름</item>
+        <item>연령 무관</item>
+        <item>10대</item>
+        <item>30대</item>
+        <item>40대</item>
+        <item>50대</item>
+        <item>60대</item>
+        <item>70대</item>
+        <item>80대</item>
+        <item>90대</item>
     </string-array>
 </resources>

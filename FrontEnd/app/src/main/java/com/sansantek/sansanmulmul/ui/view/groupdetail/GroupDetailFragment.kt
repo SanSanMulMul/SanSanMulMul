@@ -157,7 +157,14 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
                                 }
 
                                 override fun onExitGroupClick() {
-                                    AlertExitGroupDialog().show(childFragmentManager, "dialog")
+                                    activityViewModel.token?.let {
+                                        lifecycleScope.launch {
+                                            val result = crewService.getCrewCommon(makeHeaderByAccessToken(it.accessToken), crew.crewId)
+                                            if(result.isSuccessful){
+                                                AlertExitGroupDialog(result.body()!!.leader, crew).show(childFragmentManager, "dialog")
+                                            }
+                                        }
+                                    }
                                 }
 
                             })
@@ -231,7 +238,7 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
         // 채팅 버튼 클릭 시 GroupChatFragment로 전환
         binding.layoutChatBtn.setOnClickListener {
             val activity = requireActivity() as MainActivity
-            activity.changeAddToBackstackFragment(GroupChatFragment())
+            activity.changeAddToBackstackFragment(GroupChatFragment(crew))
         }
     }
 

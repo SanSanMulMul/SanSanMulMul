@@ -19,7 +19,6 @@ import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.viewmodel.CreateGroupViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.runBlocking
-import kotlin.math.log
 
 private const val TAG = "GroupCreateViewPagerFragment_싸피"
 

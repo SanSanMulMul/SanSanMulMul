@@ -102,6 +102,8 @@ class GroupScheduleFragment : BaseFragment<FragmentGroupScheduleBinding>(
         }
     }
     private fun init(){
+        viewModel.setStartDate("")
+        viewModel.setEndDate("")
         if(!viewModel.startDate.value.isNullOrBlank()){
             binding.btnSelectScheduleStart.text = viewModel.startDate.value
         }

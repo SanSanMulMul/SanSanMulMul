@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.naver.maps.map.overlay.Marker
 import com.sansantek.sansanmulmul.config.ApplicationClass
 import com.sansantek.sansanmulmul.data.repository.HikingRecordingRepository
 import kotlinx.coroutines.launch
@@ -32,6 +33,14 @@ class HikingRecordingTabViewModel :
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
+
+    private val _memberMarkerList : MutableLiveData<MutableList<Marker>> = MutableLiveData(mutableListOf())
+    val memberMarkerList: LiveData<MutableList<Marker>>
+        get() = _memberMarkerList
+
+    fun setMemberMarkerList(memberLocationList: MutableList<Marker>){
+        _memberMarkerList.value = memberLocationList
+    }
 
     fun setRecordingStatus(recordingStatus: Int) {
         _recordingStatus.value = recordingStatus

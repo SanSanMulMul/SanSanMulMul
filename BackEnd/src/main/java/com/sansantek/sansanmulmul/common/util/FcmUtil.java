@@ -45,6 +45,8 @@ public class FcmUtil {
         return Message.builder()
                 .setNotification(notification)
                 .setToken(token)
+                .putData("title", title)
+                .putData("body", body)
                 .build();
     }
 

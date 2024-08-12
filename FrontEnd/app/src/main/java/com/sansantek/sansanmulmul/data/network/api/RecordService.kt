@@ -5,4 +5,7 @@ import retrofit2.http.GET
 interface RecordService {
     @GET("record/all")
     suspend fun getAllHikingRecord()
+
+    @GET("record/{userId}/all")
+    suspend fun getAllMemberHikingRecord()
 }

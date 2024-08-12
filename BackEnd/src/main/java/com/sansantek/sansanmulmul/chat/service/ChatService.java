@@ -8,9 +8,11 @@ import com.sansantek.sansanmulmul.common.util.FcmType;
 import com.sansantek.sansanmulmul.common.util.FcmUtil;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
+import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
 import com.sansantek.sansanmulmul.user.domain.User;
 import com.sansantek.sansanmulmul.user.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ public class ChatService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final CrewUserRepository crewUserRepository;
+    private final CrewRepository crewRepository;
     private final FcmUtil fcmUtil;
     private final UserService userService;
 
@@ -37,8 +40,10 @@ public class ChatService {
         return chatMessageRepository.save(chatMessage);
     }
 
-    public void sendFCMnotification(Crew crew, int userId, String msgContent) {
+    public void sendFCMnotification(int crewId, int userId, String msgContent) {
         User user = userService.getUser(userId);
+        Crew crew = crewRepository.findByCrewId(crewId)
+                .orElseThrow(() -> new EntityNotFoundException("Crew not found"));
         // FcmDTO 생성
         String title = fcmUtil.makeFcmTitle(
                 crew.getCrewName(), FcmType.MESSAGE.getType()

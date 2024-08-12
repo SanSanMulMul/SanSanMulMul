@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.config
 
 import android.app.Application
 import android.util.Log
+import com.google.firebase.FirebaseApp
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -33,6 +34,7 @@ class ApplicationClass : Application() {
         Log.d(TAG, "onCreate: ${Utility.getKeyHash(this)}")
         KakaoSdk.init(this, BuildConfig.NATIVE_APP_KEY)
         AndroidThreeTen.init(this)
+        FirebaseApp.initializeApp(this)
         //shared preference 초기화
         sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)
         StepCounterRepository.initialize(this)

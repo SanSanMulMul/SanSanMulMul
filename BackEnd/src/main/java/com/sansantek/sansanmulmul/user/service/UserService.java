@@ -120,6 +120,31 @@ public class UserService {
         return userInfo;
     }
 
+    public UserInfoResponse getUserResponse(int userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        UserInfoResponse userInfo = new UserInfoResponse(
+                user.getUserId(),
+                user.getUserProviderId(),
+                user.getUserName(),
+                user.getUserNickname(),
+                user.getUserGender(),
+                user.getUserProfileImg(),
+                user.getUserBirth(),
+                user.getUserStaticBadge(),
+                user.getUserTotalLength(),
+                user.getUserTotalElevation(),
+                user.getUserTotalSteps(),
+                user.getUserTotalKcal(),
+                user.getUserTotalHiking(),
+                user.getUserStoneCount(),
+                user.isUserIsAdmin()
+        );
+
+        return userInfo;
+    }
+
     @Transactional
     public boolean updateUser(String userProviderId, UpdateUserRequest updateUserRequest, MultipartFile image) throws IOException{
         try {

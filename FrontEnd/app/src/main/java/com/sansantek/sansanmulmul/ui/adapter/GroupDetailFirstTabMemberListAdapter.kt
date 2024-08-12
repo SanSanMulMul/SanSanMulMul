@@ -57,6 +57,11 @@ class GroupDetailFirstTabMemberListAdapter(private var amILeader: Boolean, priva
             binding.memberTitle.text = TITLE[item.userStaticBadge]
             binding.memberName.text = item.userNickname
 
+            // 클릭 리스너 설정
+            binding.root.setOnClickListener {
+                itemClickListener.onMemberClick(item)
+            }
+
             binding.btnDelegateAdmin.setOnClickListener {
                 runBlocking {
                     val result = itemClickListener.onLeaderDelegateClick(item)

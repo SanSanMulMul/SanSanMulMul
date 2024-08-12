@@ -67,4 +67,7 @@ interface MountainService {
 
     @GET("mountain/{mountainId}/course/{courseId}")
     suspend fun getCourseDetail(@Path("mountainId") mountainId: Int, @Path("courseId") courseId: Long) : Response<CourseDetail>
+
+    @GET("mountain/like/{userId}")
+    suspend fun getMemberLikeMountain(@Path("userId") id: Int) : Response<List<Mountain>>
 }

@@ -10,6 +10,7 @@ import com.sansantek.sansanmulmul.data.model.UserToken
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -46,4 +47,24 @@ interface UserService {
     suspend fun updateUserProfile(@Header("Authorization") accessToken: String, @Part image: MultipartBody.Part, @Part("updateUserRequest") profileUpdateData: ProfileUpdateData) : Response<Boolean>
     @GET("user/chknick")
     suspend fun chkDuplicateNickname(@Header("Authorization") accessToken: String, @Query("userNickname") nickName: String): Response<Boolean>
+
+    // 다른 멤버 정보 조회
+    @GET("user/{userId}/info")
+    suspend fun getMemberInfo(@Path("userId") id: Int) : Response<User>
+
+    // 다른 멤버 팔로우 추가하기
+    @POST("user/{userId}/follow")
+    suspend fun addMemberFollow(@Path("userId") id: Int) : Response<String>
+
+    // 다른 멤버의 팔로잉 조회
+    @GET("user/{userId}/followings")
+    suspend fun getMemberFollowing(@Path("userId") id : Int) : List<FollowUser>
+
+    // 다른 멤버의 팔로워 조회
+    @GET("user/{userId}/followers")
+    suspend fun getMemberFollower(@Path("userId") id : Int) : List<FollowUser>
+
+    // 다른 멤버 팔로우 취소
+    @DELETE("user/unfollow")
+    suspend fun deleteMemberFollow(@Header("Authorization") accessToken: String) : Response<String>
 }

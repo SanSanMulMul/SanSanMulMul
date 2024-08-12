@@ -163,14 +163,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="55dp"
                 android:layout_marginVertical="20dp"
-                app:layout_constraintBottom_toTopOf="@id/btn_edit_profile"
+                app:layout_constraintBottom_toTopOf="@id/btn_follow"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layout_my_page_header" />
 
             <!-- 프로필 편집 버튼 -->
             <TextView
-                android:id="@+id/btn_edit_profile"
+                android:id="@+id/btn_follow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="55dp"
@@ -190,7 +190,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btn_edit_profile"
+                app:layout_constraintTop_toBottomOf="@id/btn_follow"
                 app:tabBackground="@drawable/group_my_page_tab_background_color_selector"
                 app:tabIndicatorColor="#CACACA"
                 app:tabIndicatorGravity="bottom"
@@ -204,12 +204,12 @@
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="아이름 뭐하지" />
+                    android:text="My 산" />ㄴ
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="정상석 챌린지" />
+                    android:text="My 정상석" />
             </com.google.android.material.tabs.TabLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

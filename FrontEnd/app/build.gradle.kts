@@ -5,6 +5,7 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.jetbrains.kotlin.android)
   id("com.google.devtools.ksp")
+  id ("com.google.gms.google-services")
 }
 // local에서 키를 가져옴
 val properties = Properties()
@@ -71,6 +72,10 @@ android {
 }
 
 dependencies {
+  // FCM 사용 위한 plugins
+  implementation(platform(libs.firebase.bom))
+  implementation (libs.firebase.messaging.ktx)
+
   implementation ("io.reactivex.rxjava2:rxjava:2.2.8")
   implementation ("com.github.NaikSoftware:StompProtocolAndroid:1.6.6")
   //Room 의존성 추가

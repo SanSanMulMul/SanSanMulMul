@@ -116,6 +116,26 @@ public class UserController {
         }
     }
 
+    @GetMapping("/{userId}/info")
+    @Operation(summary = "회원 정보 조회", description = "액세스 토큰을 사용해 회원 정보 조회")
+    public ResponseEntity<?> getUserInfo
+            (@PathVariable int userId) {
+        HttpStatus status = HttpStatus.ACCEPTED;
+
+        try {// 해당 사용자 정보 조회
+            UserInfoResponse user = userService.getUserResponse(userId);
+            status = HttpStatus.OK;
+
+            log.debug("userInfo : {}", user);
+            return new ResponseEntity<>(user, status);
+        } catch (Exception e) {
+            log.error("토큰 유효성 확인 실패");
+            status = HttpStatus.UNAUTHORIZED;
+
+            return new ResponseEntity<>(e, status);
+        }
+    }
+
     @PatchMapping(value = "/info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "회원 정보 수정", description = "액세스 토큰을 사용해 회원 정보 수정")
     public ResponseEntity<?> updateUserInfo(

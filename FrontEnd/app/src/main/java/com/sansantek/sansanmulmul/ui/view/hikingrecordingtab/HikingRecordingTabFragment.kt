@@ -76,26 +76,33 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     override fun onReceive(p0: Context, intent: Intent) {
       val message = intent.getSerializableExtra("value") as StepCount
       Log.d(TAG, "Got message: " + message)
-      binding.tvStepCnt.text = message.stepCount.toString()
+      safeCall {
 
-      val distance = (0.74 * message.stepCount)
-      binding.tvDistance.text = if(distance < 1000){
-        "${distance.toInt()} m"
-      }else{
-        "${String.format("%.2f", (distance / 1000))} km"
-      }
+        binding.tvStepCnt.text = message.stepCount.toString()
 
-      binding.tvHeight.text = if(message.elevation < 1000){
-        "${message.elevation.toInt()} m"
-      }else{
-        "${message.elevation.toInt()} km"
-      }
+        val distance = (0.74 * message.stepCount)
+        binding.tvDistance.text = if(distance < 1000){
+          "${distance.toInt()} m"
+        }else{
+          "${String.format("%.2f", (distance / 1000))} km"
+        }
 
-      val kcal = (46.62 * message.stepCount)
-      binding.tvCalorie.text = if(kcal < 1000){
-        "${kcal.toInt()} cal"
-      }else{
-        "${String.format("%.2f", (kcal / 1000))} kcal"
+        binding.tvHeight.text = if(message.elevation < 1000){
+          if(message.elevation != -1.0){
+            "${message.elevation.toInt()} m"
+          }else{
+            "0 km"
+          }
+        }else{
+          "${message.elevation.toInt() / 1000} km"
+        }
+
+        val kcal = (46.62 * message.stepCount)
+        binding.tvCalorie.text = if(kcal < 1000){
+          "${kcal.toInt()} cal"
+        }else{
+          "${String.format("%.2f", (kcal / 1000))} kcal"
+        }
       }
     }
   }

@@ -55,6 +55,7 @@ class HikingRecordingService : Service(), SensorEventListener {
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
             // 위치가 변경될 때마다 호출됩니다.
+            Log.d(TAG, "onLocationChanged: GPS 위치 변경 수신")
             val latitude = location.latitude
             val longitude = location.longitude
             val altitude = location.altitude
@@ -145,6 +146,7 @@ class HikingRecordingService : Service(), SensorEventListener {
                     launch(Dispatchers.Main) {
                         Toast.makeText(this@HikingRecordingService, "기록이 시작됩니다", Toast.LENGTH_SHORT).show()
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 3F, locationListener)
+                        Log.d(TAG, "onStartCommand: GPS Listener 등록")
                     }
                 }
             }

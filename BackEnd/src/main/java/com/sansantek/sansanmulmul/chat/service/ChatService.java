@@ -10,6 +10,7 @@ import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
 import com.sansantek.sansanmulmul.user.domain.User;
+import com.sansantek.sansanmulmul.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final CrewUserRepository crewUserRepository;
     private final FcmUtil fcmUtil;
+    private final UserService userService;
 
     public List<ChatMessage> getChatMessages(int crewId) {
         return chatMessageRepository.findByCrew_CrewIdOrderByTimestampAsc(crewId);
@@ -35,7 +37,8 @@ public class ChatService {
         return chatMessageRepository.save(chatMessage);
     }
 
-    public void sendFCMnotification(Crew crew, User user, String msgContent) {
+    public void sendFCMnotification(Crew crew, int userId, String msgContent) {
+        User user = userService.getUser(userId);
         // FcmDTO 생성
         String title = fcmUtil.makeFcmTitle(
                 crew.getCrewName(), FcmType.MESSAGE.getType()

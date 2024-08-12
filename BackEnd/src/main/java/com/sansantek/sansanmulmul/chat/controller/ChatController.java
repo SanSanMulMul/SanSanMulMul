@@ -40,7 +40,7 @@ public class ChatController {
 
         chatService.saveChatMessage(chatMessage);
 
-        chatService.sendFCMnotification(crew, user, chatMessage.getMessageContent());
+        chatService.sendFCMnotification(crew, chatMessageDTO.getUserId(), chatMessage.getMessageContent());
 
         ChatMessagesResponse response = ChatMessagesResponse.builder()
                 .messageContent(chatMessage.getMessageContent())

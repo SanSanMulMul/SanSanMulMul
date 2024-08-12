@@ -84,5 +84,8 @@ public class FcmUtil {
         return requestUserName + "님이 " + crewName + " 그룹에 가입신청 하였습니다.";
     }
 
+    public String makeLeaderDelegateBody(String crewName, String currentLeaderName, String newLeaderName) {
+        return "["+crewName+"] 방장이 " + currentLeaderName + "님에서 " + newLeaderName + "님으로 변경되었습니다.";
+    }
 
 }

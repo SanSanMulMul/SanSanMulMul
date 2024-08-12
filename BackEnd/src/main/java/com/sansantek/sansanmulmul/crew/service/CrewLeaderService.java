@@ -5,9 +5,12 @@ import com.sansantek.sansanmulmul.common.util.FcmMessage.FcmDTO;
 import com.sansantek.sansanmulmul.common.util.FcmType;
 import com.sansantek.sansanmulmul.common.util.FcmUtil;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
+import com.sansantek.sansanmulmul.crew.domain.crewalarm.CrewAlarm;
+import com.sansantek.sansanmulmul.crew.domain.crewgallery.CrewGallery;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.dto.request.CrewUpdateRequest;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewUserResponse;
+import com.sansantek.sansanmulmul.crew.repository.CrewAlarmRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
@@ -42,6 +45,7 @@ public class CrewLeaderService {
     private final CrewUserRepository crewUserRepository;
     private final MountainRepository mountainRepository;
     private final CourseRepository courseRepository;
+    private final CrewAlarmRepository crewAlarmRepository;
 
     private final FcmUtil fcmUtil;
 
@@ -137,6 +141,33 @@ public class CrewLeaderService {
         // Crew 테이블의 leader 변경
         crew.changeLeader(newLeader);
         crewRepository.save(crew);
+
+        // 가입요청 FCM알림
+        // FcmDTO 생성
+        String title = fcmUtil.makeFcmTitle(
+                crew.getCrewName(), FcmType.DELEGATE.getType()
+        );
+        String body = fcmUtil.makeLeaderDelegateBody(
+                crew.getCrewName(), currentLeader.getUserName(), newLeader.getUserName()
+        );
+        FcmMessage.FcmDTO fcmDTO = fcmUtil.makeFcmDTO(title, body);
+        // FCM발송
+        fcmSendtoCrew(crew, fcmDTO);
+
+        // 방장 위임 알림 : 알람 테이블 update //
+        // 알람 객체 하나 생성
+        String alarmtitle = "방장 변경";
+        String alarmbody = "방장이 " + currentLeader.getUserName()+ "님에서 " + newLeader.getUserName() +"님으로 변경되었습니다." ;
+        CrewAlarm alarm = CrewAlarm.builder()
+                .crew(crew)
+                .alarmTitle(alarmtitle)
+                .alarmBody(alarmbody)
+                .alarmCreatedAt(LocalDateTime.now())
+                .build();
+
+        //CrewAlarm 레파지토리에 알림 객체 저장
+        crewAlarmRepository.save(alarm);
+
     }
 
     // 그룹 내 회원들에게 전체 알림

@@ -12,6 +12,7 @@ import com.sansantek.sansanmulmul.ui.view.register.GroupCreateViewPagerFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.CreateGroupViewModel
 
 private const val TAG = "GroupIntroduceCreateFragment_싸피"
+
 class GroupIntroduceCreateFragment : BaseFragment<FragmentGroupIntroduceCreateBinding>(
     FragmentGroupIntroduceCreateBinding::bind,
     R.layout.fragment_group_introduce_create
@@ -19,11 +20,11 @@ class GroupIntroduceCreateFragment : BaseFragment<FragmentGroupIntroduceCreateBi
     private val viewPagerFragment by lazy {
         parentFragment as GroupCreateViewPagerFragment
     }
-    private val viewModel : CreateGroupViewModel by activityViewModels()
+    private val viewModel: CreateGroupViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.groupIntroduceBlank.doOnTextChanged{ text, start, before, cnt ->
+        binding.groupIntroduceBlank.doOnTextChanged { text, start, before, cnt ->
             checkValid()
         }
         binding.groupCreateBlank.doOnTextChanged { text, start, before, cnt ->
@@ -38,11 +39,10 @@ class GroupIntroduceCreateFragment : BaseFragment<FragmentGroupIntroduceCreateBi
         init()
     }
 
-    private fun checkValid(){
-        if(binding.groupIntroduceBlank.text.isNullOrBlank() || binding.groupCreateBlank.text.isNullOrBlank()){
+    private fun checkValid() {
+        if (binding.groupIntroduceBlank.text.isNullOrBlank() || binding.groupCreateBlank.text.isNullOrBlank()) {
             viewPagerFragment.enableNextButton(false)
-        }
-        else{
+        } else {
             viewModel.apply {
                 setGroupTitle(binding.groupCreateBlank.text.toString())
                 setGroupDescription(binding.groupIntroduceBlank.text.toString())

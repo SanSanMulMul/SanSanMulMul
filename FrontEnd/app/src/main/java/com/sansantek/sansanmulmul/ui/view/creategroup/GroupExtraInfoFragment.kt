@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.databinding.FragmentGroupExtraInfoBinding
@@ -74,7 +73,9 @@ class GroupExtraInfoFragment : BaseFragment<FragmentGroupExtraInfoBinding>(
     }
 
     private fun checkValid() {
-        if (binding.groupPeopleNumberBlank.text.isNullOrBlank() || (binding.groupPeopleNumberBlank.text.toString().toIntOrNull() == null) || viewModel.groupMinAge == -1 || viewModel.groupMaxAge == -1) {
+        if (binding.groupPeopleNumberBlank.text.isNullOrBlank() || (binding.groupPeopleNumberBlank.text.toString()
+                .toIntOrNull() == null) || viewModel.groupMinAge == -1 || viewModel.groupMaxAge == -1
+        ) {
             viewPagerFragment.enableNextButton(false)
         } else {
             viewModel.setMaxMember(binding.groupPeopleNumberBlank.text.toString().toInt())

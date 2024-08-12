@@ -1,15 +1,12 @@
 package com.sansantek.sansanmulmul.ui.view.creategroup
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.MotionEvent.ACTION_UP
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sansantek.sansanmulmul.R
@@ -51,7 +48,7 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
                     viewModel.setGroupMountainId(mountain.mountainId)
                     showUpCourseChoiceDialog(mountain)
                 }
-                
+
                 // 즐겨 찾기 로직
                 override fun onLikeClick(mountain: Mountain, check: Boolean) {
                     activityViewModel.token?.let {
@@ -110,11 +107,11 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
         Log.d("DownCourseDialog", "showGroupScheduleFragment: 레이아웃 변경 완료")
     }
 
-    private fun registerObserver(){
-        viewModel.groupUpCourseId.observe(viewLifecycleOwner){
+    private fun registerObserver() {
+        viewModel.groupUpCourseId.observe(viewLifecycleOwner) {
             checkValid()
         }
-        viewModel.groupDownCourseId.observe(viewLifecycleOwner){
+        viewModel.groupDownCourseId.observe(viewLifecycleOwner) {
             checkValid()
         }
     }
@@ -182,11 +179,11 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
     }
 
     private fun checkValid() {
-        if(viewModel.groupUpCourseId.value != -1L && viewModel.groupDownCourseId.value != -1L){
+        if (viewModel.groupUpCourseId.value != -1L && viewModel.groupDownCourseId.value != -1L) {
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.groupUpCourseId.value?.let {
                     val result = mountainService.getCourseDetail(viewModel.groupMountainId, it)
-                    if(result.isSuccessful){
+                    if (result.isSuccessful) {
                         result.body()?.let { course ->
                             viewModel.setGroupUpCourseName(course.courseName)
                         }
@@ -194,7 +191,7 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
                 }
                 viewModel.groupDownCourseId.value?.let {
                     val result = mountainService.getCourseDetail(viewModel.groupMountainId, it)
-                    if(result.isSuccessful){
+                    if (result.isSuccessful) {
                         result.body()?.let { course ->
                             viewModel.setGroupDownCourseName(course.courseName)
                         }
@@ -204,9 +201,11 @@ class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>
             Log.d(TAG, "checkValid: 유효성 검사 통과")
             viewPagerFragment.enableNextButton(true)
 
-        }
-        else{
-            Log.d(TAG, "checkValid: 유효성 검사 실패 : ${viewModel.groupUpCourseId.value}   ${viewModel.groupDownCourseId.value}")
+        } else {
+            Log.d(
+                TAG,
+                "checkValid: 유효성 검사 실패 : ${viewModel.groupUpCourseId.value}   ${viewModel.groupDownCourseId.value}"
+            )
             viewPagerFragment.enableNextButton(false)
         }
     }

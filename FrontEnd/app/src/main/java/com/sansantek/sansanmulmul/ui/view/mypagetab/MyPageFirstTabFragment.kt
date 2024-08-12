@@ -22,7 +22,7 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
     FragmentMyPageFirstTabBinding::bind,
     R.layout.fragment_my_page_first_tab
 ) {
-    private val activityViewModel : MainActivityViewModel by activityViewModels()
+    private val activityViewModel: MainActivityViewModel by activityViewModels()
     private var historyMountainList = mutableListOf(
         MountainHistory(R.drawable.dummy1, "가야산", Date()),
         MountainHistory(R.drawable.dummy2, "가리산", Date()),
@@ -68,22 +68,25 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
             addItemDecoration(SpaceItemDecoration(30))
         }
     }
-    private fun loadMyFavoriteMountainList(){
+
+    private fun loadMyFavoriteMountainList() {
         activityViewModel.token?.let {
             lifecycleScope.launch {
-                val result = mountainService.getLikedMountainList(makeHeaderByAccessToken(it.accessToken))
-                if(result.isSuccessful){
+                val result =
+                    mountainService.getLikedMountainList(makeHeaderByAccessToken(it.accessToken))
+                if (result.isSuccessful) {
                     favoriteMountainAdapter.submitList(result.body()!!)
                 }
             }
         }
     }
 
-    private fun loadMyHikingHistory(){
+    private fun loadMyHikingHistory() {
         activityViewModel.token?.let {
             lifecycleScope.launch {
-                val result = mountainService.getLikedMountainList(makeHeaderByAccessToken(it.accessToken))
-                if(result.isSuccessful){
+                val result =
+                    mountainService.getLikedMountainList(makeHeaderByAccessToken(it.accessToken))
+                if (result.isSuccessful) {
                     favoriteMountainAdapter.submitList(result.body()!!)
                 }
             }

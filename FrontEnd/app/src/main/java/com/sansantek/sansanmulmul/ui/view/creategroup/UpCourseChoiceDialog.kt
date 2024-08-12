@@ -17,7 +17,6 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sansantek.sansanmulmul.R
@@ -32,6 +31,7 @@ import com.sansantek.sansanmulmul.ui.viewmodel.CreateGroupViewModel
 import kotlinx.coroutines.launch
 
 private const val TAG = "UpCourseChoiceDialog 싸피"
+
 class UpCourseChoiceDialog(private val mountain: Mountain) : DialogFragment() {
 
     private var _binding: DialogGroupUpcourseChoiceBinding? = null
@@ -69,17 +69,24 @@ class UpCourseChoiceDialog(private val mountain: Mountain) : DialogFragment() {
         setupDialogContent()
     }
 
-    private fun initAdapter(){
+    private fun initAdapter() {
         viewModel.setGroupUpCourseId(-1)
         viewModel.setGroupDownCourseId(-1)
         binding.rvUpCourse.adapter = adapter.apply {
-            setItemClickListener(object: CreateGroupCourseSelectAdapter.ItemClickListener{
+            setItemClickListener(object : CreateGroupCourseSelectAdapter.ItemClickListener {
                 override fun onClick(courseDetail: CourseDetail) {
                     selectedCourseId = courseDetail.courseId
                 }
             })
         }
-        binding.rvUpCourse.addItemDecoration(DividerItemDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.divider)!!))
+        binding.rvUpCourse.addItemDecoration(
+            DividerItemDecorator(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.divider
+                )!!
+            )
+        )
         binding.rvUpCourse.layoutManager = LinearLayoutManager(context)
         lifecycleScope.launch {
             val course = loadCourse()
@@ -92,15 +99,14 @@ class UpCourseChoiceDialog(private val mountain: Mountain) : DialogFragment() {
         }
     }
 
-    private suspend fun loadCourse(): MountainCourse?{
+    private suspend fun loadCourse(): MountainCourse? {
 
         val result = mountainService.getMountainCourse(mountain.mountainId)
-        if(result.isSuccessful){
+        if (result.isSuccessful) {
             result.body()?.let {
                 return it
             }
-        }
-        else{
+        } else {
             Log.d(TAG, "loadCourse: course 가져오기 오류!")
         }
         return null
@@ -129,7 +135,7 @@ class UpCourseChoiceDialog(private val mountain: Mountain) : DialogFragment() {
 
         // '다음' 버튼 클릭 이벤트 설정
         binding.btnNext.setOnClickListener {
-            if(selectedCourseId!=-1L){
+            if (selectedCourseId != -1L) {
                 viewModel.setGroupUpCourseId(selectedCourseId)
             }
             // 선택된 코스를 저장하고 다음 동작 수행
@@ -143,7 +149,7 @@ class UpCourseChoiceDialog(private val mountain: Mountain) : DialogFragment() {
         }
     }
 
-    private fun showDownCourseChoiceDialog(mountain:Mountain) {
+    private fun showDownCourseChoiceDialog(mountain: Mountain) {
         val downCourseChoiceDialog = DownCourseChoiceDialog.newInstance(mountain)
         downCourseChoiceDialog.show(parentFragmentManager, "DownCourseChoiceDialog")
     }

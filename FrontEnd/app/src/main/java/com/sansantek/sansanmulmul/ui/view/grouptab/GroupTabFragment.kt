@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout.VERTICAL
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -28,7 +27,6 @@ import com.sansantek.sansanmulmul.ui.view.register.GroupCreateViewPagerFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.GroupTabViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
-import org.apache.commons.lang3.time.DateUtils.parseDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -71,7 +69,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
 
         radioButtonClickListener()
 
-        binding.searchInputText.addTextChangedListener(object : TextWatcher{
+        binding.searchInputText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -89,32 +87,34 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
             activity.changeAddToBackstackFragment(GroupCreateViewPagerFragment())
         }
 
-        binding.myGroupSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
+        binding.myGroupSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
 
-                //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
-                when (position) {
-                    0 -> {
-                        binding.choiceInfo.text = "현재 등산이 진행 중이거나 예정인 그룹만 보여드릴게요!"
-                        viewModel.setSelected(SCHEDULE)
-                        loadMyScheduledGroupList()
-                    }
+                    //아이템이 클릭 되면 맨 위부터 position 0번부터 순서대로 동작하게 됩니다.
+                    when (position) {
+                        0 -> {
+                            binding.choiceInfo.text = "현재 등산이 진행 중이거나 예정인 그룹만 보여드릴게요!"
+                            viewModel.setSelected(SCHEDULE)
+                            loadMyScheduledGroupList()
+                        }
 
-                    1 -> {
-                        binding.choiceInfo.text = "등산이 끝난 그룹만 보여드릴게요!"
-                        viewModel.setSelected(COMPLETE)
+                        1 -> {
+                            binding.choiceInfo.text = "등산이 끝난 그룹만 보여드릴게요!"
+                            viewModel.setSelected(COMPLETE)
+                        }
+
+                        else -> {}
                     }
-                    else -> {}
                 }
-            }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
+                override fun onNothingSelected(parent: AdapterView<*>) {}
+            }
 
         binding.ageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -125,6 +125,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
             ) {
                 loadList()
             }
+
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
@@ -137,6 +138,7 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
             ) {
                 loadList()
             }
+
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
         binding.genderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -172,56 +174,62 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
         viewModel.setSelected(SCHEDULE)
     }
 
-    private fun registerObserver(){
-        viewModel.searchInputText.observe(viewLifecycleOwner){
+    private fun registerObserver() {
+        viewModel.searchInputText.observe(viewLifecycleOwner) {
             loadList()
         }
 
-        viewModel.myScheduledList.observe(viewLifecycleOwner){
+        viewModel.myScheduledList.observe(viewLifecycleOwner) {
             groupTabListAdapter = initGroupListAdapter()
             binding.groupList.adapter = groupTabListAdapter
             groupTabListAdapter.submitList(it)
         }
 
-        viewModel.myCompletedList.observe(viewLifecycleOwner){
+        viewModel.myCompletedList.observe(viewLifecycleOwner) {
             groupTabListAdapter = initGroupListAdapter()
             binding.groupList.adapter = groupTabListAdapter
             groupTabListAdapter.submitList(it)
         }
 
-        viewModel.allList.observe(viewLifecycleOwner){
+        viewModel.allList.observe(viewLifecycleOwner) {
             groupTabListAdapter = initGroupListAdapter()
             binding.groupList.adapter = groupTabListAdapter
             groupTabListAdapter.submitList(it)
         }
 
-        viewModel.selected.observe(viewLifecycleOwner){
-            when(it){
+        viewModel.selected.observe(viewLifecycleOwner) {
+            when (it) {
                 SCHEDULE -> {
                     loadMyScheduledGroupList()
                 }
+
                 COMPLETE -> {
                     loadMyCompletedGroupList()
                 }
+
                 ALL -> {
                     loadAllGroupList()
                 }
             }
         }
     }
-    private fun loadList(){
+
+    private fun loadList() {
         when (viewModel.selected.value) {
             SCHEDULE -> {
                 loadMyScheduledGroupList()
             }
+
             COMPLETE -> {
                 loadMyCompletedGroupList()
             }
+
             else -> {
                 loadAllGroupList()
             }
         }
     }
+
     private fun loadMyCompletedGroupList() {
         activityViewModel.token?.let {
             lifecycleScope.launch {
@@ -256,15 +264,16 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
         }
     }
 
-    private fun loadAllGroupList(){
+    private fun loadAllGroupList() {
         lifecycleScope.launch {
             activityViewModel.token?.let {
-                val result = crewService.getAllActivatedList(makeHeaderByAccessToken(it.accessToken))
+                val result =
+                    crewService.getAllActivatedList(makeHeaderByAccessToken(it.accessToken))
                 binding.choiceInfo.text = "현재 일정이 진행 중인 그룹만 보여드릴게요!"
                 groupTabListAdapter = initGroupListAdapter()
                 binding.groupList.adapter = groupTabListAdapter
                 if (result.isSuccessful) {
-                    result.body()?.let {list ->
+                    result.body()?.let { list ->
                         val newList = returnFilteringList(list)
                         viewModel.setAllList(newList)
                     }
@@ -273,41 +282,43 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
         }
     }
 
-    private fun returnFilteringList(crewList: List<Crew>): List<Crew>{
+    private fun returnFilteringList(crewList: List<Crew>): List<Crew> {
         var list = crewList
-        if(binding.ageSpinner.selectedItemPosition != 0){
+        if (binding.ageSpinner.selectedItemPosition != 0) {
             list = list.filter {
                 it.crewMinAge <= binding.ageSpinner.selectedItemPosition * 10 && it.crewMaxAge >= (binding.ageSpinner.selectedItemPosition + 1) * 10 - 1
             }
         }
-        if(binding.styleSpinner.selectedItemPosition != 0){
+        if (binding.styleSpinner.selectedItemPosition != 0) {
             list = list.filter {
                 it.crewStyles.contains(binding.styleSpinner.selectedItemPosition)
             }
         }
-        if(binding.genderSpinner.selectedItemPosition != 0){
-            if(binding.genderSpinner.selectedItemPosition == 1){
+        if (binding.genderSpinner.selectedItemPosition != 0) {
+            if (binding.genderSpinner.selectedItemPosition == 1) {
                 list = list.filter {
                     it.crewGender == "M"
                 }
-            }else{
+            } else {
                 list = list.filter {
                     it.crewGender == "F"
                 }
             }
         }
-        if(!binding.searchInputText.text.isNullOrBlank()){
-            when(binding.searchSpinner.selectedItemPosition ){
+        if (!binding.searchInputText.text.isNullOrBlank()) {
+            when (binding.searchSpinner.selectedItemPosition) {
                 0 -> {
                     list = list.filter {
                         it.crewName == binding.searchInputText.text.toString()
                     }
                 }
+
                 1 -> {
                     list = list.filter {
                         it.userNickname == binding.searchInputText.text.toString()
                     }
                 }
+
                 2 -> {
                     list = list.filter {
                         it.mountainName == binding.searchInputText.text.toString()
@@ -325,11 +336,22 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 override fun onClick(crew: Crew) {
                     val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
                     lifecycleScope.launch {
-                        val result = isScheduleAlreadyExist(LocalDateTime.parse(crew.crewStartDate, formatter), LocalDateTime.parse(crew.crewEndDate, formatter))
-                        if(result){
-                            AlertRegisterGroupDialog().show(requireActivity().supportFragmentManager, "dialog")
-                        }else{
-                            ShowGroupPreviewDialog(crew).show(requireActivity().supportFragmentManager, "dialog")
+                        val result = isScheduleAlreadyExist(
+                            LocalDateTime.parse(
+                                crew.crewStartDate,
+                                formatter
+                            ), LocalDateTime.parse(crew.crewEndDate, formatter)
+                        )
+                        if (result) {
+                            AlertRegisterGroupDialog().show(
+                                requireActivity().supportFragmentManager,
+                                "dialog"
+                            )
+                        } else {
+                            ShowGroupPreviewDialog(crew).show(
+                                requireActivity().supportFragmentManager,
+                                "dialog"
+                            )
                         }
                     }
                 }
@@ -342,7 +364,10 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
         }
     }
 
-    private suspend fun isScheduleAlreadyExist(targetStartDate: LocalDateTime, targetEndDate: LocalDateTime): Boolean {
+    private suspend fun isScheduleAlreadyExist(
+        targetStartDate: LocalDateTime,
+        targetEndDate: LocalDateTime
+    ): Boolean {
         activityViewModel.token?.let {
             val result = crewService.getMyScheduledCrew(makeHeaderByAccessToken(it.accessToken))
             if (result.isSuccessful) {
@@ -351,7 +376,12 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                         val myStartDate = parseDate(it.crewStartDate)
                         val myEndDate = parseDate(it.crewEndDate)
 
-                        if ((myStartDate.isBefore(targetEndDate) && myStartDate.isAfter(targetStartDate)) || (myEndDate.isAfter(targetStartDate) && myEndDate.isBefore(targetEndDate))) {
+                        if ((myStartDate.isBefore(targetEndDate) && myStartDate.isAfter(
+                                targetStartDate
+                            )) || (myEndDate.isAfter(targetStartDate) && myEndDate.isBefore(
+                                targetEndDate
+                            ))
+                        ) {
                             return true
                         }
                     }
@@ -394,10 +424,9 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
                 binding.allGroupTitle.visibility = View.GONE
                 lifecycleScope.launch {
                     activityViewModel.token?.let {
-                        if(binding.myGroupSpinner.selectedItemPosition == 0){
+                        if (binding.myGroupSpinner.selectedItemPosition == 0) {
                             viewModel.setSelected(SCHEDULE)
-                        }
-                        else{
+                        } else {
                             viewModel.setSelected(COMPLETE)
                         }
                     }

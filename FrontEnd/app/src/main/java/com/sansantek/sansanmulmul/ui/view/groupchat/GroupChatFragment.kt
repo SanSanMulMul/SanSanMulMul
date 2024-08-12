@@ -9,7 +9,6 @@ import android.view.WindowManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
@@ -25,12 +24,13 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 private const val TAG = "GroupChatFragment_싸피"
+
 class GroupChatFragment(private val crew: Crew) : BaseFragment<FragmentGroupChatBinding>(
     FragmentGroupChatBinding::bind,
     R.layout.fragment_group_chat
 ) {
     private lateinit var adapter: GroupChatAdapter
-    private lateinit var activity : MainActivity
+    private lateinit var activity: MainActivity
     private val chatViewModel: ChatViewModel by viewModels()  // ChatViewModel 초기화
     private val activityViewModel: MainActivityViewModel by activityViewModels()
 
@@ -44,7 +44,7 @@ class GroupChatFragment(private val crew: Crew) : BaseFragment<FragmentGroupChat
         binding.tvGroupChatTitle.text = crew.crewName
         // ViewModel을 통해 실시간 메시지 관찰
         chatViewModel.chatList.observe(viewLifecycleOwner) {
-            adapter.submitList(it){
+            adapter.submitList(it) {
                 binding.rvChatMessages.scrollToPosition(adapter.currentList.size - 1)
             }
         }
@@ -52,7 +52,7 @@ class GroupChatFragment(private val crew: Crew) : BaseFragment<FragmentGroupChat
         chatViewModel.setCrewId(crew.crewId)
         lifecycleScope.launch(Dispatchers.Main) {
             val result = chatService.loadChatHistory(crew.crewId)
-            if(result.isSuccessful){
+            if (result.isSuccessful) {
                 chatViewModel.setChatList(result.body()!!.toMutableList())
             }
         }
@@ -70,7 +70,12 @@ class GroupChatFragment(private val crew: Crew) : BaseFragment<FragmentGroupChat
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                 val today = LocalDateTime.now()
-                val message = MessageData(binding.etChatInput.text.toString(),today.toString(), crew.crewId, activityViewModel.user.userId)
+                val message = MessageData(
+                    binding.etChatInput.text.toString(),
+                    today.toString(),
+                    crew.crewId,
+                    activityViewModel.user.userId
+                )
                 chatViewModel.sendMessage(message)
                 Log.d(TAG, "onViewCreated: 메세지 송신 ${message}")
                 binding.etChatInput.text.clear()

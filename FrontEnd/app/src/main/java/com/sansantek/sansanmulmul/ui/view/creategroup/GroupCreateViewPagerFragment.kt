@@ -68,8 +68,11 @@ class GroupCreateViewPagerFragment : BaseFragment<FragmentGroupCreateViewPagerBi
                             viewModel.groupUpCourseId.value!!,
                             viewModel.groupDownCourseId.value!!
                         )
-                        val result = crewService.createCrew(makeHeaderByAccessToken(it.accessToken), crewCreateRequest)
-                        if(result.isSuccessful){
+                        val result = crewService.createCrew(
+                            makeHeaderByAccessToken(it.accessToken),
+                            crewCreateRequest
+                        )
+                        if (result.isSuccessful) {
                             Log.d(TAG, "onViewCreated: 그룹 생성 성공! $result")
                         } else {
                             Log.d(TAG, "onViewCreated: 그룹 생성 에러! $result")
@@ -91,7 +94,10 @@ class GroupCreateViewPagerFragment : BaseFragment<FragmentGroupCreateViewPagerBi
 
     private fun checkViewPageLimit() {
         val itemCount = binding.vpCreateGroup.adapter?.itemCount ?: 0
-        Log.d(TAG, "checkViewPageLimit: ${binding.vpCreateGroup.currentItem}, itemCount: $itemCount")
+        Log.d(
+            TAG,
+            "checkViewPageLimit: ${binding.vpCreateGroup.currentItem}, itemCount: $itemCount"
+        )
         if (binding.vpCreateGroup.currentItem == itemCount - 1) {
             binding.createGroupNextButton.visibility = View.INVISIBLE
             binding.createGroupPrevButton.visibility = View.INVISIBLE
@@ -116,7 +122,8 @@ class GroupCreateViewPagerFragment : BaseFragment<FragmentGroupCreateViewPagerBi
                 )
             )
         } else {
-            binding.createGroupNextButton.imageTintList = ColorStateList.valueOf(Color.parseColor("#FF373737"))
+            binding.createGroupNextButton.imageTintList =
+                ColorStateList.valueOf(Color.parseColor("#FF373737"))
             binding.createGroupNextButton.background.setTintList(
                 null
             )

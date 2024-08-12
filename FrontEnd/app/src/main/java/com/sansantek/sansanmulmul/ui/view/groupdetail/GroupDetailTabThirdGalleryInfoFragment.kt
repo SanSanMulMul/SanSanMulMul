@@ -1,13 +1,11 @@
 package com.sansantek.sansanmulmul.ui.view.groupdetail
 
-import android.Manifest
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_IMAGES
 import android.Manifest.permission.READ_MEDIA_VIDEO
 import android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,7 +14,6 @@ import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -50,13 +47,14 @@ class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) :
     private lateinit var galleryAdapter: GroupDetailTabGalleryInfoListAdapter
     private val activityViewModel: MainActivityViewModel by activityViewModels()
     private val viewModel: GroupDetailViewModel by activityViewModels()
-    private val PERMISSIONLIST = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-        arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_VISUAL_USER_SELECTED)
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO)
-    } else {
-        arrayOf(READ_EXTERNAL_STORAGE)
-    }
+    private val PERMISSIONLIST =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO, READ_MEDIA_VISUAL_USER_SELECTED)
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(READ_MEDIA_IMAGES, READ_MEDIA_VIDEO)
+        } else {
+            arrayOf(READ_EXTERNAL_STORAGE)
+        }
     private val REQ_STORAGE_PERMISSION = 0
     private var imageUri: Uri? = null
     private val galleryPermissionLauncher =
@@ -66,9 +64,12 @@ class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) :
             } else
                 Log.d(TAG, "deny")
         }
-    private fun isAllPermissionGranted(result: Map<String, Boolean>): Boolean{
+
+    private fun isAllPermissionGranted(result: Map<String, Boolean>): Boolean {
         result.values.forEach { check ->
-            if (!check) { return false }
+            if (!check) {
+                return false
+            }
         }
         return true
     }
@@ -80,7 +81,7 @@ class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) :
                 Log.d(TAG, "data가 널인거야?? $data: ")
                 data?.clipData?.let { it ->
                     Log.d(TAG, "여기까지는 오나?? 사진 선택 이후: ")
-                    for(i in 0 until it.itemCount){
+                    for (i in 0 until it.itemCount) {
                         getRealPathFromURI(requireContext(), it.getItemAt(i).uri)?.let { path ->
                             val file = File(path)
                             val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
@@ -122,9 +123,9 @@ class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) :
 
         binding.fdPictureAddBtn.setOnClickListener {
 
-            if(permissionChecker.checkPermission(requireActivity(), PERMISSIONLIST)){
+            if (permissionChecker.checkPermission(requireActivity(), PERMISSIONLIST)) {
                 openGallery()
-            }else{
+            } else {
                 showToast("권한을 설정하셔야 기록 서비스를 이용 가능합니다!")
                 //ask for permission
                 galleryPermissionLauncher.launch(PERMISSIONLIST)
@@ -166,8 +167,8 @@ class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) :
         }
     }
 
-    private fun registerObserver(){
-        viewModel.pictureList.observe(viewLifecycleOwner){
+    private fun registerObserver() {
+        viewModel.pictureList.observe(viewLifecycleOwner) {
             galleryAdapter.submitList(it)
         }
     }

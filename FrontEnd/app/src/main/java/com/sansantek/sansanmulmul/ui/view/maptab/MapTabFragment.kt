@@ -199,11 +199,13 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         mountainRecyclerView.adapter = mountainListAdapter
 
 
-
     }
 
 
-    private fun initMountainData(nearbyMountains: List<Mountain>, mountainCourses: Map<Int, MountainCourse>): List<SearchMountainListItem> {
+    private fun initMountainData(
+        nearbyMountains: List<Mountain>,
+        mountainCourses: Map<Int, MountainCourse>
+    ): List<SearchMountainListItem> {
         return nearbyMountains.map { mountainDto ->
             val courseCount = mountainCourses[mountainDto.mountainId]?.courseCount ?: 0
             SearchMountainListItem(
@@ -265,7 +267,7 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     override fun onMapReady(naverMap: NaverMap) {
         Log.d(TAG, "onMapReady: 실행 중")
         this.naverMap = naverMap
-        if(isAdded){
+        if (isAdded) {
             initLocationSource()
             Log.d(TAG, "onMapReady: 마지막 위치 ${locationSource.lastLocation}")
 
@@ -289,7 +291,14 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     private fun requestLocationUpdates() {
         locationSource.activate { provider ->
             activity?.let {
-                if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
                     return@activate
                 }
                 locationClient.lastLocation.addOnSuccessListener { location: Location? ->
@@ -310,8 +319,10 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     }
 
     private fun moveCameraToLocation(location: Location) {
-        val cameraUpdate = CameraUpdate.scrollTo(LatLng(location.latitude, location.longitude)).animate(
-            CameraAnimation.Fly, 1000)
+        val cameraUpdate =
+            CameraUpdate.scrollTo(LatLng(location.latitude, location.longitude)).animate(
+                CameraAnimation.Fly, 1000
+            )
         naverMap.moveCamera(cameraUpdate)
     }
 
@@ -332,13 +343,18 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
             // 현재 위치를 가져옴
             Log.d(TAG, "showNearbyMountains: ${locationSource.lastLocation}")
             val currentLocation = locationSource.lastLocation ?: location
-            
+
             val currentLat = currentLocation.latitude
             val currentLon = currentLocation.longitude
 
             // 50km 이내의 산들을 필터링
             val nearbyMountains = mountainList.filter { mountain ->
-                val distance = calculateDistance(currentLat, currentLon, mountain.mountainLat, mountain.mountainLon)
+                val distance = calculateDistance(
+                    currentLat,
+                    currentLon,
+                    mountain.mountainLat,
+                    mountain.mountainLon
+                )
                 distance <= 50 // 50km 이내에 있는 산 필터링
             }
             Log.d(TAG, "필터 산 : ${nearbyMountains}")
@@ -349,7 +365,10 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
             }
 
             nearbyMountains.forEach { mountain ->
-                Log.d(TAG, "마커 추가: ${mountain.mountainName} at (${mountain.mountainLat}, ${mountain.mountainLon})")
+                Log.d(
+                    TAG,
+                    "마커 추가: ${mountain.mountainName} at (${mountain.mountainLat}, ${mountain.mountainLon})"
+                )
                 val marker = Marker().apply {
                     position = LatLng(mountain.mountainLat, mountain.mountainLon)
                     map = naverMap
@@ -417,7 +436,7 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
                     }
                 }
                 val mountains = initMountainData(nearbyMountains, mountainCourse)
-                safeCall{
+                safeCall {
                     initMountainListRecyclerView(mountains)
                 }
             }
@@ -468,9 +487,16 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     }
 
     private fun fetchMountainListAndUpdateLocation() {
-        if(isAdded){
-            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (isAdded) {
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
 
                 lifecycleScope.launch {
                     try {
@@ -501,7 +527,9 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         val radius = 6371 // 지구 반지름 (단위: km)
         val dLat = Math.toRadians(lat2 - lat1)
         val dLon = Math.toRadians(lon2 - lon1)
-        val a = Math.sin(dLat / 2).pow(2.0) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2).pow(2.0)
+        val a = Math.sin(dLat / 2).pow(2.0) + Math.cos(Math.toRadians(lat1)) * Math.cos(
+            Math.toRadians(lat2)
+        ) * Math.sin(dLon / 2).pow(2.0)
         val c = 2 * Math.atan2(sqrt(a), sqrt(1 - a))
         return radius * c
     }

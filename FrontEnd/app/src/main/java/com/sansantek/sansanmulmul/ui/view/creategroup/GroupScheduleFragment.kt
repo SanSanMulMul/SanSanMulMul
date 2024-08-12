@@ -32,6 +32,7 @@ class GroupScheduleFragment : BaseFragment<FragmentGroupScheduleBinding>(
         super.onViewCreated(view, savedInstanceState)
         registerObserver()
     }
+
     override fun onResume() {
         super.onResume()
         // 전달 받은 상행 코스와 하행 코스 설정
@@ -44,12 +45,32 @@ class GroupScheduleFragment : BaseFragment<FragmentGroupScheduleBinding>(
 
         val greenColor = resources.getColor(R.color.green)
         val spanUpCourse = SpannableString(upCourseText).apply {
-            setSpan(ForegroundColorSpan(greenColor), 6, upCourseText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(AbsoluteSizeSpan(14, true), 6, upCourseText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(
+                ForegroundColorSpan(greenColor),
+                6,
+                upCourseText.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            setSpan(
+                AbsoluteSizeSpan(14, true),
+                6,
+                upCourseText.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
         val spanDownCourse = SpannableString(downCourseText).apply {
-            setSpan(ForegroundColorSpan(greenColor), 6, downCourseText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(AbsoluteSizeSpan(14, true), 6, downCourseText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(
+                ForegroundColorSpan(greenColor),
+                6,
+                downCourseText.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            setSpan(
+                AbsoluteSizeSpan(14, true),
+                6,
+                downCourseText.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
 
 
@@ -79,7 +100,14 @@ class GroupScheduleFragment : BaseFragment<FragmentGroupScheduleBinding>(
         }
     }
 
-    override fun onDateTimeSelected(status: String, year: Int, month: Int, day: Int, hour: Int, minute: Int) {
+    override fun onDateTimeSelected(
+        status: String,
+        year: Int,
+        month: Int,
+        day: Int,
+        hour: Int,
+        minute: Int
+    ) {
         if (status == "start") {
             binding.btnSelectScheduleStart.text = "${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분"
             val dateTime = LocalDateTime.of(year, month, day, hour, minute)
@@ -101,30 +129,32 @@ class GroupScheduleFragment : BaseFragment<FragmentGroupScheduleBinding>(
             viewModel.setEndDate(formatDate)
         }
     }
-    private fun init(){
+
+    private fun init() {
         viewModel.setStartDate("")
         viewModel.setEndDate("")
-        if(!viewModel.startDate.value.isNullOrBlank()){
+        if (!viewModel.startDate.value.isNullOrBlank()) {
             binding.btnSelectScheduleStart.text = viewModel.startDate.value
         }
-        if(!viewModel.endDate.value.isNullOrBlank()){
+        if (!viewModel.endDate.value.isNullOrBlank()) {
             binding.btnSelectScheduleEnd.text = viewModel.endDate.value
         }
         checkValid()
     }
-    private fun registerObserver(){
-        viewModel.startDate.observe(viewLifecycleOwner){
+
+    private fun registerObserver() {
+        viewModel.startDate.observe(viewLifecycleOwner) {
             checkValid()
         }
-        viewModel.endDate.observe(viewLifecycleOwner){
+        viewModel.endDate.observe(viewLifecycleOwner) {
             checkValid()
         }
     }
-    private fun checkValid(){
-        if(viewModel.startDate.value.isNullOrBlank() || viewModel.endDate.value.isNullOrBlank()){
+
+    private fun checkValid() {
+        if (viewModel.startDate.value.isNullOrBlank() || viewModel.endDate.value.isNullOrBlank()) {
             viewPagerFragment.enableNextButton(false)
-        }
-        else{
+        } else {
             viewPagerFragment.enableNextButton(true)
         }
     }

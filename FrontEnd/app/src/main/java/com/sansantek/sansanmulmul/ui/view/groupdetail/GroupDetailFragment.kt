@@ -44,31 +44,34 @@ import java.util.Locale
 private const val TAG = "GroupTabFragment 싸피"
 
 class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDetailBinding>(
-  FragmentGroupDetailBinding::bind,
-  R.layout.fragment_group_detail
+    FragmentGroupDetailBinding::bind,
+    R.layout.fragment_group_detail
 ) {
     private var popupShow = false
     private var drawerShow = false
     private val activityViewModel: MainActivityViewModel by activityViewModels()
     private val viewModel: GroupDetailViewModel by activityViewModels()
-    private lateinit var popUp : PopupWindow
-    private lateinit var drawerUp : PopupWindow
+    private lateinit var popUp: PopupWindow
+    private lateinit var drawerUp: PopupWindow
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         popupShow = false
 
         binding.tvGroupTitle.text = crew.crewName
-        val startDate =  formatToCustomPattern(crew.crewStartDate)
+        val startDate = formatToCustomPattern(crew.crewStartDate)
         val endDate = formatToCustomPattern(crew.crewEndDate)
         binding.tvGroupSchedule.text = "$startDate - $endDate"
         binding.tvGroupPerson.text = "${crew.crewCurrentMembers} / ${crew.crewMaxMembers}"
 
         lifecycleScope.launch {
             activityViewModel.token?.let {
-                val result = crewService.getCrewGalleryList(makeHeaderByAccessToken(it.accessToken), crew.crewId)
-                if(result.isSuccessful){
+                val result = crewService.getCrewGalleryList(
+                    makeHeaderByAccessToken(it.accessToken),
+                    crew.crewId
+                )
+                if (result.isSuccessful) {
                     viewModel.setPictureList(result.body()!!)
-                }else{
+                } else {
                     Log.d(TAG, "onViewCreated: 갤러리 정보 가저오기 에러")
                 }
             }
@@ -76,22 +79,25 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
 
 
         changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment(crew))
-        binding.layoutTab.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+        binding.layoutTab.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 Log.d(TAG, "onTabSelected: ${tab?.position}")
                 when (tab?.position) {
-                     0 -> {
+                    0 -> {
                         Log.d(TAG, "onTabSelected: groupInfoTab")
-                         changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment(crew))
+                        changeGroupDetailFragmentView(GroupDetailTabFirstInfoFragment(crew))
                     }
+
                     1 -> {
                         Log.d(TAG, "onTabSelected: hikingInfoTab")
                         changeGroupDetailFragmentView(GroupDetailTabSecondHikingInfoFragment(crew))
                     }
+
                     2 -> {
                         Log.d(TAG, "onTabSelected: galleryTab")
                         changeGroupDetailFragmentView(GroupDetailTabThirdGalleryInfoFragment(crew))
                     }
+
                     else -> {
                         Log.d(TAG, "onTabSelected: else")
                         changeGroupDetailFragmentView(GroupDetailTabThirdGalleryInfoFragment(crew))
@@ -108,13 +114,12 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
             }
         })
 
-        binding.ibDrawer.setOnClickListener{
+        binding.ibDrawer.setOnClickListener {
             lifecycleScope.launch {
-                if(drawerShow){
+                if (drawerShow) {
                     drawerUp.dismiss()
                     drawerShow = !drawerShow
-                }
-                else{
+                } else {
                     val screenWidth = getScreenWidth(requireContext())
                     val newWidth = (screenWidth * 0.3).toInt()
                     val newHeight = (screenWidth * 0.25).toInt()
@@ -125,7 +130,7 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
                     val drawerMenuList = mutableListOf(
                         Pair(R.drawable.link_copy, "그룹 링크 복사"),
                         Pair(R.drawable.remove_group, "그룹 삭제"),
-                        )
+                    )
 
                     val windowupBinding = PopupGroupDetailDrawerBinding.inflate(layoutInflater)
                     drawerUp = PopupWindow(requireContext()).apply {
@@ -149,9 +154,11 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
                         point.y + binding.ibDrawer.height + 20
                     )
 
-                    windowupBinding.rvGroupDetailDrawerList.apply{
-                        adapter = windowDrawerListAdapter.apply { submitList(drawerMenuList)
-                            setItemClickListener(object:GroupDetailDrawerListAdapter.ItemClickListener{
+                    windowupBinding.rvGroupDetailDrawerList.apply {
+                        adapter = windowDrawerListAdapter.apply {
+                            submitList(drawerMenuList)
+                            setItemClickListener(object :
+                                GroupDetailDrawerListAdapter.ItemClickListener {
                                 override fun onLinkCopyClick() {
 
                                 }
@@ -159,9 +166,15 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
                                 override fun onExitGroupClick() {
                                     activityViewModel.token?.let {
                                         lifecycleScope.launch {
-                                            val result = crewService.getCrewCommon(makeHeaderByAccessToken(it.accessToken), crew.crewId)
-                                            if(result.isSuccessful){
-                                                AlertExitGroupDialog(result.body()!!.leader, crew).show(childFragmentManager, "dialog")
+                                            val result = crewService.getCrewCommon(
+                                                makeHeaderByAccessToken(it.accessToken),
+                                                crew.crewId
+                                            )
+                                            if (result.isSuccessful) {
+                                                AlertExitGroupDialog(
+                                                    result.body()!!.leader,
+                                                    crew
+                                                ).show(childFragmentManager, "dialog")
                                             }
                                         }
                                     }
@@ -170,7 +183,14 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
                             })
                         }
                         layoutManager = LinearLayoutManager(requireContext())
-                        addItemDecoration(DividerItemDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.divider)!!))
+                        addItemDecoration(
+                            DividerItemDecorator(
+                                ContextCompat.getDrawable(
+                                    requireContext(),
+                                    R.drawable.divider
+                                )!!
+                            )
+                        )
                     }
                     drawerShow = !drawerShow
                 }
@@ -187,7 +207,15 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
                     val screenWidth = getScreenWidth(requireContext())
                     val newWidth = (screenWidth * 0.8).toInt()
                     val newHeight = (screenWidth * 0.95).toInt()
-                    val popUpList = mutableListOf(Alarm("등산 일정 변경", "등산 일정이 24.07.18(목) 13:00 - 24.07.19(금) 14:00로 변경되었습니다"), Alarm("그룹 가입 요청", "nickname 님이 그룹 가입을 요청했습니다! 멤버 목록에서 수락 또는 거절할 수 있습니다"), Alarm("등산 코스 변경", "등산 코스가 가야산 / 가야산국립공원남산제일봉2코스로 변경되었습니다"), Alarm("그룹 가입 요청", "박태우 님이 그룹 가입을 요청했습니다! 멤버 목록에서 수락 또는 거절할 수 있습니다"),)
+                    val popUpList = mutableListOf(
+                        Alarm(
+                            "등산 일정 변경",
+                            "등산 일정이 24.07.18(목) 13:00 - 24.07.19(금) 14:00로 변경되었습니다"
+                        ),
+                        Alarm("그룹 가입 요청", "nickname 님이 그룹 가입을 요청했습니다! 멤버 목록에서 수락 또는 거절할 수 있습니다"),
+                        Alarm("등산 코스 변경", "등산 코스가 가야산 / 가야산국립공원남산제일봉2코스로 변경되었습니다"),
+                        Alarm("그룹 가입 요청", "박태우 님이 그룹 가입을 요청했습니다! 멤버 목록에서 수락 또는 거절할 수 있습니다"),
+                    )
                     val popUpAlarmListAdapter = GroupDetailAlarmListAdapter()
                     val layoutInflater =
                         requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -218,10 +246,17 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
                     )
 
                     Log.d(TAG, "onViewCreated: 팝업 리사이클러 뷰 실행 직전")
-                    popupBinding.rvAlarmList.apply{
+                    popupBinding.rvAlarmList.apply {
                         adapter = popUpAlarmListAdapter.apply { submitList(popUpList) }
                         layoutManager = LinearLayoutManager(requireContext())
-                        addItemDecoration(DividerItemDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.divider)!!))
+                        addItemDecoration(
+                            DividerItemDecorator(
+                                ContextCompat.getDrawable(
+                                    requireContext(),
+                                    R.drawable.divider
+                                )!!
+                            )
+                        )
                     }
 
                     Log.d(TAG, "onViewCreated: 팝업 리사이클러 뷰 실행 후")
@@ -243,55 +278,58 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
     }
 
     override fun onPause() {
-        if(popupShow){
+        if (popupShow) {
             popUp.dismiss()
             popupShow = !popupShow
         }
-        if(drawerShow){
+        if (drawerShow) {
             drawerUp.dismiss()
             drawerShow = !drawerShow
         }
         super.onPause()
     }
-    fun changeGroupDetailFragmentView(view: Fragment){
-        this.childFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, view).commit()
+
+    fun changeGroupDetailFragmentView(view: Fragment) {
+        this.childFragmentManager.beginTransaction()
+            .replace(binding.groupDetailTabFragmentView.id, view).commit()
     }
 
-    fun changeAddToBackStackGroupDetailFragmentView(view: Fragment){
-        this.childFragmentManager.beginTransaction().replace(binding.groupDetailTabFragmentView.id, view).addToBackStack(null).commit()
+    fun changeAddToBackStackGroupDetailFragmentView(view: Fragment) {
+        this.childFragmentManager.beginTransaction()
+            .replace(binding.groupDetailTabFragmentView.id, view).addToBackStack(null).commit()
     }
 
-    fun popBackStackGroupDetailFragmentView(){
+    fun popBackStackGroupDetailFragmentView() {
         this.childFragmentManager.popBackStack()
     }
 
-  private fun getScreenWidth(context: Context): Int {
-    val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-      val windowMetrics = wm.currentWindowMetrics
-      val insets = windowMetrics.windowInsets
-        .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
-      windowMetrics.bounds.width() - insets.left - insets.right
-    } else {
-      val displayMetrics = DisplayMetrics()
-      wm.defaultDisplay.getMetrics(displayMetrics)
-      displayMetrics.widthPixels
+    private fun getScreenWidth(context: Context): Int {
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = wm.currentWindowMetrics
+            val insets = windowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            windowMetrics.bounds.width() - insets.left - insets.right
+        } else {
+            val displayMetrics = DisplayMetrics()
+            wm.defaultDisplay.getMetrics(displayMetrics)
+            displayMetrics.widthPixels
+        }
     }
-  }
 
-  private fun getScreenHeight(context: Context): Int {
-    val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-      val windowMetrics = wm.currentWindowMetrics
-      val insets = windowMetrics.windowInsets
-        .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
-      windowMetrics.bounds.height() - insets.bottom - insets.top
-    } else {
-      val displayMetrics = DisplayMetrics()
-      wm.defaultDisplay.getMetrics(displayMetrics)
-      displayMetrics.heightPixels
+    private fun getScreenHeight(context: Context): Int {
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = wm.currentWindowMetrics
+            val insets = windowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            windowMetrics.bounds.height() - insets.bottom - insets.top
+        } else {
+            val displayMetrics = DisplayMetrics()
+            wm.defaultDisplay.getMetrics(displayMetrics)
+            displayMetrics.heightPixels
+        }
     }
-  }
 
     private fun formatToCustomPattern(isoDateTime: String): String {
         // ISO 8601 형식의 문자열을 ZonedDateTime으로 파싱

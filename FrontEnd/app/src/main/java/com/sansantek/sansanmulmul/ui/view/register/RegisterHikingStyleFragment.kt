@@ -17,13 +17,14 @@ import com.sansantek.sansanmulmul.ui.util.Util.dpToPx
 import com.sansantek.sansanmulmul.ui.viewmodel.LoginActivityViewModel
 
 private const val TAG = "RegisterHikingStyleFrag 싸피"
+
 class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBinding>(
     FragmentRegisterHikingStyleBinding::bind,
     R.layout.fragment_register_hiking_style
 ) {
     private val activityViewModel: LoginActivityViewModel by activityViewModels()
-    private lateinit var checkBoxList : List<CheckBox>
-    private lateinit var checkBoxEnableColorList : List<Int>
+    private lateinit var checkBoxList: List<CheckBox>
+    private lateinit var checkBoxEnableColorList: List<Int>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,28 +67,28 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
         }
     }
 
-    private fun registerObserver(){
-        activityViewModel.userStyles.observe(viewLifecycleOwner){
+    private fun registerObserver() {
+        activityViewModel.userStyles.observe(viewLifecycleOwner) {
             Log.d(TAG, "registerObserver: ${activityViewModel.userStyles.value}")
-            for(box in checkBoxList){
+            for (box in checkBoxList) {
                 setCheckBoxDisable(box)
             }
-            it.forEach { style->
+            it.forEach { style ->
                 setCheckBoxEnable(style)
             }
         }
     }
 
-    private fun setCheckBoxDisable(checkBox: CheckBox){
+    private fun setCheckBoxDisable(checkBox: CheckBox) {
         checkBox.background =
-          ContextCompat.getDrawable(requireContext(), R.drawable.check_box_background)
+            ContextCompat.getDrawable(requireContext(), R.drawable.check_box_background)
     }
 
-    private fun setCheckBoxEnable(style: Int){
-        setSolidColorBackground(checkBoxList[style-1], checkBoxEnableColorList[style-1])
+    private fun setCheckBoxEnable(style: Int) {
+        setSolidColorBackground(checkBoxList[style - 1], checkBoxEnableColorList[style - 1])
     }
 
-    private fun addStyleById(selectedId: Int){
+    private fun addStyleById(selectedId: Int) {
         when (selectedId) {
             R.id.cb_hiking_style_1 -> {
                 addStyle(1)
@@ -106,7 +107,7 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
             }
 
             R.id.cb_hiking_style_5 -> {
-                activityViewModel.userStyles.value?.let{
+                activityViewModel.userStyles.value?.let {
                     addStyle(5)
                 }
             }
@@ -117,15 +118,15 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
         }
     }
 
-    private fun addStyle(id: Int){
-        activityViewModel.userStyles.value?.let{
+    private fun addStyle(id: Int) {
+        activityViewModel.userStyles.value?.let {
             val list = it.toMutableList()
             list.add(id)
             activityViewModel.setUserStyles(list)
         }
     }
 
-    private fun removeStyleById(selectedId: Int){
+    private fun removeStyleById(selectedId: Int) {
         when (selectedId) {
             R.id.cb_hiking_style_1 -> {
                 removeStyle(1)
@@ -153,8 +154,8 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
         }
     }
 
-    private fun removeStyle(id: Int){
-        activityViewModel.userStyles.value?.let{
+    private fun removeStyle(id: Int) {
+        activityViewModel.userStyles.value?.let {
             val list = it.toMutableList().filter { target -> target != id }
             activityViewModel.setUserStyles(list)
         }

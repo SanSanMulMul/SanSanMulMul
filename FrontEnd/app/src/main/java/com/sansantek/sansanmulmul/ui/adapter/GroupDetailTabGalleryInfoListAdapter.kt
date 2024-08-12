@@ -1,6 +1,5 @@
 package com.sansantek.sansanmulmul.ui.adapter
 
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -11,11 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.data.model.CrewGallery
-import com.sansantek.sansanmulmul.data.model.Picture
 import com.sansantek.sansanmulmul.databinding.ListGalleryInfoBinding
-import com.sansantek.sansanmulmul.ui.viewmodel.GroupDetailViewModel
 
-class GroupDetailTabGalleryInfoListAdapter():
+class GroupDetailTabGalleryInfoListAdapter() :
     ListAdapter<CrewGallery, GroupDetailTabGalleryInfoListAdapter.GroupGalleryListHolder>(Comparator) {
     companion object Comparator : DiffUtil.ItemCallback<CrewGallery>() {
         override fun areItemsTheSame(oldItem: CrewGallery, newItem: CrewGallery): Boolean {
@@ -33,10 +30,12 @@ class GroupDetailTabGalleryInfoListAdapter():
         fun bindInfo(position: Int) {
             val item = getItem(position)
 
-            if(item.imgUrl.isEmpty()){
-                val img = ContextCompat.getDrawable(binding.root.context, R.drawable.bg_group_preview)!!.toBitmap()
+            if (item.imgUrl.isEmpty()) {
+                val img =
+                    ContextCompat.getDrawable(binding.root.context, R.drawable.bg_group_preview)!!
+                        .toBitmap()
                 binding.ivPicture.setImageBitmap(img)
-            }else{
+            } else {
                 Glide.with(binding.root).load(item.imgUrl).into(binding.ivPicture)
             }
             binding.ivPicture.setOnClickListener {

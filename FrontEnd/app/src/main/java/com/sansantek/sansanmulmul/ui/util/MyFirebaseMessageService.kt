@@ -40,7 +40,6 @@ class MyFirebaseMessageService : FirebaseMessagingService() {
             Log.d(TAG, "onMessageReceived: 여기로 오면 안되는데")
 
             val data = remoteMessage.data
-            remoteMessage.notification.
             Log.d(TAG, "data.message: ${data}")
             Log.d(TAG, "data.message: ${data["title"]}")
             Log.d(TAG, "data.message: ${data["body"]}")

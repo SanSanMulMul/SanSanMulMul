@@ -96,6 +96,10 @@ public class User {
     @Schema(description = "회원 관리자 유무", example = "false")
     private boolean userIsAdmin;
 
+    @Column(name = "user_fcm_token")
+    @Schema(description = "FCM의 회원 식별 토큰")
+    private String fcmToken;
+
     // 회원 칭호
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

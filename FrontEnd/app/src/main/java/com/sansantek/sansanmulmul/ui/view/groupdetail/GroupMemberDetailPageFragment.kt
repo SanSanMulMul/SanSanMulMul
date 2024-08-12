@@ -1,22 +1,18 @@
 package com.sansantek.sansanmulmul.ui.view.groupdetail
 
-import android.icu.text.CaseMap.Title
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.config.Const.Companion.TITLE
-import com.sansantek.sansanmulmul.data.model.GroupUser
-import com.sansantek.sansanmulmul.databinding.FragmentGroupDetailTabFirstInfoFragmentBinding
+import com.sansantek.sansanmulmul.data.model.User
 import com.sansantek.sansanmulmul.databinding.FragmentGroupMemberDetailPageBinding
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
 
@@ -26,89 +22,148 @@ class GroupMemberDetailPageFragment : BaseFragment<FragmentGroupMemberDetailPage
     R.layout.fragment_group_member_detail_page) {
 
     private val activityViewModel: MainActivityViewModel by activityViewModels()
+
     companion object {
-        // `newInstance` 메서드 정의
-        fun newInstance(userId: Int): GroupMemberDetailPageFragment {
+        fun newInstance(followUserId: Int): GroupMemberDetailPageFragment {
             val fragment = GroupMemberDetailPageFragment()
             val args = Bundle().apply {
-                putInt("userId", userId)
+                putInt("followUserId", followUserId)
             }
             fragment.arguments = args
             return fragment
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val userId = arguments?.getInt("userId")
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 전달받은 userId를 가져옴
-        val userId = arguments?.getInt("userId")
-        Log.d(TAG, "onViewCreated: ${userId}")
-        // userId로 멤버 데이터를 가져오기 (닉네임, 칭호, 이미지)
-        if (userId != null) {
-            lifecycleScope.launch {
-                try {
-                    val response = userService.getMemberInfo(userId)
-                    if (response.isSuccessful) {
-                        val memberData = response.body()
-                        Log.d(TAG, "memberData: $memberData")
+        val accessToken = activityViewModel.token?.accessToken
+        val currentUserId = activityViewModel.user.userId
+        val followUserId = arguments?.getInt("followUserId")
 
-                        // 가져온 데이터를 UI에 반영
-                        binding.tvUserName.text = memberData?.userNickName
-                        memberData?.let { member ->
-                            binding.tvTitleName.text = TITLE[member.userStaticBadge]
-                        }
-                        // Glide를 사용하여 프로필 이미지 로드
-                        Glide.with(binding.root)
-                            .load(memberData?.userProfileImg)
-                            .into(binding.ivMyPageProfile)
-                    } else {
-                        Log.e(TAG, "onViewCreated: 데이터 로드 실패: ${response.code()}")
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "onViewCreated: 에러 발생", e)
-                }
-            }
-            // 팔로우 추가
-            lifecycleScope.launch {
-                try {
-                    val response = userService.addMemberFollow(userId)
-                    if (response.isSuccessful) {
-                        // 팔로우 성공 시 처리할 로직
-                        Log.d(TAG, "팔로우 성공")
-                        showToast("팔로우 성공")
-
-                        // 필요 시 UI 업데이트 로직
-                        // 예: 팔로우 버튼 비활성화 또는 텍스트 변경
-                        binding.btnFollow.isEnabled = false
-                        binding.btnFollow.text = "팔로잉"
-                    } else {
-                        // 팔로우 실패 시 처리할 로직
-                        Log.e(TAG, "팔로우 추가 실패: ${response.code()}")
-                        showToast("팔로우 추가에 실패했습니다.")
-                    }
-                } catch (e: Exception) {
-                    // 네트워크 오류 등 예외 처리
-                    Log.e(TAG, "팔로우 추가 중 오류 발생", e)
-                    showToast("오류가 발생했습니다. 다시 시도해주세요.")
-                }
-            }
-
-            // 팔로우 취소
-            val accessToken = activityViewModel.token?.let {
-                lifecycleScope.launch {
-                    try {
-                        val response = userService.deleteMemberFollow(accessToken)
-                    }
-                }
-            }
-
+        if (followUserId != null) {
+            loadMemberData(followUserId, currentUserId, accessToken)
+        } else {
+            Log.e(TAG, "followUserId가 null입니다.")
         }
+    }
+
+    // 멤버 데이터 불러오기
+    private fun loadMemberData(followUserId: Int, currentUserId: Int, accessToken: String?) {
+        lifecycleScope.launch {
+            try {
+                val response = userService.getMemberInfo(followUserId)
+                if (response.isSuccessful) {
+                    val memberData = response.body()
+                    memberData?.let { member ->
+                        bindMemberData(member)
+                        setupFollowButton(member.userNickName, followUserId, currentUserId, accessToken)
+
+                        // 팔로잉 및 팔로워 수 불러오기
+                        loadMemberFollowingFollowerCount(followUserId)
+                    }
+                } else {
+                    Log.e(TAG, "데이터 로드 실패: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "에러 발생", e)
+            }
+        }
+    }
+
+    // 멤버의 팔로잉 및 팔로워 수 불러오기
+    private suspend fun loadMemberFollowingFollowerCount(followUserId: Int) {
+        try {
+            // 팔로잉 수 가져오기
+            val followingResponse = userService.getMemberFollowing(followUserId)
+            val followingCount = followingResponse.size
+
+            // 팔로워 수 가져오기
+            val followerResponse = userService.getMemberFollower(followUserId)
+            val followerCount = followerResponse.size
+
+            // UI 업데이트
+            binding.tvFollowingCnt.text = followingCount.toString()
+            binding.tvFollowerCnt.text = followerCount.toString()
+
+        } catch (e: Exception) {
+            Log.e(TAG, "팔로잉 및 팔로워 수 불러오기 중 에러 발생", e)
+        }
+    }
+
+    // 멤버 데이터 바인딩
+    private fun bindMemberData(member: User) {
+        binding.tvUserName.text = member.userNickName
+        binding.tvTitleName.text = TITLE[member.userStaticBadge]
+        Glide.with(binding.root)
+            .load(member.userProfileImg)
+            .into(binding.ivMyPageProfile)
+    }
+
+    // 팔로우, 팔로잉 버튼 로직
+    private fun setupFollowButton(followUserNickName: String, followUserId: Int, currentUserId: Int, accessToken: String?) {
+        // 본인의 상세 페이지이면 팔로우 버튼 숨기기
+        if (followUserId == currentUserId) {
+            binding.btnFollow.visibility = View.GONE
+            return
+        }
+
+        accessToken?.let { token ->
+            val headerAccessToken = makeHeaderByAccessToken(token)
+            lifecycleScope.launch {
+                try {
+                    val followings = userService.getUserFollowing(headerAccessToken)
+                    var isFollowing = followings.any { it.nickName == followUserNickName }
+                    Log.d(TAG, "내 팔로우 리스트: ${followings}")
+                    Log.d(TAG, "팔로우 중인가?: ${isFollowing}")
+                    updateFollowButton(isFollowing)
+
+                    binding.btnFollow.setOnClickListener {
+                        // 버튼 클릭 시 현재 팔로우 상태 확인 후 반대 작업 수행
+                        lifecycleScope.launch {
+                            try {
+                                if (isFollowing) {
+                                    // 언팔로우 요청
+                                    val unfollowResponse = userService.deleteMemberFollow(headerAccessToken, followUserId)
+                                    if (unfollowResponse.isSuccessful) {
+                                        Log.d(TAG, "언팔로우 성공")
+                                        showToast("언팔로우 성공")
+                                        isFollowing = false
+                                        updateFollowButton(isFollowing)
+                                    } else {
+                                        Log.e(TAG, "언팔로우 실패: ${unfollowResponse.code()}")
+                                        showToast("언팔로우 실패")
+                                    }
+                                } else {
+                                    // 팔로우 요청
+                                    val followResponse = userService.addMemberFollow(headerAccessToken, currentUserId, followUserId)
+                                    if (followResponse.isSuccessful) {
+                                        Log.d(TAG, "팔로우 성공")
+                                        showToast("팔로우 성공")
+                                        isFollowing = true
+                                        updateFollowButton(isFollowing)
+                                    } else {
+                                        Log.e(TAG, "팔로우 실패: ${followResponse.code()}")
+                                        showToast("팔로우 실패")
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                Log.e(TAG, "팔로우/언팔로우 에러", e)
+                                showToast("에러가 발생했습니다.")
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "팔로우 상태 확인 중 에러 발생", e)
+                    binding.btnFollow.isEnabled = false
+                }
+            }
+        }
+    }
+
+    // 팔로우 팔로잉 버튼 초기 세팅
+    private fun updateFollowButton(isFollowing: Boolean) {
+        binding.btnFollow.text = if (isFollowing) "팔로잉" else "팔로우"
+        binding.btnFollow.isEnabled = true
     }
 }

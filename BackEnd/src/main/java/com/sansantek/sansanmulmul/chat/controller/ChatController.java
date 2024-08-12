@@ -13,6 +13,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +28,7 @@ public class ChatController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    @Transactional
     @MessageMapping("/chat.sendMessage")
     public void sendMessage(ChatMessageDTO chatMessageDTO) {
         User user = userService.getUser(chatMessageDTO.getUserId());

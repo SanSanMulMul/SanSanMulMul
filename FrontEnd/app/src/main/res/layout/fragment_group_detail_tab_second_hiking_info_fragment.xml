@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginHorizontal="20dp"
@@ -22,37 +23,37 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                >
+                android:layout_gravity="top">
 
                 <TextView
                     android:id="@+id/tv_mountain_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="가야산"
                     android:textColor="@color/group_detail_second_tab_mountain_name"
                     android:textSize="15sp"
                     android:textStyle="bold"
-
                     app:layout_constraintBottom_toTopOf="@id/tv_course_name"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed" />
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="가야산" />
+
                 <TextView
                     android:id="@+id/tv_course_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="13dp"
                     android:layout_marginTop="10dp"
-                    android:text="가야산"
+                    android:layout_marginBottom="13dp"
                     android:textColor="@color/group_detail_second_tab_course_name"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/layout_modify_mountain"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_mountain_name" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_mountain_name"
+                    tools:text="가야산" />
+
                 <LinearLayout
                     android:id="@+id/layout_modify_mountain"
                     android:layout_width="wrap_content"
@@ -61,24 +62,25 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_course_name">
+
                     <TextView
                         android:id="@+id/btn_difficulty"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/round_20_rectangle"
-                        android:backgroundTint="@color/group_detail_second_tab_difficulty_hard"
                         android:paddingHorizontal="15dp"
                         android:paddingVertical="1dp"
-                        android:text="어려움"
                         android:textColor="@color/white"
-                        />
-                    <ImageView
-                        android:id="@+id/iv_modify_mountain"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:src="@drawable/edit"
-                        app:tint="@color/group_detail_second_tab_course_change_btn" />
+                        tools:backgroundTint="@color/group_detail_second_tab_difficulty_hard"
+                        tools:text="어려움" />
+
+                    <!--                    <ImageView-->
+                    <!--                        android:id="@+id/iv_modify_mountain"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginStart="10dp"-->
+                    <!--                        android:src="@drawable/edit"-->
+                    <!--                        app:tint="@color/group_detail_second_tab_course_change_btn" />-->
                 </LinearLayout>
 
                 <FrameLayout
@@ -88,12 +90,13 @@
                     app:layout_constraintBottom_toTopOf="@id/tv_expected_reach_time"
                     app:layout_constraintTop_toBottomOf="@id/layout_modify_mountain">
 
+                    <!-- 설명보기 버튼 -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|end"
-                        android:layout_marginBottom="10dp"
                         android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
                         android:background="@drawable/group_detail_second_tab_map_overlay_button"
                         android:paddingHorizontal="20dp"
                         android:paddingVertical="8dp"
@@ -105,24 +108,42 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <androidx.cardview.widget.CardView
+                        <!-- naver map -->
+                        <androidx.fragment.app.FragmentContainerView
+                            android:id="@+id/map"
+                            android:name="com.naver.maps.map.MapFragment"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            app:cardCornerRadius="20dp"
-                            app:cardElevation="0dp"
+                            android:background="@drawable/rounded_rectangle_white_20"
+                            android:clipToOutline="true"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintDimensionRatio="2:1.3"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <!-- 설명 보기 화면 -->
+                        <LinearLayout
+                            android:id="@+id/description_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:background="@color/black"
+                            android:orientation="vertical"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintTop_toTopOf="parent">
 
-                            <androidx.fragment.app.FragmentContainerView
-                                android:id="@+id/map"
-                                android:name="com.naver.maps.map.MapFragment"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintDimensionRatio="2:1.3"
-                                app:layout_constraintTop_toTopOf="parent" />
-                        </androidx.cardview.widget.CardView>
+                            <TextView
+                                android:id="@+id/description_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="설명" />
+
+                            <Button
+                                android:id="@+id/show_map_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="지도 보기" />
+                        </LinearLayout>
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </FrameLayout>
 
@@ -189,9 +210,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="1h 31m"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="1h 31m" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -208,16 +229,16 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="전체"
+                            android:text="상행"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="1h 31m"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="1h 31m" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -234,16 +255,16 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="전체"
+                            android:text="하행"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="1h 31m"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="1h 31m" />
                     </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -260,9 +281,8 @@
                         android:id="@+id/layout_expected_difficulty"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_marginEnd="8dp"
-                        >
+                        android:layout_weight="1">
 
                         <ImageButton
                             android:id="@+id/btn_dot2"
@@ -278,6 +298,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@id/tv_expected_difficulty"
                             app:tint="@color/green" />
+
                         <TextView
                             android:id="@+id/tv_expected_difficulty"
                             android:layout_width="0dp"
@@ -290,81 +311,81 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/btn_dot2"
                             app:layout_constraintTop_toTopOf="parent" />
+
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@drawable/rounded_shadow_ltrb"
-                            app:layout_constraintStart_toStartOf="@id/tv_expected_difficulty"
-                            app:layout_constraintTop_toBottomOf="@id/tv_expected_difficulty"
-                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            >
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="@id/tv_expected_difficulty"
+                            app:layout_constraintTop_toBottomOf="@id/tv_expected_difficulty">
+
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:elevation="10dp"
-                                android:paddingVertical="10dp"
-                                >
+                                android:paddingVertical="10dp">
+
                                 <TextView
                                     android:id="@+id/tv_difficulty_uphill"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="상행"
+                                    app:layout_constraintBottom_toTopOf="@id/btn_difficulty_uphill"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    app:layout_constraintBottom_toTopOf="@id/btn_difficulty_uphill"
-                                    />
+                                    app:layout_constraintTop_toTopOf="parent" />
+
                                 <TextView
                                     android:id="@+id/btn_difficulty_uphill"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/round_20_rectangle"
-                                    android:backgroundTint="@color/group_detail_second_tab_difficulty_hard"
                                     android:paddingHorizontal="15dp"
                                     android:paddingVertical="1dp"
-                                    android:text="어려움"
                                     android:textColor="@color/white"
+                                    app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@id/tv_difficulty_uphill"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    />
+                                    tools:backgroundTint="@color/group_detail_second_tab_difficulty_hard"
+                                    tools:text="어려움" />
                             </androidx.constraintlayout.widget.ConstraintLayout>
+
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:elevation="10dp"
-                                android:paddingVertical="10dp"
-                                >
+                                android:paddingVertical="10dp">
+
                                 <TextView
                                     android:id="@+id/tv_difficulty_downhill"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="하행"
+                                    app:layout_constraintBottom_toTopOf="@id/btn_difficulty_downhill"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    app:layout_constraintBottom_toTopOf="@id/btn_difficulty_downhill"
-                                    />
+                                    app:layout_constraintTop_toTopOf="parent" />
 
                                 <TextView
                                     android:id="@+id/btn_difficulty_downhill"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/round_20_rectangle"
-                                    android:backgroundTint="@color/group_detail_second_tab_difficulty_hard"
                                     android:paddingHorizontal="15dp"
                                     android:paddingVertical="1dp"
-                                    android:text="어려움"
                                     android:textColor="@color/white"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@id/tv_difficulty_downhill" />
+                                    app:layout_constraintTop_toBottomOf="@id/tv_difficulty_downhill"
+                                    tools:backgroundTint="@color/group_detail_second_tab_difficulty_hard"
+                                    tools:text="어려움" />
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </LinearLayout>
 
@@ -410,11 +431,11 @@
                             android:id="@+id/tv_total_distance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="총 2.1KM"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="총 2.1KM" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -425,66 +446,67 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="@id/tv_expected_distance"
                             app:layout_constraintTop_toBottomOf="@id/tv_expected_distance">
+
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                >
-                            <TextView
-                                android:id="@+id/tv_distance_uphill"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="상행"
-                                app:layout_constraintBottom_toTopOf="@id/btn_distance_uphill"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:layout_weight="1">
 
-                            <TextView
-                                android:id="@+id/btn_distance_uphill"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingHorizontal="15dp"
-                                android:paddingVertical="1dp"
-                                android:text="2.1KM"
-                                android:textColor="@color/group_detail_second_tab_distance_data_color"
-                                android:textSize="16dp"
-                                android:textStyle="bold"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/tv_distance_uphill" />
+                                <TextView
+                                    android:id="@+id/tv_distance_uphill"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="상행"
+                                    app:layout_constraintBottom_toTopOf="@id/btn_distance_uphill"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/btn_distance_uphill"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingHorizontal="15dp"
+                                    android:paddingVertical="1dp"
+                                    android:textColor="@color/group_detail_second_tab_distance_data_color"
+                                    android:textSize="16dp"
+                                    android:textStyle="bold"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/tv_distance_uphill"
+                                    tools:text="2.1KM" />
                             </androidx.constraintlayout.widget.ConstraintLayout>
+
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                >
+                                android:layout_weight="1">
 
-                            <TextView
-                                android:id="@+id/tv_distance_downhill"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="하행"
-                                app:layout_constraintBottom_toTopOf="@id/btn_distance_downhill"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                <TextView
+                                    android:id="@+id/tv_distance_downhill"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="하행"
+                                    app:layout_constraintBottom_toTopOf="@id/btn_distance_downhill"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
-                            <TextView
-                                android:id="@+id/btn_distance_downhill"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingHorizontal="15dp"
-                                android:paddingVertical="1dp"
-                                android:text="2.1KM"
-                                android:textColor="@color/group_detail_second_tab_distance_data_color"
-                                android:textSize="16dp"
-                                android:textStyle="bold"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/tv_distance_downhill" />
+                                <TextView
+                                    android:id="@+id/btn_distance_downhill"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingHorizontal="15dp"
+                                    android:paddingVertical="1dp"
+                                    android:textColor="@color/group_detail_second_tab_distance_data_color"
+                                    android:textSize="16dp"
+                                    android:textStyle="bold"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/tv_distance_downhill"
+                                    tools:text="2.1KM" />
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </LinearLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -494,11 +516,12 @@
                     android:id="@+id/layout_weather"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/layout_difficulty_and_distance"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:background="@drawable/rounded_shadow_ltrb"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layout_difficulty_and_distance"
 
                     >
+
                     <ImageButton
                         android:id="@+id/btn_dot4"
                         android:layout_width="wrap_content"
@@ -525,20 +548,20 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/btn_dot4"
                         app:layout_constraintTop_toTopOf="parent" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        app:layout_constraintTop_toBottomOf="@id/tv_expected_weather_info"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        >
+                        app:layout_constraintTop_toBottomOf="@id/tv_expected_weather_info">
+
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_weather_info"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            />
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

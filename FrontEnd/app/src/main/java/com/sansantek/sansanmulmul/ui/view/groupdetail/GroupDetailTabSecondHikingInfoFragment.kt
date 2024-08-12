@@ -18,12 +18,21 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 private const val TAG = "GroupDetailTabSecondHikingInfoFragment_싸피"
-class GroupDetailTabSecondHikingInfoFragment(private val crew: Crew) : BaseFragment<FragmentGroupDetailTabSecondHikingInfoFragmentBinding>(
-    FragmentGroupDetailTabSecondHikingInfoFragmentBinding::bind,
-    R.layout.fragment_group_detail_tab_second_hiking_info_fragment
-) {
+
+class GroupDetailTabSecondHikingInfoFragment(private val crew: Crew) :
+    BaseFragment<FragmentGroupDetailTabSecondHikingInfoFragmentBinding>(
+        FragmentGroupDetailTabSecondHikingInfoFragmentBinding::bind,
+        R.layout.fragment_group_detail_tab_second_hiking_info_fragment
+    ) {
     private lateinit var weatherAdapter: GroupDetailTabWeatherInfoListAdapter
-    private val weatherList = mutableListOf(Weather(getCurrentDate(0), "맑음", 20, 12), Weather(getCurrentDate(1), "강수", 17, 6), Weather(getCurrentDate(2), "흐림", 12, 6), Weather(getCurrentDate(3), "맑음", 28, 22), Weather(getCurrentDate(4), "맑음", 35, 26))
+    private val weatherList = mutableListOf(
+        Weather(getCurrentDate(0), "맑음", 20, 12),
+        Weather(getCurrentDate(1), "강수", 17, 6),
+        Weather(getCurrentDate(2), "흐림", 12, 6),
+        Weather(getCurrentDate(3), "맑음", 28, 22),
+        Weather(getCurrentDate(4), "맑음", 35, 26)
+    )
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkSelectedTabAndSetTabBG()
@@ -44,8 +53,16 @@ class GroupDetailTabSecondHikingInfoFragment(private val crew: Crew) : BaseFragm
         })
         weatherAdapter = GroupDetailTabWeatherInfoListAdapter()
         binding.rvWeatherInfo.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            addItemDecoration(DiviiderItemDecorator(ContextCompat.getDrawable(requireContext(),R.drawable.divider)!!))
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            addItemDecoration(
+                DiviiderItemDecorator(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.divider
+                    )!!
+                )
+            )
             adapter = weatherAdapter
             weatherAdapter.submitList(weatherList)
         }
@@ -63,14 +80,20 @@ class GroupDetailTabSecondHikingInfoFragment(private val crew: Crew) : BaseFragm
         return calendar.time
     }
 
-    private fun checkSelectedTabAndSetTabBG(){
-        if(binding.cvLayoutTab.selectedTabPosition == 0){
-            setTabBG(R.drawable.group_detail_second_tab_tabbar_left_selected, R.drawable.group_detail_second_tab_tabbar_right_unselected)
-        }
-        else{
-            setTabBG(R.drawable.group_detail_second_tab_tabbar_left_unselected, R.drawable.group_detail_second_tab_tabbar_right_selected)
+    private fun checkSelectedTabAndSetTabBG() {
+        if (binding.cvLayoutTab.selectedTabPosition == 0) {
+            setTabBG(
+                R.drawable.group_detail_second_tab_tabbar_left_selected,
+                R.drawable.group_detail_second_tab_tabbar_right_unselected
+            )
+        } else {
+            setTabBG(
+                R.drawable.group_detail_second_tab_tabbar_left_unselected,
+                R.drawable.group_detail_second_tab_tabbar_right_selected
+            )
         }
     }
+
     private fun setTabBG(tab1: Int, tab2: Int) {
         val tabStrip = binding.cvLayoutTab
         val tabView1 = tabStrip.getTabAt(0)?.view

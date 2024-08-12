@@ -5,6 +5,7 @@ import com.sansantek.sansanmulmul.exception.auth.UserNotFoundException;
 import com.sansantek.sansanmulmul.exception.user.UserDeletionException;
 import com.sansantek.sansanmulmul.exception.user.UserUpdateException;
 import com.sansantek.sansanmulmul.user.domain.User;
+import com.sansantek.sansanmulmul.user.dto.request.PostFcmTokenReq;
 import com.sansantek.sansanmulmul.user.dto.request.SignUpUserRequest;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserHikingStyleRequest;
 import com.sansantek.sansanmulmul.user.dto.request.UpdateUserRequest;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -208,5 +210,17 @@ public class UserService {
             // 일반적인 오류 발생 시
             throw new UserUpdateException("회원 정보 업데이트 중 오류가 발생했습니다.", e);
         }
+    }
+
+
+    // fcm 토큰 저장
+    @Transactional
+    public Boolean updateFCMById(User user, PostFcmTokenReq requestDTO) {
+
+        if (user == null) throw new NoSuchElementException();
+
+        user.setFcmToken(requestDTO.getFcmToken());
+
+        return true;
     }
 }

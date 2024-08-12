@@ -4,11 +4,13 @@ import com.sansantek.sansanmulmul.common.util.FcmMessage;
 import com.sansantek.sansanmulmul.common.util.FcmType;
 import com.sansantek.sansanmulmul.common.util.FcmUtil;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
+import com.sansantek.sansanmulmul.crew.domain.crewalarm.CrewAlarm;
 import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequest;
 import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequestStatus;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.dto.response.CrewRequestResponse;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewUserResponse;
+import com.sansantek.sansanmulmul.crew.repository.CrewAlarmRepository;
 import com.sansantek.sansanmulmul.crew.repository.CrewRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewRequestRepository;
 import com.sansantek.sansanmulmul.crew.repository.request.CrewUserRepository;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +35,7 @@ public class CrewRequestService {
     private final UserRepository userRepository;
     private final CrewRequestRepository crewRequestRepository;
     private final CrewUserRepository crewUserRepository;
+    private final CrewAlarmRepository crewAlarmRepository;
     private final FcmUtil fcmUtil;
 
 
@@ -73,9 +77,19 @@ public class CrewRequestService {
         // FCM발송
         fcmSendtoCrew(crew, fcmDTO);
 
-        // 가입 요청 알림 : 알람 테이블 update (추후 수정)
+        // 가입 요청 알림 : 알람 테이블 update //
+        // 알람 객체 하나 생성
+        String alarmtitle = "가입 요청";
+        String alarmbody = user.getUserName() + "님이 그룹 가입을 요청하였습니다." ;
+        CrewAlarm alarm = CrewAlarm.builder()
+                .crew(crew)
+                .alarmTitle(alarmtitle)
+                .alarmBody(alarmbody)
+                .alarmCreatedAt(LocalDateTime.now())
+                .build();
 
-
+        //CrewAlarm 레파지토리에 알림 객체 저장
+        crewAlarmRepository.save(alarm);
 
         return crewRequestRepository.save(crewRequest);
     }

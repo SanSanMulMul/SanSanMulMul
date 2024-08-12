@@ -215,11 +215,11 @@ public class UserService {
 
     // fcm 토큰 저장
     @Transactional
-    public Boolean updateFCMById(User user, PostFcmTokenReq requestDTO) {
+    public Boolean updateFCMById(User user, String fcmToken) {
 
         if (user == null) throw new NoSuchElementException();
 
-        user.setFcmToken(requestDTO.getFcmToken());
+        user.setFcmToken(fcmToken);
         userRepository.save(user);
 
         return true;

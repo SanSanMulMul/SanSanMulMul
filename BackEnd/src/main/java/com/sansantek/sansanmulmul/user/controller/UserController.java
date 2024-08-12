@@ -216,7 +216,7 @@ public class UserController {
 
     @Operation(summary = "fcm 토큰 갱신")
     @PostMapping("/fcm-token")
-    public ResponseEntity<?> renewalFCM(Authentication authentication, @RequestBody PostFcmTokenReq fcmToken) {
+    public ResponseEntity<?> renewalFCM(Authentication authentication, @RequestBody String fcmToken) {
         String userProviderId = authentication.getName();
         User user = userRepository.findByUserProviderId(userProviderId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));

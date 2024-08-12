@@ -76,6 +76,10 @@ public class FcmUtil {
         return crewName + " " + type + "가 등록되었어요.";
     }
 
+    public String makeMessageBody(String crewName, String sendUserName, String message) {
+        return "["+crewName+"] " + sendUserName + " : " + message;
+    }
+
     public String makeJoinRequestBody(String requestUserName, String crewName) {
         return requestUserName + "님이 " + crewName + " 그룹에 가입신청 하였습니다.";
     }

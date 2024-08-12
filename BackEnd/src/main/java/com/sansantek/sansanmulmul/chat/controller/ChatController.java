@@ -30,14 +30,17 @@ public class ChatController {
     @MessageMapping("/chat.sendMessage")
     public void sendMessage(ChatMessageDTO chatMessageDTO) {
         User user = userService.getUser(chatMessageDTO.getUserId());
+        Crew crew = Crew.builder().crewId(chatMessageDTO.getCrewId()).build();
         ChatMessage chatMessage = ChatMessage.builder()
                 .messageContent(chatMessageDTO.getMessageContent())
                 .timestamp(LocalDateTime.now())
-                .crew(Crew.builder().crewId(chatMessageDTO.getCrewId()).build())
+                .crew(crew)
                 .user(user)
                 .build();
 
         chatService.saveChatMessage(chatMessage);
+
+        chatService.sendFCMnotification(crew, user, chatMessage.getMessageContent());
 
         ChatMessagesResponse response = ChatMessagesResponse.builder()
                 .messageContent(chatMessage.getMessageContent())

@@ -220,6 +220,7 @@ public class UserService {
         if (user == null) throw new NoSuchElementException();
 
         user.setFcmToken(requestDTO.getFcmToken());
+        userRepository.save(user);
 
         return true;
     }

@@ -164,21 +164,21 @@
     <item name="android:textColor">@android:color/black</item>
   </style>
 
-    <!-- Theme for SwitchDateTime -->
-    <style name="Theme.SwitchDateTime" parent="Theme.MaterialComponents.Light.DarkActionBar">
-      <item name="colorPrimary">#29b6f6</item>
-      <item name="colorPrimaryDark">#03a9f4</item>
-      <item name="android:textColorPrimaryInverse">#e6e6e6</item>
-      <item name="android:textColorSecondaryInverse">#e1e1e1</item>
-    </style>
+  <!-- Theme for SwitchDateTime -->
+  <style name="Theme.SwitchDateTime" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <item name="colorPrimary">#29b6f6</item>
+    <item name="colorPrimaryDark">#03a9f4</item>
+    <item name="android:textColorPrimaryInverse">#e6e6e6</item>
+    <item name="android:textColorSecondaryInverse">#e1e1e1</item>
+  </style>
 
-    <!-- Header Background -->
-    <style name="Theme.SwitchDateTime.HeaderBackground">
-      <item name="android:background">?attr/colorPrimary</item>
-    </style>
+  <!-- Header Background -->
+  <style name="Theme.SwitchDateTime.HeaderBackground">
+    <item name="android:background">?attr/colorPrimary</item>
+  </style>
 
-    <!-- Content Background -->
-    <style name="Theme.SwitchDateTime.ContentBackground">
-      <item name="android:background">#00ffffff</item>
-    </style>
+  <!-- Content Background -->
+  <style name="Theme.SwitchDateTime.ContentBackground">
+    <item name="android:background">#00ffffff</item>
+  </style>
 </resources>

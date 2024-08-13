@@ -122,13 +122,12 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
                 } else {
                     val screenWidth = getScreenWidth(requireContext())
                     val newWidth = (screenWidth * 0.3).toInt()
-                    val newHeight = (screenWidth * 0.25).toInt()
+                    val newHeight = (screenWidth * 0.15).toInt()
                     val layoutInflater =
                         requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                     val location = IntArray(2)
                     val point = Point()
                     val drawerMenuList = mutableListOf(
-                        Pair(R.drawable.link_copy, "그룹 링크 복사"),
                         Pair(R.drawable.remove_group, "그룹 삭제"),
                     )
 
@@ -159,9 +158,7 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
                             submitList(drawerMenuList)
                             setItemClickListener(object :
                                 GroupDetailDrawerListAdapter.ItemClickListener {
-                                override fun onLinkCopyClick() {
 
-                                }
 
                                 override fun onExitGroupClick() {
                                     activityViewModel.token?.let {

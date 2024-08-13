@@ -23,6 +23,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.config.BaseActivity
 import com.sansantek.sansanmulmul.config.Const.Companion.REQUEST_IMAGE_CAPTURE
 import com.sansantek.sansanmulmul.databinding.ActivityMainBinding
@@ -154,9 +155,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
   }
 
   private fun loadLikedMountainList() {
-    lifecycleScope.launch(Dispatchers.IO) {
+    lifecycleScope.launch(Dispatchers.Main) {
       activityViewModel.token?.let {
-        launch(Dispatchers.IO) {
+        launch(Dispatchers.Main) {
           val likedMountains =
             mountainService.getLikedMountainList(makeHeaderByAccessToken(it.accessToken))
           if (likedMountains.code() == 200) {
@@ -172,42 +173,36 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
   }
 
     private fun loadMyPageInfo() {
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch(Dispatchers.Main) {
             activityViewModel.token?.let {
-                launch(Dispatchers.IO) {
+                launch(Dispatchers.Main) {
                     val myPageInfo =
                         userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
-                    launch(Dispatchers.Main) {
                         activityViewModel.setMyPageInfo(myPageInfo)
-                    }
                 }
             }
         }
     }
 
     private fun loadFollowInfo() {
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch(Dispatchers.Main) {
             activityViewModel.token?.let {
-                launch(Dispatchers.IO) {
+                launch(Dispatchers.Main) {
                     val followerResult =
                         userService.getUserFollower(makeHeaderByAccessToken(it.accessToken))
-                    launch(Dispatchers.Main) {
                         activityViewModel.setFollowerList(followerResult)
-                    }
                 }
-                launch(Dispatchers.IO) {
+                launch(Dispatchers.Main) {
                     val followingResult =
                         userService.getUserFollowing(makeHeaderByAccessToken(it.accessToken))
-                    launch(Dispatchers.Main) {
                         activityViewModel.setFollowingList(followingResult)
-                    }
                 }
             }
         }
     }
 
     private fun loadUserProfile() {
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch(Dispatchers.Main) {
             activityViewModel.token?.let {
                 val user = userService.loadUserProfile(makeHeaderByAccessToken(it.accessToken))
                 if (user.code() == 200) {

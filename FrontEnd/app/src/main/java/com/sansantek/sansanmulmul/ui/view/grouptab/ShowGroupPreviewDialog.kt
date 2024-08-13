@@ -28,6 +28,8 @@ import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.crewService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 private const val TAG = "ShowGroupPreviewDialog_싸피"
 
@@ -49,6 +51,17 @@ class ShowGroupPreviewDialog(private val crew: Crew) : DialogFragment() {
 
         binding.tvGroupTitle.text = crew.crewName
         binding.groupPersonInfo.text = "${crew.crewCurrentMembers} / ${crew.crewMaxMembers}"
+
+        // 문자열을 LocalDateTime으로 파싱
+        val startDateTime = LocalDateTime.parse(crew.crewStartDate)
+        val endDateTime = LocalDateTime.parse(crew.crewEndDate)
+
+        // 원하는 형식으로 포맷터를 정의
+        val dayOfWeekFormatter = DateTimeFormatter.ofPattern("E") // 요일을 단축형으로
+        val customFormatter = DateTimeFormatter.ofPattern("yy-MM-dd(E) HH:mm") // 원하는 포맷
+
+        binding.tvCrewScheduleInfo.text = "${startDateTime.format(customFormatter)} -\n${endDateTime.format(customFormatter)}"
+
 
         styleList = crew.crewStyles.map {
             HIKINGSTYLE[it]

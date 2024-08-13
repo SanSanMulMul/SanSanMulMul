@@ -22,6 +22,7 @@ import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 private const val TAG = "GroupDetailTabFirstInfo 싸피"
 
@@ -217,12 +218,12 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
                                 }
                             }
 
-                            override fun onMemberClick(user: GroupUser) {
+                            override suspend fun onMemberClick(user: GroupUser) {
                                 // 멤버 클릭 시 프래그먼트 전환
-                                val fragment = GroupMemberDetailPageFragment.newInstance(user.userId)
+//                                val fragment = GroupMemberDetailPageFragment.newInstance(user.userId)
 
                                 val activity = requireActivity() as MainActivity
-                                activity.changeAddToBackstackFragment(fragment)
+                                activity.changeAddToBackstackFragment(GroupMemberDetailPageFragment.newInstance(user.userId))
 //
                                 Log.d(TAG, "onMemberClick: 클릭 완료")
                             }

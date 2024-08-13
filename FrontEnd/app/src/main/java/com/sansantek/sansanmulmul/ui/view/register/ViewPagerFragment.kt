@@ -20,6 +20,7 @@ import com.sansantek.sansanmulmul.ui.viewmodel.LoginActivityViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
@@ -62,16 +63,19 @@ class ViewPagerFragment : BaseFragment<FragmentLoginViewPagerBinding>(
                     )
                     Log.d(TAG, "onViewCreated: ${activityViewModel.kakaoLoginUser}")
 
-                    getRealPathFromURI(requireContext(), activityViewModel.uri)?.let { file ->
-                        val file = File(file)
-                        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
-                        val body =
+                    getRealPathFromURI(requireContext(), activityViewModel.uri).let { file ->
+                        val body = if (file == null) {
+                            MultipartBody.Part.createFormData(
+                                "image",
+                                "",
+                                RequestBody.create("image/*".toMediaTypeOrNull(), ByteArray(0))
+                            )
+                        } else {
+                            val file = File(file)
+                            val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
                             MultipartBody.Part.createFormData("image", file.name, requestBody)
-                        val result = userService.registerUser(
-                            body,
-                            activityViewModel.kakaoLoginUser
-                        )
-
+                        }
+                        val result = userService.registerUser(body, activityViewModel.kakaoLoginUser)
                         Log.d(TAG, "onViewCreated: 회원가입 결과 $result")
                         if (result.code() == 200) {
                             Log.d(TAG, "onViewCreated: 회원가입 성공! ${result.body()}")

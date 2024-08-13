@@ -22,11 +22,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.data.local.entity.LocationHistory
 import com.sansantek.sansanmulmul.data.local.entity.StepCount
 import com.sansantek.sansanmulmul.data.model.DateInfo
+import com.sansantek.sansanmulmul.data.model.HikingRecordingCoord
 import com.sansantek.sansanmulmul.data.repository.LocationHistoryRepository
 import com.sansantek.sansanmulmul.data.repository.StepCounterRepository
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.hikingRecordingService
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,6 +48,7 @@ class HikingRecordingService : Service(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
     private var crewId: Int = -1
     private var status = "undefined"
+    private val token = sharedPreferencesUtil.getKakaoLoginToken()
 
     private val stepCounterRepository by lazy {
         StepCounterRepository.get()
@@ -61,6 +66,16 @@ class HikingRecordingService : Service(), SensorEventListener {
             val altitude = location.altitude
             // TODO: 위치 정보를 사용하세요.
             CoroutineScope(Dispatchers.IO).launch {
+                launch {
+                    Log.d(TAG, "onLocationChanged: 위치 변경 감지 ${LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude)} ")
+                    Log.d(TAG, "onLocationChanged: 서버로 위치 송신")
+                    token?.let {
+                        val response = hikingRecordingService.saveMyCoord(makeHeaderByAccessToken(it.accessToken), HikingRecordingCoord(crewId, latitude,longitude))
+                        if(response.isSuccessful){
+                            Log.d(TAG, "onLocationChanged: 위치 전송 성공")
+                        }
+                    }
+                }
                 launch {
                     Log.d(TAG, "onLocationChanged: 위치 변경 감지 ${LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude)} ")
                     locationHistoryRepository.insertLocationHistory(LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude))

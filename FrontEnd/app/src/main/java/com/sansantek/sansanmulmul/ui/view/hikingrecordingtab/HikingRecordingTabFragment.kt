@@ -6,8 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
 import android.view.View
@@ -21,8 +25,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.OverlayImage
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.config.BaseFragment
@@ -36,6 +46,7 @@ import com.sansantek.sansanmulmul.databinding.FragmentHikingRecordingTabBinding
 import com.sansantek.sansanmulmul.ui.service.HikingRecordingService
 import com.sansantek.sansanmulmul.ui.util.PermissionChecker
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.crewService
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.hikingRecordingService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.viewmodel.ChronometerViewModel
@@ -138,13 +149,14 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     Log.d(TAG, "onViewCreated: init 종료")
   }
 
-  private fun init() {
-    setInitialView()
-    setPermissionChecker()
-    registerObserving()
-    registerLocalBroadCastReceiver()
-    hideBottomNav(rootActivity.findViewById(R.id.main_layout_bottom_navigation), false)
-  }
+    private fun init() {
+        setInitialView()
+        setPermissionChecker()
+        registerObserving()
+        registerLocalBroadCastReceiver()
+        hideBottomNav(rootActivity.findViewById(R.id.main_layout_bottom_navigation), false)
+        binding.hikingRecordingTabMap.getMapAsync(this)
+    }
 
   private fun setInitialView() {
     loadMyScheduledGroupListAndUpdateUI()
@@ -297,24 +309,25 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     }
   }
 
-  private fun registerObserving() {
-    hikingRecordingTabViewModel.recordingStatus.observe(viewLifecycleOwner) { status ->
-      changeHikingButton(binding.btnHikingRecording, status)
-      when (status) {
-        BANNED -> {
-          resetChronometerTime()
-          hikingRecordingTabViewModel.deleteIsQRScanned()
-          hikingRecordingTabViewModel.deleteIsQRCompleted()
+    private fun registerObserving() {
+        hikingRecordingTabViewModel.recordingStatus.observe(viewLifecycleOwner) { status ->
+            changeHikingButton(binding.btnHikingRecording, status)
+            when (status) {
+                BANNED -> {
+                    resetChronometerTime()
+                    hikingRecordingTabViewModel.deleteIsQRScanned()
+                    hikingRecordingTabViewModel.deleteIsQRCompleted()
 
-        }
+                }
+                BEFORE_HIKING -> {
+                    handler.removeCallbacks(runnable)
+                    resetChronometerTime()
+                }
 
-        BEFORE_HIKING -> {
-          resetChronometerTime()
-        }
-
-        HIKING -> {
-          launchChronometer()
-        }
+                HIKING -> {
+                    handler.post(runnable)
+                    launchChronometer()
+                }
 
         AFTER_HIKING -> {
           launchChronometer()
@@ -533,16 +546,73 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     permissionChecker = PermissionChecker(this)
   }
 
-  private fun isAllPermissionGranted(result: Map<String, Boolean>): Boolean {
-    result.values.forEach { check ->
-      if (!check) {
-        return false
-      }
+    private fun isAllPermissionGranted(result: Map<String, Boolean>): Boolean {
+        result.values.forEach { check ->
+            if (!check) {
+                return false
+            }
+        }
+        return true
     }
-    return true
-  }
+    private lateinit var naverMap: NaverMap
+    override fun onMapReady(p0: NaverMap) {
+        naverMap = p0
+    }
 
-  override fun onMapReady(p0: NaverMap) {
+    var handler: Handler = Handler(Looper.getMainLooper())
+    var runnable: Runnable = object : Runnable {
+        override fun run() {
+            // 반복해서 실행할 작업
+            Log.d(TAG, "10초마다 반복 실행")
+            hikingRecordingTabViewModel.onGoingCrewId.value?.let{
+                lifecycleScope.launch {
+                    Log.d(TAG, "run: 내가 조회하려는 크루 아이디는 $it")
+                    val response = hikingRecordingService.getMemberLocation(it)
+                    if(response.isSuccessful){
+                        if(::naverMap.isInitialized){
+                            // 네이버 지도에 찍힌 마커 초기화
+                            hikingRecordingTabViewModel.memberMarkerList.value?.let {
+                                it.forEach{ marker ->
+                                    marker.map = null
+                                }
+                                it.clear()
+                            }
+                            response.body()?.let { list ->
+                                Log.d(TAG, "run: 조회한 멤버들! $list")
+                                list.forEach {
+                                    if(it.userLat != null && it.userLon != null){
+                                        hikingRecordingTabViewModel.memberMarkerList.value?.apply {
+                                            add(
+                                                Marker().apply {
+                                                    position = LatLng(it.userLat, it.userLon)
+                                                    Glide.with(binding.root).asBitmap().load(it.userProfileImg).into(
+                                                        object : CustomTarget<Bitmap>() {
+                                                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                                                // 이미지 로드 완료 후 마커 설정
+                                                                val resizeBitmap = Bitmap.createScaledBitmap(resource, 60, 60, true)
+                                                                icon = OverlayImage.fromBitmap(resizeBitmap)   // 마커 아이콘 설정
+                                                            }
+                                                            override fun onLoadCleared(placeholder: Drawable?) {}
+                                                        }
+                                                    )
+                                                    map = naverMap
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }else{
+                        showToast("동료 좌표 불러오기 실패")
+                    }
+                }
+            }
 
-  }
+            // 다시 10초 후에 실행
+            handler.postDelayed(this, 10000) // 10000ms = 10초
+        }
+    }
+
+
 }

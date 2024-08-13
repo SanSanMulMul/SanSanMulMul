@@ -21,11 +21,11 @@ class LoginActivityViewModel(private val savedStateHandle: SavedStateHandle) : V
         _user = user
     }
 
-    private lateinit var _uri: Uri
-    val uri: Uri
-        get() = _uri
 
-    fun setUri(uri: Uri) {
+    private var _uri: Uri = Uri.EMPTY
+        val uri: Uri
+            get() = _uri
+    fun setUri(uri: Uri){
         _uri = uri
     }
 
@@ -70,7 +70,7 @@ class LoginActivityViewModel(private val savedStateHandle: SavedStateHandle) : V
         _userProfileImg.value = uri
     }
 
-    private var _userBirth: MutableLiveData<String> = MutableLiveData("")
+    private var _userBirth: MutableLiveData<String> = MutableLiveData("1999-01-01")
     val userBirth: LiveData<String>
         get() = _userBirth
 

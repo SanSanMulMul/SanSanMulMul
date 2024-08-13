@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.data.network.api
 
 import com.sansantek.sansanmulmul.data.model.HikingRecordingCoord
+import com.sansantek.sansanmulmul.data.model.MemberLocation
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -14,6 +15,9 @@ interface HikingRecordingService {
     @Header("Authorization") accessToken: String,
     @Body coordRequest: HikingRecordingCoord
   ): Response<String>
+
+  @GET("record/coord")
+  suspend fun getMemberLocation(@Query("crewId") crewId: Int): Response<List<MemberLocation>>
 
   @GET("record/chk")
   suspend fun amILeader(

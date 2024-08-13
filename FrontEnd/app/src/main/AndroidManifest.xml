@@ -38,14 +38,6 @@
     android:supportsRtl="true"
     android:theme="@style/Theme.SANSANMULMUL"
     tools:targetApi="31">
-      <service
-          android:name=".data.network.api.StoneService"
-          android:enabled="true"
-          android:exported="true"></service>
-      <service
-          android:name=".data.network.api.NewsService"
-          android:enabled="true"
-          android:exported="true" />
 
     <activity
       android:name=".ui.view.LoginActivity"

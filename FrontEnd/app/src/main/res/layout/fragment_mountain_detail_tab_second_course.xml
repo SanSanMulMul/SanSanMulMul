@@ -63,7 +63,8 @@
           app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintVertical_chainStyle="packed">
 
-          <com.naver.maps.map.MapView
+          <androidx.fragment.app.FragmentContainerView
+            android:name="com.naver.maps.map.MapFragment"
             android:id="@+id/mountain_detail_course_map"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

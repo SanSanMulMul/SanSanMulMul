@@ -81,7 +81,8 @@ dependencies {
   //Room 의존성 추가
   implementation(libs.androidx.room.runtime)
   implementation(libs.room.ktx)
-  annotationProcessor(libs.room.compiler)
+    implementation(libs.firebase.firestore.ktx)
+    annotationProcessor(libs.room.compiler)
   ksp(libs.room.compiler)
 
   // Retrofit 관련 의존

@@ -19,8 +19,10 @@ import com.sansantek.sansanmulmul.ui.adapter.GroupDetailTabHikingStyleListAdapte
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.SpaceItemDecoration
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.crewService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 private const val TAG = "GroupDetailTabFirstInfo 싸피"
 
@@ -52,7 +54,6 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
             }
         }
         Log.d(TAG, "onViewCreated: $crew")
-
 
         binding.rvGroupMemberList.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -115,7 +116,9 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
                                                         crew.crewId
                                                     )
                                                     val memberNewList =
-                                                        crewService.getGroupDetailFirstTabData(crew.crewId)
+                                                        crewService.getGroupDetailFirstTabData(
+                                                            crew.crewId
+                                                        )
                                                     if (newList.isSuccessful) {
                                                         submitList(null)
                                                         submitList(newList.body()!!)
@@ -148,7 +151,8 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
                     }
                     groupDetailFirstTabMemberListAdapter = GroupDetailFirstTabMemberListAdapter(
                         amILeader,
-                        activityViewModel.user.userId
+                        activityViewModel.user.userId,
+                        parentFragmentManager
                     ).apply {
                         setItemClickListener(object :
                             GroupDetailFirstTabMemberListAdapter.ItemClickListener {
@@ -169,13 +173,16 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
                                                 "onLeaderDelegateClick: 위임 후 값 설정 ${newList.body()!!.members.find { it.userId == activityViewModel.user.userId }?.leader ?: false}"
                                             )
                                             setAmILeader(
-                                                newList.body()!!.members.find { it.userId == activityViewModel.user.userId }?.leader
-                                                    ?: false
+                                                newList.body()!!.members.find {
+                                                    it.userId == activityViewModel.user.userId
+                                                }?.leader ?: false
                                             )
                                             binding.layoutRegistrationList.visibility = View.GONE
                                             Log.d(TAG, "onLeaderDelegateClick: 위임 후 리스트 갱신")
                                             groupDetailFirstTabMemberListAdapter.submitList(null)
-                                            groupDetailFirstTabMemberListAdapter.submitList(newList.body()!!.members)
+                                            groupDetailFirstTabMemberListAdapter.submitList(
+                                                newList.body()!!.members
+                                            )
                                             return true
                                         }
                                         return false
@@ -209,6 +216,16 @@ class GroupDetailTabFirstInfoFragment(private val crew: Crew) :
                                         }
                                     }
                                 }
+                            }
+
+                            override suspend fun onMemberClick(user: GroupUser) {
+                                // 멤버 클릭 시 프래그먼트 전환
+//                                val fragment = GroupMemberDetailPageFragment.newInstance(user.userId)
+
+                                val activity = requireActivity() as MainActivity
+                                activity.changeAddToBackstackFragment(GroupMemberDetailPageFragment.newInstance(user.userId))
+//
+                                Log.d(TAG, "onMemberClick: 클릭 완료")
                             }
 
                         })

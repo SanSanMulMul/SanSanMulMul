@@ -44,6 +44,7 @@ android {
 
   buildFeatures {
     buildConfig = true
+    mlModelBinding = true
   }
 
   buildTypes {
@@ -82,7 +83,9 @@ dependencies {
   implementation(libs.androidx.room.runtime)
   implementation(libs.room.ktx)
     implementation(libs.firebase.firestore.ktx)
-    annotationProcessor(libs.room.compiler)
+  implementation(libs.tensorflow.lite.support)
+  implementation(libs.tensorflow.lite.metadata)
+  annotationProcessor(libs.room.compiler)
   ksp(libs.room.compiler)
 
   // Retrofit 관련 의존

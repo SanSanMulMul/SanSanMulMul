@@ -91,7 +91,6 @@ class SharedPreferencesUtil(context: Context) {
     fun deleteHikingRecordingState() {
         val editor = preferences.edit()
         editor.remove(SP_HIKING_RECORDING_STATE)
-        editor.clear()
         editor.apply()
     }
 
@@ -113,7 +112,6 @@ class SharedPreferencesUtil(context: Context) {
     fun deleteHikingRecordingTime() {
         val editor = preferences.edit()
         editor.remove(SP_SPEND_TIME_KEY)
-        editor.clear()
         editor.apply()
     }
 
@@ -145,7 +143,6 @@ class SharedPreferencesUtil(context: Context) {
     fun deleteHikingRecordingOnGoingCrewId() {
         val editor = preferences.edit()
         editor.remove(SP_HIKING_RECORDING_ONGOING_CREW_ID)
-        editor.clear()
         editor.apply()
     }
 
@@ -167,7 +164,6 @@ class SharedPreferencesUtil(context: Context) {
     fun deleteIsQRScanned() {
         val editor = preferences.edit()
         editor.remove(SP_IS_QR_SCANNED_KEY)
-        editor.clear()
         editor.apply()
     }
 
@@ -190,7 +186,6 @@ class SharedPreferencesUtil(context: Context) {
     fun deleteIsQRCompleted() {
         val editor = preferences.edit()
         editor.remove(SP_IS_QR_COMPLETED_KEY)
-        editor.clear()
         editor.apply()
     }
 

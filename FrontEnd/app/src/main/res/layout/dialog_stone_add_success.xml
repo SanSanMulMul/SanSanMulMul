@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@drawable/rounded_rectangle_gradient_20">
@@ -17,7 +18,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="20dp"
-      android:text="정상석을 찍어볼까요?"
+      android:text="정상석 등록 완료!"
       android:textColor="@color/sansanmulmul_dark_gray"
       android:textSize="20sp"
       android:textStyle="bold"
@@ -49,72 +50,31 @@
       android:layout_marginHorizontal="10dp"
       android:layout_marginTop="15dp"
       android:gravity="center"
-      android:text="예시 사진처럼 정상석의 정면을 찍어주세요!"
+      android:text="[마이 > My 정상석] 에서 등록 결과를 확인할 수 있습니다."
       android:textColor="@color/sansanmulmul_dark_gray"
       android:textSize="14sp"
-      app:layout_constraintBottom_toTopOf="@id/tv_peak_stone_description2"
+      app:layout_constraintBottom_toTopOf="@id/iv_stone_pictured"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/tv_peak_stone_title" />
 
-    <TextView
-      android:id="@+id/tv_peak_stone_description2"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginHorizontal="10dp"
-      android:layout_marginTop="5dp"
-      android:gravity="center"
-      android:text="AI가 사진을 인식하여 챌린지에 등록해줍니다."
-      android:textColor="@color/sansanmulmul_dark_gray"
-      android:textSize="14sp"
-      app:layout_constraintBottom_toTopOf="@id/tv_peak_stone_description3"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/tv_peak_stone_description1" />
-
     <ImageView
-      android:id="@+id/btn_camera"
-      android:layout_width="50dp"
-      android:layout_height="50dp"
+      android:id="@+id/iv_stone_pictured"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginStart="30dp"
       android:layout_marginTop="20dp"
-      android:layout_marginBottom="40dp"
-      android:background="@drawable/rounded_button_green_200"
-      android:backgroundTint="@color/white"
-      android:elevation="10dp"
-      android:padding="10dp"
-      android:src="@drawable/camera"
+      android:layout_marginEnd="30dp"
+      android:layout_marginBottom="30dp"
+      android:background="@drawable/rounded_rectangle_white_grey_30"
+      android:clipToOutline="true"
+      android:scaleType="centerCrop"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/iv_example"
-      app:tint="@color/grey" />
+      app:layout_constraintTop_toBottomOf="@id/tv_peak_stone_description1"
+      tools:src="@drawable/mountain_6" />
 
-    <TextView
-      android:id="@+id/tv_peak_stone_description3"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="30dp"
-      android:text="@string/dialog_camera_guide_example_description"
-      android:textColor="#6D6D6D"
-      android:textSize="14sp"
-      app:layout_constraintBottom_toTopOf="@id/iv_example"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/tv_peak_stone_description2" />
-
-    <ImageView
-      android:id="@+id/iv_example"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      android:layout_marginHorizontal="30dp"
-      android:layout_marginTop="10dp"
-      android:layout_marginBottom="30dp"
-      android:src="@drawable/mountain_6"
-      app:layout_constraintBottom_toTopOf="@id/btn_camera"
-      app:layout_constraintDimensionRatio="1:1"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/tv_peak_stone_description3" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 
 

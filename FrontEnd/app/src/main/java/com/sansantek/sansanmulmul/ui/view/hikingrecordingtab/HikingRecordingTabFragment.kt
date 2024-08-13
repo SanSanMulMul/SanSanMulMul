@@ -74,7 +74,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   private val PERMISSION = if (Build.VERSION.SDK_INT >= 33) {
     arrayOf(
         Manifest.permission.CAMERA,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
       Manifest.permission.ACTIVITY_RECOGNITION,
       Manifest.permission.POST_NOTIFICATIONS,
       Manifest.permission.ACCESS_FINE_LOCATION,
@@ -83,7 +82,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   } else if (Build.VERSION.SDK_INT >= 29) {
     arrayOf(
         Manifest.permission.CAMERA,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
       Manifest.permission.ACTIVITY_RECOGNITION,
       Manifest.permission.ACCESS_FINE_LOCATION,
       Manifest.permission.ACCESS_COARSE_LOCATION

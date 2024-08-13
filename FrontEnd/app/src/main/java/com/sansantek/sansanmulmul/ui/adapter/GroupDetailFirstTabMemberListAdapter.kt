@@ -59,7 +59,9 @@ class GroupDetailFirstTabMemberListAdapter(private var amILeader: Boolean, priva
 
             // 클릭 리스너 설정
             binding.root.setOnClickListener {
-                itemClickListener.onMemberClick(item)
+                runBlocking {
+                    itemClickListener.onMemberClick(item)
+                }
             }
 
             binding.btnDelegateAdmin.setOnClickListener {
@@ -109,7 +111,7 @@ class GroupDetailFirstTabMemberListAdapter(private var amILeader: Boolean, priva
     interface ItemClickListener {
         suspend fun onLeaderDelegateClick(user: GroupUser): Boolean
         suspend fun onKickClick(user: GroupUser)
-        fun onMemberClick(user: GroupUser)
+        suspend fun onMemberClick(user: GroupUser)
     }
 
     private lateinit var itemClickListener: ItemClickListener

@@ -52,31 +52,14 @@ class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>
             }
         }
         binding.npYear.setOnValueChangedListener { picker, oldValue, newValue ->
-            activityViewModel.setUserBirth(
-                "${DecimalFormat("00").format(newValue)}-${
-                    DecimalFormat(
-                        "00"
-                    ).format(binding.npMonth.value)
-                }-${DecimalFormat("00").format(binding.npDay.value)}"
-            )
+
+            activityViewModel.setUserBirth("${DecimalFormat("0000").format(newValue)}-${DecimalFormat("00").format(binding.npMonth.value)}-${DecimalFormat("00").format(binding.npDay.value)}")
         }
         binding.npMonth.setOnValueChangedListener { picker, oldValue, newValue ->
-            activityViewModel.setUserBirth(
-                "${DecimalFormat("00").format(binding.npYear.value)}-${
-                    DecimalFormat(
-                        "00"
-                    ).format(newValue)
-                }-${DecimalFormat("00").format(binding.npDay.value)}"
-            )
+            activityViewModel.setUserBirth("${DecimalFormat("0000").format(binding.npYear.value)}-${DecimalFormat("00").format(newValue)}-${DecimalFormat("00").format(binding.npDay.value)}")
         }
         binding.npDay.setOnValueChangedListener { picker, oldValue, newValue ->
-            activityViewModel.setUserBirth(
-                "${DecimalFormat("00").format(binding.npYear.value)}-${
-                    DecimalFormat(
-                        "00"
-                    ).format(binding.npMonth.value)
-                }-${DecimalFormat("00").format(newValue)}"
-            )
+            activityViewModel.setUserBirth("${DecimalFormat("0000").format(binding.npYear.value)}-${DecimalFormat("00").format(binding.npMonth.value)}-${DecimalFormat("00").format(newValue)}")
         }
     }
 

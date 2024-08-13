@@ -75,7 +75,7 @@ class GroupMemberFollowListFragment : BaseFragment<FragmentGroupMemberFollowList
 
                     // 어댑터 설정
                     val adapter = MemberFollowListAdapter(emptyList(), { user, isFollowing ->
-                        handleFollowButtonClick(user, isFollowing, headerAccessToken)
+//                        handleFollowButtonClick(user, isFollowing, headerAccessToken)
                     }, followingNicknames, currentUserNickName)
 
                     // RecyclerView에 어댑터와 레이아웃 매니저 설정
@@ -109,36 +109,36 @@ class GroupMemberFollowListFragment : BaseFragment<FragmentGroupMemberFollowList
         }
     }
 
-    private fun handleFollowButtonClick(user: FollowUser, isFollowing: Boolean, headerAccessToken: String) {
-        lifecycleScope.launch {
-            try {
-                if (isFollowing) {
-                    // 언팔로우 요청
-                    val unfollowResponse = userService.deleteMemberFollow(headerAccessToken, user.userId)
-                    if (unfollowResponse.isSuccessful) {
-                        Log.d(TAG, "언팔로우 성공")
-                        showToast("언팔로우 성공")
-                        // 리스트를 다시 로드하거나 UI를 업데이트하여 상태 반영
-                    } else {
-                        Log.e(TAG, "언팔로우 실패: ${unfollowResponse.code()}")
-                        showToast("언팔로우 실패")
-                    }
-                } else {
-                    // 팔로우 요청
-                    val followResponse = userService.addMemberFollow(headerAccessToken, activityViewModel.user.userId, user.userId)
-                    if (followResponse.isSuccessful) {
-                        Log.d(TAG, "팔로우 성공")
-                        showToast("팔로우 성공")
-                        // 리스트를 다시 로드하거나 UI를 업데이트하여 상태 반영
-                    } else {
-                        Log.e(TAG, "팔로우 실패: ${followResponse.code()}")
-                        showToast("팔로우 실패")
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "팔로우/언팔로우 에러", e)
-                showToast("에러가 발생했습니다.")
-            }
-        }
-    }
+//    private fun handleFollowButtonClick(user: FollowUser, isFollowing: Boolean, headerAccessToken: String) {
+//        lifecycleScope.launch {
+//            try {
+//                if (isFollowing) {
+//                    // 언팔로우 요청
+//                    val unfollowResponse = userService.deleteMemberFollow(headerAccessToken, user.userId)
+//                    if (unfollowResponse.isSuccessful) {
+//                        Log.d(TAG, "언팔로우 성공")
+//                        showToast("언팔로우 성공")
+//                        // 리스트를 다시 로드하거나 UI를 업데이트하여 상태 반영
+//                    } else {
+//                        Log.e(TAG, "언팔로우 실패: ${unfollowResponse.code()}")
+//                        showToast("언팔로우 실패")
+//                    }
+//                } else {
+//                    // 팔로우 요청
+//                    val followResponse = userService.addMemberFollow(headerAccessToken, activityViewModel.user.userId, user.userId)
+//                    if (followResponse.isSuccessful) {
+//                        Log.d(TAG, "팔로우 성공")
+//                        showToast("팔로우 성공")
+//                        // 리스트를 다시 로드하거나 UI를 업데이트하여 상태 반영
+//                    } else {
+//                        Log.e(TAG, "팔로우 실패: ${followResponse.code()}")
+//                        showToast("팔로우 실패")
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                Log.e(TAG, "팔로우/언팔로우 에러", e)
+//                showToast("에러가 발생했습니다.")
+//            }
+//        }
+//    }
 }

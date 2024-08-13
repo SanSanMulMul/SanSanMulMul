@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
@@ -12,6 +13,7 @@ import com.google.android.material.chip.ChipGroup
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.PolylineOverlay
@@ -22,10 +24,12 @@ import com.sansantek.sansanmulmul.config.Const.Companion.INFO_TAB
 import com.sansantek.sansanmulmul.data.model.CourseDetail
 import com.sansantek.sansanmulmul.databinding.FragmentMountainDetailTabSecondCourseBinding
 import com.sansantek.sansanmulmul.ui.adapter.MountainDetailCourseListAdapter
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.view.coursedetail.CourseDetailFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.CourseDetailViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
+import kotlinx.coroutines.launch
 
 private const val TAG = "싸피_MountainDetailTabSecond"
 
@@ -218,17 +222,37 @@ class MountainDetailTabSecondCourseFragment :
     }
 
     private fun initCourseMap() {
-        binding.mountainDetailCourseMap.getMapAsync(this)
+        val mapFragment = childFragmentManager.findFragmentById(R.id.layout_mountain_detail_course_map) as MapFragment?
+            ?: MapFragment.newInstance().also {
+                childFragmentManager.beginTransaction().add(R.id.layout_mountain_detail_course_map, it).commit()
+            }
+
+        mapFragment.getMapAsync(this)
     }
 
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
-
+        Log.d(TAG, "onMapReady: 왜 안돼?")
         courseDetailViewModel.courseDetails.observe(viewLifecycleOwner) { courseDetails ->
             if (courseDetails != null) {
                 courseList = courseDetails
                 courseListAdapter.submitList(courseList)
                 drawPolyLineOnMap(courseList)
+            }
+        }
+        lifecycleScope.launch {
+            val response = mountainService.getMountainDetailByID(mountainDetailViewModel.mountainID.value!!)
+            if(response.isSuccessful){
+                naverMap.apply {
+                    moveCamera(
+                        CameraUpdate.scrollTo(
+                            LatLng(response.body()!!.mountainLat, response.body()!!.mountainLon)
+                        )
+                    )
+                    moveCamera(CameraUpdate.zoomOut())
+                }
+            }else{
+                showToast("산 로딩에 실패했습니다!")
             }
         }
     }

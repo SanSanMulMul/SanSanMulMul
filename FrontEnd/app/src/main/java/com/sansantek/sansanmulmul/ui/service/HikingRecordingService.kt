@@ -49,6 +49,9 @@ class HikingRecordingService : Service(), SensorEventListener {
     private var crewId: Int = -1
     private var status = "undefined"
     private val token = sharedPreferencesUtil.getKakaoLoginToken()
+    companion object{
+        var isRunning: Boolean = false
+    }
 
     private val stepCounterRepository by lazy {
         StepCounterRepository.get()
@@ -128,14 +131,34 @@ class HikingRecordingService : Service(), SensorEventListener {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d(TAG, "onStartCommand: 서비스 시작")
+        Log.d(TAG, "onStartCommand isRunning: 서비스 시작")
+        isRunning = true
         if (intent != null) {
             status = intent.getStringExtra("status") ?: "undefined"
             crewId = intent.getIntExtra("crewId", -1)
             Log.d(TAG, "onStartCommand: status $status crewId $crewId")
         } else {
+            isRunning = false
+            Log.d(TAG, "serviceStatus isRunning: ${isRunning}")
             stopSelf()
         }
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val channel =
+            NotificationChannel("hiking_recording", "FOREGROUND", NotificationManager.IMPORTANCE_HIGH)
+        channel.enableLights(true)
+        channel.lightColor = Color.RED
+        channel.enableVibration(true)
+        // 앱 위에 알림 아이콘 뜨는것 안보이게 설정
+        channel.setShowBadge(false)
+        manager.createNotificationChannel(channel)
+
+        val builder = NotificationCompat.Builder(this, "hiking_recording")
+        builder.setSmallIcon(R.drawable.sansanmulmul_logo)
+        builder.setContentTitle("${status} 기록 서비스 가동")
+        // 알림을 밀어서 지우지 못하도록 설정
+        builder.setOngoing(true)
+
+        startForeground(111, builder.build()) // 서비스 가동시 알림 뜨고, 서비스 종료시 자동으로 사라짐 (종료 전엔 못 없앰)
         Log.d(TAG, "onStartCommand: 서비스 진짜 시작 $status")
         CoroutineScope(Dispatchers.IO).launch {
             launch {
@@ -160,33 +183,14 @@ class HikingRecordingService : Service(), SensorEventListener {
                 } else {
                     launch(Dispatchers.Main) {
                         Toast.makeText(this@HikingRecordingService, "기록이 시작됩니다", Toast.LENGTH_SHORT).show()
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 3F, locationListener)
+                        locationManager.requestLocationUpdates(LocationManager.FUSED_PROVIDER, 500L, 1F, locationListener, )
                         Log.d(TAG, "onStartCommand: GPS Listener 등록")
                     }
                 }
             }
             Log.d(TAG, "onStartCommand: 센서 등록 완료")
         }
-
-
-        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channel =
-            NotificationChannel("hiking_recording", "FOREGROUND", NotificationManager.IMPORTANCE_HIGH)
-        channel.enableLights(true)
-        channel.lightColor = Color.RED
-        channel.enableVibration(true)
-        // 앱 위에 알림 아이콘 뜨는것 안보이게 설정
-        channel.setShowBadge(false)
-        manager.createNotificationChannel(channel)
-
-        val builder = NotificationCompat.Builder(this, "hiking_recording")
-        builder.setSmallIcon(R.drawable.sansanmulmul_logo)
-        builder.setContentTitle("${status} 기록 서비스 가동")
-        // 알림을 밀어서 지우지 못하도록 설정
-        builder.setOngoing(true)
-
-        startForeground(111, builder.build()) // 서비스 가동시 알림 뜨고, 서비스 종료시 자동으로 사라짐 (종료 전엔 못 없앰)
-
+        Log.d(TAG, "serviceStatus isRunning: $isRunning")
         return START_REDELIVER_INTENT
     }
 
@@ -227,8 +231,12 @@ class HikingRecordingService : Service(), SensorEventListener {
     }
 
     override fun onDestroy() {
+        isRunning = false
+        Log.d(TAG, "serviceStatus: isRunning ${isRunning} 서비스 종료")
         Log.d(TAG, "onDestroy: StepCounter $status 서비스 종료")
-        sensorManager.unregisterListener(this)
+        if(::sensorManager.isInitialized){
+            sensorManager.unregisterListener(this)
+        }
         super.onDestroy()
     }
 

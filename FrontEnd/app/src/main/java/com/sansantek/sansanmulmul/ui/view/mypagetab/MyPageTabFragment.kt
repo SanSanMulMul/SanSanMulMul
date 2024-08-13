@@ -19,6 +19,7 @@ import com.sansantek.sansanmulmul.ui.util.Util.convertHikingStyleIntListToString
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 private const val TAG = "MyPageTabFragment_싸피"
@@ -77,6 +78,17 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
                 }
                 Glide.with(binding.root).load(activityViewModel.user.userProfileImg)
                     .into(binding.ivMyPageProfile)
+                if(activityViewModel.myPageInfo.value == null){
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        activityViewModel.token?.let {
+                            launch(Dispatchers.Main) {
+                                val myPageInfo =
+                                    userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
+                                activityViewModel.setMyPageInfo(myPageInfo)
+                            }
+                        }
+                    }
+                }
                 activityViewModel.myPageInfo.value?.let {
                     Log.d(TAG, "init: 이제서야 binding에 매핑 시작 $it")
                     binding.tvTitleName.text = it.userBadge

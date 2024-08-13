@@ -67,11 +67,18 @@
                         app:layout_constraintStart_toStartOf="parent"
 
                         >
+                        <TextView
+                            android:id="@+id/tv_crew_schedule_info"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/layout_group_leader"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginVertical="10dp"
                             >
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/cv_group_leader_profile"

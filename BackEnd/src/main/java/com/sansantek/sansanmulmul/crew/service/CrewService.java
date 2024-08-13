@@ -521,7 +521,7 @@ public class CrewService {
 
     /* 2. '내' 진행 중 그룹 */
     public List<CrewResponse> getMyOnGoingCrews(User user) {
-        List<CrewUser> myCrews =  crewUserRepository.findByUser(user);
+        List<CrewUser> myCrews =  crewUserRepository.findByUserOrderByCrewStartDateAsc(user);
 
         List<CrewResponse> myResponses = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now(); //현재시간
@@ -574,7 +574,7 @@ public class CrewService {
 
     /* 3. '내' 완료된 그룹 */
     public List<CrewResponse> getMyCompletedCrews(User user) {
-        List<CrewUser> myCrews =  crewUserRepository.findByUser(user);
+        List<CrewUser> myCrews =  crewUserRepository.findByUserOrderByCrewStartDateAsc(user);
 
         List<CrewResponse> myResponses = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now(); //현재시간

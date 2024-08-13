@@ -23,6 +23,7 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.LocationTrackingMode
+import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.UiSettings
@@ -83,8 +84,13 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
         super.onViewCreated(view, savedInstanceState)
 
         // 일단 서울 화면 나옴
-        binding.maptabMap.getMapAsync(this)
 
+        val mapFragment = childFragmentManager.findFragmentById(R.id.maptab_map) as MapFragment?
+            ?: MapFragment.newInstance().also {
+                childFragmentManager.beginTransaction().add(R.id.maptab_map, it).commit()
+            }
+
+        mapFragment.getMapAsync(this)
 
         lifecycleScope.launch {
             mountainList = mountainService.getMountainList()
@@ -397,13 +403,6 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
                         marker.infoWindow?.close()
                     } else {
                         infoWindow.open(marker)
-                    }
-                    // 좋아요 버튼 클릭 시 호출될 리스너
-                    itemBottomSheetMountainBinding.ibFavoriteBtn.setOnClickListener {
-                        // 산 ID를 가져와서 좋아요 상태를 토글
-                        val mountainId = mountain.mountainId
-                        val isLiked = checkIfMountainLiked(mountainId) // 좋아요 상태 확인 메서드
-                        onLikeClick(mountain, !isLiked)
                     }
                     true
 

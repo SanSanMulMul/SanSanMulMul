@@ -74,7 +74,7 @@ class GroupExtraInfoFragment : BaseFragment<FragmentGroupExtraInfoBinding>(
 
     private fun checkValid() {
         if (binding.groupPeopleNumberBlank.text.isNullOrBlank() || (binding.groupPeopleNumberBlank.text.toString()
-                .toIntOrNull() == null) || viewModel.groupMinAge == -1 || viewModel.groupMaxAge == -1
+                .toIntOrNull() == null || binding.groupPeopleNumberBlank.text.toString().toInt() > 10) || viewModel.groupMinAge == -1 || viewModel.groupMaxAge == -1
         ) {
             viewPagerFragment.enableNextButton(false)
         } else {

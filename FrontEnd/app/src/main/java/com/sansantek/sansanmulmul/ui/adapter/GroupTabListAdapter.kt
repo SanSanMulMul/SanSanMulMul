@@ -4,26 +4,26 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.sansantek.sansanmulmul.R
-import com.sansantek.sansanmulmul.data.model.Group
+import com.bumptech.glide.Glide
+import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.databinding.ListGroupBinding
-import com.sansantek.sansanmulmul.ui.util.Util.byteArrayToBitmap
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 private const val TAG = "GroupTabListAdapter_싸피"
 class GroupTabListAdapter(private val isAllGroupLayout:Boolean):
-    ListAdapter<Group, GroupTabListAdapter.GroupInfoListHolder>(Comparator) {
+    ListAdapter<Crew, GroupTabListAdapter.GroupInfoListHolder>(Comparator) {
 
-    companion object Comparator : DiffUtil.ItemCallback<Group>() {
-        override fun areItemsTheSame(oldItem: Group, newItem: Group): Boolean {
+    companion object Comparator : DiffUtil.ItemCallback<Crew>() {
+        override fun areItemsTheSame(oldItem: Crew, newItem: Crew): Boolean {
             return System.identityHashCode(oldItem) == System.identityHashCode(newItem)
         }
 
-        override fun areContentsTheSame(oldItem: Group, newItem: Group): Boolean {
+        override fun areContentsTheSame(oldItem: Crew, newItem: Crew): Boolean {
             return oldItem == newItem
         }
     }
@@ -32,32 +32,37 @@ class GroupTabListAdapter(private val isAllGroupLayout:Boolean):
         RecyclerView.ViewHolder(binding.root) {
 
         fun bindInfo(position: Int) {
-            if(!isAllGroupLayout){
-                binding.btnRegisterGroup.visibility = View.GONE
-                binding.root.setOnClickListener{
-                    itemClickListener.onGroupClick(position)
-                }
-            }
             val item = getItem(position)
             Log.d(TAG, "bindInfo: $item")
-            val img = if(item.imageByte == null){
-                ContextCompat.getDrawable(binding.root.context, R.drawable.signup_finish_tiger)!!.toBitmap()
+            if(!isAllGroupLayout){
+                Log.d(TAG, "bindInfo: 여기서??")
+                binding.btnRegisterGroup.visibility = View.GONE
+                binding.root.setOnClickListener{
+                    itemClickListener.onGroupClick(item)
+                }
             }else{
-                byteArrayToBitmap(item.imageByte!!)
+                if(item.userJoined){
+                    Log.d(TAG, "bindInfo: 여기서??????")
+                    binding.btnRegisterGroup.visibility = View.GONE
+                }else{
+                    binding.btnRegisterGroup.visibility = View.VISIBLE
+                }
             }
+            Glide.with(binding.root).load(item.mountainImg).into(binding.groupImage)
+            binding.groupTitle.text = item.crewName
 
-            binding.groupImage.setImageBitmap(img)
+            val originalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+            val targetFormatter = DateTimeFormatter.ofPattern("yy.MM.dd HH:mm")
+            val startDate = LocalDateTime.parse(item.crewStartDate, originalFormatter)
+            val endDate = LocalDateTime.parse(item.crewEndDate, originalFormatter)
+            val formattedStartDate = startDate.format(targetFormatter)
+            val formattedEndDate = endDate.format(targetFormatter)
 
-//            Glide.with(itemView)
-//                .load("${ApplicationClass.MENU_IMGS_URL}${item.menuImg}")
-//                .into(binding.groupImage)
-
-            binding.groupTitle.text = item.title
-            binding.groupSchedule.text = "24.07.15 13:00 - 24.07.15 14:00"
-            binding.groupPersonInfo.text = "3 / 10명"
+            binding.groupPersonInfo.text = "${item.crewCurrentMembers} / ${item.crewMaxMembers}"
+            binding.groupSchedule.text = "${formattedStartDate} - ${formattedEndDate}"
 
             binding.btnRegisterGroup.setOnClickListener {
-                itemClickListener.onClick(position)
+                itemClickListener.onClick(item)
             }
         }
     }
@@ -78,8 +83,8 @@ class GroupTabListAdapter(private val isAllGroupLayout:Boolean):
 
 
     interface ItemClickListener {
-        fun onClick(position: Int)
-        fun onGroupClick(position: Int)
+        fun onClick(crew: Crew)
+        fun onGroupClick(crew: Crew)
     }
 
     private lateinit var itemClickListener: ItemClickListener

@@ -1,8 +1,5 @@
 package com.sansantek.sansanmulmul.ui.adapter
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -10,20 +7,19 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.R
-import com.sansantek.sansanmulmul.data.model.Picture
+import com.sansantek.sansanmulmul.data.model.CrewGallery
 import com.sansantek.sansanmulmul.databinding.ListGalleryInfoBinding
-import com.sansantek.sansanmulmul.ui.util.Util
 
-class GroupDetailTabGalleryInfoListAdapter():
-    ListAdapter<Picture, GroupDetailTabGalleryInfoListAdapter.GroupGalleryListHolder>(Comparator) {
-
-    companion object Comparator : DiffUtil.ItemCallback<Picture>() {
-        override fun areItemsTheSame(oldItem: Picture, newItem: Picture): Boolean {
+class GroupDetailTabGalleryInfoListAdapter() :
+    ListAdapter<CrewGallery, GroupDetailTabGalleryInfoListAdapter.GroupGalleryListHolder>(Comparator) {
+    companion object Comparator : DiffUtil.ItemCallback<CrewGallery>() {
+        override fun areItemsTheSame(oldItem: CrewGallery, newItem: CrewGallery): Boolean {
             return System.identityHashCode(oldItem) == System.identityHashCode(newItem)
         }
 
-        override fun areContentsTheSame(oldItem: Picture, newItem: Picture): Boolean {
+        override fun areContentsTheSame(oldItem: CrewGallery, newItem: CrewGallery): Boolean {
             return oldItem == newItem
         }
     }
@@ -34,14 +30,14 @@ class GroupDetailTabGalleryInfoListAdapter():
         fun bindInfo(position: Int) {
             val item = getItem(position)
 
-            val img = if(item.uri == null){
-                ContextCompat.getDrawable(binding.root.context, R.drawable.bg_group_preview)!!.toBitmap()
-            }else{
-                binding.root.context.contentResolver.openInputStream(item.uri!!)?.use { inputStream ->
-                    BitmapFactory.decodeStream(inputStream)
-                }
+            if (item.imgUrl.isEmpty()) {
+                val img =
+                    ContextCompat.getDrawable(binding.root.context, R.drawable.bg_group_preview)!!
+                        .toBitmap()
+                binding.ivPicture.setImageBitmap(img)
+            } else {
+                Glide.with(binding.root).load(item.imgUrl).into(binding.ivPicture)
             }
-            binding.ivPicture.setImageBitmap(img)
             binding.ivPicture.setOnClickListener {
                 itemClickListener.onClick(position)
             }

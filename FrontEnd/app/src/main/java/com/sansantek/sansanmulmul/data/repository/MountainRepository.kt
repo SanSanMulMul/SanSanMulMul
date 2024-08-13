@@ -1,6 +1,8 @@
 package com.sansantek.sansanmulmul.data.repository
 
+import android.util.Log
 import com.sansantek.sansanmulmul.data.model.Mountain
+import com.sansantek.sansanmulmul.data.model.MountainCourse
 import com.sansantek.sansanmulmul.data.model.MountainSunriseSunset
 import com.sansantek.sansanmulmul.data.model.MountainWeather
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil
@@ -62,4 +64,19 @@ class MountainRepository {
             null
         }
     }
+
+    // 코스 개수 조회
+    suspend fun getMountainCourse(mountainId: Int): MountainCourse? {
+        return try {
+            val response = RetrofiltUtil.mountainService.getMountainCourse(mountainId)
+            if (response.isSuccessful) {
+                response.body() ?: MountainCourse(emptyList(), 0, emptyList())
+            } else {
+                MountainCourse(emptyList(), 0, emptyList())
+            }
+        } catch (e: Exception) {
+            MountainCourse(emptyList(), 0, emptyList())
+        }
+    }
+
 }

@@ -17,13 +17,14 @@ import com.sansantek.sansanmulmul.ui.util.Util.dpToPx
 import com.sansantek.sansanmulmul.ui.viewmodel.LoginActivityViewModel
 
 private const val TAG = "RegisterHikingStyleFrag 싸피"
+
 class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBinding>(
     FragmentRegisterHikingStyleBinding::bind,
     R.layout.fragment_register_hiking_style
 ) {
     private val activityViewModel: LoginActivityViewModel by activityViewModels()
-    private lateinit var checkBoxList : List<CheckBox>
-    private lateinit var checkBoxEnableColorList : List<Int>
+    private lateinit var checkBoxList: List<CheckBox>
+    private lateinit var checkBoxEnableColorList: List<Int>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,13 +34,15 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
             binding.cbHikingStyle3,
             binding.cbHikingStyle4,
             binding.cbHikingStyle5,
+            binding.cbHikingStyle6,
         )
         checkBoxEnableColorList = listOf(
             R.color.purple,
             R.color.lightgreen,
             R.color.blue,
             R.color.pink,
-            R.color.yellow
+            R.color.yellow,
+            R.color.light_orange
         )
         // Set listeners for each CheckBox
         binding.cbHikingStyle1.setOnCheckedChangeListener(onCheckedChangeListener(R.color.purple))
@@ -47,6 +50,7 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
         binding.cbHikingStyle3.setOnCheckedChangeListener(onCheckedChangeListener(R.color.blue))
         binding.cbHikingStyle4.setOnCheckedChangeListener(onCheckedChangeListener(R.color.pink))
         binding.cbHikingStyle5.setOnCheckedChangeListener(onCheckedChangeListener(R.color.yellow))
+        binding.cbHikingStyle6.setOnCheckedChangeListener(onCheckedChangeListener(R.color.light_orange))
 
         registerObserver()
     }
@@ -63,28 +67,28 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
         }
     }
 
-    private fun registerObserver(){
-        activityViewModel.userStyles.observe(viewLifecycleOwner){
+    private fun registerObserver() {
+        activityViewModel.userStyles.observe(viewLifecycleOwner) {
             Log.d(TAG, "registerObserver: ${activityViewModel.userStyles.value}")
-            for(box in checkBoxList){
+            for (box in checkBoxList) {
                 setCheckBoxDisable(box)
             }
-            it.forEach { style->
+            it.forEach { style ->
                 setCheckBoxEnable(style)
             }
         }
     }
 
-    private fun setCheckBoxDisable(checkBox: CheckBox){
+    private fun setCheckBoxDisable(checkBox: CheckBox) {
         checkBox.background =
-          ContextCompat.getDrawable(requireContext(), R.drawable.check_box_background)
+            ContextCompat.getDrawable(requireContext(), R.drawable.check_box_background)
     }
 
-    private fun setCheckBoxEnable(style: Int){
-        setGradient(checkBoxList[style-1], checkBoxEnableColorList[style-1])
+    private fun setCheckBoxEnable(style: Int) {
+        setSolidColorBackground(checkBoxList[style - 1], checkBoxEnableColorList[style - 1])
     }
 
-    private fun addStyleById(selectedId: Int){
+    private fun addStyleById(selectedId: Int) {
         when (selectedId) {
             R.id.cb_hiking_style_1 -> {
                 addStyle(1)
@@ -103,22 +107,26 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
             }
 
             R.id.cb_hiking_style_5 -> {
-                activityViewModel.userStyles.value?.let{
+                activityViewModel.userStyles.value?.let {
                     addStyle(5)
                 }
+            }
+
+            R.id.cb_hiking_style_6 -> {
+                addStyle(6)
             }
         }
     }
 
-    private fun addStyle(id: Int){
-        activityViewModel.userStyles.value?.let{
+    private fun addStyle(id: Int) {
+        activityViewModel.userStyles.value?.let {
             val list = it.toMutableList()
             list.add(id)
             activityViewModel.setUserStyles(list)
         }
     }
 
-    private fun removeStyleById(selectedId: Int){
+    private fun removeStyleById(selectedId: Int) {
         when (selectedId) {
             R.id.cb_hiking_style_1 -> {
                 removeStyle(1)
@@ -139,28 +147,27 @@ class RegisterHikingStyleFragment : BaseFragment<FragmentRegisterHikingStyleBind
             R.id.cb_hiking_style_5 -> {
                 removeStyle(5)
             }
+
+            R.id.cb_hiking_style_6 -> {
+                removeStyle(6)
+            }
         }
     }
 
-    private fun removeStyle(id: Int){
-        activityViewModel.userStyles.value?.let{
+    private fun removeStyle(id: Int) {
+        activityViewModel.userStyles.value?.let {
             val list = it.toMutableList().filter { target -> target != id }
             activityViewModel.setUserStyles(list)
         }
     }
 
-    private fun setGradient(checkBox: CheckBox, color: Int) {
-        // Create a gradient drawable with stroke and corner radius
-        val gradientDrawable = GradientDrawable().apply {
-            orientation = GradientDrawable.Orientation.TOP_BOTTOM
-            colors = intArrayOf(
-                Color.WHITE, // Starting color
-                ContextCompat.getColor(requireContext(), color) // Dynamic color from resources
-            )
+    private fun setSolidColorBackground(checkBox: CheckBox, color: Int) {
+        val drawable = GradientDrawable().apply {
+            setColor(ContextCompat.getColor(requireContext(), color)) // 단색 배경 색상 설정
             val dp = 10f.dpToPx(this@RegisterHikingStyleFragment.requireContext())
-            cornerRadius = dp // Set the corner radius
-            setStroke(1, Color.parseColor("#808080")) // Set stroke width and color
+            cornerRadius = dp // 모서리 반경 설정
+            setStroke(1, Color.parseColor("#808080")) // 테두리 너비와 색상 설정
         }
-        checkBox.background = gradientDrawable // Set the gradient as background
+        checkBox.background = drawable // 단색 배경을 설정
     }
 }

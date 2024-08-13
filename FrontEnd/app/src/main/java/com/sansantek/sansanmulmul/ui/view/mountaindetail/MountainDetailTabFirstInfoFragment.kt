@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.ui.view.mountaindetail
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -11,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.Mountain
+import com.sansantek.sansanmulmul.data.model.MountainCourse
 import com.sansantek.sansanmulmul.data.model.MountainSunriseSunset
 import com.sansantek.sansanmulmul.data.model.MountainWeather
 import com.sansantek.sansanmulmul.databinding.FragmentMountainDetailTabFirstInfoBinding
@@ -28,6 +30,7 @@ class MountainDetailTabFirstInfoFragment : BaseFragment<FragmentMountainDetailTa
 ) {
     private var isExpanded = false
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
+    private lateinit var course: MountainCourse
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         init()
@@ -41,12 +44,23 @@ class MountainDetailTabFirstInfoFragment : BaseFragment<FragmentMountainDetailTa
     private fun initMountainData() {
         val mountainID = mountainDetailViewModel.mountainID.value
         if (mountainID != null) {
+            mountainDetailViewModel.fetchMountainDetail(mountainID)
             mountainDetailViewModel.fetchMountainSunriseSunset(mountainID)
             mountainDetailViewModel.fetchMountainWeather(mountainID)
+            mountainDetailViewModel.fetchMountainCourse(mountainID)  // 추가
         }
 
-        mountainDetailViewModel.mountainDetail.observe(viewLifecycleOwner) {
-            mountainDetailViewModel.mountainDetail.value?.let { setMountainDetailInfo(it) }
+        mountainDetailViewModel.mountainDetail.observe(viewLifecycleOwner) { mountainDetail ->
+            Log.d(TAG, "initMountainData: 옵저버1")
+            val mountainCourse = mountainDetailViewModel.mountainCourse.value
+            mountainDetail?.let { setMountainDetailInfo(it, mountainCourse) }
+        }
+
+        mountainDetailViewModel.mountainCourse.observe(viewLifecycleOwner) { mountainCourse ->
+            Log.d(TAG, "initMountainData: 옵저버2")
+            mountainDetailViewModel.mountainDetail.value?.let { mountainDetail ->
+                setMountainDetailInfo(mountainDetail, mountainCourse)
+            }
         }
 
         mountainDetailViewModel.mountainSunriseSunset.observe(viewLifecycleOwner) {
@@ -58,7 +72,6 @@ class MountainDetailTabFirstInfoFragment : BaseFragment<FragmentMountainDetailTa
         mountainDetailViewModel.mountainWeather.observe(viewLifecycleOwner) {
             mountainDetailViewModel.mountainWeather.value?.let { setMountainWeatherInfo(it) }
         }
-
     }
 
     private fun initMountainDescriptionToggle() {
@@ -83,15 +96,13 @@ class MountainDetailTabFirstInfoFragment : BaseFragment<FragmentMountainDetailTa
         }
     }
 
-    private fun setMountainDetailInfo(mountain: Mountain?) {
-        if (mountain != null) {
-            with(binding) {
-                tvMountainDetail.text = mountain.mountainDescription ?: ""
-                tvHeight.text = getNumberWithCommas(mountain.mountainHeight) + "m"
-//        tvCourseCnt.text = responseBody.
-            }
-        } else {
-            Toast.makeText(context, "response body가 비었습니다.", Toast.LENGTH_SHORT).show()
+    private fun setMountainDetailInfo(mountain: Mountain, mountainCourse: MountainCourse?) {
+        with(binding) {
+            tvMountainDetail.text = mountain.mountainDescription ?: ""
+            tvHeight.text = getNumberWithCommas(mountain.mountainHeight) + "m"
+            tvCourseCnt.text =
+                mountainCourse?.courseCount?.takeIf { it > 0 }?.toString() ?: "데이터 없음"
+
         }
     }
 

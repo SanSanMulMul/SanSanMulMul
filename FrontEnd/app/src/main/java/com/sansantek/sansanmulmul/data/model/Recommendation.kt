@@ -1,9 +1,10 @@
 package com.sansantek.sansanmulmul.data.model
 
 data class Recommendation(
+  val mountainId : Int,
   val mountainName: String,
-  val mountainDifficulty: String,
-  val mountainImg: Int
+  val mountainHeight: Int,
+  val mountainImg: String?,
 ) {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -12,7 +13,7 @@ data class Recommendation(
     other as Recommendation
 
     if (mountainName != other.mountainName) return false
-    if (mountainDifficulty != other.mountainDifficulty) return false
+    if (mountainHeight != other.mountainHeight) return false
     if (mountainImg != other.mountainImg) return false
 
     return true
@@ -20,7 +21,7 @@ data class Recommendation(
 
   override fun hashCode(): Int {
     var result = mountainName.hashCode()
-    result = 31 * result + mountainDifficulty.hashCode()
+    result = 31 * result + mountainHeight.hashCode()
     result = 31 * result + mountainImg.hashCode()
     return result
   }

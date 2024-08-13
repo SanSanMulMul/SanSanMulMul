@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -19,6 +20,7 @@ import com.sansantek.sansanmulmul.ui.view.LoginActivity
 import com.sansantek.sansanmulmul.ui.viewmodel.LoginActivityViewModel
 
 private const val TAG = "RegisterProfileFragment 싸피"
+
 class RegisterProfileFragment : BaseFragment<FragmentRegisterProfileBinding>(
     FragmentRegisterProfileBinding::bind,
     R.layout.fragment_register_profile
@@ -26,22 +28,23 @@ class RegisterProfileFragment : BaseFragment<FragmentRegisterProfileBinding>(
     private val activityViewModel: LoginActivityViewModel by activityViewModels()
     private lateinit var activity: LoginActivity
     private val permissionList = arrayOf(Manifest.permission.CAMERA)
-    private lateinit var permissionChecker : PermissionChecker
+    private lateinit var permissionChecker: PermissionChecker
+    private lateinit var uri: Uri
     override fun onAttach(context: Context) {
         super.onAttach(context)
         activity = context as LoginActivity
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         permissionChecker = PermissionChecker(this)
         binding.ibEditPrifileImg.setOnClickListener {
-            if(permissionChecker.checkPermission(activity, permissionList)){
+            if (permissionChecker.checkPermission(activity, permissionList)) {
                 permissionChecker.setOnGrantedListener { //퍼미션 획득 성공일때
                     openGallery()
                 }
                 permissionChecker.requestPermissionLauncher.launch(permissionList) // 권한없으면 창 띄움
-            }
-            else{
+            } else {
                 openGallery()
             }
         }
@@ -72,9 +75,8 @@ class RegisterProfileFragment : BaseFragment<FragmentRegisterProfileBinding>(
                 data?.data?.let { it ->
                     Log.d(TAG, "수신 양호: $it")
 
-                    val image = it
-                    binding.ivProfile.setImageURI(image)
-                    activityViewModel.setUserProfileImg(image.toString())
+                    activityViewModel.setUri(it)
+                    binding.ivProfile.setImageURI(it)
                 }
             }
         }

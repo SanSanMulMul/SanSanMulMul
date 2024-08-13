@@ -2,7 +2,7 @@ package com.sansantek.sansanmulmul.ui.view.mypagetab
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
@@ -17,14 +17,13 @@ class MyPageSecondTabFragment : BaseFragment<FragmentMyPageSecondTabBinding>(
 ) {
   private var stoneList: MutableList<MountainPeakStoneItem> = mutableListOf()
   private lateinit var mountainPeakStoneListAdapter: MountainPeakStoneListAdapter
-  private val mountainPeakStoneViewModel: MountainPeakStoneViewModel by viewModels()
+  private val mountainPeakStoneViewModel: MountainPeakStoneViewModel by activityViewModels()
 
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    initStoneIdObserving()
     initRecyclerView()
     initData()
-
-    
   }
 
   private fun initData() {
@@ -48,6 +47,12 @@ class MyPageSecondTabFragment : BaseFragment<FragmentMyPageSecondTabBinding>(
       adapter = mountainPeakStoneListAdapter.apply {
         submitList(stoneList)
       }
+    }
+  }
+
+  private fun initStoneIdObserving() {
+    mountainPeakStoneViewModel.stoneId.observe(viewLifecycleOwner) { stoneId ->
+      // TODO : stoneId에 해당하는 정상석 추가 api 호출하고 UI 업데이트
     }
   }
 }

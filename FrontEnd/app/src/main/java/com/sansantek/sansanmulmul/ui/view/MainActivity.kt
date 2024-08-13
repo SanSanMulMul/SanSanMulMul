@@ -354,8 +354,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
       Log.d(TAG, "classifyImage: result = ${classes[maxPos]} / confidence = $s")
 
-      val result = classes[maxPos]
-//      mountainPeakStoneViewModel.stoneId =
+//      val result = classes[maxPos]
+      mountainPeakStoneViewModel.setStoneId(maxPos + 1)
       model.close()
     } catch (e: IOException) {
       // TODO Handle the exception

@@ -89,6 +89,25 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
         }
         initClickListener()
 
+        // Follower 버튼 클릭 리스너
+        binding.layoutMyFollowerInfo.setOnClickListener {
+            memberUserId?.let { id ->
+                val followerFragment = GroupMemberFollowListFragment.newInstance(id)
+                replaceFragment(followerFragment)
+            } ?: run {
+                Log.e(TAG, "memberUserId가 null입니다.")
+            }
+        }
+
+        // Following 버튼 클릭 리스너
+        binding.layoutMyFollowingInfo.setOnClickListener {
+            memberUserId?.let { id ->
+                val followingFragment = GroupMemberFollowListFragment.newInstance(id)
+                replaceFragment(followingFragment)
+            } ?: run {
+                Log.e(TAG, "memberUserId가 null입니다.")
+            }
+        }
     }
 
     override fun onDestroyView() {

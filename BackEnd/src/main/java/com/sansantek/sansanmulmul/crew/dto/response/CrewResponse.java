@@ -22,6 +22,10 @@ public class CrewResponse {
     private String crewName;
     @Schema(description = "산 이름", example = "금오산")
     private String mountainName;
+    @Schema(description = "상행 코스 이름", example = "금오산 제 1코스")
+    private String upCourseName;
+    @Schema(description = "하행 코스 이름", example = "금오산 제 2코스")
+    private String downCourseName;
     @Schema(description = "그룹 시작 일시", example = "2024-08-01 22:59:59")
     private LocalDateTime crewStartDate;
     @Schema(description = "그룹 종료 일시", example = "2024-08-01 23:59:59")

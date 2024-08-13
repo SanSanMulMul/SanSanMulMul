@@ -29,6 +29,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
@@ -146,7 +147,13 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         registerObserving()
         registerLocalBroadCastReceiver()
         hideBottomNav(rootActivity.findViewById(R.id.main_layout_bottom_navigation), false)
-        binding.hikingRecordingTabMap.getMapAsync(this)
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.hiking_recording_tab_map) as MapFragment?
+            ?: MapFragment.newInstance().also {
+                childFragmentManager.beginTransaction().add(R.id.hiking_recording_tab_map, it).commit()
+            }
+
+        mapFragment.getMapAsync(this)
     }
 
     private fun setInitialView() {
@@ -248,22 +255,15 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
             when (currentStatus) {
                 // 아직 기록 시작 안했을 때 => 상행으로 바뀜 버튼은 하행 버튼으로
                 BEFORE_HIKING -> {
-                    tryRecordingServiceByStatus("상행")
                     hikingRecordingTabViewModel.setRecordingStatus(HIKING)
                 }
                 // 상행 중이었을 때 => 하행으로 바뀜 버튼은 종료 버튼으로
                 HIKING -> {
-                    deActivateRecordingService()
-                    resetChronometerTime()
-                    tryRecordingServiceByStatus("하행")
                     hikingRecordingTabViewModel.setRecordingStatus(AFTER_HIKING)
                 }
 
                 AFTER_HIKING -> {
-                    resetChronometerTime()
-                    deActivateRecordingService()
                     hikingRecordingTabViewModel.setRecordingStatus(BANNED)
-                    deleteSharedPreferences()
                 }
             }
         }
@@ -303,24 +303,30 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     private fun registerObserving() {
         hikingRecordingTabViewModel.recordingStatus.observe(viewLifecycleOwner) { status ->
             changeHikingButton(binding.btnHikingRecording, status)
+            Log.d(TAG, "registerObserving: $status")
             when (status) {
                 BANNED -> {
+                    deActivateRecordingService()
+                    deleteSharedPreferences()
                     resetChronometerTime()
                     hikingRecordingTabViewModel.deleteIsQRScanned()
                     hikingRecordingTabViewModel.deleteIsQRCompleted()
 
                 }
                 BEFORE_HIKING -> {
-                    handler.removeCallbacks(runnable)
+                    SingletonHandler.getHandler().removeCallbacks(runnable)
                     resetChronometerTime()
                 }
 
                 HIKING -> {
-                    handler.post(runnable)
+                    tryRecordingServiceByStatus("상행")
                     launchChronometer()
                 }
 
                 AFTER_HIKING -> {
+                    deActivateRecordingService()
+                    resetChronometerTime()
+                    tryRecordingServiceByStatus("하행")
                     launchChronometer()
                 }
             }
@@ -419,14 +425,21 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         putExtra("status", status)
         putExtra("crewId", hikingRecordingTabViewModel.onGoingCrewId.value)
       }
-    startForegroundService(rootActivity, serviceIntent)
+      Log.d(TAG, "activateRecordingService isService : 서비스 시작")
+      if(!isServiceRunning())
+      {
+          startForegroundService(rootActivity, serviceIntent)
+      }
     sharedPreferencesUtil.saveRecordingServiceState(status)
+    SingletonHandler.getHandler().post(runnable)
+      Log.d(TAG, "activateRecordingService: handler 실행")
   }
 
     private fun deActivateRecordingService() {
         val serviceIntent = Intent(rootActivity, HikingRecordingService::class.java)
         requireActivity().stopService(serviceIntent)
         sharedPreferencesUtil.saveRecordingServiceState("종료")
+        SingletonHandler.getHandler().removeCallbacks(runnable)
     }
 
     private fun checkRecordingService(): String {
@@ -440,13 +453,19 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                 launchChronometer()
                 activateRecordingService(status)
             }
+            else if(!isServiceRunning()){
+                activateRecordingService(status)
+            }
         } else {
             showToast("권한을 설정하셔야 기록 서비스를 이용 가능합니다!")
             //ask for permission
             requestPermission {
                 if (!isAllPermissionGranted(it)) {
                     showToast("권한없이는 등산 서비스를 제대로 이용하실 수 없습니다!")
-                } else {
+                }else if(!isServiceRunning()){
+                    activateRecordingService(status)
+                }
+                else {
                     if (checkRecordingService() == "종료") {
                         activateRecordingService(status)
                     }
@@ -454,10 +473,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
             }
         }
     }
-
-//    fun setImageBitmap(imageBitmap: Bitmap?) {
-//        binding.hikingRecordingTabMap.setImageBitmap(imageBitmap)
-//    }
 
     private fun changeHikingButton(button: AppCompatButton, toState: Int) {
         when (toState) {
@@ -550,7 +565,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         naverMap = p0
     }
 
-    var handler: Handler = Handler(Looper.getMainLooper())
     var runnable: Runnable = object : Runnable {
         override fun run() {
             // 반복해서 실행할 작업
@@ -572,21 +586,23 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                                 Log.d(TAG, "run: 조회한 멤버들! $list")
                                 list.forEach {
                                     if(it.userLat != null && it.userLon != null){
-                                        hikingRecordingTabViewModel.memberMarkerList.value?.apply { 
+                                        hikingRecordingTabViewModel.memberMarkerList.value?.apply {
                                             add(
                                                 Marker().apply {
-                                                    position = LatLng(it.userLat, it.userLon)
-                                                    Glide.with(binding.root).asBitmap().load(it.userProfileImg).into(
-                                                        object : CustomTarget<Bitmap>() {
-                                                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                                                // 이미지 로드 완료 후 마커 설정
-                                                                val resizeBitmap = Bitmap.createScaledBitmap(resource, 60, 60, true)
-                                                                icon = OverlayImage.fromBitmap(resizeBitmap)   // 마커 아이콘 설정
+                                                    safeCall {
+                                                        position = LatLng(it.userLat, it.userLon)
+                                                        Glide.with(binding.root).asBitmap().load(it.userProfileImg).into(
+                                                            object : CustomTarget<Bitmap>() {
+                                                                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                                                    // 이미지 로드 완료 후 마커 설정
+                                                                    val resizeBitmap = Bitmap.createScaledBitmap(resource, 60, 60, true)
+                                                                    icon = OverlayImage.fromBitmap(resizeBitmap)   // 마커 아이콘 설정
+                                                                }
+                                                                override fun onLoadCleared(placeholder: Drawable?) {}
                                                             }
-                                                            override fun onLoadCleared(placeholder: Drawable?) {}
-                                                        }
-                                                    )
-                                                    map = naverMap
+                                                        )
+                                                        map = naverMap
+                                                    }
                                                 }
                                             )
                                         }
@@ -601,9 +617,28 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
             }
 
             // 다시 10초 후에 실행
-            handler.postDelayed(this, 10000) // 10000ms = 10초
+            SingletonHandler.getHandler().postDelayed(this, 10000) // 10000ms = 10초
         }
     }
 
 
+    private fun isServiceRunning(): Boolean {
+        Log.d(TAG, "isServiceRunning: ${HikingRecordingService.isRunning}")
+        return HikingRecordingService.isRunning
+    }
+
+    override fun onDestroyView() {
+        Log.d(TAG, "onDestroyView: destory!!!!!")
+        super.onDestroyView()
+    }
+}
+
+object SingletonHandler {
+    // 메인 스레드에 연결된 Handler를 생성
+    private val handler: Handler = Handler(Looper.getMainLooper())
+
+    // Handler를 외부에서 사용할 수 있도록 반환하는 함수
+    fun getHandler(): Handler {
+        return handler
+    }
 }

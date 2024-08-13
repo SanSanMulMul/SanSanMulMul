@@ -13,7 +13,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.naver.maps.map.MapView
+    <androidx.fragment.app.FragmentContainerView
+      android:name="com.naver.maps.map.MapFragment"
       android:id="@+id/hiking_recording_tab_map"
       android:layout_width="match_parent"
       android:layout_height="match_parent" />

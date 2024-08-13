@@ -73,6 +73,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   private val chronometerViewModel: ChronometerViewModel by viewModels()
   private val PERMISSION = if (Build.VERSION.SDK_INT >= 33) {
     arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
       Manifest.permission.ACTIVITY_RECOGNITION,
       Manifest.permission.POST_NOTIFICATIONS,
       Manifest.permission.ACCESS_FINE_LOCATION,
@@ -80,12 +82,14 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     )
   } else if (Build.VERSION.SDK_INT >= 29) {
     arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
       Manifest.permission.ACTIVITY_RECOGNITION,
       Manifest.permission.ACCESS_FINE_LOCATION,
       Manifest.permission.ACCESS_COARSE_LOCATION
     )
   } else {
-    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+    arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
   }
   private val requestPermissionLauncher = registerForActivityResult(
     ActivityResultContracts.RequestMultiplePermissions()

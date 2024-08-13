@@ -59,8 +59,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     /** permission check **/
     private val checker = PermissionChecker(this)
-    private val runtimePermissions =
+    private val runtimePermissions = if(Build.VERSION.SDK_INT < 29) {
         arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    } else{
+        arrayOf(Manifest.permission.CAMERA)
+    }
 
     fun checkPermission() {
         if (!checker.checkPermission(this, runtimePermissions)) {

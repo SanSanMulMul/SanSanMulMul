@@ -60,7 +60,6 @@ class GroupDetailDrawerListAdapter():
 
 
     interface ItemClickListener {
-        fun onLinkCopyClick()
         fun onExitGroupClick()
     }
 

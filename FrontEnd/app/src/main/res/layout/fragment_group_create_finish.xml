@@ -19,6 +19,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/layout_group_create_finish_bot"
             android:padding="16dp">
 
             <ImageView
@@ -43,66 +44,10 @@
                 android:layout_marginTop="16dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Middle Section -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_group_create_finish_mid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/layout_group_create_finish_top"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/tv_copy_share_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹 링크를 복사하여 공유해보세요 :)"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <!-- 링크 텍스트와 복사 버튼 -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/rounded_link_box"
-                android:padding="8dp"
-                app:layout_constraintTop_toBottomOf="@id/tv_copy_share_text"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="16dp">
-
-                <TextView
-                    android:id="@+id/tv_group_link"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="https://yourgrouplink.com"
-                    android:textSize="14dp"
-                    android:paddingEnd="8dp"
-                    android:padding="8dp"
-                    android:textColor="@color/black" />
-
-                <ImageButton
-                    android:id="@+id/btn_copy_link"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/copy_mark"
-                    android:background="@android:color/transparent"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="8dp" />
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/layout_group_create_finish_bot"
-            app:layout_constraintTop_toBottomOf="@id/layout_group_create_finish_mid"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

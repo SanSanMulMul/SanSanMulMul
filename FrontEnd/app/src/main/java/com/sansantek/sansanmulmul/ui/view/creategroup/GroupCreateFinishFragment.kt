@@ -37,10 +37,6 @@ class GroupCreateFinishFragment : BaseFragment<FragmentGroupCreateFinishBinding>
         // 텍스트뷰에 그라데이션 적용
         setGradient(binding.tvGroupCreateFinish)
 
-        binding.btnCopyLink.setOnClickListener {
-            val link = binding.tvGroupLink.text.toString()
-            copyToClipboard(link)
-        }
     }
 
     private fun copyToClipboard(text: String) {

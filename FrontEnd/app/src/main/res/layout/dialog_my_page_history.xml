@@ -27,16 +27,18 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_marginHorizontal="30dp"
             >
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_dialog_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/layout_date"
                 >
                 <TextView
                     android:id="@+id/btn_download_picture"
@@ -49,8 +51,8 @@
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="8dp"
                     android:drawablePadding="10dp"
-                    android:drawableLeft="@drawable/download_icon"
-                    android:textColor="@color/white"
+                    android:textColor="@android:color/transparent"
+                    android:backgroundTint="@android:color/transparent"
                     android:background="@drawable/round_stroke_white_background_transparent_20"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

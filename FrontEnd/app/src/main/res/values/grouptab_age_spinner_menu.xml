@@ -3,6 +3,7 @@
     <string-array name="grouptab_age_spinner_menu_array">
         <item>연령 무관</item>
         <item>10대</item>
+        <item>20대</item>
         <item>30대</item>
         <item>40대</item>
         <item>50대</item>

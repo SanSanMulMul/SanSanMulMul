@@ -6,8 +6,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ImageView
         android:id="@+id/group_image"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        app:layout_constraintDimensionRatio="1:1"
         android:src="@drawable/signup_finish_tiger"
         android:scaleType="centerCrop"
         android:clipToOutline="true"
@@ -35,6 +36,14 @@
             android:textColor="@color/group_tab_info_list_green"
             android:text="24.07.15 13:00 - 24.07.15 14:00"
             android:textSize="11sp"
+            />
+        <TextView
+            android:id="@+id/tv_mountain_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="24.07.15 13:00 - 24.07.15 14:00"
+            android:textSize="14sp"
             />
         <!--그룹 이름, 사람, 날짜 정보 -->
         <TextView

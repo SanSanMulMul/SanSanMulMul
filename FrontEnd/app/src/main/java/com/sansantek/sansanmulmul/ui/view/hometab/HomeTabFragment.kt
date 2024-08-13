@@ -8,6 +8,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -27,11 +28,14 @@ import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.newsService
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
+import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainSearchViewModel
 import kotlinx.coroutines.launch
+import java.time.Month
 import java.util.Calendar
 import kotlin.math.abs
+import kotlin.random.Random
 
 private const val TAG = "HomeTabFragment 싸피"
 
@@ -42,15 +46,17 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
     private lateinit var searchEditTextView: EditText
     private val searchViewModel: MountainSearchViewModel by activityViewModels()
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
-    private lateinit var newsList: List<News>
+    private val mainActivityViewModel: MainActivityViewModel by activityViewModels()
+    private var newsList =  mutableListOf<News>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
 
         // 뉴스 데이터를 가져온 후 ViewPager를 초기화합니다.
-        setNewsData {
-            initNewsViewPager(binding.layoutCarouselNews, it)
+        lifecycleScope.launch {
+            setNewsData()
+            initNewsViewPager(binding.layoutCarouselNews)
         }
         loadSeasonalRecommendations()
     }
@@ -108,8 +114,8 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         }
     }
 
-    private fun initNewsViewPager(viewPager: ViewPager2, itemList: List<News>) {
-        val adapter = NewsViewPagerAdapter(itemList)
+    private fun initNewsViewPager(viewPager: ViewPager2) {
+        val adapter = NewsViewPagerAdapter().apply { submitList(newsList) }
         viewPager.adapter = adapter
 
         viewPager.offscreenPageLimit = 1
@@ -159,64 +165,86 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         autoScroll(viewPager, autoScrollDelay)
     }
 
-    private fun setNewsData(onNewsDataReady: (List<News>) -> Unit) {
-        lifecycleScope.launch {
-            newsList = newsService.getNewsKeyword("가리산")
-            Log.d(TAG, "setNewsData: ${newsList}")
-
-            // 각 뉴스 항목에 산 이미지를 설정
-            val updatedNewsList = newsList.map { news ->
-                val mountainImg = getMountainImage(news.mountainName)
-                news.copy(mountainImg = mountainImg)
+    private suspend fun setNewsData() {
+            mainActivityViewModel.token?.let {
+                val response = mountainService.getLikedMountainList(makeHeaderByAccessToken(it.accessToken))
+                if(response.isSuccessful){
+                    if(response.body() == null || response.body()!!.isEmpty()){
+                        newsList = newsService.getRandomNewsKeyword()
+                    }else{
+                        newsList = mutableListOf()
+                        for(i in 0..4){
+                            response.body()?.let { mountainList->
+                                val size = mountainList.size -1
+                                var randomIntInRange = Random.nextInt(0, size)
+                                val mountainName = mountainList[randomIntInRange].mountainName
+                                val articleList = newsService.getNewsKeyword(mountainName)
+                                randomIntInRange = Random.nextInt(0, articleList.size-1)
+                                newsList.add(articleList[randomIntInRange])
+                            }
+                        }
+                    }
+                }
+                Log.d(TAG, "setNewsData: ${newsList}")
             }
-
-            // 비동기 처리 후 결과를 콜백으로 전달
-            onNewsDataReady(updatedNewsList)
-        }
-    }
-
-    private suspend fun getMountainImage(mountainName: String): String {
-        val response = mountainService.searchMountainList(mountainName)
-        return if (response.isSuccessful) {
-            val mountainList = response.body() ?: emptyList()
-            if (mountainList.isNotEmpty()) {
-                mountainList[0].mountainImg ?: "@drawable/default_mountain" // 기본 이미지 URL
-            } else {
-                "@drawable/default_mountain" // 기본 이미지 URL
-            }
-        } else {
-            "@drawable/default_mountain" // 기본 이미지 URL
-        }
     }
 
     private fun loadSeasonalRecommendations() {
-        loadRecommendationData(binding.vpRecommendation1, "spring", 5000)
-        loadRecommendationData(binding.vpRecommendation2, "summer", 5000)
-        loadRecommendationData(binding.vpRecommendation3, "fall", 5000)
-        loadRecommendationData(binding.vpRecommendation4, "winter", 5000)
+        val calendar = Calendar.getInstance()
+        val month = calendar.get(Calendar.MONTH) + 1
+        val season = when (month) {
+            3,4,5 -> "spring"
+            6,7,8 -> "summer"
+            9,10,11 -> "fall"
+            else -> "winter"
+        }
+        val seasons = mapOf(
+            "spring" to listOf(0, 1, 2, 3),
+            "summer" to listOf(1, 2, 3, 0),
+            "fall" to listOf(2, 3, 0, 1),
+            "winter" to listOf(3, 0, 1, 2)
+        )
+        val seasonList = listOf("spring", "summer", "fall", "winter")
+        val bindingList = listOf(binding.vpRecommendation1, binding.vpRecommendation2, binding.vpRecommendation3,binding.vpRecommendation4)
+        val titleList = listOf(binding.tvRecommendation1, binding.tvRecommendation2, binding.tvRecommendation3, binding.tvRecommendation4)
+        val seasonIndex = seasons[season]
+        for(i in 0..3){
+            lifecycleScope.launch {
+                loadRecommendationData(bindingList[i], titleList[i], seasonList[seasonIndex!![i]], 5000)
+            }
+        }
     }
 
-    private fun loadRecommendationData(
+    private suspend fun loadRecommendationData(
         viewPager: ViewPager2,
+        title: TextView,
         season: String,
         autoScrollDelay: Long
     ) {
-        lifecycleScope.launch {
-            val recommendationList = when (season) {
-                "spring" -> mountainService.getMountainSpring()
-                "summer" -> mountainService.getMountainSummer()
-                "fall" -> mountainService.getMountainFall()
-                "winter" -> mountainService.getMountainWinter()
-                else -> emptyList()
-            }.map {
-                Recommendation(it.mountainId, it.mountainName, it.mountainHeight, it.mountainImg)
+        val seasonTitle = mapOf("spring" to "🌼 봄에 가기 좋은 산 🌼", "summer" to "🌊 여름에 가기 좋은 산 🌊", "fall" to "🍁 가을에 가기 좋은 산 🍁", "winter" to "❄ 겨울에 가기 좋은 산 ❄")
+        title.text = seasonTitle[season]
+        val recommendationList = when (season) {
+            "spring" -> {
+                mountainService.getMountainSpring()
             }
-
-            // 계절별 데이터를 로그로 출력
-            Log.d(TAG, "Season - $season, Data - $recommendationList")
-
-            initRecommendationViewPager(viewPager, recommendationList, autoScrollDelay)
+            "summer" -> {
+                mountainService.getMountainSummer()
+            }
+            "fall" -> {
+                mountainService.getMountainFall()
+            }
+            "winter" -> {
+                mountainService.getMountainWinter()
+            }
+            else -> emptyList()
+        }.map {
+            Recommendation(it.mountainId, it.mountainName, it.mountainHeight, it.mountainImg)
         }
+
+        // 계절별 데이터를 로그로 출력
+        Log.d(TAG, "Season - $season, Data - $recommendationList")
+
+        initRecommendationViewPager(viewPager, recommendationList, autoScrollDelay)
     }
 
 

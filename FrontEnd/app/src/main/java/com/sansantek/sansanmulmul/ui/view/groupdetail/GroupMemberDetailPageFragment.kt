@@ -1,8 +1,10 @@
 package com.sansantek.sansanmulmul.ui.view.groupdetail
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -167,6 +169,7 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
                                         showToast("언팔로우 성공")
                                         isFollowing = false
                                         updateFollowButton(isFollowing)
+                                        loadMemberFollowingFollowerCount(memberUserId)
                                     } else {
                                         Log.e(TAG, "언팔로우 실패: ${unfollowResponse.code()}")
                                         showToast("언팔로우 실패")
@@ -179,6 +182,7 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
                                         showToast("팔로우 성공")
                                         isFollowing = true
                                         updateFollowButton(isFollowing)
+                                        loadMemberFollowingFollowerCount(memberUserId)
                                     } else {
                                         Log.e(TAG, "팔로우 실패: ${followResponse.code()}")
                                         showToast("팔로우 실패")
@@ -200,9 +204,26 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
 
     // 팔로우 팔로잉 버튼 초기 세팅
     private fun updateFollowButton(isFollowing: Boolean) {
-        binding.btnFollow.text = if (isFollowing) "팔로잉" else "팔로우"
+        if (isFollowing) {
+            binding.btnFollow.text = "팔로잉 ✓"
+            binding.btnFollow.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+            binding.btnFollow.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.white                )
+            )
+        } else {
+            binding.btnFollow.text = "팔로우"
+            binding.btnFollow.setTextColor(ContextCompat.getColor(requireContext(), R.color.white)) // 텍스트 색상을 흰색으로 설정
+            binding.btnFollow.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.group_detail_second_tab_temperature_min_color                )
+            )
+        }
         binding.btnFollow.isEnabled = true
     }
+
 
     fun replaceFragment(view: Fragment) {
         Log.d(TAG, "replaceFragment: 실행")

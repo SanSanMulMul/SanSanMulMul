@@ -180,7 +180,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
                         android:background="@drawable/rounded_bottom_right_button"
-                        android:text="그룹에 가입 신청하기"
+                        android:text="가입 신청"
                         android:textColor="@color/white" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

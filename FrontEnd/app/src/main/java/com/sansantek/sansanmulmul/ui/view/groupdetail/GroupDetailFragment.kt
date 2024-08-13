@@ -1,8 +1,11 @@
 package com.sansantek.sansanmulmul.ui.view.groupdetail
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Point
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -18,6 +21,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
@@ -56,7 +62,7 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         popupShow = false
-
+        Glide.with(binding.root).load(crew.mountainImg).into(binding.ivCrewMountainImg)
         binding.tvGroupTitle.text = crew.crewName
         val startDate = formatToCustomPattern(crew.crewStartDate)
         val endDate = formatToCustomPattern(crew.crewEndDate)

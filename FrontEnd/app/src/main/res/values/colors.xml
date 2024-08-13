@@ -32,8 +32,8 @@
   <color name="sansanmulmul_light_gray">#DBDBDB</color>
   <color name="sansanmulmul_super_light_gray">#EFEFEF</color>
   <color name="sansanmulmul_dark_gray">#242424</color>
-  <color name="tab_background_selected">#A1CCA8</color>
-  <color name="tab_background_unselected">#FFFFFF</color>
+  <color name="tab_background_selected">#FFFFFF</color>
+  <color name="tab_background_unselected">#A1CCA8</color>
   <color name="tab_divider_color">#E9E9E9</color>
   <color name="light_orange">#E9B971</color>
 

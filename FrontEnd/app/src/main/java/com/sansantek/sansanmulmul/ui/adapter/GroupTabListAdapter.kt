@@ -49,6 +49,7 @@ class GroupTabListAdapter(private val isAllGroupLayout:Boolean):
                 }
             }
             Glide.with(binding.root).load(item.mountainImg).into(binding.groupImage)
+            binding.tvMountainInfo.text = item.mountainName
             binding.groupTitle.text = item.crewName
 
             val originalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")

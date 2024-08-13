@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.sansantek.sansanmulmul.config.ApplicationClass
+import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 
 class ChronometerViewModel() : ViewModel() {
     private var _baseTime =

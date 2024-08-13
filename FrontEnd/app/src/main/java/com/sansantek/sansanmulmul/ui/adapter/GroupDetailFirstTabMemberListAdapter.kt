@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -18,10 +19,12 @@ import com.sansantek.sansanmulmul.data.model.GroupUser
 import com.sansantek.sansanmulmul.data.model.Member
 import com.sansantek.sansanmulmul.databinding.ListGroupDetailFirstTabMemberListBinding
 import com.sansantek.sansanmulmul.ui.util.Util
+import com.sansantek.sansanmulmul.ui.view.groupdetail.GroupDetailTabFirstInfoFragment
+import com.sansantek.sansanmulmul.ui.view.groupdetail.GroupMemberDetailPageFragment
 import kotlinx.coroutines.runBlocking
 
 private const val TAG = "GroupDetailFirstTabMemberListAdapter_싸피"
-class GroupDetailFirstTabMemberListAdapter(private var amILeader: Boolean, private val myId: Int):
+class GroupDetailFirstTabMemberListAdapter(private var amILeader: Boolean, private val myId: Int, private val fragmentManager: FragmentManager):
     ListAdapter<GroupUser, GroupDetailFirstTabMemberListAdapter.MemberInfoListHolder>(Comparator) {
 
     companion object Comparator : DiffUtil.ItemCallback<GroupUser>() {
@@ -53,6 +56,13 @@ class GroupDetailFirstTabMemberListAdapter(private var amILeader: Boolean, priva
             Glide.with(binding.root).load(item.userProfileImg).into(binding.ivMemberImage)
             binding.memberTitle.text = TITLE[item.userStaticBadge]
             binding.memberName.text = item.userNickname
+
+            // 클릭 리스너 설정
+            binding.root.setOnClickListener {
+                runBlocking {
+                    itemClickListener.onMemberClick(item)
+                }
+            }
 
             binding.btnDelegateAdmin.setOnClickListener {
                 runBlocking {
@@ -101,6 +111,7 @@ class GroupDetailFirstTabMemberListAdapter(private var amILeader: Boolean, priva
     interface ItemClickListener {
         suspend fun onLeaderDelegateClick(user: GroupUser): Boolean
         suspend fun onKickClick(user: GroupUser)
+        suspend fun onMemberClick(user: GroupUser)
     }
 
     private lateinit var itemClickListener: ItemClickListener
@@ -108,4 +119,5 @@ class GroupDetailFirstTabMemberListAdapter(private var amILeader: Boolean, priva
     fun setItemClickListener(itemClickListener: ItemClickListener) {
         this.itemClickListener = itemClickListener
     }
+
 }

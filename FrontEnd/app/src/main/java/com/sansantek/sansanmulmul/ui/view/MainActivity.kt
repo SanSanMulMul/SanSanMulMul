@@ -331,6 +331,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     fun changeAddToBackstackFragment(view: Fragment) {
+        Log.d(TAG, "changeAddToBackstackFragment: fragment change")
         supportFragmentManager.beginTransaction().replace(binding.fragmentView.id, view)
             .addToBackStack(null).commit()
     }

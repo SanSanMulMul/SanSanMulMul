@@ -8,6 +8,7 @@ import com.sansantek.sansanmulmul.data.network.api.FCMService
 import com.sansantek.sansanmulmul.data.network.api.HikingRecordingService
 import com.sansantek.sansanmulmul.data.network.api.MountainService
 import com.sansantek.sansanmulmul.data.network.api.NewsService
+import com.sansantek.sansanmulmul.data.network.api.RecordService
 import com.sansantek.sansanmulmul.data.network.api.UserService
 
 class RetrofiltUtil {
@@ -21,6 +22,7 @@ class RetrofiltUtil {
         val chatService = retrofit.create(ChatService::class.java)
         val hikingRecordingService = retrofit.create(HikingRecordingService::class.java)
         val fcmService = retrofit.create(FCMService::class.java)
+        val recordService = retrofit.create(RecordService::class.java)
 
     }
 }

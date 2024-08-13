@@ -27,11 +27,13 @@ import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.newsService
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
+import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainSearchViewModel
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import kotlin.math.abs
+import kotlin.random.Random
 
 private const val TAG = "HomeTabFragment 싸피"
 
@@ -42,15 +44,17 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
     private lateinit var searchEditTextView: EditText
     private val searchViewModel: MountainSearchViewModel by activityViewModels()
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
-    private lateinit var newsList: List<News>
+    private val mainActivityViewModel: MainActivityViewModel by activityViewModels()
+    private var newsList =  mutableListOf<News>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
 
         // 뉴스 데이터를 가져온 후 ViewPager를 초기화합니다.
-        setNewsData {
-            initNewsViewPager(binding.layoutCarouselNews, it)
+        lifecycleScope.launch {
+            setNewsData()
+            initNewsViewPager(binding.layoutCarouselNews)
         }
         loadSeasonalRecommendations()
     }
@@ -108,8 +112,8 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         }
     }
 
-    private fun initNewsViewPager(viewPager: ViewPager2, itemList: List<News>) {
-        val adapter = NewsViewPagerAdapter(itemList)
+    private fun initNewsViewPager(viewPager: ViewPager2) {
+        val adapter = NewsViewPagerAdapter().apply { submitList(newsList) }
         viewPager.adapter = adapter
 
         viewPager.offscreenPageLimit = 1
@@ -159,20 +163,37 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
         autoScroll(viewPager, autoScrollDelay)
     }
 
-    private fun setNewsData(onNewsDataReady: (List<News>) -> Unit) {
-        lifecycleScope.launch {
-            newsList = newsService.getNewsKeyword("가리산")
-            Log.d(TAG, "setNewsData: ${newsList}")
+    private suspend fun setNewsData() {
+            mainActivityViewModel.token?.let {
+                val response = mountainService.getLikedMountainList(makeHeaderByAccessToken(it.accessToken))
+                if(response.isSuccessful){
+                    if(response.body() == null || response.body()!!.isEmpty()){
+                        newsList = newsService.getRandomNewsKeyword()
+                    }else{
+                        newsList = mutableListOf()
+                        for(i in 0..4){
+                            response.body()?.let { mountainList->
+                                val size = mountainList.size -1
+                                var randomIntInRange = Random.nextInt(0, size)
+                                val mountainName = mountainList[randomIntInRange].mountainName
+                                val articleList = newsService.getNewsKeyword(mountainName)
+                                randomIntInRange = Random.nextInt(0, articleList.size-1)
+                                newsList.add(articleList[randomIntInRange])
+                            }
+                        }
+                    }
+                }
+                Log.d(TAG, "setNewsData: ${newsList}")
 
-            // 각 뉴스 항목에 산 이미지를 설정
-            val updatedNewsList = newsList.map { news ->
-                val mountainImg = getMountainImage(news.mountainName)
-                news.copy(mountainImg = mountainImg)
+//                // 각 뉴스 항목에 산 이미지를 설정
+//                val updatedNewsList = newsList.map { news ->
+//                    val mountainImg = getMountainImage(news.mountainName)
+//                    news.copy(mountainImg = mountainImg)
+//                }
+//
+//                // 비동기 처리 후 결과를 콜백으로 전달
+//                onNewsDataReady(updatedNewsList)
             }
-
-            // 비동기 처리 후 결과를 콜백으로 전달
-            onNewsDataReady(updatedNewsList)
-        }
     }
 
     private suspend fun getMountainImage(mountainName: String): String {

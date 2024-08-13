@@ -20,5 +20,7 @@ interface NewsService{
     @GET("mountain/news/{keyword}")
     suspend fun getNewsKeyword(
         @Path("keyword") keyword: String
-    ): List<News>
+    ): MutableList<News>
+    @GET("mountain/news/random")
+    suspend fun getRandomNewsKeyword(): MutableList<News>
 }

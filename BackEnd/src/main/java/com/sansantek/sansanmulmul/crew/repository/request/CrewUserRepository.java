@@ -4,6 +4,8 @@ import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,6 +24,10 @@ public interface CrewUserRepository extends JpaRepository<CrewUser, Long> {
 
     //내가 가입한 crew들 전부 가져오기
     List<CrewUser> findByUser(User user);
+    //사용자가 가입한 crew들을 crew의 시작 일시가 가까운 순서대로 가져오기
+    @Query("SELECT cu FROM CrewUser cu JOIN cu.crew c WHERE cu.user = :user ORDER BY c.crewStartDate ASC")
+    List<CrewUser> findByUserOrderByCrewStartDateAsc(@Param("user") User user);
+
     //내가 가입한 crew들 중 종료여부에 따라 (crew의 isDone컬럼) 그룹들 가져오기
     List<CrewUser> findByUserAndCrew_CrewIsDone(User user, boolean isDone);
     int countByCrewCrewId(int crewId);

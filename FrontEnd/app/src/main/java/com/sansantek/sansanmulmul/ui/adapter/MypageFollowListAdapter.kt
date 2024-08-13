@@ -6,18 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.sansantek.sansanmulmul.config.Const.Companion.TITLE
 import com.sansantek.sansanmulmul.data.model.FollowUser
 import com.sansantek.sansanmulmul.databinding.ListFollowMemberBinding
 
-private const val TAG = "MemberFollowListAdapter"
+private const val TAG = "MypageFollowListAdapter"
 
-class MemberFollowListAdapter(
+class MypageFollowListAdapter(
     private var followList: List<FollowUser>,
     private val onFollowClick: (FollowUser, Boolean) -> Unit,
     private val followingNicknames: List<String?>, // 현재 사용자가 팔로우하고 있는 닉네임 목록
     private val currentUserNickName: String? // 현재 사용자의 닉네임
-) : RecyclerView.Adapter<MemberFollowListAdapter.FollowViewHolder>() {
+) : RecyclerView.Adapter<MypageFollowListAdapter.FollowViewHolder>() {
 
     inner class FollowViewHolder(private val binding: ListFollowMemberBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -26,7 +25,7 @@ class MemberFollowListAdapter(
             binding.tvMemberNickname.text = user.nickName
             binding.tvMemberBadge.text = user.title
 
-            Log.d(TAG, "멤버가 팔로우중인 유저 닉네임: ${user.nickName}")
+            Log.d(TAG, "마이페이지 팔로우 리스트 닉네임: ${user.nickName}")
 
             Glide.with(binding.root.context)
                 .load(user.imgUrl)
@@ -37,6 +36,11 @@ class MemberFollowListAdapter(
 
             // 현재 사용자가 이 유저를 팔로우하고 있는지 확인
             val isFollowing = followingNicknames.contains(user.nickName)
+
+//            // 프로필 클릭 리스너 추가
+//            binding.root.setOnClickListener {
+//                onProfileClick(user, user.nickName == currentUserNickName)
+//            }
 
             // 팔로우 버튼 텍스트 및 클릭 리스너 설정
             if (user.nickName == currentUserNickName) {
@@ -54,9 +58,6 @@ class MemberFollowListAdapter(
                     onFollowClick(user, isFollowing)
                 }
             }
-
-
-
         }
     }
 

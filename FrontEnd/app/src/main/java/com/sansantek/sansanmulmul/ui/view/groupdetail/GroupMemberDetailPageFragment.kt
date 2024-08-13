@@ -47,19 +47,28 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
 
         binding.tlTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                val memberUserId = arguments?.getInt("followUserId") ?: return // 사용자 ID를 가져오는 메서드 (예시)
+
                 when (tab?.position) {
                     0 -> {
-                        replaceFragment(GroupMemberDetailFirstTabFragment())
+                        val firstTabFragment = GroupMemberDetailFirstTabFragment.newInstance(memberUserId)
+                        replaceFragment(firstTabFragment)
                     }
 
                     else -> {
-                        replaceFragment(GroupMemberDetailSecondFragment())
+                        val secondTabFragment = GroupMemberDetailSecondFragment()
+                        replaceFragment(secondTabFragment)
                     }
                 }
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                // 다른 탭이 선택되었을 때의 동작
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                // 현재 탭이 다시 선택되었을 때의 동작
+            }
         })
     }
 

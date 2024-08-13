@@ -81,7 +81,7 @@ public class CrewService {
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
 
-        List<Crew> crewList = crewRepository.findAll();
+        List<Crew> crewList = crewRepository.findAllByOrderByCrewCreatedAtDesc();
         for (Crew crew : crewList) {
 
             // 1. 현재날짜 이후것 부터 가져와야함 (CrewStartDate사용)

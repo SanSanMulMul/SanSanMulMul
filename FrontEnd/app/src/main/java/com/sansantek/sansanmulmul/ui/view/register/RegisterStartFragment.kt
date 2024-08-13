@@ -45,8 +45,6 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             Log.d(TAG, "onViewCreated: 로그인 시도")
             // 카카오 로그인 시도
             loginWithKakao()
-//                goRegister()
-//            goMain()
         }
     }
 
@@ -118,6 +116,7 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             result.body()?.let {
                 kakaoLoginToken = it
                 sharedPreferencesUtil.saveKakaoLoginToken(kakaoLoginToken)
+                activityViewModel.setLoginToken(it)
                 Log.d(TAG, "isUser: $kakaoLoginToken")
             }
             return true
@@ -165,7 +164,6 @@ class RegisterStartFragment : BaseFragment<FragmentRegisterStartBinding>(
             Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
             Log.d(TAG, "loginWithKakao idToken: ${token.idToken}")
             processAuthAndNavigateByKakao()
-//                GoMain()
         }
     }
 }

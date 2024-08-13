@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.config
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.sansantek.sansanmulmul.R
 
+private const val TAG = "BaseFragment 싸피"
 // Fragment의 기본을 작성, 뷰 바인딩 활용
 abstract class BaseFragment<B : ViewBinding>(
   private val bind: (View) -> B,
@@ -19,7 +21,7 @@ abstract class BaseFragment<B : ViewBinding>(
 ) : Fragment(layoutResId) {
   private var _binding: B? = null
   protected val binding get() = _binding!!
-  public lateinit var myContext: Context
+  lateinit var myContext: Context
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -36,12 +38,12 @@ abstract class BaseFragment<B : ViewBinding>(
   }
 
   override fun onDestroyView() {
-    _binding = null
     super.onDestroyView()
+    _binding = null
   }
 
   fun showToast(message: String) {
-    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+    Toast.makeText(myContext, message, Toast.LENGTH_SHORT).show()
   }
 
   fun hideBottomNav(bottomNavigationView: BottomNavigationView, state: Boolean) {
@@ -89,6 +91,8 @@ abstract class BaseFragment<B : ViewBinding>(
   protected fun safeCall(action: () -> Unit) {
     if (_binding != null) {
       action()
+    }else{
+      Log.d(TAG, "safeCall: binding이 null")
     }
   }
 }

@@ -7,6 +7,7 @@ import com.sansantek.sansanmulmul.data.network.api.CrewService
 import com.sansantek.sansanmulmul.data.network.api.HikingRecordingService
 import com.sansantek.sansanmulmul.data.network.api.MountainService
 import com.sansantek.sansanmulmul.data.network.api.NewsService
+import com.sansantek.sansanmulmul.data.network.api.RecordService
 import com.sansantek.sansanmulmul.data.network.api.UserService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,6 +22,7 @@ class RetrofiltUtil {
         val crewService = retrofit.create(CrewService::class.java)
       val chatService = retrofit.create(ChatService::class.java)
       val hikingRecordingService = retrofit.create(HikingRecordingService::class.java)
+        val recordService = retrofit.create(RecordService::class.java)
 
     }
 }

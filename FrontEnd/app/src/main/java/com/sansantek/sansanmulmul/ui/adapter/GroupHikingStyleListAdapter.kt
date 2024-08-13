@@ -33,7 +33,7 @@ class GroupHikingStyleListAdapter():
         fun bindInfo(position: Int) {
             val item = getItem(position)
             binding.tvHikingStyle.text = HIKINGSTYLE[item]
-            binding.tvHikingStyle.backgroundTintList = ContextCompat.getColorStateList(binding.root.context, HikingBackgroundTintList[position])
+            binding.tvHikingStyle.backgroundTintList = ContextCompat.getColorStateList(binding.root.context, HikingBackgroundTintList[item])
         }
     }
 

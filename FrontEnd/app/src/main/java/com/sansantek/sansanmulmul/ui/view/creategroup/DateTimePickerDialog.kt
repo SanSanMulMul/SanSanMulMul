@@ -20,6 +20,9 @@ import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.databinding.DialogDateTimePickerBinding
 import com.sansantek.sansanmulmul.databinding.DialogGroupDowncourseChoiceBinding
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.Calendar
 
 class DateTimePickerDialog(private val status: String) : DialogFragment() {
@@ -52,8 +55,6 @@ class DateTimePickerDialog(private val status: String) : DialogFragment() {
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
 
         // 다이얼로그 레이아웃 인플레이트
         val binding = DialogDateTimePickerBinding.inflate(LayoutInflater.from(activity))
@@ -63,9 +64,24 @@ class DateTimePickerDialog(private val status: String) : DialogFragment() {
         val positiveButton = binding.btnPositive
         val negativeButton = binding.btnNegative
         // 기본 값 설정
+
+        val koreaZoneId = ZoneId.of("Asia/Seoul")
+        val localDateTime = LocalDateTime.now(koreaZoneId)
+
+        // LocalDateTime을 ZonedDateTime으로 변환
+        val zonedDateTime = ZonedDateTime.of(localDateTime, koreaZoneId)
+
+        // ZonedDateTime을 Instant로 변환
+        val instant = zonedDateTime.toInstant()
+
+        // Instant를 밀리초 단위의 타임스탬프로 변환
+        val currentTimeMillis = instant.toEpochMilli()
+
+
         datePicker.updateDate(year, month, day)
-        timePicker.hour = hour
-        timePicker.minute = minute
+        datePicker.minDate = currentTimeMillis
+        timePicker.hour = 6
+        timePicker.minute =0
 
         positiveButton.setOnClickListener {
             val selectedYear = datePicker.year

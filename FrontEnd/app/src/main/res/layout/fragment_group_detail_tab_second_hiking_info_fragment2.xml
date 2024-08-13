@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:padding="10dp">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.tabs.TabLayout
+      android:id="@+id/cv_layout_tab"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="100dp"
+      android:layout_marginTop="20dp"
+      android:background="@drawable/rounded_rectangle_white_grey_30"
+      app:layout_constraintBottom_toTopOf="@id/layout_mountain_course_info"
+      app:layout_constraintTop_toTopOf="parent"
+      app:tabIndicatorHeight="0dp"
+      app:tabSelectedTextAppearance="@style/GroupDetailSecondTabTextAppeareance"
+      app:tabSelectedTextColor="@color/white"
+      app:tabTextAppearance="@style/GroupDetailSecondTabTextAppeareance"
+      app:tabTextColor="@color/group_detail_second_tab_tabbar_green">
+
+      <com.google.android.material.tabs.TabItem
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="상행" />
+
+      <com.google.android.material.tabs.TabItem
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="하행" />
+    </com.google.android.material.tabs.TabLayout>
+
+    <!-- 상단부 (산이름, 코스이름, 코스 난이도) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/layout_mountain_course_info"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      app:layout_constraintBottom_toTopOf="@id/layout_course_map_with_description"
+      app:layout_constraintTop_toBottomOf="@id/cv_layout_tab">
+
+      <TextView
+        android:id="@+id/tv_mountain_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/group_detail_second_tab_mountain_name"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tv_course_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="가야산" />
+
+      <TextView
+        android:id="@+id/tv_course_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="13dp"
+        android:textColor="@color/group_detail_second_tab_course_name"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/btn_difficulty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_mountain_name"
+        tools:text="가야산" />
+
+      <TextView
+        android:id="@+id/btn_difficulty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/round_20_rectangle"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="3dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/tv_course_name"
+        app:layout_constraintStart_toStartOf="@id/tv_course_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_course_name"
+        tools:backgroundTint="@color/group_detail_second_tab_difficulty_hard"
+        tools:text="어려움" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 코스 지도 및 설명 부분 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/layout_course_map_with_description"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="10dp"
+      android:layout_marginTop="30dp"
+      app:layout_constraintBottom_toTopOf="@id/layout_course_detail_info"
+      app:layout_constraintTop_toBottomOf="@id/layout_mountain_course_info">
+
+      <!-- map 화면 -->
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- naver map -->
+        <com.naver.maps.map.MapView
+          android:id="@+id/map"
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:background="@drawable/rounded_rectangle_white_grey_20"
+          android:clipToOutline="true"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintDimensionRatio="2:1.3"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 설명보기 버튼 -->
+        <TextView
+          android:id="@+id/btn_to_description"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom|end"
+          android:layout_marginEnd="20dp"
+          android:layout_marginBottom="20dp"
+          android:background="@drawable/group_detail_second_tab_map_overlay_button"
+          android:paddingHorizontal="20dp"
+          android:paddingVertical="8dp"
+          android:text="설명 보기"
+          android:textColor="@color/white"
+          android:textSize="11sp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+      <!-- 설명 보기 화면 -->
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_description"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/rounded_rectangle_black_30_with_opacity"
+        android:clipToOutline="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <!-- 설명 -->
+        <TextView
+          android:id="@+id/tv_description"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center_vertical"
+          android:paddingHorizontal="20dp"
+          android:textColor="@color/white"
+          app:layout_constraintBottom_toTopOf="@id/btn_to_map"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          tools:text="설명" />
+
+        <!-- 지도보기 버튼 -->
+        <TextView
+          android:id="@+id/btn_to_map"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom|end"
+          android:layout_marginEnd="20dp"
+          android:layout_marginBottom="20dp"
+          android:background="@drawable/group_detail_second_tab_map_overlay_button2"
+          android:paddingHorizontal="20dp"
+          android:paddingVertical="8dp"
+          android:text="지도 보기"
+          android:textColor="@color/black"
+          android:textSize="11sp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 코스 디테일 정보 부분 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/layout_course_detail_info"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="@id/layout_course_map_with_description"
+      app:layout_constraintStart_toStartOf="@id/layout_course_map_with_description"
+      app:layout_constraintTop_toBottomOf="@id/layout_course_map_with_description">
+
+      <!-- 예상 소요 시간 -->
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_expected_reach_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- 예상 소요 시간 타이틀 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/layout_expected_reach_time_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          app:layout_constraintBottom_toTopOf="@id/layout_expected_reach_time_box"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent">
+
+          <View
+            android:id="@+id/dot1"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:background="@drawable/rounded_button_green_200"
+            app:layout_constraintBottom_toBottomOf="@id/tv_expected_reach_time_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_expected_reach_time_title" />
+
+          <TextView
+            android:id="@+id/tv_expected_reach_time_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="예상 소요 시간"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/dot1"
+            app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/layout_expected_reach_time_box"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          android:background="@drawable/rounded_shadow_ltrb"
+          android:padding="10dp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/layout_expected_reach_time_title">
+
+          <!-- 전체 소요시간 -->
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_expected_reach_time_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/layout_expected_reach_time_uphill"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+              android:id="@+id/tv_expected_reach_time_total_title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:text="전체"
+              android:textColor="@color/grey"
+              android:textSize="12sp"
+              app:layout_constraintBottom_toTopOf="@id/tv_expected_reach_time_total"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+              android:id="@+id/tv_expected_reach_time_total"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="5dp"
+              android:textColor="@color/sansanmulmul_green"
+              android:textSize="18sp"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@id/tv_expected_reach_time_total_title"
+              tools:text="1h 31m" />
+          </androidx.constraintlayout.widget.ConstraintLayout>
+
+          <!-- 상행 소요시간 -->
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_expected_reach_time_uphill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/layout_expected_reach_time_downhill"
+            app:layout_constraintStart_toEndOf="@id/layout_expected_reach_time_total"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+              android:id="@+id/tv_expected_reach_time_uphill_title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:text="상행"
+              android:textColor="@color/grey"
+              android:textSize="12sp"
+              app:layout_constraintBottom_toTopOf="@id/tv_expected_reach_time_uphill"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+              android:id="@+id/tv_expected_reach_time_uphill"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="5dp"
+              android:textColor="@color/sansanmulmul_green"
+              android:textSize="18sp"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@id/tv_expected_reach_time_uphill_title"
+              tools:text="1h 31m" />
+          </androidx.constraintlayout.widget.ConstraintLayout>
+
+          <!-- 하행 소요시간 -->
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_expected_reach_time_downhill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/layout_expected_reach_time_uphill"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+              android:id="@+id/tv_expected_reach_time_downhill_title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:text="하행"
+              android:textColor="@color/grey"
+              app:layout_constraintBottom_toTopOf="@id/tv_expected_reach_time_downhill"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+              android:id="@+id/tv_expected_reach_time_downhill"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="5dp"
+              android:textColor="@color/sansanmulmul_green"
+              android:textSize="18sp"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@id/tv_expected_reach_time_downhill_title"
+              tools:text="1h 31m" />
+          </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_difficulty_and_distance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toTopOf="@id/layout_weather"
+        app:layout_constraintEnd_toEndOf="@id/layout_expected_reach_time"
+        app:layout_constraintStart_toStartOf="@id/layout_expected_reach_time"
+        app:layout_constraintTop_toBottomOf="@id/layout_expected_reach_time">
+
+        <!-- 난이도 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/layout_course_difficulty"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          app:layout_constraintEnd_toStartOf="@id/layout_course_distance"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent">
+
+          <!-- 난이도 타이틀 -->
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_difficulty_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/layout_difficulty_box"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <View
+              android:id="@+id/dot2"
+              android:layout_width="5dp"
+              android:layout_height="5dp"
+              android:background="@drawable/rounded_button_green_200"
+              app:layout_constraintBottom_toBottomOf="@id/tv_difficulty_title"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="@id/tv_difficulty_title" />
+
+            <TextView
+              android:id="@+id/tv_difficulty_title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="5dp"
+              android:text="난이도"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintStart_toEndOf="@id/dot2"
+              app:layout_constraintTop_toTopOf="parent" />
+
+          </androidx.constraintlayout.widget.ConstraintLayout>
+
+          <!-- 난이도 상세 -->
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_difficulty_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/rounded_shadow_ltrb"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_difficulty_title">
+
+            <!-- 상행 난이도 -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+              android:id="@+id/layout_difficulty_uphill"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              app:layout_constraintEnd_toStartOf="@id/layout_difficulty_downhill"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent">
+
+              <TextView
+                android:id="@+id/tv_difficulty_uphill_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="상행"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/tv_difficulty_uphill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+              <TextView
+                android:id="@+id/tv_difficulty_uphill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/rounded_rectangle_white_20"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_difficulty_uphill_title"
+                tools:backgroundTint="@color/difficulty_hard"
+                tools:text="어려움" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <!--하행 난이도-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+              android:id="@+id/layout_difficulty_downhill"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toEndOf="@id/layout_difficulty_uphill"
+              app:layout_constraintTop_toTopOf="parent">
+
+              <TextView
+                android:id="@+id/tv_difficulty_downhill_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="하행"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/tv_difficulty_downhill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+              <TextView
+                android:id="@+id/tv_difficulty_downhill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/rounded_rectangle_white_20"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_difficulty_downhill_title"
+                tools:backgroundTint="@color/difficulty_hard"
+                tools:text="어려움" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+          </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 거리-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/layout_course_distance"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toEndOf="@id/layout_course_difficulty"
+          app:layout_constraintTop_toTopOf="@id/layout_course_difficulty"
+          app:layout_constraintVertical_bias="0">
+
+          <!-- 거리 타이틀 -->
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_distance_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/layout_distance_box"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <View
+              android:id="@+id/dot3"
+              android:layout_width="5dp"
+              android:layout_height="5dp"
+              android:background="@drawable/rounded_button_green_200"
+              app:layout_constraintBottom_toBottomOf="@id/tv_distance_title"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="@id/tv_distance_title" />
+
+            <TextView
+              android:id="@+id/tv_distance_title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="5dp"
+              android:text="거리"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintStart_toEndOf="@id/dot3"
+              app:layout_constraintTop_toTopOf="parent" />
+
+          </androidx.constraintlayout.widget.ConstraintLayout>
+
+          <TextView
+            android:id="@+id/tv_total_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="총 2.1km"
+            android:textColor="@color/sansanmulmul_green"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/layout_distance_title"
+            app:layout_constraintEnd_toEndOf="@id/layout_distance_box"
+            app:layout_constraintHorizontal_bias="0.9"
+            app:layout_constraintStart_toEndOf="@id/layout_distance_title"
+            app:layout_constraintTop_toTopOf="@id/layout_distance_title" />
+
+          <!-- 거리 상세 -->
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_distance_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_shadow_ltrb"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_distance_title">
+
+            <!-- 상행 거리-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+              android:id="@+id/layout_distance_uphill"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              app:layout_constraintEnd_toStartOf="@id/layout_distance_downhill"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent">
+
+              <TextView
+                android:id="@+id/tv_distance_uphill_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="상행"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/tv_distance_uphill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+              <TextView
+                android:id="@+id/tv_distance_uphill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/difficulty_hard"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="2dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_distance_uphill_title"
+                tools:text="2.1km" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- 하행 거리-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+              android:id="@+id/layout_distance_downhill"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toEndOf="@id/layout_distance_uphill"
+              app:layout_constraintTop_toTopOf="parent">
+
+              <TextView
+                android:id="@+id/tv_distance_downhill_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="하행"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/tv_distance_downhill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+              <TextView
+                android:id="@+id/tv_distance_downhill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/difficulty_hard"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="2dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_distance_downhill_title"
+                tools:text="2.1km" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+          </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+      <!-- 날씨 예보 부분 -->
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_weather"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rounded_shadow_ltrb"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/layout_expected_reach_time"
+        app:layout_constraintStart_toStartOf="@id/layout_expected_reach_time"
+        app:layout_constraintTop_toBottomOf="@id/layout_difficulty_and_distance">
+
+        <!-- 날씨예보 타이틀 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/layout_weather_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          app:layout_constraintBottom_toTopOf="@id/layout_weathers"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent">
+
+          <View
+            android:id="@+id/dot4"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:background="@drawable/rounded_button_green_200"
+            app:layout_constraintBottom_toBottomOf="@id/tv_weather_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_weather_title" />
+
+          <TextView
+            android:id="@+id/tv_weather_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="날씨예보"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/dot4"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+          android:id="@+id/layout_weathers"
+          android:layout_width="wrap_content"
+          android:layout_height="140dp"
+          android:layout_marginTop="10dp"
+          android:layout_marginBottom="10dp"
+          android:orientation="horizontal"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/layout_weather_title">
+
+          <include
+            android:id="@+id/weather1"
+            layout="@layout/item_weather" />
+
+          <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/mountain_detail_divider_horizontal_margin_10"
+            android:background="@color/light_grey" />
+
+          <include
+            android:id="@+id/weather2"
+            layout="@layout/item_weather" />
+
+          <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/mountain_detail_divider_horizontal_margin_10"
+            android:background="@color/light_grey" />
+
+          <include
+            android:id="@+id/weather3"
+            layout="@layout/item_weather" />
+
+          <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/mountain_detail_divider_horizontal_margin_10"
+            android:background="@color/light_grey" />
+
+          <include
+            android:id="@+id/weather4"
+            layout="@layout/item_weather" />
+
+          <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/mountain_detail_divider_horizontal_margin_10"
+            android:background="@color/light_grey" />
+
+          <include
+            android:id="@+id/weather5"
+            layout="@layout/item_weather" />
+
+        </LinearLayout>
+
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

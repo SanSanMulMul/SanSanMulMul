@@ -13,14 +13,24 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.databinding.DialogGroupExitBinding
-import com.sansantek.sansanmulmul.databinding.DialogGroupRegisterBinding
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.crewService
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.view.MainActivity
+import com.sansantek.sansanmulmul.ui.view.grouptab.GroupTabFragment
+import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
+import kotlinx.coroutines.runBlocking
 
-class AlertExitGroupDialog : DialogFragment() {
+class AlertExitGroupDialog(private val isLeader: Boolean, private val crew: Crew) :
+    DialogFragment() {
     // 뷰 바인딩 정의
     private var _binding: DialogGroupExitBinding? = null
     private val binding get() = _binding!!
+    private val activityViewModel: MainActivityViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +39,10 @@ class AlertExitGroupDialog : DialogFragment() {
     ): View {
         _binding = DialogGroupExitBinding.inflate(inflater, container, false)
         val view = binding.root
+        if (isLeader) {
+            binding.tvAlert.text = "정말 삭제하시나요...?\n정말요.....?"
+            binding.tvExitBtn.text = "삭제하기"
+        }
 
         // 레이아웃 배경을 투명하게 해줌, 필수 아님
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -36,9 +50,44 @@ class AlertExitGroupDialog : DialogFragment() {
         // 닫기 버튼 클릭
         binding.tvExitBtn.paintFlags = TextPaint.UNDERLINE_TEXT_FLAG
         binding.tvExitBtn.setOnClickListener {
+            if (isLeader) {
+                activityViewModel.token?.let {
+                    runBlocking {
+                        val result = crewService.deleteCrew(
+                            makeHeaderByAccessToken(it.accessToken),
+                            crew.crewId
+                        )
+                        if (result.isSuccessful) {
+                            Toast.makeText(
+                                requireContext(),
+                                "성공적으로 그룹 삭제가 완료되었습니다!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            } else {
+                activityViewModel.token?.let {
+                    runBlocking {
+                        val result = crewService.exitCrew(
+                            makeHeaderByAccessToken(it.accessToken),
+                            crew.crewId
+                        )
+                        if (result.isSuccessful) {
+                            Toast.makeText(
+                                requireContext(),
+                                "성공적으로 그룹 탈퇴가 완료되었습니다!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
+            val activity = requireActivity() as MainActivity
             dismiss()
+            activity.changeFragment(GroupTabFragment())
         }
-        binding.btnCancel.setOnClickListener{
+        binding.btnCancel.setOnClickListener {
             dismiss()
         }
 

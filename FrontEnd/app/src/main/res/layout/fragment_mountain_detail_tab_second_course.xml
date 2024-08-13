@@ -63,11 +63,11 @@
           app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintVertical_chainStyle="packed">
 
-          <View
+          <androidx.fragment.app.FragmentContainerView
+            android:name="com.naver.maps.map.MapFragment"
             android:id="@+id/mountain_detail_course_map"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/blue" />
+            android:layout_height="match_parent" />
 
           <!-- 난이도 버튼 -->
           <com.google.android.material.chip.ChipGroup
@@ -79,6 +79,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.chip.Chip
+              android:id="@+id/chip_all"
               style="@style/CustomChipChoice.ALL"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
@@ -89,6 +90,7 @@
               app:chipStartPadding="10dp" />
 
             <com.google.android.material.chip.Chip
+              android:id="@+id/chip_easy"
               style="@style/CustomChipChoice.Easy"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
@@ -100,6 +102,7 @@
               tools:checked="true" />
 
             <com.google.android.material.chip.Chip
+              android:id="@+id/chip_medium"
               style="@style/CustomChipChoice.Medium"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
@@ -111,6 +114,7 @@
               tools:checked="true" />
 
             <com.google.android.material.chip.Chip
+              android:id="@+id/chip_hard"
               style="@style/CustomChipChoice.Hard"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"

@@ -34,10 +34,10 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button"
-        android:background="@drawable/kakao_login_medium_wide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:background="@drawable/kakao_login_medium_wide"
         android:textColor="@color/button_text_color"
         android:textSize="@dimen/textSize_15"
         app:layout_constraintBottom_toTopOf="@id/viewGroup2"
@@ -56,39 +56,14 @@
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="45dp"
+            android:layout_width="wrap_content"
             android:layout_height="45dp"
-            android:src="@drawable/animalogo"
-            app:layout_constraintBottom_toTopOf="@id/textView"
+            android:src="@drawable/sansanmulmul_logo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="Built by SanSanTech"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/textView2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Cantact us 000-0000-0000"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

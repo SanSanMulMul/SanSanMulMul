@@ -9,21 +9,22 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.data.model.CrewGallery
 import com.sansantek.sansanmulmul.data.model.Picture
 import com.sansantek.sansanmulmul.databinding.ListPictureViewpagerBinding
-import com.sansantek.sansanmulmul.ui.util.Util
 
 private const val TAG = "GroupGalleryViewPagerAdapter_싸피"
 class GroupGalleryViewPagerAdapter(
 ) :
-  ListAdapter<Picture, GroupGalleryViewPagerAdapter.PictureViewHolder>(Comparator) {
-  companion object Comparator : DiffUtil.ItemCallback<Picture>() {
-    override fun areItemsTheSame(oldItem: Picture, newItem: Picture): Boolean {
+  ListAdapter<CrewGallery, GroupGalleryViewPagerAdapter.PictureViewHolder>(Comparator) {
+  companion object Comparator : DiffUtil.ItemCallback<CrewGallery>() {
+    override fun areItemsTheSame(oldItem: CrewGallery, newItem: CrewGallery): Boolean {
       return System.identityHashCode(oldItem) == System.identityHashCode(newItem)
     }
 
-    override fun areContentsTheSame(oldItem: Picture, newItem: Picture): Boolean {
+    override fun areContentsTheSame(oldItem: CrewGallery, newItem: CrewGallery): Boolean {
       return oldItem == newItem
     }
   }
@@ -32,14 +33,14 @@ class GroupGalleryViewPagerAdapter(
       fun bindInfo(position: Int){
         val item = getItem(position)
 
-        val img = if(item.uri == null){
-          ContextCompat.getDrawable(binding.root.context, R.drawable.bg_group_preview)!!.toBitmap()
+        if(item.imgUrl.isEmpty()){
+          Log.d(TAG, "bindInfo: imgUrl이 없음")
+          val img = ContextCompat.getDrawable(binding.root.context, R.drawable.bg_group_preview)!!.toBitmap()
+          binding.ivPicture.setImageBitmap(img)
         }else{
-          binding.root.context.contentResolver.openInputStream(item.uri!!)?.use { inputStream ->
-            BitmapFactory.decodeStream(inputStream)
-          }
+          Log.d(TAG, "bindInfo: imgUrl 세팅 ${item.imgUrl}")
+          Glide.with(binding.root).load(item.imgUrl).into(binding.ivPicture)
         }
-        binding.ivPicture.setImageBitmap(img)
       }
   }
 

@@ -5,7 +5,10 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.sansantek.sansanmulmul.config.Const.Companion.BEFORE_HIKING
 import com.sansantek.sansanmulmul.config.Const.Companion.SHARED_PREFERENCES_NAME
+import com.sansantek.sansanmulmul.config.Const.Companion.SP_HIKING_RECORDING_ONGOING_CREW_ID
 import com.sansantek.sansanmulmul.config.Const.Companion.SP_HIKING_RECORDING_STATE
+import com.sansantek.sansanmulmul.config.Const.Companion.SP_IS_QR_COMPLETED_KEY
+import com.sansantek.sansanmulmul.config.Const.Companion.SP_IS_QR_SCANNED_KEY
 import com.sansantek.sansanmulmul.config.Const.Companion.SP_SPEND_TIME_IS_RUNNING_KEY
 import com.sansantek.sansanmulmul.config.Const.Companion.SP_SPEND_TIME_KEY
 import com.sansantek.sansanmulmul.data.model.KakaoLoginToken
@@ -74,9 +77,9 @@ class SharedPreferencesUtil(context: Context) {
         val editor = preferences.edit()
 
         if (preferences.contains(SP_HIKING_RECORDING_STATE)) {
-            editor.putInt(SP_HIKING_RECORDING_STATE, state);
+            editor.putInt(SP_HIKING_RECORDING_STATE, state)
         } else {
-            editor.putInt(SP_HIKING_RECORDING_STATE, state);
+            editor.putInt(SP_HIKING_RECORDING_STATE, state)
         }
         editor.apply()
     }
@@ -92,14 +95,13 @@ class SharedPreferencesUtil(context: Context) {
         editor.apply()
     }
 
-
     fun saveHikingRecordingBaseTime(seconds: Long) {
         val editor = preferences.edit()
 
         if (preferences.contains(SP_SPEND_TIME_KEY)) {
-            editor.putLong(SP_SPEND_TIME_KEY, seconds);
+            editor.putLong(SP_SPEND_TIME_KEY, seconds)
         } else {
-            editor.putLong(SP_SPEND_TIME_KEY, seconds);
+            editor.putLong(SP_SPEND_TIME_KEY, seconds)
         }
         editor.apply()
     }
@@ -123,6 +125,73 @@ class SharedPreferencesUtil(context: Context) {
 
     fun getHikingRecordingStatus(): String {
         return preferences.getString(SP_SPEND_TIME_IS_RUNNING_KEY, "종료") ?: "종료"
+    }
+
+    fun saveHikingRecordingOnGoingCrewId(crewId: Int) {
+        val editor = preferences.edit()
+
+        if (preferences.contains(SP_HIKING_RECORDING_ONGOING_CREW_ID)) {
+            editor.putInt(SP_HIKING_RECORDING_ONGOING_CREW_ID, crewId)
+        } else {
+            editor.putInt(SP_HIKING_RECORDING_ONGOING_CREW_ID, crewId)
+        }
+        editor.apply()
+    }
+
+    fun getHikingRecordingOnGoingCrewId(): Long {
+        return preferences.getLong(SP_HIKING_RECORDING_ONGOING_CREW_ID, -1)
+    }
+
+    fun deleteHikingRecordingOnGoingCrewId() {
+        val editor = preferences.edit()
+        editor.remove(SP_HIKING_RECORDING_ONGOING_CREW_ID)
+        editor.clear()
+        editor.apply()
+    }
+
+    fun saveIsQRScanned(isQRScanned: Boolean) {
+        val editor = preferences.edit()
+
+        if (preferences.contains(SP_IS_QR_SCANNED_KEY)) {
+            editor.putBoolean(SP_IS_QR_SCANNED_KEY, isQRScanned)
+        } else {
+            editor.putBoolean(SP_IS_QR_SCANNED_KEY, isQRScanned)
+        }
+        editor.apply()
+    }
+
+    fun getIsQRScanned(): Boolean {
+        return preferences.getBoolean(SP_IS_QR_SCANNED_KEY, false)
+    }
+
+    fun deleteIsQRScanned() {
+        val editor = preferences.edit()
+        editor.remove(SP_IS_QR_SCANNED_KEY)
+        editor.clear()
+        editor.apply()
+    }
+
+
+    fun saveIsQRCompleted(isQRCompleted: Boolean) {
+        val editor = preferences.edit()
+
+        if (preferences.contains(SP_IS_QR_COMPLETED_KEY)) {
+            editor.putBoolean(SP_IS_QR_COMPLETED_KEY, isQRCompleted)
+        } else {
+            editor.putBoolean(SP_IS_QR_COMPLETED_KEY, isQRCompleted)
+        }
+        editor.apply()
+    }
+
+    fun getIsQRCompleted(): Boolean {
+        return preferences.getBoolean(SP_IS_QR_COMPLETED_KEY, false)
+    }
+
+    fun deleteIsQRCompleted() {
+        val editor = preferences.edit()
+        editor.remove(SP_IS_QR_COMPLETED_KEY)
+        editor.clear()
+        editor.apply()
     }
 
 

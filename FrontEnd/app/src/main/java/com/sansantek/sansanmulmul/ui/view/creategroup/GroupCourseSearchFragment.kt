@@ -1,82 +1,228 @@
 package com.sansantek.sansanmulmul.ui.view.creategroup
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.MotionEvent.ACTION_UP
 import android.view.View
-import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
+import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.databinding.FragmentGroupCourseSearchBinding
 import com.sansantek.sansanmulmul.ui.adapter.GroupCourceSearchListAdapter
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.view.register.GroupCreateViewPagerFragment
+import com.sansantek.sansanmulmul.ui.viewmodel.CreateGroupViewModel
+import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
+import kotlinx.coroutines.launch
 
-class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>(FragmentGroupCourseSearchBinding::bind, R.layout.fragment_group_course_search) {
+private const val TAG = "GroupCourseSearchFragme 싸피"
+
+class GroupCourseSearchFragment : BaseFragment<FragmentGroupCourseSearchBinding>(
+    FragmentGroupCourseSearchBinding::bind,
+    R.layout.fragment_group_course_search
+) {
     // 예시 데이터 리스트
-    private var dataList = listOf("가야산", "가야산", "가야산", "가야산")
-
+    private var dataList = listOf<Mountain>()
     private lateinit var adapter: GroupCourceSearchListAdapter
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private var isSearchViewClicked = false
+    private val activityViewModel: MainActivityViewModel by activityViewModels()
+    private val viewModel: CreateGroupViewModel by activityViewModels()
+    private val viewPagerFragment by lazy {
+        parentFragment as GroupCreateViewPagerFragment
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initSearchView()
+        registerObserver()
+        adapter = GroupCourceSearchListAdapter()
+        binding.rvListSearchMountain.adapter = adapter.apply {
+            setItemClickListener(object : GroupCourceSearchListAdapter.ItemClickListener {
+                override fun onMountainClick(mountain: Mountain) {
+                    viewModel.setGroupMountainId(mountain.mountainId)
+                    showUpCourseChoiceDialog(mountain)
+                }
 
-        adapter = GroupCourceSearchListAdapter { course ->
-            showUpCourseChoiceDialog(course)
+                // 즐겨 찾기 로직
+                override fun onLikeClick(mountain: Mountain, check: Boolean) {
+                    activityViewModel.token?.let {
+                        if (check) {
+                            lifecycleScope.launch {
+                                val result = mountainService.addLikeMountain(
+                                    makeHeaderByAccessToken(it.accessToken),
+                                    mountain.mountainId
+                                )
+                                if (result.isSuccessful) {
+                                    if (result.body().equals("산 즐겨찾기 성공")) {
+                                        showToast("즐겨찾기 등록 성공!")
+                                    }
+                                } else {
+                                    showToast("즐겨찾기 실패!")
+                                    Log.d(TAG, "onLikeClick: 즐겨찾기 등록 오류")
+                                }
+                            }
+                        } else {
+                            lifecycleScope.launch {
+                                val result = mountainService.deleteLikeMountain(
+                                    makeHeaderByAccessToken(it.accessToken),
+                                    mountain.mountainId
+                                )
+                                if (result.isSuccessful) {
+                                    if (result.body().equals("즐겨찾기 제거")) {
+                                        showToast("즐겨찾기 제거 성공!")
+                                    }
+                                } else {
+                                    showToast("즐겨찾기 실패!")
+                                    Log.d(TAG, "onLikeClick: 즐겨찾기 제거 오류")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            )
         }
-        binding.rvListSearchMountain.adapter = adapter
         binding.rvListSearchMountain.layoutManager = LinearLayoutManager(requireContext())
 
         // 데이터를 어댑터에 전달
         adapter.submitList(dataList)
-
     }
 
+    override fun onResume() {
+        super.onResume()
+        init()
+    }
+
+    private fun showGroupScheduleFragment() {
+        val fragment = GroupScheduleFragment.newInstance()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.vp_create_group, fragment)
+            .commitAllowingStateLoss()
+        Log.d("DownCourseDialog", "showGroupScheduleFragment: 레이아웃 변경 완료")
+    }
+
+    private fun registerObserver() {
+        viewModel.groupUpCourseId.observe(viewLifecycleOwner) {
+            checkValid()
+        }
+        viewModel.groupDownCourseId.observe(viewLifecycleOwner) {
+            checkValid()
+        }
+    }
+
+    private fun onDrawableRightClick() {
+        // 드로어블 오른쪽 클릭 시 실행할 로직
+        binding.svMountainSearchbar.setText("")
+    }
 
     private fun initSearchView() {
         // SearchView 초기화
-        val searchView = requireView().findViewById<SearchView>(R.id.sv_mountain_searchbar)
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                // 검색어가 null이 아니고 비어있지 않은 경우
-                if (!query.isNullOrEmpty()) {
-                    // 검색어가 데이터 리스트에 존재하는지 확인
-                    val isFound = dataList.contains(query)
+        val searchView = binding.svMountainSearchbar
 
-                    // 검색어가 리스트에 있을 경우
-                    if (isFound) {
-                        // 검색어에 해당하는 항목만 필터링하여 어댑터에 제출
-                        val filteredList = dataList.filter { it == query }
-                        adapter.submitList(filteredList) // 검색어와 일치하는 항목만 표시
-                        return true
-                    } else {
-                        // 검색어가 데이터 리스트에 없을 경우, 빈 목록을 어댑터에 제출
-                        adapter.submitList(emptyList())
-                        return true
+        searchView.setOnClickListener {
+            isSearchViewClicked = true
+        }
+        // 드로어블 클릭 이벤트 처리
+        // 드로어블 클릭 이벤트 처리
+        searchView.setOnTouchListener { v, event ->
+            if (event.action == ACTION_UP) {
+                val drawableRight = searchView.compoundDrawables[2]
+                drawableRight?.let {
+                    val drawableWidth = it.bounds.width()
+                    if (event.rawX >= (searchView.right - drawableWidth)) {
+                        onDrawableRightClick()
+                        v.performClick() // 접근성 지원을 위한 호출
+                        return@setOnTouchListener true
                     }
                 }
-                // 검색어가 비어있거나 null일 경우 모든 항목 표시
-                adapter.submitList(dataList)
-                return true
             }
+            false
+        }
+        searchView.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(newText: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                // Filter the data based on the search query
-                val filteredList = if (newText.isNullOrEmpty()) {
-                    dataList // Show all if query is empty
+            override fun afterTextChanged(newText: Editable?) {
+                dataList = mutableListOf()
+                Log.d(TAG, "onTextChanged: $newText")
+                if (newText.isNullOrEmpty()) {
+                    // Show all if query is empty
+                    adapter.submitList(dataList)
                 } else {
-                    dataList + newText // Filter the list
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        val result = mountainService.searchMountainList(newText.toString())
+                        if (result.isSuccessful) {
+                            result.body()?.let {
+                                dataList = it
+                                adapter.submitList(dataList)
+                            }
+                        } else {
+                            adapter.submitList(dataList)
+                        }
+                    }
                 }
-                adapter.submitList(filteredList) // Submit the filtered list to adapter
-                dataList = filteredList
-                return true
             }
-        })
+        }
+        )
+
     }
-    private fun showUpCourseChoiceDialog(course: String) {
-        val dialog = UpCourseChoiceDialog()
+
+    private fun showUpCourseChoiceDialog(mountain: Mountain) {
+        val dialog = UpCourseChoiceDialog(mountain)
         dialog.show(parentFragmentManager, "UpCourseChoiceDialog")
     }
+
+    private fun checkValid() {
+        if (viewModel.groupUpCourseId.value != -1L && viewModel.groupDownCourseId.value != -1L) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.groupUpCourseId.value?.let {
+                    val result = mountainService.getCourseDetail(viewModel.groupMountainId, it)
+                    if (result.isSuccessful) {
+                        result.body()?.let { course ->
+                            viewModel.setGroupUpCourseName(course.courseName)
+                        }
+                    }
+                }
+                viewModel.groupDownCourseId.value?.let {
+                    val result = mountainService.getCourseDetail(viewModel.groupMountainId, it)
+                    if (result.isSuccessful) {
+                        result.body()?.let { course ->
+                            viewModel.setGroupDownCourseName(course.courseName)
+                        }
+                    }
+                }
+            }
+            Log.d(TAG, "checkValid: 유효성 검사 통과")
+            viewPagerFragment.enableNextButton(true)
+
+        } else {
+            Log.d(
+                TAG,
+                "checkValid: 유효성 검사 실패 : ${viewModel.groupUpCourseId.value}   ${viewModel.groupDownCourseId.value}"
+            )
+            viewPagerFragment.enableNextButton(false)
+        }
+    }
+
+    private fun init() {
+        activity?.let {
+            hideBottomNav(
+                it.findViewById(R.id.main_layout_bottom_navigation),
+                true
+            )
+        }
+        viewModel.setGroupUpCourseId(-1)
+        viewModel.setGroupDownCourseId(-1)
+        checkValid()
+    }
+
 }
 
+//course ->
+//            showUpCourseChoiceDialog(course)

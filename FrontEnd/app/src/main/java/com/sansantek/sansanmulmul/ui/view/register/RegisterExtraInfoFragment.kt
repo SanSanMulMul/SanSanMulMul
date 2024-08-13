@@ -4,6 +4,8 @@ import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.icu.text.DecimalFormat
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.KeyEvent.KEYCODE_ENTER
@@ -36,52 +38,67 @@ class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
-        binding.etNickname.setOnKeyListener{ v, keyCode, event ->
-            if(event.action == KeyEvent.ACTION_DOWN && keyCode == KEYCODE_ENTER) {
+        binding.etNickname.setOnKeyListener { v, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KEYCODE_ENTER) {
                 activityViewModel.setUserNickName(binding.etNickname.text.toString())
                 true
             }
             false
         }
+        binding.etNickname.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                p0?.let {
+                    activityViewModel.setUserNickName(it.toString())
+                }
+            }
+
+
+        })
         binding.rgGender.setOnCheckedChangeListener { group, checkedId ->
             Log.d(TAG, "onViewCreated: $checkedId")
-            if(checkedId == binding.rbMale.id) {
+            if (checkedId == binding.rbMale.id) {
                 activityViewModel.setUserGender("M")
-            }
-            else{
+            } else {
                 activityViewModel.setUserGender("F")
             }
         }
         binding.npYear.setOnValueChangedListener { picker, oldValue, newValue ->
-            activityViewModel.setUserBirth("${DecimalFormat("00").format(newValue)}-${DecimalFormat("00").format(binding.npMonth.value)}-${DecimalFormat("00").format(binding.npDay.value)}")
+
+            activityViewModel.setUserBirth("${DecimalFormat("0000").format(newValue)}-${DecimalFormat("00").format(binding.npMonth.value)}-${DecimalFormat("00").format(binding.npDay.value)}")
         }
         binding.npMonth.setOnValueChangedListener { picker, oldValue, newValue ->
-            activityViewModel.setUserBirth("${DecimalFormat("00").format(binding.npYear.value)}-${DecimalFormat("00").format(newValue)}-${DecimalFormat("00").format(binding.npDay.value)}")
+            activityViewModel.setUserBirth("${DecimalFormat("0000").format(binding.npYear.value)}-${DecimalFormat("00").format(newValue)}-${DecimalFormat("00").format(binding.npDay.value)}")
         }
         binding.npDay.setOnValueChangedListener { picker, oldValue, newValue ->
-            activityViewModel.setUserBirth("${DecimalFormat("00").format(binding.npYear.value)}-${DecimalFormat("00").format(binding.npMonth.value)}-${DecimalFormat("00").format(newValue)}")
+            activityViewModel.setUserBirth("${DecimalFormat("0000").format(binding.npYear.value)}-${DecimalFormat("00").format(binding.npMonth.value)}-${DecimalFormat("00").format(newValue)}")
         }
     }
 
-    private fun registerObserver(){
-        activityViewModel.userGender.observe(viewLifecycleOwner){
+    private fun registerObserver() {
+        activityViewModel.userGender.observe(viewLifecycleOwner) {
             Log.d(TAG, "observeGender: 성별을 변경했어요! 유효성 검사를 다시 진행할게요!")
             checkValid()
         }
-        activityViewModel.userNickname.observe(viewLifecycleOwner){
+        activityViewModel.userNickname.observe(viewLifecycleOwner) {
             Log.d(TAG, "registerObserver: ")
             checkValid()
         }
-        activityViewModel.userName.observe(viewLifecycleOwner){
+        activityViewModel.userName.observe(viewLifecycleOwner) {
             Log.d(TAG, "registerObserver: ")
             checkValid()
         }
-        activityViewModel.userBirth.observe(viewLifecycleOwner){
+        activityViewModel.userBirth.observe(viewLifecycleOwner) {
             checkValid()
         }
     }
 
-    private fun checkValid(){
+    private fun checkValid() {
         lifecycleScope.launch {
             val isNickNameAvailable = async {
                 userService.isAvailableNickName(binding.etNickname.text.toString()).let {
@@ -94,16 +111,15 @@ class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>
             }
             val isGenderSelected = binding.rgGender.checkedRadioButtonId != -1
             Log.d(TAG, "checkValid: ${isNickNameAvailable}  $isGenderSelected")
-            if(isNickNameAvailable.await() && isGenderSelected){
+            if (isNickNameAvailable.await() && isGenderSelected) {
                 viewPagerFragment.enableNextButton(true)
-            }
-            else{
+            } else {
                 viewPagerFragment.enableNextButton(false)
             }
         }
     }
 
-    private fun init(){
+    private fun init() {
         viewPagerFragment.enableNextButton(false)
         registerObserver()
         loadUserNickName()
@@ -111,15 +127,17 @@ class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>
         setGradient(binding.extraInfoText2)
         setSpinner()
     }
-    private fun loadUserNickName(){
+
+    private fun loadUserNickName() {
         // 카카오에서 닉네임 입력받은 것으로 초기 세팅
         val user = activityViewModel.user
-        user.kakaoAccount?.profile?.let{
+        user.kakaoAccount?.profile?.let {
             binding.etNickname.setText(it.nickname)
             activityViewModel.setUserName(it.nickname ?: "")
             activityViewModel.setUserNickName(it.nickname ?: "")
         }
     }
+
     private fun setGradient(textView: TextView) {
         val paint = textView.paint
         val width = paint.measureText(textView.text.toString())
@@ -159,7 +177,6 @@ class RegisterExtraInfoFragment : BaseFragment<FragmentRegisterExtraInfoBinding>
             day.maxValue = updateDayPicker(year.value, newVal)
         }
     }
-
 
 
     private fun getCurrentDate(): LocalDate {

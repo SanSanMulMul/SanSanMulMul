@@ -3,7 +3,8 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:padding="10dp">
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -13,6 +14,9 @@
       android:id="@+id/cv_layout_tab"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginHorizontal="100dp"
+      android:layout_marginTop="20dp"
+      android:background="@drawable/rounded_rectangle_white_grey_30"
       app:layout_constraintBottom_toTopOf="@id/layout_mountain_course_info"
       app:layout_constraintTop_toTopOf="parent"
       app:tabIndicatorHeight="0dp"
@@ -37,7 +41,7 @@
       android:id="@+id/layout_mountain_course_info"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="10dp"
+      android:layout_marginTop="20dp"
       app:layout_constraintBottom_toTopOf="@id/layout_course_map_with_description"
       app:layout_constraintTop_toBottomOf="@id/cv_layout_tab">
 
@@ -93,7 +97,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginHorizontal="10dp"
-      android:layout_marginTop="20dp"
+      android:layout_marginTop="30dp"
       app:layout_constraintBottom_toTopOf="@id/layout_course_detail_info"
       app:layout_constraintTop_toBottomOf="@id/layout_mountain_course_info">
 
@@ -135,23 +139,25 @@
 
       <!-- 설명 보기 화면 -->
       <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/description_layout"
+        android:id="@+id/layout_description"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:background="@drawable/rounded_rectangle_black_30_with_opacity"
         android:clipToOutline="true"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <!-- 설명 -->
         <TextView
           android:id="@+id/tv_description"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:gravity="center_vertical"
+          android:paddingHorizontal="20dp"
           android:textColor="@color/white"
-          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintBottom_toTopOf="@id/btn_to_map"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
@@ -182,6 +188,7 @@
       android:id="@+id/layout_course_detail_info"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="@id/layout_course_map_with_description"
       app:layout_constraintStart_toStartOf="@id/layout_course_map_with_description"
@@ -249,6 +256,7 @@
               android:layout_height="wrap_content"
               android:gravity="center"
               android:text="전체"
+              android:textColor="@color/grey"
               android:textSize="12sp"
               app:layout_constraintBottom_toTopOf="@id/tv_expected_reach_time_total"
               app:layout_constraintEnd_toEndOf="parent"
@@ -283,6 +291,7 @@
               android:layout_height="wrap_content"
               android:gravity="center"
               android:text="상행"
+              android:textColor="@color/grey"
               android:textSize="12sp"
               app:layout_constraintBottom_toTopOf="@id/tv_expected_reach_time_uphill"
               app:layout_constraintEnd_toEndOf="parent"
@@ -317,6 +326,7 @@
               android:layout_height="wrap_content"
               android:gravity="center"
               android:text="하행"
+              android:textColor="@color/grey"
               app:layout_constraintBottom_toTopOf="@id/tv_expected_reach_time_downhill"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
@@ -339,276 +349,292 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
       </androidx.constraintlayout.widget.ConstraintLayout>
 
-      <!-- 난이도 -->
       <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_course_difficulty"
+        android:id="@+id/layout_difficulty_and_distance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        app:layout_constraintEnd_toStartOf="@id/layout_course_distance"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toTopOf="@id/layout_weather"
+        app:layout_constraintEnd_toEndOf="@id/layout_expected_reach_time"
         app:layout_constraintStart_toStartOf="@id/layout_expected_reach_time"
         app:layout_constraintTop_toBottomOf="@id/layout_expected_reach_time">
 
-        <!-- 난이도 타이틀 -->
+        <!-- 난이도 -->
         <androidx.constraintlayout.widget.ConstraintLayout
-          android:id="@+id/layout_difficulty_title"
-          android:layout_width="wrap_content"
+          android:id="@+id/layout_course_difficulty"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          app:layout_constraintBottom_toTopOf="@id/layout_difficulty_box"
+          app:layout_constraintEnd_toStartOf="@id/layout_course_distance"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent">
 
-          <View
-            android:id="@+id/dot2"
-            android:layout_width="5dp"
-            android:layout_height="5dp"
-            android:background="@drawable/rounded_button_green_200"
-            app:layout_constraintBottom_toBottomOf="@id/tv_difficulty_title"
+          <!-- 난이도 타이틀 -->
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_difficulty_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/layout_difficulty_box"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_difficulty_title" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <View
+              android:id="@+id/dot2"
+              android:layout_width="5dp"
+              android:layout_height="5dp"
+              android:background="@drawable/rounded_button_green_200"
+              app:layout_constraintBottom_toBottomOf="@id/tv_difficulty_title"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="@id/tv_difficulty_title" />
+
+            <TextView
+              android:id="@+id/tv_difficulty_title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="5dp"
+              android:text="난이도"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintStart_toEndOf="@id/dot2"
+              app:layout_constraintTop_toTopOf="parent" />
+
+          </androidx.constraintlayout.widget.ConstraintLayout>
+
+          <!-- 난이도 상세 -->
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_difficulty_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/rounded_shadow_ltrb"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_difficulty_title">
+
+            <!-- 상행 난이도 -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+              android:id="@+id/layout_difficulty_uphill"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              app:layout_constraintEnd_toStartOf="@id/layout_difficulty_downhill"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent">
+
+              <TextView
+                android:id="@+id/tv_difficulty_uphill_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="상행"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/tv_difficulty_uphill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+              <TextView
+                android:id="@+id/tv_difficulty_uphill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/rounded_rectangle_white_20"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_difficulty_uphill_title"
+                tools:backgroundTint="@color/difficulty_hard"
+                tools:text="어려움" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <!--하행 난이도-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+              android:id="@+id/layout_difficulty_downhill"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toEndOf="@id/layout_difficulty_uphill"
+              app:layout_constraintTop_toTopOf="parent">
+
+              <TextView
+                android:id="@+id/tv_difficulty_downhill_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="하행"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/tv_difficulty_downhill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+              <TextView
+                android:id="@+id/tv_difficulty_downhill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/rounded_rectangle_white_20"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_difficulty_downhill_title"
+                tools:backgroundTint="@color/difficulty_hard"
+                tools:text="어려움" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+          </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 거리-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/layout_course_distance"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toEndOf="@id/layout_course_difficulty"
+          app:layout_constraintTop_toTopOf="@id/layout_course_difficulty"
+          app:layout_constraintVertical_bias="0">
+
+          <!-- 거리 타이틀 -->
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_distance_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/layout_distance_box"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <View
+              android:id="@+id/dot3"
+              android:layout_width="5dp"
+              android:layout_height="5dp"
+              android:background="@drawable/rounded_button_green_200"
+              app:layout_constraintBottom_toBottomOf="@id/tv_distance_title"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="@id/tv_distance_title" />
+
+            <TextView
+              android:id="@+id/tv_distance_title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="5dp"
+              android:text="거리"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintStart_toEndOf="@id/dot3"
+              app:layout_constraintTop_toTopOf="parent" />
+
+          </androidx.constraintlayout.widget.ConstraintLayout>
 
           <TextView
-            android:id="@+id/tv_difficulty_title"
+            android:id="@+id/tv_total_distance"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="총 2.1km"
+            android:textColor="@color/sansanmulmul_green"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/layout_distance_title"
+            app:layout_constraintEnd_toEndOf="@id/layout_distance_box"
+            app:layout_constraintHorizontal_bias="0.9"
+            app:layout_constraintStart_toEndOf="@id/layout_distance_title"
+            app:layout_constraintTop_toTopOf="@id/layout_distance_title" />
+
+          <!-- 거리 상세 -->
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_distance_box"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:text="난이도"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_shadow_ltrb"
+            android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/dot2"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/layout_distance_title">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- 난이도 상세 -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-          android:id="@+id/layout_difficulty_box"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="10dp"
-          android:layout_marginEnd="5dp"
-          android:background="@drawable/rounded_shadow_ltrb"
-          android:padding="10dp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/layout_difficulty_title">
-
-          <!-- 상행 난이도 -->
-          <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_difficulty_uphill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/layout_difficulty_downhill"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-              android:id="@+id/tv_difficulty_uphill_title"
+            <!-- 상행 거리-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+              android:id="@+id/layout_distance_uphill"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:gravity="center"
-              android:text="상행"
-              android:textSize="12sp"
-              app:layout_constraintBottom_toTopOf="@id/tv_difficulty_uphill"
-              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintEnd_toStartOf="@id/layout_distance_downhill"
               app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toTopOf="parent" />
+              app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-              android:id="@+id/tv_difficulty_uphill"
+              <TextView
+                android:id="@+id/tv_distance_uphill_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="상행"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/tv_distance_uphill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+              <TextView
+                android:id="@+id/tv_distance_uphill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/difficulty_hard"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="2dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_distance_uphill_title"
+                tools:text="2.1km" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- 하행 거리-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+              android:id="@+id/layout_distance_downhill"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_marginTop="5dp"
-              android:background="@drawable/rounded_rectangle_white_20"
-              android:paddingHorizontal="10dp"
-              android:paddingVertical="2dp"
-              android:textColor="#FFFFFF"
-              android:textSize="12sp"
               app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toBottomOf="@id/tv_difficulty_uphill_title"
-              tools:backgroundTint="@color/difficulty_hard"
-              tools:text="어려움" />
-          </androidx.constraintlayout.widget.ConstraintLayout>
+              app:layout_constraintStart_toEndOf="@id/layout_distance_uphill"
+              app:layout_constraintTop_toTopOf="parent">
 
+              <TextView
+                android:id="@+id/tv_distance_downhill_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="하행"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/tv_distance_downhill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-          <!--하행 난이도-->
-          <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_difficulty_downhill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/layout_difficulty_uphill"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-              android:id="@+id/tv_difficulty_downhill_title"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:gravity="center"
-              android:text="하행"
-              android:textSize="12sp"
-              app:layout_constraintBottom_toTopOf="@id/tv_difficulty_downhill"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-              android:id="@+id/tv_difficulty_downhill"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="5dp"
-              android:background="@drawable/rounded_rectangle_white_20"
-              android:paddingHorizontal="10dp"
-              android:paddingVertical="2dp"
-              android:textColor="@color/white"
-              android:textSize="12sp"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toBottomOf="@id/tv_difficulty_downhill_title"
-              tools:backgroundTint="@color/difficulty_hard"
-              tools:text="어려움" />
-          </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-      </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-      <!-- 거리-->
-      <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_course_distance"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/layout_course_difficulty"
-        app:layout_constraintEnd_toEndOf="@id/layout_expected_reach_time"
-        app:layout_constraintStart_toEndOf="@id/layout_course_difficulty"
-        app:layout_constraintTop_toTopOf="@id/layout_course_difficulty">
-
-        <!-- 거리 타이틀 -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-          android:id="@+id/layout_distance_title"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          app:layout_constraintBottom_toTopOf="@id/layout_distance_box"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent">
-
-          <View
-            android:id="@+id/dot3"
-            android:layout_width="5dp"
-            android:layout_height="5dp"
-            android:background="@drawable/rounded_button_green_200"
-            app:layout_constraintBottom_toBottomOf="@id/tv_ditance_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_ditance_title" />
-
-          <TextView
-            android:id="@+id/tv_ditance_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="거리"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/dot3"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-          android:id="@+id/tv_total_distance"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="총 2.1km"
-          android:textColor="@color/sansanmulmul_green"
-          app:layout_constraintBottom_toBottomOf="@id/layout_distance_title"
-          app:layout_constraintEnd_toEndOf="@id/layout_distance_box"
-          app:layout_constraintHorizontal_bias="0.9"
-          app:layout_constraintStart_toEndOf="@id/layout_distance_title"
-          app:layout_constraintTop_toTopOf="@id/layout_distance_title" />
-
-        <!-- 거리 상세 -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-          android:id="@+id/layout_distance_box"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="5dp"
-          android:layout_marginTop="10dp"
-          android:background="@drawable/rounded_shadow_ltrb"
-          android:padding="10dp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/layout_distance_title">
-
-          <!-- 상행 거리-->
-          <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_distance_uphill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/layout_distance_downhill"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-              android:id="@+id/tv_distance_uphill_title"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:gravity="center"
-              android:text="상행"
-              android:textSize="12sp"
-              app:layout_constraintBottom_toTopOf="@id/tv_distance_uphill"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-              android:id="@+id/tv_distance_uphill"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="5dp"
-              android:backgroundTint="@color/difficulty_hard"
-              android:paddingHorizontal="10dp"
-              android:paddingVertical="2dp"
-              android:textSize="18sp"
-              android:textStyle="bold"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toBottomOf="@id/tv_distance_uphill_title"
-              tools:text="2.1km" />
-          </androidx.constraintlayout.widget.ConstraintLayout>
-
-          <!-- 하행 거리-->
-          <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_distance_downhill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/layout_distance_uphill"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-              android:id="@+id/tv_distance_downhill_title"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:gravity="center"
-              android:text="하행"
-              android:textSize="12sp"
-              app:layout_constraintBottom_toTopOf="@id/tv_distance_downhill"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-              android:id="@+id/tv_distance_downhill"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="5dp"
-              android:backgroundTint="@color/difficulty_hard"
-              android:paddingHorizontal="10dp"
-              android:paddingVertical="2dp"
-              android:textSize="18sp"
-              android:textStyle="bold"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toBottomOf="@id/tv_distance_downhill_title"
-              tools:text="2.1km" />
+              <TextView
+                android:id="@+id/tv_distance_downhill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/difficulty_hard"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="2dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_distance_downhill_title"
+                tools:text="2.1km" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
           </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
       </androidx.constraintlayout.widget.ConstraintLayout>
@@ -619,11 +645,12 @@
         android:id="@+id/layout_weather"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/rounded_shadow_ltrb"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/layout_expected_reach_time"
         app:layout_constraintStart_toStartOf="@id/layout_expected_reach_time"
-        app:layout_constraintTop_toBottomOf="@id/layout_course_difficulty">
+        app:layout_constraintTop_toBottomOf="@id/layout_difficulty_and_distance">
 
         <!-- 날씨예보 타이틀 -->
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -150,23 +150,13 @@
             app:layout_constraintTop_toBottomOf="@id/layout_carousel_news">
 
             <TextView
-                android:id="@+id/tv_spring"
+                android:id="@+id/tv_recommendation1"
                 style="@style/HomeTabRecommendationTitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🌼 봄"
+                android:text="🌼 봄에 가기 좋은 산 🌼"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_spring_1"
-                style="@style/HomeTabRecommendationTitleStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="에 가기 좋은 산 🌼"
-                app:layout_constraintBottom_toBottomOf="@id/tv_spring"
-                app:layout_constraintStart_toEndOf="@id/tv_spring"
-                app:layout_constraintTop_toTopOf="@id/tv_spring" />
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vp_recommendation1"
@@ -176,7 +166,7 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/tv_spring" />
+                app:layout_constraintTop_toBottomOf="@id/tv_recommendation1" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- 산 추천2 -->
@@ -190,24 +180,15 @@
             app:layout_constraintTop_toBottomOf="@id/layout_recommendation1">
 
             <TextView
-                android:id="@+id/tv_summer"
+                android:id="@+id/tv_recommendation2"
                 style="@style/HomeTabRecommendationTitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="🌊 여름"
+                android:text="🌊 여름에 가기 좋은 산 🌊"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tv_summer_1"
-                style="@style/HomeTabRecommendationTitleStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="에 가기 좋은 산 🌊"
-                app:layout_constraintBottom_toBottomOf="@id/tv_summer"
-                app:layout_constraintStart_toEndOf="@id/tv_summer"
-                app:layout_constraintTop_toTopOf="@id/tv_summer" />
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vp_recommendation2"
@@ -217,7 +198,7 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/tv_summer" />
+                app:layout_constraintTop_toBottomOf="@id/tv_recommendation2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- 산 추천3 -->
@@ -231,24 +212,14 @@
             app:layout_constraintTop_toBottomOf="@id/layout_recommendation2">
 
             <TextView
-                android:id="@+id/tv_fall"
+                android:id="@+id/tv_recommendation3"
                 style="@style/HomeTabRecommendationTitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="🍁 가을"
+                android:text="🍁 가을에 가기 좋은 산 🍁"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_fall_1"
-                style="@style/HomeTabRecommendationTitleStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="에 가기 좋은 산 🍁"
-                app:layout_constraintBottom_toBottomOf="@id/tv_fall"
-                app:layout_constraintStart_toEndOf="@id/tv_fall"
-                app:layout_constraintTop_toTopOf="@id/tv_fall" />
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vp_recommendation3"
@@ -258,7 +229,7 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/tv_fall" />
+                app:layout_constraintTop_toBottomOf="@id/tv_recommendation3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -272,24 +243,14 @@
             app:layout_constraintTop_toBottomOf="@id/layout_recommendation3">
 
             <TextView
-                android:id="@+id/tv_winter"
+                android:id="@+id/tv_recommendation4"
                 style="@style/HomeTabRecommendationTitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="❄ 겨울"
+                android:text="❄ 겨울에 가기 좋은 산 ❄"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_winter_1"
-                style="@style/HomeTabRecommendationTitleStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="에 가기 좋은 산 ❄"
-                app:layout_constraintBottom_toBottomOf="@id/tv_winter"
-                app:layout_constraintStart_toEndOf="@id/tv_winter"
-                app:layout_constraintTop_toTopOf="@id/tv_winter" />
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vp_recommendation4"
@@ -299,7 +260,7 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/tv_winter" />
+                app:layout_constraintTop_toBottomOf="@id/tv_recommendation4" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

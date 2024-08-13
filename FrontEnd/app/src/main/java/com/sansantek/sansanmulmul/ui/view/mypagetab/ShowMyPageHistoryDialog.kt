@@ -45,6 +45,7 @@ class ShowMyPageHistoryDialog : DialogFragment(), OnMapReadyCallback {
   ): View {
     _binding = DialogMyPageHistoryBinding.inflate(inflater, container, false)
     binding.ivGroupPreview.setColorFilter(Color.parseColor("#99000000"), PorterDuff.Mode.SRC_OVER)
+    binding.ibCloseBtn.setOnClickListener { dismiss() }
 
     for (i in 1..3) {
       val member = HistoryMember("엄홍길👑", "박태asssssssss우스", )

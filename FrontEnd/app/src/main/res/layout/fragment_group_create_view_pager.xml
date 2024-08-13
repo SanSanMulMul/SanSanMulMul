@@ -64,6 +64,7 @@
             app:dotsSize="12dp"
             app:dotsSpacing="6dp"
             app:dotsStrokeWidth="2dp"
+            app:dotsClickable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

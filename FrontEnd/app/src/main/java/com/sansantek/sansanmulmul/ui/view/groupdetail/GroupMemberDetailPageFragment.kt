@@ -206,6 +206,7 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
                                         isFollowing = false
                                         updateFollowButton(isFollowing)
                                         loadMemberFollowingFollowerCount(memberUserId)
+                                        updateMyPageData()
                                     } else {
                                         Log.e(TAG, "언팔로우 실패: ${unfollowResponse.code()}")
                                         showToast("언팔로우 실패")
@@ -219,6 +220,7 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
                                         isFollowing = true
                                         updateFollowButton(isFollowing)
                                         loadMemberFollowingFollowerCount(memberUserId)
+                                        updateMyPageData()
                                     } else {
                                         Log.e(TAG, "팔로우 실패: ${followResponse.code()}")
                                         showToast("팔로우 실패")
@@ -265,5 +267,14 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
         Log.d(TAG, "replaceFragment: 실행")
         childFragmentManager.beginTransaction().replace(binding.myPageFragmentView.id, view)
             .commit()
+    }
+
+    private suspend fun updateMyPageData() {
+        activityViewModel.token?.let {
+            // 마이 페이지 정보 다시 로드
+            val myPageInfo = userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
+            activityViewModel.setMyPageInfo(myPageInfo)
+
+        }
     }
 }

@@ -38,6 +38,10 @@ class MountainDetailFragment : BaseFragment<FragmentMountainDetailTabBinding>(
             .replace(binding.mountainDetailFragmentView.id, MountainDetailTabFirstInfoFragment())
             .commit()
 
+        binding.ibBackBtn.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
+
         binding.ibFavoriteBtn.setOnClickListener {
             activityViewModel.token?.let {
                 check = !check

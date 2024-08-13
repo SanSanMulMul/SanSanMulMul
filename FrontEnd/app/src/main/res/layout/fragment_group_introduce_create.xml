@@ -52,6 +52,7 @@
             android:id="@+id/group_create_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
             android:layout_marginBottom="70dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -84,12 +85,12 @@
 
                 <EditText
                     android:id="@+id/group_create_blank"
-                    android:layout_width="300dp"
+                    android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:background="@drawable/rounded_rectangle_white_grey_10"
                     android:hint="그룹명"
                     android:inputType="text"
-                    android:paddingStart="15dp"
+                    android:paddingHorizontal="15dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -124,8 +125,10 @@
 
                 <EditText
                     android:id="@+id/group_introduce_blank"
-                    android:layout_width="300dp"
+                    android:layout_width="0dp"
                     android:layout_height="150dp"
+                    android:paddingHorizontal="15dp"
+                    android:paddingVertical="15dp"
                     android:background="@drawable/rounded_rectangle_white_grey_10"
                     android:gravity="top"
                     android:hint="우리 그룹은요..."

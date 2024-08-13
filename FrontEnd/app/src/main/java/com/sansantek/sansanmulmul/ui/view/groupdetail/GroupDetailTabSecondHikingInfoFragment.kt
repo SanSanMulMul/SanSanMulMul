@@ -200,7 +200,7 @@ class GroupDetailTabSecondHikingInfoFragment(private val crew: Crew) :
       tvDifficultyDownhill.let {
         it.text = parseDifficultyName(crewMountainDetail.downCourseLevel)
         it.backgroundTintList =
-          ColorStateList.valueOf(getDifficultyColor(crewMountainDetail.upCourseLevel))
+          ColorStateList.valueOf(getDifficultyColor(crewMountainDetail.downCourseLevel))
       }
 
       // 거리

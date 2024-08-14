@@ -95,7 +95,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   private val groupDetailViewModel: GroupDetailViewModel by viewModels()
   private val chronometerViewModel: ChronometerViewModel by viewModels()
   private val polylines: MutableList<PolylineOverlay> = mutableListOf()
-  private val intent by lazy{ Intent(myContext, HikingRecordingService::class.java) }
+  private val serviceIntent by lazy{ Intent(myContext, HikingRecordingService::class.java) }
   private val stepCounterRepository by lazy {
     StepCounterRepository.get()
   }
@@ -108,13 +108,13 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
       Manifest.permission.ACTIVITY_RECOGNITION,
       Manifest.permission.POST_NOTIFICATIONS,
       Manifest.permission.ACCESS_FINE_LOCATION,
-      Manifest.permission.ACCESS_COARSE_LOCATION
+      Manifest.permission.ACCESS_COARSE_LOCATION,
     )
   } else if (Build.VERSION.SDK_INT >= 29) {
     arrayOf(
       Manifest.permission.ACTIVITY_RECOGNITION,
       Manifest.permission.ACCESS_FINE_LOCATION,
-      Manifest.permission.ACCESS_COARSE_LOCATION
+      Manifest.permission.ACCESS_COARSE_LOCATION,
     )
   } else {
     arrayOf(
@@ -145,8 +145,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     super.onResume()
     // 지금 기록 중이었는지 확인하고 상태에 따라 버튼 초기화
     Log.d(TAG, "onViewCreated: resume 시작")
-    registerObserving()
     syncRecordingStatus()
+    registerObserving()
     initClickListener()
     lifecycleScope.launch { loadMyCrewHistory() }
     Log.d(TAG, "onViewCreated: resume 종료")
@@ -429,6 +429,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
    */
   private fun registerObserving() {
     Log.d(TAG, "registerObserving: register observing 시작")
+    observeOnGoingCrewId()
+
     observeHikingStatus()
 
     observeAmILeader()
@@ -437,7 +439,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
 
     observeIsQRCompleted()
 
-    observeOnGoingCrewId()
 
     observeCrewMountainDetail()
 
@@ -641,6 +642,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         HIKING -> {
           SingletonHandler.getHandler().removeCallbacks(runnable)
           SingletonHandler.getHandler().post(runnable)
+          deActivateRecordingService()
+          Log.d(TAG, "observeHikingStatus: 여기는 Hiking")
           tryRecordingServiceByStatus("상행")
         }
 
@@ -648,10 +651,12 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
           SingletonHandler.getHandler().removeCallbacks(runnable)
           SingletonHandler.getHandler().post(runnable)
           deActivateRecordingService()
+          Log.d(TAG, "observeHikingStatus: 여기는 After Hiking")
           tryRecordingServiceByStatus("하행")
         }
 
         FINISH -> {
+          deActivateRecordingService()
           val history = hikingRecordingTabViewModel.onGoingCrewId.value?.let {
             hikingRecordingTabViewModel.hikingStartTime.value?.let { startTime ->
               hikingRecordingTabViewModel.hikingEndTime.value?.let { endTime ->
@@ -781,25 +786,28 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
    * 없다면 상행인지 하행인지를 구분할 수 있는 status 유무와, crewId를 전해주고, 기록 서비스를 실행
    */
   private fun activateRecordingService(status: String) {
-    val serviceIntent =
-      intent.apply {
-        putExtra("status", status)
-        putExtra("crewId", hikingRecordingTabViewModel.onGoingCrewId.value)
-      }
-    Log.d(TAG, "activateRecordingService isService : 서비스 시작")
+    if(true){
+      val serviceIntent =
+        serviceIntent.apply {
+          putExtra("status", status)
+          putExtra("crewId", hikingRecordingTabViewModel.onGoingCrewId.value)
+        }
+      Log.d(TAG, "activateRecordingService isService : 서비스 시작")
       startForegroundService(rootActivity, serviceIntent)
 
-    sharedPreferencesUtil.saveRecordingServiceState(status)
-    SingletonHandler.getHandler().removeCallbacks(runnable)
-    SingletonHandler.getHandler().post(runnable)
-    Log.d(TAG, "activateRecordingService: handler 실행")
+      sharedPreferencesUtil.saveRecordingServiceState(status)
+      SingletonHandler.getHandler().removeCallbacks(runnable)
+      SingletonHandler.getHandler().post(runnable)
+      Log.d(TAG, "activateRecordingService: handler 실행")
+    }else{
+      Log.d(TAG, "activateRecordingService: 서비스 실행 안함")}
   }
 
   /**
    * 기록 서비스를 비활성화 시키면서 status를 종료로 저장하고 동료의 위치를 불러오는 Handler를 종료하는 함수
    */
   private fun deActivateRecordingService() {
-    val serviceIntent = intent
+    val serviceIntent = serviceIntent
     requireActivity().stopService(serviceIntent)
     sharedPreferencesUtil.saveRecordingServiceState("종료")
     SingletonHandler.getHandler().removeCallbacks(runnable)

@@ -1,3 +1,8 @@
 package com.sansantek.sansanmulmul.data.model
 
-class MountainPeakStone : ArrayList<MountainPeakStoneItem>()
+data class MountainPeakStone(
+    val mountainName: String,
+    val stoneId: Int,
+    val stoneImg: String,
+    val stoneName: String
+)

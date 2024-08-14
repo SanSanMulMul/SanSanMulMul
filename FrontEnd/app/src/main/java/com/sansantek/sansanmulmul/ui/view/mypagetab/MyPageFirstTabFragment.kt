@@ -28,13 +28,13 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
     private val activityViewModel: MainActivityViewModel by activityViewModels()
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
     private var historyMountainList = mutableListOf(
-        MountainHistory(R.drawable.dummy1, "가야산", Date()),
-        MountainHistory(R.drawable.dummy2, "가리산", Date()),
-        MountainHistory(R.drawable.dummy3, "가리왕sssssszssss산", Date()),
-        MountainHistory(R.drawable.dummy3, "가리왕산", Date()),
-        MountainHistory(R.drawable.dummy3, "가리왕산", Date()),
-        MountainHistory(R.drawable.dummy3, "가리왕산", Date()),
-        MountainHistory(R.drawable.dummy3, "가리왕산", Date())
+        MountainHistory(R.drawable.mountain_gum_o, "금오산", Date()),
+//        MountainHistory(R.drawable.dummy2, "가리산", Date()),
+//        MountainHistory(R.drawable.dummy3, "가리왕sssssszssss산", Date()),
+//        MountainHistory(R.drawable.dummy3, "가리왕산", Date()),
+//        MountainHistory(R.drawable.dummy3, "가리왕산", Date()),
+//        MountainHistory(R.drawable.dummy3, "가리왕산", Date()),
+//        MountainHistory(R.drawable.dummy3, "가리왕산", Date())
     )
 
     private lateinit var favoriteMountainAdapter: MyPageFirstTabFavoriteMountainListAdapter

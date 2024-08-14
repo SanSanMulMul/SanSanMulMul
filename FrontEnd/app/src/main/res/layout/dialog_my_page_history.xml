@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/layout_group_preview"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_group_preview"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -12,8 +12,8 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:cardElevation="0dp"
-            app:cardCornerRadius="30dp">
+            app:cardCornerRadius="30dp"
+            app:cardElevation="0dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_group_preview"
@@ -21,274 +21,273 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/bg_group_preview" />
+                android:src="@drawable/mountain_gum_o" />
         </androidx.cardview.widget.CardView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
             android:layout_marginHorizontal="30dp"
-            >
+            android:layout_marginTop="20dp">
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_dialog_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/layout_date"
-                >
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
                 <TextView
                     android:id="@+id/btn_download_picture"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/round_stroke_white_background_transparent_20"
+                    android:backgroundTint="@android:color/transparent"
+                    android:drawablePadding="10dp"
                     android:maxLines="1"
-                    android:text="산생네컷 다운받기"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="8dp"
-                    android:drawablePadding="10dp"
+                    android:text="산생네컷 다운받기"
                     android:textColor="@android:color/transparent"
-                    android:backgroundTint="@android:color/transparent"
-                    android:background="@drawable/round_stroke_white_background_transparent_20"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/ib_close_btn"
                     app:layout_constraintEnd_toStartOf="@id/ib_close_btn"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
-                    app:layout_constraintBottom_toBottomOf="@id/ib_close_btn"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/ib_close_btn"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:background="@drawable/rounded_white_circle_radius_10_box"
-                    android:tint="@color/my_page_history_dialog_close_btn_color"
                     android:src="@drawable/close_radius"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintTop_toTopOf="@id/btn_download_picture"
+                    android:tint="@color/my_page_history_dialog_close_btn_color"
                     app:layout_constraintBottom_toBottomOf="@id/btn_download_picture"
-                    app:layout_constraintStart_toEndOf="@id/btn_download_picture"
+                    app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toEndOf="parent"
-                    />
+                    app:layout_constraintStart_toEndOf="@id/btn_download_picture"
+                    app:layout_constraintTop_toTopOf="@id/btn_download_picture" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/layout_dialog_header"
                 app:layout_constraintBottom_toTopOf="@id/layout_detail_history"
-                >
+                app:layout_constraintTop_toBottomOf="@id/layout_dialog_header">
+
                 <TextView
                     android:id="@+id/tv_start_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="24.01.02 13:00"
+                    android:text="24.08.15 08:00"
+                    android:textColor="@color/white"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/tv_date_tag"
                     app:layout_constraintHorizontal_chainStyle="packed"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/tv_date_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=" - "
+                    android:textColor="@color/white"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tv_start_date"
                     app:layout_constraintEnd_toStartOf="@id/tv_end_date"
-                    />
+                    app:layout_constraintStart_toEndOf="@id/tv_start_date"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/tv_end_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="24.01.02 15:00"
+                    android:text="24.08.15 13:00"
+                    android:textColor="@color/white"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_date_tag"
-                    />
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/tv_mountain_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="가야산"
+                    android:text="금오산"
+                    android:textColor="@color/white"
                     android:textSize="30sp"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
-                    app:layout_constraintTop_toBottomOf="@id/tv_start_date"
                     app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/tv_start_date" />
+
                 <TextView
                     android:id="@+id/tv_course_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="가야산 어쩌구 공원 코스"
+                    android:text="금오산제1코스"
+                    android:textColor="@color/white"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
-                    app:layout_constraintTop_toBottomOf="@id/tv_mountain_name"
                     app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/tv_mountain_name" />
+
                 <com.google.android.material.divider.MaterialDivider
                     android:id="@+id/divider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     app:dividerColor="@color/white"
-                    app:layout_constraintTop_toBottomOf="@id/tv_course_name"
                     app:layout_constraintBottom_toTopOf="@id/tv_history_info"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/tv_course_name" />
+
                 <TextView
                     android:id="@+id/tv_history_info"
-                    android:text="상행 50km, 하행 50km 총 100km 등산완료!\n완등까지 4시간 걸렸습니다."
-                    android:textSize="14sp"
-                    android:textColor="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    app:layout_constraintTop_toBottomOf="@id/divider"
+                    android:text="8.85km 등산완료!\n완등까지 4시간 23분 걸렸습니다."
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/divider" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_detail_history"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="40dp"
-                app:layout_constraintTop_toBottomOf="@id/layout_date"
                 app:layout_constraintBottom_toBottomOf="parent"
-                >
+                app:layout_constraintTop_toBottomOf="@id/layout_date">
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_member_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/layout_footer"
-                    >
+                    app:layout_constraintTop_toTopOf="parent">
+
                     <TextView
                         android:id="@+id/tv_member_list"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="함께했던 멤버"
-                        android:textSize="14sp"
                         android:textColor="@color/white"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toTopOf="@id/rv_member_list"
-                        />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_member_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintTop_toBottomOf="@id/tv_member_list"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_member_list" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_footer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/layout_member_list"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    >
+                    app:layout_constraintTop_toBottomOf="@id/layout_member_list">
+
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cv_naver_map"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp"
-                        app:layout_constraintDimensionRatio="17:13"
-                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintDimensionRatio="17:13"
                         app:layout_constraintEnd_toStartOf="@id/layout_record"
-                        >
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
                         <com.naver.maps.map.MapView
                             android:id="@+id/navermap_map_view"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            />
+                            android:layout_height="match_parent" />
                     </androidx.cardview.widget.CardView>
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layout_record"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:orientation="vertical"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginVertical="10dp"
-                    app:layout_constraintTop_toTopOf="@id/cv_naver_map"
-                    app:layout_constraintBottom_toBottomOf="@id/cv_naver_map"
-                    app:layout_constraintStart_toEndOf="@id/cv_naver_map"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    >
-                    <LinearLayout
-                        android:id="@+id/layout_walk"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layout_record"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginVertical="10dp"
+                        android:layout_marginStart="10dp"
                         android:orientation="vertical"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toTopOf="@id/layout_calorie"
-                        app:layout_constraintVertical_chainStyle="spread_inside"
-                        >
-                        <TextView
-                            android:id="@+id/tv_total_walk_title"
-                            android:text="걸음 수"
-                            android:textSize="14sp"
-                            android:textColor="@color/white"
-                            android:layout_width="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@id/cv_naver_map"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/cv_naver_map"
+                        app:layout_constraintTop_toTopOf="@id/cv_naver_map">
+
+                        <LinearLayout
+                            android:id="@+id/layout_walk"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toTopOf="@id/layout_calorie"
                             app:layout_constraintTop_toTopOf="parent"
-                            />
-                        <TextView
-                            android:id="@+id/tv_total_walk_data"
-                            android:text=": 10000걸음"
-                            android:textSize="14sp"
-                            android:textColor="@color/white"
-                            android:layout_width="wrap_content"
+                            app:layout_constraintVertical_chainStyle="spread_inside">
+
+                            <TextView
+                                android:id="@+id/tv_total_walk_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="걸음 수"
+                                android:textColor="@color/white"
+                                android:textSize="14sp"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_total_walk_data"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=": 10000걸음"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_calorie"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:id="@+id/layout_calorie"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintTop_toBottomOf="@id/layout_walk"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        >
-                        <TextView
-                            android:id="@+id/tv_total_calorie_title"
-                            android:text="칼로리"
-                            android:textSize="14sp"
-                            android:textColor="@color/white"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
-                        <TextView
-                            android:id="@+id/tv_total_calorie_data"
-                            android:text=": 100kcal"
-                            android:textSize="14sp"
-                            android:textColor="@color/white"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            />
-                    </LinearLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                            app:layout_constraintTop_toBottomOf="@id/layout_walk">
+
+                            <TextView
+                                android:id="@+id/tv_total_calorie_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="칼로리"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tv_total_calorie_data"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=": 100kcal"
+                                android:textColor="@color/white"
+                                android:textSize="14sp"
+                                app:layout_constraintBottom_toBottomOf="parent" />
+                        </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 

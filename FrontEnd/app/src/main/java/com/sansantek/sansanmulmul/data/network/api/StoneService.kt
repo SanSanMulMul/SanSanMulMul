@@ -10,15 +10,15 @@ import retrofit2.http.Query
 
 interface StoneService {
 
-  @GET("stone/all")
-  suspend fun searchAllStones(): Response<MountainPeakStone>
+    @GET("stone/all")
+    suspend fun searchAllStones(): Response<List<MountainPeakStone>>
 
-  @GET("stone/{userId}")
-  suspend fun getMemberStone(@Path("userId") id: Int)
+    @GET("stone/{userId}")
+    suspend fun getMemberStone(@Path("userId") id: Int): Response<List<MountainPeakStone>>
 
-  @POST("stone/user")
-  suspend fun addStone(
-    @Header("Authorization") accessToken: String,
-    @Query("stoneId") stoneId: Int
-  ): Response<Boolean>
+    @POST("stone/user")
+    suspend fun addStone(
+        @Header("Authorization") accessToken: String,
+        @Query("stoneId") stoneId: Int
+    ): Response<Boolean>
 }

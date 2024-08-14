@@ -1,5 +1,8 @@
 package com.sansantek.sansanmulmul.record.service;
 
+import com.sansantek.sansanmulmul.common.util.FcmMessage;
+import com.sansantek.sansanmulmul.common.util.FcmType;
+import com.sansantek.sansanmulmul.common.util.FcmUtil;
 import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.crew.domain.crewuser.CrewUser;
 import com.sansantek.sansanmulmul.crew.dto.response.crewdetail.CrewUserResponse;
@@ -49,6 +52,7 @@ public class RecordService {
     // service
     private final CrewRequestService crewRequestService;
     private final CourseService courseService;
+    private final FcmUtil fcmUtil;
 
     // 회원 좌표 저장
     public void saveCoord(int userId, LocationRequest request) {
@@ -259,4 +263,40 @@ public class RecordService {
         // 해당 사용자와 그룹에 대한 HikingRecord 존재 여부 확인
         return hikingRecordRepository.existsByUserAndCrew(user, crew);
     }
-}
+
+    //이탈 알림 crew 모두에게 보내기
+    // FcmDTO 생성
+    public boolean sendAlarm(int crewId) {
+        Crew crew = crewRepository.findByCrewId(crewId)
+                .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
+        // FcmDTO 생성
+//        String title = fcmUtil.makeFcmTitle(
+//                crew.getCrewName(),  "\uD83D\uDEA8이탈 감지\uD83D\uDEA8"
+//        );
+        String title = "\uD83D\uDEA8이탈 감지\uD83D\uDEA8";
+        String body = "팀원의 이탈이 감지되었습니다. 위치를 확인하세요!";
+//        String body = fcmUtil.makeLeaderDelegateBody(
+//                crew.getCrewName(), currentLeader.getUserNickname(), newLeader.getUserNickname()
+//        );
+        FcmMessage.FcmDTO fcmDTO = fcmUtil.makeFcmDTO(title, body);
+        // FCM발송
+        fcmSendtoCrew(crew, fcmDTO);
+        System.out.println(title);
+
+        return true;
+    }
+
+    // 그룹 내 회원들에게 전체 알림
+    public void fcmSendtoCrew(Crew crew, FcmMessage.FcmDTO fcmDTO){
+
+        List<CrewUser> crewUsers = crewUserRepository.findByCrew(crew);// 그룹 내 속하는 멤버들
+
+        fcmUtil.multiFcmSend(
+                crewUsers.stream()
+                        .map(CrewUser::getUser)
+                        .toList(),
+                fcmDTO
+        );
+    }
+
+    }

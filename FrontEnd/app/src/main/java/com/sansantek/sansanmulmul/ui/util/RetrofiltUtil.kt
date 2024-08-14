@@ -25,6 +25,5 @@ class RetrofiltUtil {
     val fcmService = retrofit.create(FCMService::class.java)
     val recordService = retrofit.create(RecordService::class.java)
     val stoneService = retrofit.create(StoneService::class.java)
-
   }
 }

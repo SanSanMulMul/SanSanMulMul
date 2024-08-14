@@ -29,9 +29,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.sansantek.sansanmulmul.R
@@ -43,6 +46,7 @@ import com.sansantek.sansanmulmul.config.Const.Companion.BEFORE_HIKING
 import com.sansantek.sansanmulmul.config.Const.Companion.HIKING
 import com.sansantek.sansanmulmul.data.local.entity.StepCount
 import com.sansantek.sansanmulmul.data.model.Crew
+import com.sansantek.sansanmulmul.data.repository.StepCounterRepository
 import com.sansantek.sansanmulmul.databinding.FragmentHikingRecordingTabBinding
 import com.sansantek.sansanmulmul.ui.service.HikingRecordingService
 import com.sansantek.sansanmulmul.ui.util.PermissionChecker
@@ -75,6 +79,9 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   private val mountainPeakStoneViewModel: MountainPeakStoneViewModel by activityViewModels()
   private val groupDetailViewModel: GroupDetailViewModel by viewModels()
   private val chronometerViewModel: ChronometerViewModel by viewModels()
+  private val stepCounterRepository by lazy {
+    StepCounterRepository.get()
+  }
 
   /**
    * 버전에 따른 Permission 종류들
@@ -103,33 +110,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     override fun onReceive(p0: Context, intent: Intent) {
       val message = intent.getSerializableExtra("value") as StepCount
       Log.d(TAG, "Got message: " + message)
-      safeCall {
-        binding.tvStepCnt.text = message.stepCount.toString()
-
-        val distance = (0.74 * message.stepCount)
-        binding.tvDistance.text = if (distance < 1000) {
-          "${distance.toInt()} m"
-        } else {
-          "${String.format("%.2f", (distance / 1000))} km"
-        }
-
-        binding.tvHeight.text = if (message.elevation < 1000) {
-          if (message.elevation != -1.0) {
-            "${message.elevation.toInt()} m"
-          } else {
-            "0 km"
-          }
-        } else {
-          "${message.elevation.toInt() / 1000} km"
-        }
-
-        val kcal = (46.62 * message.stepCount)
-        binding.tvCalorie.text = if (kcal < 1000) {
-          "${kcal.toInt()} cal"
-        } else {
-          "${String.format("%.2f", (kcal / 1000))} kcal"
-        }
-      }
+      safeCall { setHikingInfo(message) }
     }
   }
 
@@ -147,12 +128,22 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     registerObserving()
     syncRecordingStatus()
     initClickListener()
+    lifecycleScope.launch { loadMyCrewHistory() }
     Log.d(TAG, "onViewCreated: resume 종료")
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     init()
     Log.d(TAG, "onViewCreated: init 종료")
+  }
+
+  suspend private fun loadMyCrewHistory(){
+    hikingRecordingTabViewModel.onGoingCrewId.value?.let {
+      val response = stepCounterRepository.getStepCount(it)
+      response?.let { stepCount ->
+        setHikingInfo(stepCount)
+      }
+    }
   }
 
   private fun init() {
@@ -521,10 +512,14 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         }
 
         HIKING -> {
+          SingletonHandler.getHandler().removeCallbacks(runnable)
+          SingletonHandler.getHandler().post(runnable)
           tryRecordingServiceByStatus("상행")
         }
 
         AFTER_HIKING -> {
+          SingletonHandler.getHandler().removeCallbacks(runnable)
+          SingletonHandler.getHandler().post(runnable)
           deActivateRecordingService()
           tryRecordingServiceByStatus("하행")
         }
@@ -598,6 +593,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
       startForegroundService(rootActivity, serviceIntent)
     }
     sharedPreferencesUtil.saveRecordingServiceState(status)
+    SingletonHandler.getHandler().removeCallbacks(runnable)
     SingletonHandler.getHandler().post(runnable)
     Log.d(TAG, "activateRecordingService: handler 실행")
   }
@@ -768,14 +764,19 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                 }
                 it.clear()
               }
+              hikingRecordingTabViewModel.memberList.value?.clear()
               response.body()?.let { list ->
                 Log.d(TAG, "run: 조회한 멤버들! $list")
                 list.forEach {
                   if (it.userLat != null && it.userLon != null) {
+                    hikingRecordingTabViewModel.memberList.value?.let {
+//                      it.add()
+                    }
                     hikingRecordingTabViewModel.memberMarkerList.value?.apply {
                       add(
                         Marker().apply {
                           safeCall {
+                            tag = it.userNickname
                             position = LatLng(it.userLat, it.userLon)
                             Glide.with(binding.root).asBitmap().load(it.userProfileImg).into(
                               object : CustomTarget<Bitmap>() {
@@ -793,11 +794,36 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                               }
                             )
                             map = naverMap
+                            if(it.userId == activityViewModel.user.userId){
+                              naverMap.moveCamera(CameraUpdate.scrollTo(position)
+                                .animate(CameraAnimation.Fly, 1000)
+                              )
+                            }
+                            setOnClickListener {overlay ->
+                              val infoWindow = InfoWindow().apply {
+                                adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
+                                  override fun getText(infoWindow: InfoWindow): CharSequence {
+                                    return overlay.tag as CharSequence
+                                  }
+                                }
+                              }
+
+                              // 이미 열려있는 InfoWindow가 있는 경우 닫음
+                              if (this.infoWindow != null) {
+                                this.infoWindow?.close()
+                              } else {
+                                infoWindow.open(this)
+                              }
+                              true
+                            }
                           }
                         }
                       )
                     }
                   }
+                }
+                hikingRecordingTabViewModel.memberMarkerList.value?.let {
+                  isIsolated(it)
                 }
               }
             }
@@ -808,7 +834,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
       }
 
       // 다시 10초 후에 실행
-      SingletonHandler.getHandler().postDelayed(this, 10000) // 10000ms = 10초
+      SingletonHandler.getHandler().postDelayed(this, 1000) // 10000ms = 10초
     }
   }
 
@@ -818,10 +844,44 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     return HikingRecordingService.isRunning
   }
 
+  private fun isIsolated(markerList: MutableList<Marker>){
+  }
+
   override fun onDestroyView() {
     Log.d(TAG, "onDestroyView: destory!!!!!")
     SingletonHandler.getHandler().removeCallbacks(runnable)
     super.onDestroyView()
+  }
+
+  /**
+   * 전달받은 StepCount 정보를 기반으로 지도 상단의 Info Data를 로딩하는 함수
+   */
+  private fun setHikingInfo(stepCount: StepCount){
+    binding.tvStepCnt.text = stepCount.stepCount.toString()
+
+    val distance = (0.74 * stepCount.stepCount)
+    binding.tvDistance.text = if (distance < 1000) {
+      "${distance.toInt()} m"
+    } else {
+      "${String.format("%.2f", (distance / 1000))} km"
+    }
+
+    binding.tvHeight.text = if (stepCount.elevation < 1000) {
+      if (stepCount.elevation != -1.0) {
+        "${stepCount.elevation.toInt()} m"
+      } else {
+        "0 km"
+      }
+    } else {
+      "${stepCount.elevation.toInt() / 1000} km"
+    }
+
+    val kcal = (46.62 * stepCount.stepCount)
+    binding.tvCalorie.text = if (kcal < 1000) {
+      "${kcal.toInt()} cal"
+    } else {
+      "${String.format("%.2f", (kcal / 1000))} kcal"
+    }
   }
 }
 

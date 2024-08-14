@@ -270,14 +270,9 @@ public class RecordService {
         Crew crew = crewRepository.findByCrewId(crewId)
                 .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
         // FcmDTO 생성
-//        String title = fcmUtil.makeFcmTitle(
-//                crew.getCrewName(),  "\uD83D\uDEA8이탈 감지\uD83D\uDEA8"
-//        );
         String title = "\uD83D\uDEA8이탈 감지\uD83D\uDEA8";
         String body = "팀원의 이탈이 감지되었습니다. 위치를 확인하세요!";
-//        String body = fcmUtil.makeLeaderDelegateBody(
-//                crew.getCrewName(), currentLeader.getUserNickname(), newLeader.getUserNickname()
-//        );
+        
         FcmMessage.FcmDTO fcmDTO = fcmUtil.makeFcmDTO(title, body);
         // FCM발송
         fcmSendtoCrew(crew, fcmDTO);

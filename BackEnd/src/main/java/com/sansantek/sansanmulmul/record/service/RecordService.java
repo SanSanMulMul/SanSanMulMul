@@ -272,7 +272,7 @@ public class RecordService {
         // FcmDTO 생성
         String title = "\uD83D\uDEA8이탈 감지\uD83D\uDEA8";
         String body = "팀원의 이탈이 감지되었습니다. 위치를 확인하세요!";
-        
+
         FcmMessage.FcmDTO fcmDTO = fcmUtil.makeFcmDTO(title, body);
         // FCM발송
         fcmSendtoCrew(crew, fcmDTO);

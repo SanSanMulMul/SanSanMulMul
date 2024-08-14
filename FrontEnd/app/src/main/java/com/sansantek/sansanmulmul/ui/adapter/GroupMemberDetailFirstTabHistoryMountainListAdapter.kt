@@ -4,11 +4,10 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.data.model.MountainHistory
 import com.sansantek.sansanmulmul.databinding.ListHistoryMountainBinding
 import java.text.SimpleDateFormat
@@ -32,12 +31,12 @@ class GroupMemberDetailFirstTabHistoryMountainListAdapter :
 
         fun bindInfo(position: Int) {
             val item = getItem(position)
+            Glide.with(binding.root).load(item.mountainImg).into(binding.mountainImage)
             binding.mountainImage.apply {
-                setImageBitmap(ContextCompat.getDrawable(binding.root.context, item.mountainImg)!!.toBitmap())
                 setColorFilter(Color.parseColor("#66000000"), PorterDuff.Mode.SRC_OVER)
             }
             binding.tvMountainTitle.text = item.mountainName
-            binding.tvHistoryDate.text = formatDate(item.date)
+            binding.tvHistoryDate.text = item.recordStartTime
             binding.root.setOnClickListener {
                 itemClickListener.onHistoryClick(position)
             }

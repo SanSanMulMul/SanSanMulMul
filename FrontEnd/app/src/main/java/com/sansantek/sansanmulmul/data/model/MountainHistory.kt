@@ -1,5 +1,3 @@
 package com.sansantek.sansanmulmul.data.model
 
-import java.util.Date
-
-data class MountainHistory(val mountainImg: Int, val mountainName: String, val date: Date)
+data class MountainHistory(val recordId: Int, val crewId: Int, val mountainName: String, val recordStartTime: String, val recordEndTime: String, val mountainImg: String)

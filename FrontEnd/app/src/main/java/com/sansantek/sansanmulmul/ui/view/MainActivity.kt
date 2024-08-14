@@ -352,6 +352,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         s += String.format("%s: %.1f%%\n", classes[i], confidences[i] * 100)
       }
 
+      Log.d(TAG, "classifyImage: 아아아 -> ${maxPos}")
       Log.d(TAG, "classifyImage: result = ${classes[maxPos]} / confidence = $s")
 
 //      val result = classes[maxPos]

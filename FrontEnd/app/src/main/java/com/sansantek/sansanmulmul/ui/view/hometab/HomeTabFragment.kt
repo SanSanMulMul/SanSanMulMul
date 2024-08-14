@@ -180,7 +180,7 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
                                 var randomIntInRange = Random.nextInt(0, size)
                                 val mountainName = mountainList[randomIntInRange].mountainName
                                 val articleList = newsService.getNewsKeyword(mountainName)
-                                randomIntInRange = Random.nextInt(0, articleList.size-1)
+                                randomIntInRange = Random.nextInt(0, articleList.size)
                                 newsList.add(articleList[randomIntInRange])
                             }
                         }

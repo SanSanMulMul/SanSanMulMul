@@ -107,6 +107,66 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
 //        onMapReady(naverMap)
         searchMountain()
 
+
+    }
+
+    private fun fetchMountainsWithinRadius(lat: Double, lon: Double) {
+        lifecycleScope.launch {
+            try {
+                // 반경 50km 내의 산 목록 가져오기
+                val mountains = mountainService.getMountainWithInRadius(lat, lon, 50)
+
+                // 코스 정보 가져오기
+                val mountainCourseMap = mutableMapOf<Int, MountainCourse>()
+                mountains.forEach { mountain ->
+                    val response = mountainService.getMountainCourse(mountain.mountainId)
+                    if (response.isSuccessful) {
+                        val mountainCourseInfo = response.body()
+                        if (mountainCourseInfo != null) {
+                            mountainCourseMap[mountain.mountainId] = mountainCourseInfo
+                        }
+                    }
+                }
+
+                // initMountainData 함수를 사용해 코스 정보를 포함한 산 목록 생성
+                val searchMountainListItems = initMountainData(mountains, mountainCourseMap)
+
+                // 리사이클러뷰에 데이터 설정
+                initMountainListRecyclerView(searchMountainListItems)
+
+            } catch (e: Exception) {
+                Log.e(TAG, "fetchMountainsWithinRadius: API 호출 중 오류 발생", e)
+            }
+        }
+    }
+
+    private fun addMarkersToMap(mountains: List<Mountain>) {
+        mountains.forEach { mountain ->
+            val marker = Marker().apply {
+                position = LatLng(mountain.mountainLat, mountain.mountainLon)
+                map = naverMap
+                tag = mountain.mountainName
+            }
+
+            marker.setOnClickListener { overlay ->
+                // 마커 클릭 시 InfoWindow 표시
+                val marker = overlay as Marker
+                val infoWindow = InfoWindow().apply {
+                    adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
+                        override fun getText(infoWindow: InfoWindow): CharSequence {
+                            return marker.tag as CharSequence
+                        }
+                    }
+                }
+
+                if (marker.infoWindow != null) {
+                    marker.infoWindow?.close()
+                } else {
+                    infoWindow.open(marker)
+                }
+                true
+            }
+        }
     }
 
     override fun onResume() {
@@ -291,6 +351,19 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
             naverMap.moveCamera(CameraUpdate.zoomTo(10.0))
 
             requestLocationUpdates()
+
+            naverMap.addOnCameraChangeListener { reason, animated ->
+                // 카메라가 이동 중일 때 실행
+            }
+
+            naverMap.addOnCameraIdleListener {
+                // 카메라 이동이 완료되면 중앙 좌표를 얻음
+                val cameraPosition = naverMap.cameraPosition
+                val centerLatLng = cameraPosition.target
+
+                // 중앙 좌표를 사용하여 50km 반경 내의 산을 API로 요청
+                fetchMountainsWithinRadius(centerLatLng.latitude, centerLatLng.longitude)
+            }
         }
     }
 

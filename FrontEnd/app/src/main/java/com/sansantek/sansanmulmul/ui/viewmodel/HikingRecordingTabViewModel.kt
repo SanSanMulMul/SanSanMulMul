@@ -42,6 +42,14 @@ class HikingRecordingTabViewModel :
         _memberMarkerList.value = memberLocationList
     }
 
+    private val _memberList : MutableLiveData<MutableList<Marker>> = MutableLiveData(mutableListOf())
+    val memberList: LiveData<MutableList<Marker>>
+        get() = _memberList
+
+    fun setMemberList(memberLocationList: MutableList<Marker>){
+        _memberMarkerList.value = memberLocationList
+    }
+
     fun setRecordingStatus(recordingStatus: Int) {
         _recordingStatus.value = recordingStatus
         ApplicationClass.sharedPreferencesUtil.saveHikingRecordingState(recordingStatus)

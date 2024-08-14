@@ -67,7 +67,8 @@ public class FcmUtil {
 
     ////
     public String makeFcmTitle(String crewName, String type) {
-        return crewName + " " + type;
+        // return crewName + " " + type;
+        return type;
     }
 
     //
@@ -81,7 +82,7 @@ public class FcmUtil {
     }
 
     public String makeJoinRequestBody(String requestUserName, String crewName) {
-        return requestUserName + "님이 " + crewName + " 그룹 가입을 요청했습니다! 멤버 목록에서 수락 또는 거절할 수 있습니다.";
+        return requestUserName + "님이 [" + crewName + "] 그룹에 가입신청 하였습니다.";
     }
 
     public String makeLeaderDelegateBody(String crewName, String currentLeaderName, String newLeaderName) {

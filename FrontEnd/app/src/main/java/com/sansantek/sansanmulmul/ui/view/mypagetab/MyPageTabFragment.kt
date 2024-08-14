@@ -40,8 +40,6 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, "onViewCreated: view created 실행됨")
-
-
         init()
         initClickListener()
         super.onViewCreated(view, savedInstanceState)
@@ -150,7 +148,6 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
         }
 
     }
-    
 
     fun replaceFragment(view: Fragment) {
         childFragmentManager.beginTransaction().replace(binding.myPageFragmentView.id, view)

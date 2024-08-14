@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
@@ -16,22 +15,20 @@ import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.config.Const.Companion.TITLE
 import com.sansantek.sansanmulmul.data.model.User
 import com.sansantek.sansanmulmul.databinding.FragmentGroupMemberDetailPageBinding
-import com.sansantek.sansanmulmul.ui.adapter.MemberFollowListAdapter
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.view.mypagetab.GroupMemberDetailSecondFragment
-import com.sansantek.sansanmulmul.ui.view.mypagetab.MyPageEditTabFragment
-import com.sansantek.sansanmulmul.ui.view.mypagetab.MyPageFirstTabFragment
-import com.sansantek.sansanmulmul.ui.view.mypagetab.MyPageSecondTabFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 private const val TAG = "GroupMemberDetailPageFr 싸피"
-class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMemberDetailPageBinding>(
-    FragmentGroupMemberDetailPageBinding::bind,
-    R.layout.fragment_group_member_detail_page) {
+
+class GroupMemberDetailPageFragment(userId: Int) :
+    BaseFragment<FragmentGroupMemberDetailPageBinding>(
+        FragmentGroupMemberDetailPageBinding::bind,
+        R.layout.fragment_group_member_detail_page
+    ) {
 
     private val activityViewModel: MainActivityViewModel by activityViewModels()
 
@@ -50,16 +47,19 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
 
         binding.tlTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                val memberUserId = arguments?.getInt("followUserId") ?: return // 사용자 ID를 가져오는 메서드 (예시)
+                val memberUserId =
+                    arguments?.getInt("followUserId") ?: return // 사용자 ID를 가져오는 메서드 (예시)
 
                 when (tab?.position) {
                     0 -> {
-                        val firstTabFragment = GroupMemberDetailFirstTabFragment.newInstance(memberUserId)
+                        val firstTabFragment =
+                            GroupMemberDetailFirstTabFragment.newInstance(memberUserId)
                         replaceFragment(firstTabFragment)
                     }
 
                     else -> {
-                        val secondTabFragment = GroupMemberDetailSecondFragment()
+                        val secondTabFragment =
+                            GroupMemberDetailSecondFragment.newInstance(memberUserId)
                         replaceFragment(secondTabFragment)
                     }
                 }
@@ -132,7 +132,12 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
                     val memberData = response.body()
                     memberData?.let { member ->
                         bindMemberData(member)
-                        setupFollowButton(member.userNickName, memberUserId, currentUserId, accessToken)
+                        setupFollowButton(
+                            member.userNickName,
+                            memberUserId,
+                            currentUserId,
+                            accessToken
+                        )
 
                         // 팔로잉 및 팔로워 수 불러오기
                         loadMemberFollowingFollowerCount(memberUserId)
@@ -176,7 +181,12 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
     }
 
     // 팔로우, 팔로잉 버튼 로직
-    private fun setupFollowButton(followUserNickName: String, memberUserId: Int, currentUserId: Int, accessToken: String?) {
+    private fun setupFollowButton(
+        followUserNickName: String,
+        memberUserId: Int,
+        currentUserId: Int,
+        accessToken: String?
+    ) {
         // 본인의 상세 페이지이면 팔로우 버튼 숨기기
         if (memberUserId == currentUserId) {
             binding.btnFollow.visibility = View.GONE
@@ -199,7 +209,10 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
                             try {
                                 if (isFollowing) {
                                     // 언팔로우 요청
-                                    val unfollowResponse = userService.deleteMemberFollow(headerAccessToken, memberUserId)
+                                    val unfollowResponse = userService.deleteMemberFollow(
+                                        headerAccessToken,
+                                        memberUserId
+                                    )
                                     if (unfollowResponse.isSuccessful) {
                                         Log.d(TAG, "언팔로우 성공")
                                         showToast("언팔로우 성공")
@@ -213,7 +226,11 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
                                     }
                                 } else {
                                     // 팔로우 요청
-                                    val followResponse = userService.addMemberFollow(headerAccessToken, currentUserId, memberUserId)
+                                    val followResponse = userService.addMemberFollow(
+                                        headerAccessToken,
+                                        currentUserId,
+                                        memberUserId
+                                    )
                                     if (followResponse.isSuccessful) {
                                         Log.d(TAG, "팔로우 성공")
                                         showToast("팔로우 성공")
@@ -248,15 +265,22 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
             binding.btnFollow.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.white                )
+                    R.color.white
+                )
             )
         } else {
             binding.btnFollow.text = "팔로우"
-            binding.btnFollow.setTextColor(ContextCompat.getColor(requireContext(), R.color.white)) // 텍스트 색상을 흰색으로 설정
+            binding.btnFollow.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.white
+                )
+            ) // 텍스트 색상을 흰색으로 설정
             binding.btnFollow.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.group_detail_second_tab_temperature_min_color                )
+                    R.color.group_detail_second_tab_temperature_min_color
+                )
             )
         }
         binding.btnFollow.isEnabled = true

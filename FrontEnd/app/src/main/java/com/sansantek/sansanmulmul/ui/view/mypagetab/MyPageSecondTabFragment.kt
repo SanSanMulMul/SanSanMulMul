@@ -49,7 +49,6 @@ class MyPageSecondTabFragment : BaseFragment<FragmentMyPageSecondTabBinding>(
     }
 
     private fun initStoneIdObserving() {
-
         // 전체 정상석
         mountainPeakStoneViewModel.mountainPeakStoneList.observe(viewLifecycleOwner) { list ->
             if (list != null) {
@@ -63,10 +62,6 @@ class MyPageSecondTabFragment : BaseFragment<FragmentMyPageSecondTabBinding>(
             Log.d(TAG, "initStoneIdObserving: mystoneList = $myMountainPeakStoneList")
             myMountainPeakStoneList?.let {
                 mountainPeakStoneListAdapter.setStoneList(it.toMutableList())
-            }
-
-            myMountainPeakStoneList?.forEach { myMountainStone ->
-
             }
 
         }

@@ -61,5 +61,7 @@ class Const {
         const val SCHEDULE = 1
         const val COMPLETE = 2
         const val ALL = 3
+
+        const val ISOLATE_DISTANCE = 1000
     }
 }

@@ -6,11 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.naver.maps.map.overlay.Marker
 import com.sansantek.sansanmulmul.config.ApplicationClass
+import com.sansantek.sansanmulmul.data.model.MemberLocation
 import com.sansantek.sansanmulmul.data.repository.HikingRecordingRepository
 import kotlinx.coroutines.launch
 
 class HikingRecordingTabViewModel :
     ViewModel() {
+    private var _isAlertShow: Boolean = false
+    val isAlertShow: Boolean
+        get() = _isAlertShow
     private val repository = HikingRecordingRepository()
     private val _recordingStatus =
         MutableLiveData(ApplicationClass.sharedPreferencesUtil.getHikingRecordingState())
@@ -42,14 +46,17 @@ class HikingRecordingTabViewModel :
         _memberMarkerList.value = memberLocationList
     }
 
-    private val _memberList : MutableLiveData<MutableList<Marker>> = MutableLiveData(mutableListOf())
-    val memberList: LiveData<MutableList<Marker>>
+    private val _memberList : MutableLiveData<MutableList<MemberLocation>> = MutableLiveData(mutableListOf())
+    val memberList: LiveData<MutableList<MemberLocation>>
         get() = _memberList
 
-    fun setMemberList(memberLocationList: MutableList<Marker>){
-        _memberMarkerList.value = memberLocationList
+    fun setMemberList(memberList: MutableList<MemberLocation>){
+        _memberList.value = memberList
     }
 
+    fun setIsAlertShow(isAlertShow: Boolean){
+        _isAlertShow = isAlertShow
+    }
     fun setRecordingStatus(recordingStatus: Int) {
         _recordingStatus.value = recordingStatus
         ApplicationClass.sharedPreferencesUtil.saveHikingRecordingState(recordingStatus)

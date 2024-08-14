@@ -106,6 +106,13 @@ public class RecordService {
         Crew crew = crewRepository.findByCrewId(request.getCrewId())
                 .orElseThrow(() -> new RuntimeException("해당 그룹을 찾을 수 없습니다."));
 
+        // 그룹 종료 처리 -> 방장인 경우에만
+        if(user.getUserId() == crew.getLeader().getUserId()) {
+            crew.setCrewIsDone(true);
+
+            crewRepository.save(crew);
+        }
+
         // 산 확인
         Mountain mountain = mountainRepository.findByMountainId(crew.getMountain().getMountainId())
                 .orElseThrow(() -> new RuntimeException("해당 산을 찾을 수 없습니다."));

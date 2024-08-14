@@ -3,7 +3,7 @@ package com.sansantek.sansanmulmul.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.sansantek.sansanmulmul.config.Const.Companion.BEFORE_HIKING
+import com.sansantek.sansanmulmul.config.Const.Companion.BANNED
 import com.sansantek.sansanmulmul.config.Const.Companion.SHARED_PREFERENCES_NAME
 import com.sansantek.sansanmulmul.config.Const.Companion.SP_HIKING_RECORDING_ONGOING_CREW_ID
 import com.sansantek.sansanmulmul.config.Const.Companion.SP_HIKING_RECORDING_STATE
@@ -85,7 +85,7 @@ class SharedPreferencesUtil(context: Context) {
     }
 
     fun getHikingRecordingState(): Int {
-        return preferences.getInt(SP_HIKING_RECORDING_STATE, BEFORE_HIKING)
+        return preferences.getInt(SP_HIKING_RECORDING_STATE, BANNED)
     }
 
     fun deleteHikingRecordingState() {

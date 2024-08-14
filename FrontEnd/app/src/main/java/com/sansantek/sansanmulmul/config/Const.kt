@@ -9,6 +9,7 @@ class Const {
         const val BEFORE_HIKING = 0 // 등산 일정은 시작됐으나 상행시작 버튼을 누르지 않은 상태
         const val HIKING = 1 // 상챙 버튼 누른 후 ~ 끝내기 버튼 누르기 전
         const val AFTER_HIKING = 2 // 끝내기 버튼 누른 후
+        const val FINISH = 3 // 등산 일정 끝난 상태
         const val IS_QR_SCANNED_KEY = "isQRScanned"
 
         // Shared Preference

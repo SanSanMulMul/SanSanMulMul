@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/group_tab_info_list_green"
-            android:text="📆 24.07.15 13:00 - 24.07.15 14:00"
+            android:text="24.07.15 13:00 - 24.07.15 14:00"
             android:textSize="11sp"
             />
         <TextView

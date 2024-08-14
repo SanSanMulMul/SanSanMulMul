@@ -49,7 +49,7 @@ class GroupTabListAdapter(private val isAllGroupLayout:Boolean):
                 }
             }
             Glide.with(binding.root).load(item.mountainImg).into(binding.groupImage)
-            binding.tvMountainInfo.text = item.mountainName
+            binding.tvMountainInfo.text = "${item.mountainName} 🗻"
             binding.groupTitle.text = item.crewName
 
             val originalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
@@ -60,7 +60,7 @@ class GroupTabListAdapter(private val isAllGroupLayout:Boolean):
             val formattedEndDate = endDate.format(targetFormatter)
 
             binding.groupPersonInfo.text = "${item.crewCurrentMembers} / ${item.crewMaxMembers}"
-            binding.groupSchedule.text = "${formattedStartDate} - ${formattedEndDate}"
+            binding.groupSchedule.text = "🗓 ${formattedStartDate} - ${formattedEndDate}"
 
             binding.btnRegisterGroup.setOnClickListener {
                 itemClickListener.onClick(item)

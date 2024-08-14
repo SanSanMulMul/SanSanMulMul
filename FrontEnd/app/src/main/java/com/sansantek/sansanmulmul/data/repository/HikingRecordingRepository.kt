@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.data.repository
 
 import android.util.Log
+import com.sansantek.sansanmulmul.data.model.HikingHistory
 import com.sansantek.sansanmulmul.data.model.HikingRecordingCoord
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil
 
@@ -31,6 +32,21 @@ class HikingRecordingRepository {
         response.body()
       } else {
         Log.d(TAG, "싸피_HikingRecordingRepository: amILeader response is null")
+        null
+      }
+    } catch (e: Exception) {
+      null
+    }
+  }
+
+  suspend fun addHikingHistory(accessToken: String, history: HikingHistory): Boolean? {
+    return try {
+      val response =
+        RetrofiltUtil.hikingRecordingService.addHikingHistory(accessToken, history)
+      if (response.isSuccessful) {
+        response.body()
+      } else {
+//        Log.d(TAG, "싸피_HikingRecordingRepository: amILeader response is null")
         null
       }
     } catch (e: Exception) {

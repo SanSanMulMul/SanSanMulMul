@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.data.network.api
 
+import com.sansantek.sansanmulmul.data.model.HikingHistory
 import com.sansantek.sansanmulmul.data.model.HikingRecordingCoord
 import com.sansantek.sansanmulmul.data.model.MemberLocation
 import retrofit2.Response
@@ -23,5 +24,11 @@ interface HikingRecordingService {
   suspend fun amILeader(
     @Header("Authorization") accessToken: String,
     @Query("crewId") crewId: Int
+  ): Response<Boolean>
+
+  @POST("record")
+  suspend fun addHikingHistory(
+    @Header("Authorization") accessToken: String,
+    @Body historyRequest: HikingHistory
   ): Response<Boolean>
 }

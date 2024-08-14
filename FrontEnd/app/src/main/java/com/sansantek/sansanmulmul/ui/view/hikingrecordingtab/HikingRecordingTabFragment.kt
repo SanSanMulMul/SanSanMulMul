@@ -44,8 +44,10 @@ import com.sansantek.sansanmulmul.config.Const.Companion.AFTER_HIKING
 import com.sansantek.sansanmulmul.config.Const.Companion.BANNED
 import com.sansantek.sansanmulmul.config.Const.Companion.BEFORE_HIKING
 import com.sansantek.sansanmulmul.config.Const.Companion.HIKING
+import com.sansantek.sansanmulmul.config.Const.Companion.ISOLATE_DISTANCE
 import com.sansantek.sansanmulmul.data.local.entity.StepCount
 import com.sansantek.sansanmulmul.data.model.Crew
+import com.sansantek.sansanmulmul.data.model.MemberLocation
 import com.sansantek.sansanmulmul.data.repository.StepCounterRepository
 import com.sansantek.sansanmulmul.databinding.FragmentHikingRecordingTabBinding
 import com.sansantek.sansanmulmul.ui.service.HikingRecordingService
@@ -62,6 +64,11 @@ import com.sansantek.sansanmulmul.ui.viewmodel.MountainPeakStoneViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 
 private const val TAG = "HikingRecordingTabFragment_싸피"
@@ -767,11 +774,15 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
               hikingRecordingTabViewModel.memberList.value?.clear()
               response.body()?.let { list ->
                 Log.d(TAG, "run: 조회한 멤버들! $list")
+                hikingRecordingTabViewModel.setMemberList(
+                  list.filter { (it.userLat != null) && (it.userLon != null) }.toMutableList()
+                )
+                hikingRecordingTabViewModel.memberList.value?.let {
+                  isIsolated(it)
+                }
+
                 list.forEach {
                   if (it.userLat != null && it.userLon != null) {
-                    hikingRecordingTabViewModel.memberList.value?.let {
-//                      it.add()
-                    }
                     hikingRecordingTabViewModel.memberMarkerList.value?.apply {
                       add(
                         Marker().apply {
@@ -822,9 +833,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                     }
                   }
                 }
-                hikingRecordingTabViewModel.memberMarkerList.value?.let {
-                  isIsolated(it)
-                }
               }
             }
           } else {
@@ -844,7 +852,20 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     return HikingRecordingService.isRunning
   }
 
-  private fun isIsolated(markerList: MutableList<Marker>){
+  private fun isIsolated(memberList: MutableList<MemberLocation>){
+    Log.d(TAG, "isIsolated: $memberList")
+    if(hikingRecordingTabViewModel.isAlertShow) return
+    for(i in 0 until memberList.size){
+      for(j in 0 until memberList.size){
+        if(i == j ) continue
+        val distance = calculateDistance(memberList[i].userLat!!, memberList[i].userLon!!, memberList[j].userLat!!, memberList[j].userLon!!)
+        if(distance >= ISOLATE_DISTANCE && !hikingRecordingTabViewModel.isAlertShow){
+          hikingRecordingTabViewModel.setIsAlertShow(true)
+          AlertIsolateMemberDialog().show(childFragmentManager, "dialog")
+          break
+        }
+      }
+    }
   }
 
   override fun onDestroyView() {
@@ -883,6 +904,21 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
       "${String.format("%.2f", (kcal / 1000))} kcal"
     }
   }
+
+
+  // 두 지점의 위도와 경도를 받아 거리를 계산하는 함수 (미터 단위로 반환)
+  fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+    val earthRadius = 6371.0 // 지구 반지름 (단위: km)
+
+    val dLat = Math.toRadians(lat2 - lat1)
+    val dLon = Math.toRadians(lon2 - lon1)
+
+    val a = sin(dLat / 2).pow(2) + cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) * sin(dLon / 2).pow(2)
+    val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    return earthRadius * c * 1000 // km에서 m로 변환
+  }
+
 }
 
 

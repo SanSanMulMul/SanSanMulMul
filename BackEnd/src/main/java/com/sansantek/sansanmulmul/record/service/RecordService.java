@@ -158,6 +158,7 @@ public class RecordService {
         for (HikingRecord record : userRecords) {
             AllRecordResonse response = new AllRecordResonse(
                     record.getRecordId(),
+                    record.getCrew().getCrewId(),
                     record.getMountain().getMountainName(),
                     record.getRecordStartTime(),
                     record.getRecordEndTime(),
@@ -207,6 +208,7 @@ public class RecordService {
                 upTrackPaths,
                 downTrackPaths,
 
+                hikingRecord.getCrew().getCrewId(),
                 // 참여 멤버
                 crewMembers,
 

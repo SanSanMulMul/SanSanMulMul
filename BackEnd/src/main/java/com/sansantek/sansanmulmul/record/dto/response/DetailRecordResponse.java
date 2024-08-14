@@ -38,6 +38,8 @@ public class DetailRecordResponse {
     @Schema(description = "하행 코스 좌표", example = "trackpaths(고유번호, 위도, 경도)")
     private List<Map<String, Object>>  downCourseTrackPaths = new ArrayList<>();
 
+    @Schema(description = "그룹 고유 번호", example = "1")
+    private int crewId;
     // 참여 멤버(프로필, 닉네임)
     @Schema(description = "등산 참여 멤버 정보", example = "members(id, 이름, 닉네임, 성별, 프로필, 칭호)")
     List<CrewUserResponse> crewMembers = new ArrayList<>(); // CrewUserRepository

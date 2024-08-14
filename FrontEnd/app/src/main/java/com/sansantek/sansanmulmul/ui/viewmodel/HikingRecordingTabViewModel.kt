@@ -42,6 +42,14 @@ class HikingRecordingTabViewModel :
     val memberMarkerList: LiveData<MutableList<Marker>>
         get() = _memberMarkerList
 
+    private var _isTracking: MutableLiveData<Boolean> = MutableLiveData(true)
+    val isTracking: LiveData<Boolean>
+        get() = _isTracking
+
+    fun setIsTracking(isTracking: Boolean){
+        _isTracking.value = isTracking
+    }
+
     fun setMemberMarkerList(memberLocationList: MutableList<Marker>){
         _memberMarkerList.value = memberLocationList
     }

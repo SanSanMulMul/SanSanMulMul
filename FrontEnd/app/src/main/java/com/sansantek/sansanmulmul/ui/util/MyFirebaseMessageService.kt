@@ -33,48 +33,21 @@ class MyFirebaseMessageService : FirebaseMessagingService() {
         Log.d(TAG, "onMessageReceived: 메세지 도착")
         var messageTitle = ""
         var messageContent = ""
-        var orderId = -1
 
         if(remoteMessage.notification != null){ // notification이 있는 경우 foreground처리
             //foreground
             Log.d(TAG, "onMessageReceived: 여기로 오면 안되는데")
-
             val data = remoteMessage.data
-            Log.d(TAG, "data.message: ${data}")
-            Log.d(TAG, "data.message: ${data["title"]}")
-            Log.d(TAG, "data.message: ${data["body"]}")
             messageTitle = data["title"].toString()
             messageContent = data["body"].toString()
-            CoroutineScope(Dispatchers.Main).launch{
-               /* val newList = notiList.value?.toList() ?: listOf()
-                val newArrayList = arrayListOf<Notification>()
-                newArrayList.addAll(newList)
-                newArrayList.add(Notification(orderId, messageContent))
-                Log.d(TAG, "onMessageReceived: FCM 메세지 수신 : $newArrayList" )
-                notiList.value = newArrayList
-                sharedPreferencesUtil.saveNotification()*/
-
-            }
-
         }else{  // background 에 있을경우 혹은 foreground에 있을경우 두 경우 모두
 
             Log.d(TAG, "onMessageReceived: 여기려 와야 해")
             val data = remoteMessage.data
-            Log.d(TAG, "data.message: ${data}")
             Log.d(TAG, "data.message: ${data["title"]}")
             Log.d(TAG, "data.message: ${data["body"]}")
             messageTitle = data["title"].toString()
             messageContent = data["body"].toString()
-            CoroutineScope(Dispatchers.Main).launch{
-//                val newList = notiList.value?.toList() ?: listOf()
-//                val newArrayList = arrayListOf<Notification>()
-//                newArrayList.addAll(newList)
-//                newArrayList.add(Notification(orderId, messageContent))
-//                Log.d(TAG, "onMessageReceived: FCM 메세지 수신 : $newArrayList" )
-//                notiList.value = newArrayList
-//                sharedPreferencesUtil.saveNotification()
-
-            }
         }
 
         val mainIntent = Intent(this, MainActivity::class.java).apply {

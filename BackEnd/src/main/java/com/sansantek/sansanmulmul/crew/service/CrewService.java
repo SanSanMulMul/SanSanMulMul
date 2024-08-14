@@ -528,7 +528,7 @@ public class CrewService {
         for (CrewUser crewUser : myCrews) {
             Crew myCrew = crewUser.getCrew(); //크루
             // 1. 현재날짜 이후것 부터 가져와야함 (CrewStartDate사용)
-            if (myCrew.getCrewEndDate().isAfter(now)) {
+            if (myCrew.getCrewEndDate().isAfter(now) || !myCrew.isCrewIsDone()) {
                 // 2. 현재 그룹에 속한 인원 수 가져옴
                 int currentMember = crewUserRepository.countByCrew_CrewId(myCrew.getCrewId());
                 // 3. 현재 사용자(유저)가 이 그룹에 참여하고있는지 확인
@@ -581,7 +581,7 @@ public class CrewService {
         for (CrewUser crewUser : myCrews) {
             Crew myCrew = crewUser.getCrew(); //크루
             // 1. 현재날짜 이후것 부터 가져와야함 (CrewStartDate사용)
-            if (myCrew.getCrewEndDate().isBefore(now)) {
+            if (myCrew.getCrewEndDate().isBefore(now) || myCrew.isCrewIsDone()) {
                 // 2. 현재 그룹에 속한 인원 수 가져옴
                 int currentMember = crewUserRepository.countByCrew_CrewId(myCrew.getCrewId());
                 // 3. 현재 사용자(유저)가 이 그룹에 참여하고있는지 확인

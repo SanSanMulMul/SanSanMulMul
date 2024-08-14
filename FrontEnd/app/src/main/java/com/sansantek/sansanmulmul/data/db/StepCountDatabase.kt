@@ -28,7 +28,7 @@ abstract class StepCountDatabase : RoomDatabase() {
                     context.applicationContext,
                     StepCountDatabase::class.java,
                     DATABASE_NAME
-                ).fallbackToDestructiveMigration().build()
+                ).build()
                 INSTANCE = instance
                 instance
             }

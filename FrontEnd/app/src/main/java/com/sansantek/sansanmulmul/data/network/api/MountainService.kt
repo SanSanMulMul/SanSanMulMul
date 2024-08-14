@@ -70,4 +70,11 @@ interface MountainService {
 
     @GET("mountain/like/{userId}")
     suspend fun getMemberLikeMountain(@Path("userId") id: Int) : Response<List<Mountain>>
+
+    @POST("mountain")
+    suspend fun getMountainWithInRadius(
+        @Query("lat") latitude: Double,
+        @Query("lon") longitude: Double,
+        @Query("radius") radius: Int
+    ): List<Mountain>
 }

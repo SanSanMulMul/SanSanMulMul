@@ -11,6 +11,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class FollowResponse {
+    @Schema(description = "회원 고유 번호", example = "1")
+    private int userId;
     @Schema(description = "회원 프로필 이미지", example = "http://t1.kakaocdn.net/account_images/default_profile.jpeg.twg.thumb.R640x640")
     private String userProfileImg;
     @Schema(description = "회원 칭호", example = "👶 등린이")

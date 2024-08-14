@@ -148,7 +148,7 @@ public class CrewLeaderService {
                 crew.getCrewName(), FcmType.DELEGATE.getType()
         );
         String body = fcmUtil.makeLeaderDelegateBody(
-                crew.getCrewName(), currentLeader.getUserName(), newLeader.getUserName()
+                crew.getCrewName(), currentLeader.getUserNickname(), newLeader.getUserNickname()
         );
         FcmMessage.FcmDTO fcmDTO = fcmUtil.makeFcmDTO(title, body);
         // FCM발송
@@ -157,7 +157,7 @@ public class CrewLeaderService {
         // 방장 위임 알림 : 알람 테이블 update //
         // 알람 객체 하나 생성
         String alarmtitle = "방장 변경";
-        String alarmbody = "방장이 " + currentLeader.getUserName()+ "님에서 " + newLeader.getUserName() +"님으로 변경되었습니다." ;
+        String alarmbody = "방장이 " + currentLeader.getUserNickname()+ "님에서 " + newLeader.getUserNickname() +"님으로 변경되었습니다." ;
         CrewAlarm alarm = CrewAlarm.builder()
                 .crew(crew)
                 .alarmTitle(alarmtitle)

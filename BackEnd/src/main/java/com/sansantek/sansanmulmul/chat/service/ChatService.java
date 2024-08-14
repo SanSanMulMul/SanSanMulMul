@@ -49,7 +49,7 @@ public class ChatService {
                 crew.getCrewName(), FcmType.MESSAGE.getType()
         );
         String body = fcmUtil.makeMessageBody(
-                crew.getCrewName(), user.getUserName(), msgContent
+                crew.getCrewName(), user.getUserNickname(), msgContent
         );
         FcmMessage.FcmDTO fcmDTO = fcmUtil.makeFcmDTO(title, body);
         // FCM발송

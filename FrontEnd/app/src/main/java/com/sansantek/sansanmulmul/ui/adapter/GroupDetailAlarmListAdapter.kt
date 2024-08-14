@@ -32,8 +32,8 @@ class GroupDetailAlarmListAdapter():
         fun bindInfo(position: Int) {
             val item = getItem(position)
             Log.d(TAG, "bindInfo: $item")
-            binding.tvAlarmTitle.text = item.title
-            binding.tvAlarmContent.text = item.content
+            binding.tvAlarmTitle.text = item.alarmTitle
+            binding.tvAlarmContent.text = item.alarmBody
             binding.tvAlarmContent.text = if(extractJoinRequests(binding.root.context, binding.tvAlarmContent.text.toString()) != null){
                 Log.d(TAG, "bindInfo: 멤버 변경 실행")
                 extractJoinRequests(binding.root.context, binding.tvAlarmContent.text.toString())!!

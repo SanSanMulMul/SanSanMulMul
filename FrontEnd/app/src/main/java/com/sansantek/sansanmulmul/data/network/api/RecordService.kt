@@ -17,4 +17,7 @@ interface RecordService {
 
     @GET("record/detail")
     suspend fun getMountainDetailRecord(@Header("Authorization") token: String, @Query("recordId") recordId: Int) : Response<MountainHistoryDetail>
+
+    @GET("record/{crewId}/alarm")
+    suspend fun notifyIsolation(@Path("crewId")crewId: Int): Response<Boolean>
 }

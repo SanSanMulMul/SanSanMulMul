@@ -55,6 +55,7 @@ import com.sansantek.sansanmulmul.ui.service.HikingRecordingService
 import com.sansantek.sansanmulmul.ui.util.PermissionChecker
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.crewService
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.hikingRecordingService
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.recordService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.viewmodel.ChronometerViewModel
@@ -67,6 +68,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.atan2
 import kotlin.math.cos
+import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -895,14 +897,20 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     Log.d(TAG, "isIsolated: $memberList")
     if(hikingRecordingTabViewModel.isAlertShow) return
     for(i in 0 until memberList.size){
+      var distance = Double.MAX_VALUE
       for(j in 0 until memberList.size){
         if(i == j ) continue
-        val distance = calculateDistance(memberList[i].userLat!!, memberList[i].userLon!!, memberList[j].userLat!!, memberList[j].userLon!!)
-        if(distance >= ISOLATE_DISTANCE && !hikingRecordingTabViewModel.isAlertShow){
-          hikingRecordingTabViewModel.setIsAlertShow(true)
-          AlertIsolateMemberDialog().show(childFragmentManager, "dialog")
-          break
+        val tmpDistance = calculateDistance(memberList[i].userLat!!, memberList[i].userLon!!, memberList[j].userLat!!, memberList[j].userLon!!)
+        distance = min(distance, tmpDistance)
+      }
+      if(distance >= ISOLATE_DISTANCE && !hikingRecordingTabViewModel.isAlertShow){
+        hikingRecordingTabViewModel.setIsAlertShow(true)
+        // FCM으로 경고 알림 보내는 코드
+        lifecycleScope.launch {
+          recordService.notifyIsolation(hikingRecordingTabViewModel.onGoingCrewId.value!!)
         }
+        AlertIsolateMemberDialog().show(childFragmentManager, "dialog")
+        break
       }
     }
   }

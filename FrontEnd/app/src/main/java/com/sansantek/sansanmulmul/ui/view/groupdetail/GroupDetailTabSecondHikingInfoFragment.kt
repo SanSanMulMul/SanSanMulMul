@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.PolylineOverlay
@@ -74,7 +75,12 @@ class GroupDetailTabSecondHikingInfoFragment(private val crew: Crew) :
   }
 
   private fun initMap() {
-    binding.map.getMapAsync(this)
+    val mapFragment = childFragmentManager.findFragmentById(R.id.map) as MapFragment?
+      ?: MapFragment.newInstance().also {
+        childFragmentManager.beginTransaction().add(R.id.map, it).commit()
+      }
+
+    mapFragment.getMapAsync(this)
   }
 
   private fun initMapButtonToggle() {

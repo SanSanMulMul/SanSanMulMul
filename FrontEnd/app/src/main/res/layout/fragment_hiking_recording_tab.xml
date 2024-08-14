@@ -206,6 +206,22 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent" />
 
+    <ImageView
+        android:id="@+id/btn_traking"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginVertical="8dp"
+        android:layout_marginEnd="25dp"
+        android:background="@drawable/rounded_button_green_200"
+        android:backgroundTint="@color/white"
+        android:padding="10dp"
+        android:src="@drawable/gps"
+        app:layout_constraintBottom_toTopOf="@id/btn_camera"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="@id/btn_camera"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/sansanmulmul_green" />
+
     <!-- TODO : 이 View는 추후 map으로 대체할 것 -->
     <ImageView
       android:id="@+id/btn_camera"

@@ -31,6 +31,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.CameraUpdate.REASON_GESTURE
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
@@ -159,19 +160,29 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     registerLocalBroadCastReceiver()
     hideBottomNav(rootActivity.findViewById(R.id.main_layout_bottom_navigation), false)
     initNaverMap()
+
   }
 
   /**
-   * fragment로 만들어 놓은 navermap을 형변환한 후 비동기로 NaverMap 객체를 얻어옴
+   * fragment로 만들어 놓은 navermap을 형변환한 후 비동기로 NaverMap 객체를 얻어옴, 또한 gps버튼 누를 때의 traking모드 로직 설정
    */
   private fun initNaverMap() {
-    val mapFragment =
-      childFragmentManager.findFragmentById(R.id.hiking_recording_tab_map) as MapFragment?
-        ?: MapFragment.newInstance().also {
-          childFragmentManager.beginTransaction().add(R.id.hiking_recording_tab_map, it).commit()
-        }
+    val mapFragment = childFragmentManager.findFragmentById(R.id.hiking_recording_tab_map) as MapFragment?
+      ?: MapFragment.newInstance().also {
+        childFragmentManager.beginTransaction().add(R.id.hiking_recording_tab_map, it).commit()
+      }
 
     mapFragment.getMapAsync(this)
+
+    safeCall {
+      binding.btnTraking.setOnClickListener{
+        if(hikingRecordingTabViewModel.isTracking.value!!){
+          hikingRecordingTabViewModel.setIsTracking(false)
+        }else{
+          hikingRecordingTabViewModel.setIsTracking(true)
+        }
+      }
+    }
   }
 
   /**
@@ -392,6 +403,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     observeOnGoingCrewId()
 
     observeBaseTime()
+
+    observeTracking()
   }
 
   /**
@@ -566,6 +579,19 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
             setViewAndChildrenEnabled(binding.fragmentHikingRecordingLayout, false)
           }
         }
+      }
+    }
+  }
+
+  /**
+   * 트래킹 유무를 설정하는 함수, 설정되어 있으면 나의 위치로 카메라가 전환되고, 아니면 추적하지 않는다
+   */
+  private fun observeTracking(){
+    hikingRecordingTabViewModel.isTracking.observe(viewLifecycleOwner){
+      if(it){
+        binding.btnTraking.imageTintList = ContextCompat.getColorStateList(myContext, R.color.sansanmulmul_green)
+      }else{
+        binding.btnTraking.imageTintList = ContextCompat.getColorStateList(myContext, R.color.grey)
       }
     }
   }
@@ -752,7 +778,14 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   private lateinit var naverMap: NaverMap
   override fun onMapReady(p0: NaverMap) {
     naverMap = p0
+    naverMap.addOnCameraChangeListener { reason, animated ->
+      if (reason == REASON_GESTURE) {
+        // 사용자가 지도를 드래그할 때 발생
+        hikingRecordingTabViewModel.setIsTracking(false)
+      }
+    }
   }
+
 
   var runnable: Runnable = object : Runnable {
     override fun run() {
@@ -805,7 +838,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                               }
                             )
                             map = naverMap
-                            if(it.userId == activityViewModel.user.userId){
+                            if(it.userId == activityViewModel.user.userId && hikingRecordingTabViewModel.isTracking.value!!){
                               naverMap.moveCamera(CameraUpdate.scrollTo(position)
                                 .animate(CameraAnimation.Fly, 1000)
                               )

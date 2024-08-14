@@ -20,11 +20,12 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.UiSettings
 import com.sansantek.sansanmulmul.data.model.HistoryMember
+import com.sansantek.sansanmulmul.data.model.MountainHistory
 import com.sansantek.sansanmulmul.databinding.DialogMyPageHistoryBinding
 import com.sansantek.sansanmulmul.ui.adapter.MyPageHistoryMemberListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.SpaceItemDecoration
 
-class ShowMyPageHistoryDialog : DialogFragment(), OnMapReadyCallback {
+class ShowMyPageHistoryDialog(mountainHistory: MountainHistory) : DialogFragment(), OnMapReadyCallback {
     // 뷰 바인딩 정의
     private var _binding: DialogMyPageHistoryBinding? = null
     private val binding get() = _binding!!
@@ -42,6 +43,8 @@ class ShowMyPageHistoryDialog : DialogFragment(), OnMapReadyCallback {
             PorterDuff.Mode.SRC_OVER
         )
         binding.ibCloseBtn.setOnClickListener { dismiss() }
+
+        binding.tvMountainName.text
 
         for (i in 1..3) {
             val member = HistoryMember("엄홍길👑", "박태asssssssss우스")

@@ -2,20 +2,18 @@ package com.sansantek.sansanmulmul.ui.adapter
 
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.sansantek.sansanmulmul.data.model.Mountain
+import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.data.model.MountainHistory
-import com.sansantek.sansanmulmul.databinding.ListFavoriteMountainBinding
 import com.sansantek.sansanmulmul.databinding.ListHistoryMountainBinding
-import okhttp3.internal.format
 import java.text.SimpleDateFormat
+import java.time.DayOfWeek
+import java.time.LocalDateTime.*
+import java.time.format.DateTimeFormatter
 import java.util.Date
 
 private const val TAG = "MyPageFirstTabHistoryMountainListAdapter_싸피"
@@ -37,14 +35,31 @@ class MyPageFirstTabHistoryMountainListAdapter():
 
         fun bindInfo(position: Int) {
             val item = getItem(position)
+            Glide.with(binding.root).load(item.mountainImg).into(binding.mountainImage)
             binding.mountainImage.apply {
-                setImageBitmap(ContextCompat.getDrawable(binding.root.context, item.mountainImg)!!.toBitmap())
                 setColorFilter(Color.parseColor("#66000000"), PorterDuff.Mode.SRC_OVER)
             }
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+            val dateTime = parse(item.recordStartTime, formatter)
+            val outputFormatter = DateTimeFormatter.ofPattern("yy-MM-dd")
+            val formattedDate = dateTime.format(outputFormatter)
             binding.tvMountainTitle.text = item.mountainName
-            binding.tvHistoryDate.text = formatDate(item.date)
+
+            val dayOfWeek: DayOfWeek = dateTime.dayOfWeek
+            val koreanDayOfWeek = when (dayOfWeek) {
+                DayOfWeek.MONDAY -> "월"
+                DayOfWeek.TUESDAY -> "화"
+                DayOfWeek.WEDNESDAY -> "수"
+                DayOfWeek.THURSDAY -> "목"
+                DayOfWeek.FRIDAY -> "금"
+                DayOfWeek.SATURDAY -> "토"
+                DayOfWeek.SUNDAY -> "일"
+            }
+
+            binding.tvHistoryDate.text = "$formattedDate($koreanDayOfWeek)"
+
             binding.root.setOnClickListener {
-                itemClickListener.onHistoryClick(position)
+                itemClickListener.onHistoryClick(item)
             }
         }
     }
@@ -70,7 +85,7 @@ class MyPageFirstTabHistoryMountainListAdapter():
     }
 
     interface ItemClickListener {
-        fun onHistoryClick(position: Int)
+        fun onHistoryClick(mountainHistory: MountainHistory)
     }
 
     private lateinit var itemClickListener: ItemClickListener

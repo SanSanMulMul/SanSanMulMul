@@ -45,11 +45,6 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-    }
-
     private fun initClickListener() {
         binding.btnEditProfile.setOnClickListener {
             activity.changeAddToBackstackFragment(MyPageEditTabFragment())

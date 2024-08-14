@@ -40,6 +40,8 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, "onViewCreated: view created 실행됨")
+
+
         init()
         initClickListener()
         super.onViewCreated(view, savedInstanceState)
@@ -139,7 +141,7 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
             val myPage = userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
             activityViewModel.setMyPageInfo(myPage)
             val user = userService.loadUserProfile(makeHeaderByAccessToken(it.accessToken))
-            if (user.code() == 200) {
+            if (user.isSuccessful) {
                 user.body()?.let { result ->
                     Log.d(TAG, "loadUserProfile 뷰모델에 결과 적용: user: $result")
                     activityViewModel.setUser(result)
@@ -148,6 +150,7 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
         }
 
     }
+    
 
     fun replaceFragment(view: Fragment) {
         childFragmentManager.beginTransaction().replace(binding.myPageFragmentView.id, view)

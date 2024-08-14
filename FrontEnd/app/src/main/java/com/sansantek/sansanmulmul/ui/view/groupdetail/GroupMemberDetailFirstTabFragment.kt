@@ -86,7 +86,7 @@ class GroupMemberDetailFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBin
     private fun loadGroupMemberHikingHistory() {
         memberUserId?.let { id ->
             lifecycleScope.launch {
-                val result = recordService.getAllMemberHikingRecord(id)
+                val result = recordService.getUserHikingRecord(id)
                 if (result.isSuccessful) {
                     historyMountainAdapter.submitList(result.body()!!)
                 }

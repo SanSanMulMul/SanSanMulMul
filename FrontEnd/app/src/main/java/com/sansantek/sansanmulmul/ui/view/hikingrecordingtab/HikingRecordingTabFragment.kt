@@ -97,31 +97,31 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     StepCounterRepository.get()
   }
 
-    /**
-     * 버전에 따른 Permission 종류들
-     */
-    private val PERMISSION = if (Build.VERSION.SDK_INT >= 33) {
-        arrayOf(
-            Manifest.permission.ACTIVITY_RECOGNITION,
-            Manifest.permission.POST_NOTIFICATIONS,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-    } else if (Build.VERSION.SDK_INT >= 29) {
-        arrayOf(
-            Manifest.permission.ACTIVITY_RECOGNITION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-    } else {
-        arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-    }
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { currentCallback?.onActivityResult(it) }
+  /**
+   * 버전에 따른 Permission 종류들
+   */
+  private val PERMISSION = if (Build.VERSION.SDK_INT >= 33) {
+    arrayOf(
+      Manifest.permission.ACTIVITY_RECOGNITION,
+      Manifest.permission.POST_NOTIFICATIONS,
+      Manifest.permission.ACCESS_FINE_LOCATION,
+      Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+  } else if (Build.VERSION.SDK_INT >= 29) {
+    arrayOf(
+      Manifest.permission.ACTIVITY_RECOGNITION,
+      Manifest.permission.ACCESS_FINE_LOCATION,
+      Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+  } else {
+    arrayOf(
+      Manifest.permission.ACCESS_FINE_LOCATION,
+      Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+  }
+  private val requestPermissionLauncher = registerForActivityResult(
+    ActivityResultContracts.RequestMultiplePermissions()
+  ) { currentCallback?.onActivityResult(it) }
 
   private val mMessageReceiver = object : BroadcastReceiver() {
     override fun onReceive(p0: Context, intent: Intent) {
@@ -154,7 +154,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     Log.d(TAG, "onViewCreated: init 종료")
   }
 
-  suspend private fun loadMyCrewHistory(){
+  private suspend fun loadMyCrewHistory() {
     hikingRecordingTabViewModel.onGoingCrewId.value?.let {
       val response = stepCounterRepository.getStepCount(it)
       response?.let { stepCount ->
@@ -176,18 +176,19 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
    * fragment로 만들어 놓은 navermap을 형변환한 후 비동기로 NaverMap 객체를 얻어옴, 또한 gps버튼 누를 때의 traking모드 로직 설정
    */
   private fun initNaverMap() {
-    val mapFragment = childFragmentManager.findFragmentById(R.id.hiking_recording_tab_map) as MapFragment?
-      ?: MapFragment.newInstance().also {
-        childFragmentManager.beginTransaction().add(R.id.hiking_recording_tab_map, it).commit()
-      }
+    val mapFragment =
+      childFragmentManager.findFragmentById(R.id.hiking_recording_tab_map) as MapFragment?
+        ?: MapFragment.newInstance().also {
+          childFragmentManager.beginTransaction().add(R.id.hiking_recording_tab_map, it).commit()
+        }
 
     mapFragment.getMapAsync(this)
 
     safeCall {
-      binding.btnTraking.setOnClickListener{
-        if(hikingRecordingTabViewModel.isTracking.value!!){
+      binding.btnTraking.setOnClickListener {
+        if (hikingRecordingTabViewModel.isTracking.value!!) {
           hikingRecordingTabViewModel.setIsTracking(false)
-        }else{
+        } else {
           hikingRecordingTabViewModel.setIsTracking(true)
         }
       }
@@ -446,19 +447,19 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
           }
         }
 
-                groupDetailViewModel.fetchCrewMountainDetail(crewId)
-                groupDetailViewModel.crewMountainDetail.observe(viewLifecycleOwner) { crewMountainDetail ->
-                    if (crewMountainDetail != null) {
-                        Log.d(
-                            TAG,
-                            "observeOnGoingCrewId: stoneId = ${crewMountainDetail.mountainId}"
-                        )
-                        mountainPeakStoneViewModel.setStoneId(crewMountainDetail.mountainId)
-                    }
-                }
-            }
+        groupDetailViewModel.fetchCrewMountainDetail(crewId)
+        groupDetailViewModel.crewMountainDetail.observe(viewLifecycleOwner) { crewMountainDetail ->
+          if (crewMountainDetail != null) {
+            Log.d(
+              TAG,
+              "observeOnGoingCrewId: stoneId = ${crewMountainDetail.mountainId}"
+            )
+            mountainPeakStoneViewModel.setStoneId(crewMountainDetail.mountainId)
+          }
         }
+      }
     }
+  }
 
   // 방장
   /**
@@ -925,12 +926,13 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                               }
                             )
                             map = naverMap
-                            if(it.userId == activityViewModel.user.userId && hikingRecordingTabViewModel.isTracking.value!!){
-                              naverMap.moveCamera(CameraUpdate.scrollTo(position)
-                                .animate(CameraAnimation.Fly, 1000)
+                            if (it.userId == activityViewModel.user.userId && hikingRecordingTabViewModel.isTracking.value!!) {
+                              naverMap.moveCamera(
+                                CameraUpdate.scrollTo(position)
+                                  .animate(CameraAnimation.Fly, 1000)
                               )
                             }
-                            setOnClickListener {overlay ->
+                            setOnClickListener { overlay ->
                               val infoWindow = InfoWindow().apply {
                                 adapter = object : InfoWindow.DefaultTextAdapter(requireContext()) {
                                   override fun getText(infoWindow: InfoWindow): CharSequence {
@@ -972,17 +974,22 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     return HikingRecordingService.isRunning
   }
 
-  private fun isIsolated(memberList: MutableList<MemberLocation>){
+  private fun isIsolated(memberList: MutableList<MemberLocation>) {
     Log.d(TAG, "isIsolated: $memberList")
-    if(hikingRecordingTabViewModel.isAlertShow) return
-    for(i in 0 until memberList.size){
+    if (hikingRecordingTabViewModel.isAlertShow) return
+    for (i in 0 until memberList.size) {
       var distance = Double.MAX_VALUE
-      for(j in 0 until memberList.size){
-        if(i == j ) continue
-        val tmpDistance = calculateDistance(memberList[i].userLat!!, memberList[i].userLon!!, memberList[j].userLat!!, memberList[j].userLon!!)
+      for (j in 0 until memberList.size) {
+        if (i == j) continue
+        val tmpDistance = calculateDistance(
+          memberList[i].userLat!!,
+          memberList[i].userLon!!,
+          memberList[j].userLat!!,
+          memberList[j].userLon!!
+        )
         distance = min(distance, tmpDistance)
       }
-      if(distance >= ISOLATE_DISTANCE && !hikingRecordingTabViewModel.isAlertShow){
+      if (distance >= ISOLATE_DISTANCE && !hikingRecordingTabViewModel.isAlertShow) {
         hikingRecordingTabViewModel.setIsAlertShow(true)
         // FCM으로 경고 알림 보내는 코드
         lifecycleScope.launch {
@@ -1003,7 +1010,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   /**
    * 전달받은 StepCount 정보를 기반으로 지도 상단의 Info Data를 로딩하는 함수
    */
-  private fun setHikingInfo(stepCount: StepCount){
+  private fun setHikingInfo(stepCount: StepCount) {
     binding.tvStepCnt.text = stepCount.stepCount.toString()
 
     val distance = (0.74 * stepCount.stepCount)
@@ -1039,7 +1046,10 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     val dLat = Math.toRadians(lat2 - lat1)
     val dLon = Math.toRadians(lon2 - lon1)
 
-    val a = sin(dLat / 2).pow(2) + cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) * sin(dLon / 2).pow(2)
+    val a =
+      sin(dLat / 2).pow(2) + cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) * sin(dLon / 2).pow(
+        2
+      )
     val c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
     return earthRadius * c * 1000 // km에서 m로 변환

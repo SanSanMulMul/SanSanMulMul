@@ -315,12 +315,6 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
 
                 1 -> {
                     list = list.filter {
-                        it.userNickname == binding.searchInputText.text.toString()
-                    }
-                }
-
-                2 -> {
-                    list = list.filter {
                         it.mountainName == binding.searchInputText.text.toString()
                     }
                 }

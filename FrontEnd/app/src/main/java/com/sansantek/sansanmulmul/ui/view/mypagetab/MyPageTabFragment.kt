@@ -150,6 +150,7 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
         }
 
     }
+    
 
     fun replaceFragment(view: Fragment) {
         childFragmentManager.beginTransaction().replace(binding.myPageFragmentView.id, view)

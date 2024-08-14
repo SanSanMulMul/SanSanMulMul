@@ -173,9 +173,10 @@ class HomeTabFragment : BaseFragment<FragmentHomeTabBinding>(
                         newsList = newsService.getRandomNewsKeyword()
                     }else{
                         newsList = mutableListOf()
+                        Log.d(TAG, "setNewsData: 사이즈 : ${response.body()!!.size}")
                         for(i in 0..4){
                             response.body()?.let { mountainList->
-                                val size = mountainList.size -1
+                                val size = mountainList.size
                                 var randomIntInRange = Random.nextInt(0, size)
                                 val mountainName = mountainList[randomIntInRange].mountainName
                                 val articleList = newsService.getNewsKeyword(mountainName)

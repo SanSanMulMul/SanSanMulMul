@@ -8,37 +8,31 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.data.model.GroupUser
 import com.sansantek.sansanmulmul.data.model.HistoryMember
 import com.sansantek.sansanmulmul.databinding.ListHistoryMemberInfoBinding
 import com.sansantek.sansanmulmul.databinding.ListMyPageHikingStyleBinding
 
 class MyPageHistoryMemberListAdapter():
-    ListAdapter<HistoryMember, MyPageHistoryMemberListAdapter.MyPageHistoryMemberListHolder>(Comparator) {
+    ListAdapter<GroupUser, MyPageHistoryMemberListAdapter.MyPageHistoryMemberListHolder>(Comparator) {
 
-    companion object Comparator : DiffUtil.ItemCallback<HistoryMember>() {
-        override fun areItemsTheSame(oldItem: HistoryMember, newItem: HistoryMember): Boolean {
+    companion object Comparator : DiffUtil.ItemCallback<GroupUser>() {
+        override fun areItemsTheSame(oldItem: GroupUser, newItem: GroupUser): Boolean {
             return System.identityHashCode(oldItem) == System.identityHashCode(newItem)
         }
 
-        override fun areContentsTheSame(oldItem: HistoryMember, newItem: HistoryMember): Boolean {
+        override fun areContentsTheSame(oldItem: GroupUser, newItem: GroupUser): Boolean {
             return oldItem == newItem
         }
     }
 
     inner class MyPageHistoryMemberListHolder(private val binding: ListHistoryMemberInfoBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
         fun bindInfo(position: Int) {
             val item = getItem(position)
-            val img = if(item.imageUri == null){
-                ContextCompat.getDrawable(binding.root.context, R.drawable.leader_picture)!!.toBitmap()
-            }else{
-                binding.root.context.contentResolver.openInputStream(item.imageUri!!)?.use { inputStream ->
-                    BitmapFactory.decodeStream(inputStream)
-                }
-            }
-            binding.ivPicture.setImageBitmap(img)
+            Glide.with(binding.root).load(item.userProfileImg).into(binding.ivPicture)
         }
     }
 

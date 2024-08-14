@@ -6,7 +6,7 @@
   <color name="button_text_color">#FFFFFFFF</color>
   <color name="green">#A1CCA8</color>
   <color name="purple">#D6B7FF</color>
-  <color name="nav_background">#F7FCF4</color>
+  <color name="nav_background">#00000000</color>
   <color name="hiking_style_purple">#D3BEEF</color>
   <color name="lightgray">#F0F0F0</color>
   <color name="yellow">#EDE7AE</color>

@@ -14,23 +14,44 @@ import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.UiSettings
-import com.sansantek.sansanmulmul.data.model.HistoryMember
+import com.naver.maps.map.overlay.PolylineOverlay
+import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.data.model.MountainHistory
+import com.sansantek.sansanmulmul.data.model.Track
 import com.sansantek.sansanmulmul.databinding.DialogMyPageHistoryBinding
 import com.sansantek.sansanmulmul.ui.adapter.MyPageHistoryMemberListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.SpaceItemDecoration
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.recordService
+import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.time.LocalDateTime.parse
+import java.time.format.DateTimeFormatter
 
-class ShowMyPageHistoryDialog(mountainHistory: MountainHistory) : DialogFragment(), OnMapReadyCallback {
+class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : DialogFragment(), OnMapReadyCallback {
     // 뷰 바인딩 정의
     private var _binding: DialogMyPageHistoryBinding? = null
     private val binding get() = _binding!!
-    private val memberList = mutableListOf<HistoryMember>()
-    private lateinit var myPageHistoryMemberListAdapter: MyPageHistoryMemberListAdapter
+    private val activityViewModel: MainActivityViewModel by activityViewModels()
+    private val myPageHistoryMemberListAdapter: MyPageHistoryMemberListAdapter = MyPageHistoryMemberListAdapter()
+    private lateinit var naverMap: NaverMap
+    private val upCoursePolylines: MutableList<PolylineOverlay> = mutableListOf() // 현재 그려진 polyline들
+    private val downCoursePolylines: MutableList<PolylineOverlay> = mutableListOf() // 현재 그려진 polyline들
+    private var upCourseList: List<Track> = mutableListOf()
+    private var downCourseList: List<Track> = mutableListOf()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,23 +63,52 @@ class ShowMyPageHistoryDialog(mountainHistory: MountainHistory) : DialogFragment
             Color.parseColor("#99000000"),
             PorterDuff.Mode.SRC_OVER
         )
+        runBlocking {
+            activityViewModel.token?.let {
+
+                val response = recordService.getMountainDetailRecord(makeHeaderByAccessToken(it.accessToken), mountainHistory.recordId)
+                if(response.isSuccessful){
+                    response.body()?.let { result ->
+                        upCourseList = result.upCourseTrackPaths
+                        downCourseList = result.downCourseTrackPaths
+                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+                        val recordStartDateTime = parse(result.recordStartTime, formatter)
+                        val recordEndDateTime = parse(result.recordEndTime, formatter)
+                        val outputFormatter = DateTimeFormatter.ofPattern("yy.MM.dd HH:mm")
+                        val startFormattedDate = recordStartDateTime.format(outputFormatter).toString()
+                        val endFormattedDate = recordEndDateTime.format(outputFormatter).toString()
+
+                        Glide.with(binding.root).load(result.mountainImg).into(binding.ivGroupPreview)
+                        binding.tvStartDate.text = startFormattedDate
+                        binding.tvEndDate.text = endFormattedDate
+
+                        binding.tvMountainName.text = mountainHistory.mountainName
+
+                        binding.tvUpCourseName.text = result.upCourseName
+                        binding.tvDownCourseName.text = result.downCourseName
+
+                        val hour = result.recordDuration / 60
+                        val min = result.recordDuration % 60
+
+
+
+                        binding.tvHistoryInfo.text = "${result.recordDistance}km 등산 완료!\n완등까지 ${hour}시간 ${min}분 걸렸습니다."
+                        binding.tvTotalWalkData.text = "${result.recordSteps}걸음"
+                        binding.tvTotalCalorieData.text = "${result.recordKcal}kcal"
+                        myPageHistoryMemberListAdapter.apply { submitList(result.crewMembers) }
+                    }
+                }
+
+            }
+        }
         binding.ibCloseBtn.setOnClickListener { dismiss() }
 
-        binding.tvMountainName.text
+        val mapFragment = childFragmentManager.findFragmentById(R.id.navermap_map_view) as MapFragment?
+            ?: MapFragment.newInstance().also {
+                childFragmentManager.beginTransaction().add(R.id.navermap_map_view, it).commit()
+            }
 
-        for (i in 1..3) {
-            val member = HistoryMember("엄홍길👑", "박태asssssssss우스")
-            memberList.add(member)
-        }
-        for (i in 1..3) {
-            val member = HistoryMember("엄홍길👑", "박태우스")
-            memberList.add(member)
-        }
-
-        binding.navermapMapView.getMapAsync(this)
-
-
-        myPageHistoryMemberListAdapter = MyPageHistoryMemberListAdapter()
+        mapFragment.getMapAsync(this)
 
         binding.rvMemberList.apply {
             adapter = myPageHistoryMemberListAdapter.apply {
@@ -66,11 +116,8 @@ class ShowMyPageHistoryDialog(mountainHistory: MountainHistory) : DialogFragment
                     requireContext(),
                     LinearLayoutManager.HORIZONTAL,
                     false
-                ).apply {
-                    isMeasurementCacheEnabled = false
-                }
+                ).apply { isMeasurementCacheEnabled = false }
                 addItemDecoration(SpaceItemDecoration(10))
-                submitList((memberList))
             }
         }
         val view = binding.root
@@ -87,9 +134,66 @@ class ShowMyPageHistoryDialog(mountainHistory: MountainHistory) : DialogFragment
         // 줌 버튼 비활성화
         val uiSettings: UiSettings = naverMap.uiSettings
         uiSettings.isZoomControlEnabled = false
-
+        this.naverMap = naverMap
+        naverMap.uiSettings.apply {
+            isZoomControlEnabled = false
+            isScrollGesturesEnabled = false
+            isRotateGesturesEnabled = false
+            isTiltGesturesEnabled =false
+        }
+        lifecycleScope.launch {
+            launch {
+                drawUpcoursePolyLineOnMap(upCourseList, resources.getColor(R.color.chip_course_difficulty_easy))
+            }
+            launch {
+                drawDowncoursePolyLineOnMap(downCourseList, resources.getColor(R.color.chip_course_difficulty_medium))
+            }
+        }
         // 추가적으로 다른 설정을 할 수 있습니다.
-        naverMap.moveCamera(CameraUpdate.zoomTo(10.0))
+
+    }
+
+    private fun drawUpcoursePolyLineOnMap(courses: List<Track>, id:Int) {
+        upCoursePolylines.forEach { it.map = null }
+        upCoursePolylines.clear()
+        val boundsBuilder = LatLngBounds.Builder()
+
+        if (courses.isEmpty()) return
+        courses.forEach { track ->
+            val path =
+                track.trackPaths.map { LatLng(it.trackPathLat, it.trackPathLon) }
+            val polyline = PolylineOverlay().apply {
+                coords = path
+                color = id
+                width = 20
+            }
+            polyline.map = naverMap
+            upCoursePolylines.add(polyline)
+            path.forEach { latLng -> boundsBuilder.include(latLng) }
+        }
+    }
+
+    private fun drawDowncoursePolyLineOnMap(courses: List<Track>, id:Int) {
+        downCoursePolylines.forEach { it.map = null }
+        downCoursePolylines.clear()
+        val boundsBuilder = LatLngBounds.Builder()
+
+        if (courses.isEmpty()) return
+        courses.forEach { track ->
+            val path =
+                track.trackPaths.map { LatLng(it.trackPathLat, it.trackPathLon) }
+            val polyline = PolylineOverlay().apply {
+                coords = path
+                color = id
+                width = 20
+            }
+            polyline.map = naverMap
+            downCoursePolylines.add(polyline)
+            path.forEach { latLng -> boundsBuilder.include(latLng) }
+        }
+
+        val latLngBounds = boundsBuilder.build()
+        naverMap.moveCamera(CameraUpdate.fitBounds(latLngBounds, 100))
     }
 
     override fun onStart() {

@@ -71,7 +71,7 @@ public class CrewRequestService {
                 crew.getCrewName(), FcmType.JOINREQUEST.getType()
         );
         String body = fcmUtil.makeJoinRequestBody(
-                user.getUserName(), crew.getCrewName()
+                user.getUserNickname(), crew.getCrewName()
         );
         FcmMessage.FcmDTO fcmDTO = fcmUtil.makeFcmDTO(title, body);
         // FCM발송
@@ -80,7 +80,7 @@ public class CrewRequestService {
         // 가입 요청 알림 : 알람 테이블 update //
         // 알람 객체 하나 생성
         String alarmtitle = "가입 요청";
-        String alarmbody = user.getUserName() + "님이 그룹 가입을 요청하였습니다." ;
+        String alarmbody = user.getUserNickname() + "님이 그룹 가입을 요청하였습니다." ;
         CrewAlarm alarm = CrewAlarm.builder()
                 .crew(crew)
                 .alarmTitle(alarmtitle)

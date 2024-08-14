@@ -16,6 +16,8 @@ public class AllRecordResonse {
 
     @Schema(description = "기록 고유 번호", example = "1")
     private int recordId;
+    @Schema(description = "그룹 고유 번호", example = "1")
+    private int crewId;
     @Schema(description = "산 이름", example = "금오산")
     private String mountainName;
     @Schema(description = "실제 등산 출발 일시", example = "YYYY-MM-DD 23:59:59")

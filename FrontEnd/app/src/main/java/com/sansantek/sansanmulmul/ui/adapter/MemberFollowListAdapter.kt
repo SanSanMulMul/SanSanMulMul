@@ -1,11 +1,15 @@
 package com.sansantek.sansanmulmul.ui.adapter
 
+import android.content.res.ColorStateList
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.Const.Companion.TITLE
 import com.sansantek.sansanmulmul.data.model.FollowUser
 import com.sansantek.sansanmulmul.databinding.ListFollowMemberBinding
@@ -36,7 +40,7 @@ class MemberFollowListAdapter(
             Log.d(TAG, "내 팔로잉 목록: ${followingNicknames}")
 
             // 현재 사용자가 이 유저를 팔로우하고 있는지 확인
-            val isFollowing = followingNicknames.contains(user.nickName)
+            var isFollowing = followingNicknames.contains(user.nickName)
 
             // 팔로우 버튼 텍스트 및 클릭 리스너 설정
             if (user.nickName == currentUserNickName) {
@@ -44,19 +48,37 @@ class MemberFollowListAdapter(
                 binding.btnFollow.visibility = View.GONE
             } else {
                 binding.btnFollow.visibility = View.VISIBLE
-                if (isFollowing) {
-                    binding.btnFollow.text = "팔로잉"
-                } else {
-                    binding.btnFollow.text = "팔로우"
-                }
+                updateFollowButton(isFollowing)
 
                 binding.btnFollow.setOnClickListener {
                     onFollowClick(user, isFollowing)
+                    isFollowing = !isFollowing
+                    updateFollowButton(isFollowing)
                 }
             }
-
-
-
+        }
+        // 팔로우 팔로잉 버튼 초기 세팅
+        private fun updateFollowButton(isFollowing: Boolean) {
+            if (isFollowing) {
+                binding.btnFollow.text = "팔로잉 ✓"
+                binding.btnFollow.setTextColor(ContextCompat.getColor(binding.root.context, R.color.black))
+                binding.btnFollow.backgroundTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        binding.root.context,
+                        R.color.white
+                    )
+                )
+            } else {
+                binding.btnFollow.text = "팔로우"
+                binding.btnFollow.setTextColor(ContextCompat.getColor(binding.root.context, R.color.white)) // 텍스트 색상을 흰색으로 설정
+                binding.btnFollow.backgroundTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        binding.root.context,
+                        R.color.group_detail_second_tab_temperature_min_color
+                    )
+                )
+            }
+            binding.btnFollow.isEnabled = true
         }
     }
 

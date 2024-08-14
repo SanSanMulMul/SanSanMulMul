@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.ui.adapter
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -20,7 +21,7 @@ class MountainPeakStoneListAdapter :
         MountainPeakStoneListAdapter
     ) {
 
-    private lateinit var stoneList: MutableList<MountainPeakStone>
+    private var stoneList: MutableList<MountainPeakStone> = mutableListOf()
 
     // 내가 인증된 비석 정보인 STONElIST를 세팅하는 함수
     // 세팅하면 기존에 SUBMITLIST로 가지고 있던 전체 비석 리스트를 일부러 날리고
@@ -28,6 +29,7 @@ class MountainPeakStoneListAdapter :
     fun setStoneList(list: MutableList<MountainPeakStone>) {
         this.stoneList = list
         val tempList = currentList.toMutableList()
+        Log.d(TAG, "setStoneList: $stoneList")
         submitList(null)
         submitList(tempList)
     }

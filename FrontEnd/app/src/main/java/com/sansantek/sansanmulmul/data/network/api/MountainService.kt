@@ -1,12 +1,14 @@
 package com.sansantek.sansanmulmul.data.network.api
 
 
+import com.sansantek.sansanmulmul.data.model.CameraLocation
 import com.sansantek.sansanmulmul.data.model.CourseDetail
 import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.data.model.MountainSunriseSunset
 import com.sansantek.sansanmulmul.data.model.MountainCourse
 import com.sansantek.sansanmulmul.data.model.MountainWeather
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -70,4 +72,7 @@ interface MountainService {
 
     @GET("mountain/like/{userId}")
     suspend fun getMemberLikeMountain(@Path("userId") id: Int) : Response<List<Mountain>>
+
+    @POST("mountain")
+    suspend fun getMountainWithInRadius(@Body cameraLocation: CameraLocation): List<Mountain>
 }

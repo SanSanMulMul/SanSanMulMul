@@ -21,6 +21,7 @@ import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 private const val TAG = "MyPageTabFragment_싸피"
 
@@ -43,11 +44,6 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
         init()
         initClickListener()
         super.onViewCreated(view, savedInstanceState)
-    }
-
-    override fun onResume() {
-        super.onResume()
-
     }
 
     private fun initClickListener() {
@@ -88,6 +84,20 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
     private fun init() {
         replaceFragment(MyPageFirstTabFragment())
         myPageHikingStyleListAdapter = MyPageHikingStyleListAdapter()
+        runBlocking {
+            activityViewModel.token?.let {
+                    val myPageInfo =
+                        userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
+                    activityViewModel.setMyPageInfo(myPageInfo)
+                    activityViewModel.myPageInfo.value?.let {
+                        Log.d(TAG, "init: 이제서야 binding에 매핑 시작 $it")
+                        binding.tvTitleName.text = it.userBadge
+                        binding.tvUserName.text = it.userNickname
+                        binding.tvFollowerCnt.text = it.followerCnt.toString()
+                        binding.tvFollowingCnt.text = it.followingCnt.toString()
+                    }
+            }
+        }
         lifecycleScope.launch {
             launch {
                 if (!activityViewModel.isUserInitialized()) {
@@ -95,24 +105,6 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
                 }
                 Glide.with(binding.root).load(activityViewModel.user.userProfileImg)
                     .into(binding.ivMyPageProfile)
-
-                lifecycleScope.launch(Dispatchers.Main) {
-                    activityViewModel.token?.let {
-                        launch(Dispatchers.Main) {
-                            val myPageInfo =
-                                userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
-                            activityViewModel.setMyPageInfo(myPageInfo)
-                            activityViewModel.myPageInfo.value?.let {
-                                Log.d(TAG, "init: 이제서야 binding에 매핑 시작 $it")
-                                binding.tvTitleName.text = it.userBadge
-                                binding.tvUserName.text = it.userNickname
-                                binding.tvFollowerCnt.text = it.followerCnt.toString()
-                                binding.tvFollowingCnt.text = it.followingCnt.toString()
-                            }
-                        }
-                    }
-                }
-
             }
             launch {
                 if (activityViewModel.hikingStyles.value.isNullOrEmpty()) {

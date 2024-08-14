@@ -1,18 +1,12 @@
 package com.sansantek.sansanmulmul.ui.adapter
 
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.sansantek.sansanmulmul.R
-import com.sansantek.sansanmulmul.R.*
-import com.sansantek.sansanmulmul.data.model.Alarm
-import com.sansantek.sansanmulmul.databinding.ListGroupDetailAlarmBinding
 import com.sansantek.sansanmulmul.databinding.ListGroupDetailDrawerMenuBinding
-import com.sansantek.sansanmulmul.ui.util.Util
 
 private const val TAG = "GroupDetailDrawerListAd 싸피"
 class GroupDetailDrawerListAdapter():

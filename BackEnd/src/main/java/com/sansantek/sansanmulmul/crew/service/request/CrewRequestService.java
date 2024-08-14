@@ -80,7 +80,7 @@ public class CrewRequestService {
         // 가입 요청 알림 : 알람 테이블 update //
         // 알람 객체 하나 생성
         String alarmtitle = "가입 요청";
-        String alarmbody = user.getUserNickname() + "님이 그룹 가입을 요청하였습니다." ;
+        String alarmbody = user.getUserNickname() + " 님이 그룹 가입을 요청했습니다! 멤버 목록에서 수락 또는 거절할 수 있습니다" ;
         CrewAlarm alarm = CrewAlarm.builder()
                 .crew(crew)
                 .alarmTitle(alarmtitle)

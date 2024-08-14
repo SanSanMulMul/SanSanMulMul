@@ -20,7 +20,6 @@ import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
 import kotlinx.coroutines.launch
-import java.util.Date
 
 class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
     FragmentMyPageFirstTabBinding::bind,
@@ -28,19 +27,7 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
 ) {
     private val activityViewModel: MainActivityViewModel by activityViewModels()
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
-<<<<<<< Updated upstream
-    private var historyMountainList = mutableListOf(
-        MountainHistory(R.drawable.mountain_gum_o, "금오산", Date()),
-//        MountainHistory(R.drawable.dummy2, "가리산", Date()),
-//        MountainHistory(R.drawable.dummy3, "가리왕sssssszssss산", Date()),
-//        MountainHistory(R.drawable.dummy3, "가리왕산", Date()),
-//        MountainHistory(R.drawable.dummy3, "가리왕산", Date()),
-//        MountainHistory(R.drawable.dummy3, "가리왕산", Date()),
-//        MountainHistory(R.drawable.dummy3, "가리왕산", Date())
-    )
-=======
     private var historyMountainList = mutableListOf<MountainHistory>()
->>>>>>> Stashed changes
 
     private lateinit var favoriteMountainAdapter: MyPageFirstTabFavoriteMountainListAdapter
     private lateinit var historyMountainAdapter: MyPageFirstTabHistoryMountainListAdapter
@@ -74,8 +61,8 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
                 submitList(historyMountainList)
                 setItemClickListener(object :
                     MyPageFirstTabHistoryMountainListAdapter.ItemClickListener {
-                    override fun onHistoryClick(position: Int) {
-                        ShowMyPageHistoryDialog().show(childFragmentManager, null)
+                    override fun onHistoryClick(mountainHistory: MountainHistory) {
+                        ShowMyPageHistoryDialog(mountainHistory).show(childFragmentManager, null)
                     }
 
                 })

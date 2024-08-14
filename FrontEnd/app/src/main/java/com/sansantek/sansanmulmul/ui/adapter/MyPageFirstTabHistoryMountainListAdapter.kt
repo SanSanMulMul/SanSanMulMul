@@ -59,7 +59,7 @@ class MyPageFirstTabHistoryMountainListAdapter():
             binding.tvHistoryDate.text = "$formattedDate($koreanDayOfWeek)"
 
             binding.root.setOnClickListener {
-                itemClickListener.onHistoryClick(position)
+                itemClickListener.onHistoryClick(item)
             }
         }
     }
@@ -85,7 +85,7 @@ class MyPageFirstTabHistoryMountainListAdapter():
     }
 
     interface ItemClickListener {
-        fun onHistoryClick(position: Int)
+        fun onHistoryClick(mountainHistory: MountainHistory)
     }
 
     private lateinit var itemClickListener: ItemClickListener

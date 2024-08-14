@@ -50,6 +50,18 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
             activity.changeAddToBackstackFragment(MyPageEditTabFragment())
         }
 
+        // 팔로워 리스트로 이동
+        binding.layoutMyFollowerInfo.setOnClickListener {
+            val followerFragment = MypageFollowListFragment.newInstance(isFollowerList = true)
+            activity.changeAddToBackstackFragment(followerFragment)
+        }
+
+        // 팔로잉 리스트로 이동
+        binding.layoutMyFollowingInfo.setOnClickListener {
+            val followingFragment = MypageFollowListFragment.newInstance(isFollowerList = false)
+            activity.changeAddToBackstackFragment(followingFragment)
+        }
+
         binding.tlTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.position) {

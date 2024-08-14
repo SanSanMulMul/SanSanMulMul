@@ -40,11 +40,13 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, "onViewCreated: view created 실행됨")
-
-
-        init()
         initClickListener()
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        init()
     }
 
     private fun initClickListener() {
@@ -92,24 +94,24 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
                 }
                 Glide.with(binding.root).load(activityViewModel.user.userProfileImg)
                     .into(binding.ivMyPageProfile)
-                if(activityViewModel.myPageInfo.value == null){
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        activityViewModel.token?.let {
-                            launch(Dispatchers.Main) {
-                                val myPageInfo =
-                                    userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
-                                activityViewModel.setMyPageInfo(myPageInfo)
+
+                lifecycleScope.launch(Dispatchers.Main) {
+                    activityViewModel.token?.let {
+                        launch(Dispatchers.Main) {
+                            val myPageInfo =
+                                userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
+                            activityViewModel.setMyPageInfo(myPageInfo)
+                            activityViewModel.myPageInfo.value?.let {
+                                Log.d(TAG, "init: 이제서야 binding에 매핑 시작 $it")
+                                binding.tvTitleName.text = it.userBadge
+                                binding.tvUserName.text = it.userNickname
+                                binding.tvFollowerCnt.text = it.followerCnt.toString()
+                                binding.tvFollowingCnt.text = it.followingCnt.toString()
                             }
                         }
                     }
                 }
-                activityViewModel.myPageInfo.value?.let {
-                    Log.d(TAG, "init: 이제서야 binding에 매핑 시작 $it")
-                    binding.tvTitleName.text = it.userBadge
-                    binding.tvUserName.text = it.userNickname
-                    binding.tvFollowerCnt.text = it.followerCnt.toString()
-                    binding.tvFollowingCnt.text = it.followingCnt.toString()
-                }
+
             }
             launch {
                 if (activityViewModel.hikingStyles.value.isNullOrEmpty()) {

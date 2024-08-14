@@ -14,6 +14,7 @@ import com.sansantek.sansanmulmul.ui.adapter.MyPageFirstTabFavoriteMountainListA
 import com.sansantek.sansanmulmul.ui.adapter.MyPageFirstTabHistoryMountainListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.SpaceItemDecoration
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
+import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.recordService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
@@ -27,6 +28,7 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
 ) {
     private val activityViewModel: MainActivityViewModel by activityViewModels()
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
+<<<<<<< Updated upstream
     private var historyMountainList = mutableListOf(
         MountainHistory(R.drawable.mountain_gum_o, "금오산", Date()),
 //        MountainHistory(R.drawable.dummy2, "가리산", Date()),
@@ -36,6 +38,9 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
 //        MountainHistory(R.drawable.dummy3, "가리왕산", Date()),
 //        MountainHistory(R.drawable.dummy3, "가리왕산", Date())
     )
+=======
+    private var historyMountainList = mutableListOf<MountainHistory>()
+>>>>>>> Stashed changes
 
     private lateinit var favoriteMountainAdapter: MyPageFirstTabFavoriteMountainListAdapter
     private lateinit var historyMountainAdapter: MyPageFirstTabHistoryMountainListAdapter
@@ -53,7 +58,6 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
                         mountainDetailViewModel.setMountainID(mountain.mountainId)
                         changeFragmentWithPopUpAnimation(MountainDetailFragment())
                     }
-
                 })
             }
             loadMyFavoriteMountainList()
@@ -76,6 +80,7 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
 
                 })
             }
+            loadMyHikingHistory()
             adapter = historyMountainAdapter
             addItemDecoration(SpaceItemDecoration(30))
         }
@@ -97,9 +102,9 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
         activityViewModel.token?.let {
             lifecycleScope.launch {
                 val result =
-                    mountainService.getLikedMountainList(makeHeaderByAccessToken(it.accessToken))
+                    recordService.getUserHikingRecord(activityViewModel.user.userId)
                 if (result.isSuccessful) {
-                    favoriteMountainAdapter.submitList(result.body()!!)
+                    historyMountainAdapter.submitList(result.body()!!)
                 }
             }
         }

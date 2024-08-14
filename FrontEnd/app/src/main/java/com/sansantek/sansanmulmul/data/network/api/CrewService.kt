@@ -1,5 +1,6 @@
 package com.sansantek.sansanmulmul.data.network.api
 
+import com.sansantek.sansanmulmul.data.model.Alarm
 import com.sansantek.sansanmulmul.data.model.CreateCrew
 import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.data.model.CrewCommon
@@ -123,4 +124,7 @@ interface CrewService {
 
   @GET("crew/detail/{crewId}/hikinginfo")
   suspend fun getCrewMountainDetail(@Path("crewId") crewId: Int): Response<CrewMountainDetail>
+
+  @GET("crew/detail/{crewId}/alarm")
+  suspend fun getCrewAlarmList(@Path("crewId")crewId: Int): Response<List<Alarm>>
 }

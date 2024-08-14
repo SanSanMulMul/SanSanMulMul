@@ -207,60 +207,58 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
                     popUp.dismiss()
                     popupShow = !popupShow
                 } else {
-                    val screenWidth = getScreenWidth(requireContext())
-                    val newWidth = (screenWidth * 0.8).toInt()
-                    val newHeight = (screenWidth * 0.95).toInt()
-                    val popUpList = mutableListOf(
-                        Alarm(
-                            "등산 일정 변경",
-                            "등산 일정이 24.07.18(목) 13:00 - 24.07.19(금) 14:00로 변경되었습니다"
-                        ),
-                        Alarm("그룹 가입 요청", "nickname 님이 그룹 가입을 요청했습니다! 멤버 목록에서 수락 또는 거절할 수 있습니다"),
-                        Alarm("등산 코스 변경", "등산 코스가 가야산 / 가야산국립공원남산제일봉2코스로 변경되었습니다"),
-                        Alarm("그룹 가입 요청", "박태우 님이 그룹 가입을 요청했습니다! 멤버 목록에서 수락 또는 거절할 수 있습니다"),
-                    )
-                    val popUpAlarmListAdapter = GroupDetailAlarmListAdapter()
-                    val layoutInflater =
-                        requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                    val location = IntArray(2)
-                    val point = Point()
+                    val response = crewService.getCrewAlarmList(crew.crewId)
+                    if(response.isSuccessful) {
+                        val popUpList = response.body()
 
-                    val popupBinding = PopupGroupDetailNotiBinding.inflate(layoutInflater)
-                    popUp = PopupWindow(requireContext()).apply {
-                        contentView = popupBinding.root
-                        width = newWidth
-                        height = newHeight
-                        animationStyle = R.style.popup_window_animation
-                        setBackgroundDrawable(ColorDrawable())
-                    }
-                    popupBinding.btnRemovePopup.setOnClickListener {
-                        popUp.dismiss()
-                        popupShow = !popupShow
-                    }
 
-                    binding.layoutChatBtn.getLocationOnScreen(location)
-                    point.x = location[0]
-                    point.y = location[1]
-                    popUp.showAtLocation(
-                        popupBinding.root,
-                        Gravity.NO_GRAVITY,
-                        (screenWidth - newWidth) / 2,
-                        point.y + binding.layoutChatBtn.height + 10
-                    )
+                        val screenWidth = getScreenWidth(requireContext())
+                        val newWidth = (screenWidth * 0.8).toInt()
+                        val newHeight = (screenWidth * 0.95).toInt()
+                        val popUpAlarmListAdapter = GroupDetailAlarmListAdapter()
+                        val layoutInflater =
+                            requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                        val location = IntArray(2)
+                        val point = Point()
+
+                        val popupBinding = PopupGroupDetailNotiBinding.inflate(layoutInflater)
+                        popUp = PopupWindow(requireContext()).apply {
+                            contentView = popupBinding.root
+                            width = newWidth
+                            height = newHeight
+                            animationStyle = R.style.popup_window_animation
+                            setBackgroundDrawable(ColorDrawable())
+                        }
+                        popupBinding.btnRemovePopup.setOnClickListener {
+                            popUp.dismiss()
+                            popupShow = !popupShow
+                        }
+
+                        binding.layoutChatBtn.getLocationOnScreen(location)
+                        point.x = location[0]
+                        point.y = location[1]
+                        popUp.showAtLocation(
+                            popupBinding.root,
+                            Gravity.NO_GRAVITY,
+                            (screenWidth - newWidth) / 2,
+                            point.y + binding.layoutChatBtn.height + 10
+                        )
+                        popupBinding.rvAlarmList.apply {
+                            adapter = popUpAlarmListAdapter.apply { submitList(popUpList) }
+                            layoutManager = LinearLayoutManager(requireContext())
+                            addItemDecoration(
+                                DividerItemDecorator(
+                                    ContextCompat.getDrawable(
+                                        requireContext(),
+                                        R.drawable.divider
+                                    )!!
+                                )
+                            )
+                        }
+                    }
 
                     Log.d(TAG, "onViewCreated: 팝업 리사이클러 뷰 실행 직전")
-                    popupBinding.rvAlarmList.apply {
-                        adapter = popUpAlarmListAdapter.apply { submitList(popUpList) }
-                        layoutManager = LinearLayoutManager(requireContext())
-                        addItemDecoration(
-                            DividerItemDecorator(
-                                ContextCompat.getDrawable(
-                                    requireContext(),
-                                    R.drawable.divider
-                                )!!
-                            )
-                        )
-                    }
+
 
                     Log.d(TAG, "onViewCreated: 팝업 리사이클러 뷰 실행 후")
 

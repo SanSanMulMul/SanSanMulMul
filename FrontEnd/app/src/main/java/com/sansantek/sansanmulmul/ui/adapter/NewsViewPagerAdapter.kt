@@ -2,20 +2,13 @@ package com.sansantek.sansanmulmul.ui.adapter
 
 import android.content.Intent
 import android.net.Uri
-import android.text.Layout
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.os.persistableBundleOf
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.sansantek.sansanmulmul.R
-import com.sansantek.sansanmulmul.data.model.Alarm
 import com.sansantek.sansanmulmul.data.model.News
 import com.sansantek.sansanmulmul.databinding.ItemNewsBinding
 

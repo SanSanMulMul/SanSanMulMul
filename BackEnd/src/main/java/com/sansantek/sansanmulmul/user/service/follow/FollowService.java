@@ -50,6 +50,7 @@ public class FollowService {
         for (Follow follow : userFollowers) {
             String badge =badgeRepository.findByBadgeId(follow.getFollowing().getUserStaticBadge()).get().getBadgeImage() + " " + badgeRepository.findByBadgeId(follow.getFollowing().getUserStaticBadge()).get().getBadgeName();
             FollowResponse frs = new FollowResponse(
+                    follow.getFollower().getUserId(),
                     follow.getFollower().getUserProfileImg(),
                     badge,
                     follow.getFollower().getUserNickname());
@@ -76,6 +77,7 @@ public class FollowService {
         for (Follow follow : userFollowings){
             String badge =badgeRepository.findByBadgeId(follow.getFollowing().getUserStaticBadge()).get().getBadgeImage() + " " + badgeRepository.findByBadgeId(follow.getFollowing().getUserStaticBadge()).get().getBadgeName();
             FollowResponse frs = new FollowResponse(
+                    follow.getFollowing().getUserId(),
                     follow.getFollowing().getUserProfileImg(), 
                     badge,
                     follow.getFollowing().getUserNickname());

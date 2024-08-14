@@ -820,6 +820,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
 
   override fun onDestroyView() {
     Log.d(TAG, "onDestroyView: destory!!!!!")
+    SingletonHandler.getHandler().removeCallbacks(runnable)
     super.onDestroyView()
   }
 }

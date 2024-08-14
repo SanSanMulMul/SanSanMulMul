@@ -1,11 +1,8 @@
 package com.sansantek.sansanmulmul.ui.view.groupdetail
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Point
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -22,12 +19,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
-import com.sansantek.sansanmulmul.data.model.Alarm
 import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.databinding.FragmentGroupDetailBinding
 import com.sansantek.sansanmulmul.databinding.PopupGroupDetailDrawerBinding
@@ -256,12 +250,6 @@ class GroupDetailFragment(private val crew: Crew) : BaseFragment<FragmentGroupDe
                             )
                         }
                     }
-
-                    Log.d(TAG, "onViewCreated: 팝업 리사이클러 뷰 실행 직전")
-
-
-                    Log.d(TAG, "onViewCreated: 팝업 리사이클러 뷰 실행 후")
-
                     popupShow = !popupShow
                 }
             }

@@ -69,6 +69,7 @@ import com.sansantek.sansanmulmul.ui.viewmodel.HikingRecordingTabViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainPeakStoneViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -79,9 +80,6 @@ import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
-
-
-private const val TAG = "HikingRecordingTabFragment_싸피"
 
 class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBinding>(
   FragmentHikingRecordingTabBinding::bind,
@@ -97,35 +95,36 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   private val groupDetailViewModel: GroupDetailViewModel by viewModels()
   private val chronometerViewModel: ChronometerViewModel by viewModels()
   private val polylines: MutableList<PolylineOverlay> = mutableListOf()
+  private val intent by lazy{ Intent(myContext, HikingRecordingService::class.java) }
   private val stepCounterRepository by lazy {
     StepCounterRepository.get()
   }
 
-    /**
-     * 버전에 따른 Permission 종류들
-     */
-    private val PERMISSION = if (Build.VERSION.SDK_INT >= 33) {
-        arrayOf(
-            Manifest.permission.ACTIVITY_RECOGNITION,
-            Manifest.permission.POST_NOTIFICATIONS,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-    } else if (Build.VERSION.SDK_INT >= 29) {
-        arrayOf(
-            Manifest.permission.ACTIVITY_RECOGNITION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-    } else {
-        arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-    }
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { currentCallback?.onActivityResult(it) }
+  /**
+   * 버전에 따른 Permission 종류들
+   */
+  private val PERMISSION = if (Build.VERSION.SDK_INT >= 33) {
+    arrayOf(
+      Manifest.permission.ACTIVITY_RECOGNITION,
+      Manifest.permission.POST_NOTIFICATIONS,
+      Manifest.permission.ACCESS_FINE_LOCATION,
+      Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+  } else if (Build.VERSION.SDK_INT >= 29) {
+    arrayOf(
+      Manifest.permission.ACTIVITY_RECOGNITION,
+      Manifest.permission.ACCESS_FINE_LOCATION,
+      Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+  } else {
+    arrayOf(
+      Manifest.permission.ACCESS_FINE_LOCATION,
+      Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+  }
+  private val requestPermissionLauncher = registerForActivityResult(
+    ActivityResultContracts.RequestMultiplePermissions()
+  ) { currentCallback?.onActivityResult(it) }
 
   private val mMessageReceiver = object : BroadcastReceiver() {
     override fun onReceive(p0: Context, intent: Intent) {
@@ -168,7 +167,9 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   }
 
   private fun init() {
-    setInitialView()
+    runBlocking {
+      setInitialView()
+    }
     setPermissionChecker()
     registerLocalBroadCastReceiver()
     hideBottomNav(rootActivity.findViewById(R.id.main_layout_bottom_navigation), false)
@@ -212,8 +213,9 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
    *
    * 다음 기록 이벤트 안내와 함께 Status를 Ban으로 설정하는 함수를 호출하는 함수
    */
-  private fun setInitialView() {
-    loadMyScheduledGroupListAndUpdateUI()
+  private suspend fun setInitialView() {
+    Log.d(TAG, "setInitialView: crewId 설정하러 고고")
+      loadMyScheduledGroupListAndUpdateUI()
   }
 
   /**
@@ -229,41 +231,39 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
    *
    * 다음 기록 이벤트 안내와 함께 Status를 Ban으로 설정
    */
-  private fun loadMyScheduledGroupListAndUpdateUI() {
+  private suspend fun loadMyScheduledGroupListAndUpdateUI() {
     activityViewModel.token?.let {
-      lifecycleScope.launch {
-        val result = crewService.getMyScheduledCrew(makeHeaderByAccessToken(it.accessToken))
-        if (result.isSuccessful) {
-          result.body()?.let { list ->
-            if (list.isEmpty()) { // 등산이 완료된 그룹 뿐임
-              hikingRecordingTabViewModel.setRecordingStatus(BANNED)
-              binding.tvBannedDescription.visibility = View.GONE
-              binding.tvBannedDescriptionTime.visibility = View.GONE
-              binding.fragmentHikingRecordingLayoutBanned.visibility = View.VISIBLE
-            } else { // 상행 시작 전 + 등산 중인 그룹이 하나 이상 있음
-              if (isExistOnGoingCrew(list)) { // 등산 중인 그룹이 있음
-                if (hikingRecordingTabViewModel.recordingStatus.value == BANNED) {
-                  hikingRecordingTabViewModel.setRecordingStatus(BEFORE_HIKING)
-                }
-                binding.fragmentHikingRecordingLayoutBanned.visibility = View.GONE
-              } else { // 등산 전인 그룹만 있음 -> 언제 다시 오라는 시간도 표시
-                hikingRecordingTabViewModel.setRecordingStatus(BANNED)
-                binding.tvBannedDescriptionTime.text =
-                  findClosestFutureDate(list.map { it.crewStartDate })
-                binding.fragmentHikingRecordingLayoutBanned.visibility =
-                  View.VISIBLE
+      val result = crewService.getMyScheduledCrew(makeHeaderByAccessToken(it.accessToken))
+      if (result.isSuccessful) {
+        result.body()?.let { list ->
+          if (list.isEmpty()) { // 등산이 완료된 그룹 뿐임
+            hikingRecordingTabViewModel.setRecordingStatus(BANNED)
+            binding.tvBannedDescription.visibility = View.GONE
+            binding.tvBannedDescriptionTime.visibility = View.GONE
+            binding.fragmentHikingRecordingLayoutBanned.visibility = View.VISIBLE
+          } else { // 상행 시작 전 + 등산 중인 그룹이 하나 이상 있음
+            if (isExistOnGoingCrew(list)) { // 등산 중인 그룹이 있음
+              if (hikingRecordingTabViewModel.recordingStatus.value == BANNED) {
+                hikingRecordingTabViewModel.setRecordingStatus(BEFORE_HIKING)
               }
+              binding.fragmentHikingRecordingLayoutBanned.visibility = View.GONE
+            } else { // 등산 전인 그룹만 있음 -> 언제 다시 오라는 시간도 표시
+              hikingRecordingTabViewModel.setRecordingStatus(BANNED)
+              binding.tvBannedDescriptionTime.text =
+                findClosestFutureDate(list.map { it.crewStartDate })
+              binding.fragmentHikingRecordingLayoutBanned.visibility =
+                View.VISIBLE
             }
           }
-          if (binding.fragmentHikingRecordingLayoutBanned.visibility == View.VISIBLE) {
-            setViewAndChildrenEnabled(binding.fragmentHikingRecordingLayout, false)
-          } else {
-            setViewAndChildrenEnabled(binding.fragmentHikingRecordingLayout, true)
-          }
-
-        } else {
-          Log.d(TAG, "loadMyScheduledGroupList: 실패")
         }
+        if (binding.fragmentHikingRecordingLayoutBanned.visibility == View.VISIBLE) {
+          setViewAndChildrenEnabled(binding.fragmentHikingRecordingLayout, false)
+        } else {
+          setViewAndChildrenEnabled(binding.fragmentHikingRecordingLayout, true)
+        }
+
+      } else {
+        Log.d(TAG, "loadMyScheduledGroupList: 실패")
       }
     }
     if (binding.fragmentHikingRecordingLayoutBanned.visibility == View.VISIBLE) {
@@ -428,6 +428,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
    * LiveData의 값 변화에 따른 Callback 함수를 등록하는 함수
    */
   private fun registerObserving() {
+    Log.d(TAG, "registerObserving: register observing 시작")
     observeHikingStatus()
 
     observeAmILeader()
@@ -437,6 +438,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     observeIsQRCompleted()
 
     observeOnGoingCrewId()
+
+    observeCrewMountainDetail()
 
     observeBaseTime()
 
@@ -464,25 +467,11 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
             )
           }
         }
-
         groupDetailViewModel.fetchCrewMountainDetail(crewId)
-        groupDetailViewModel.crewMountainDetail.observe(viewLifecycleOwner) { crewMountainDetail ->
-          if (crewMountainDetail != null) {
-            Log.d(
-              TAG,
-              "observeOnGoingCrewId: stoneId = ${crewMountainDetail.mountainId}"
-            )
-            mountainPeakStoneViewModel.setStoneId(crewMountainDetail.mountainId)
-            drawPolylineOnMap(
-              crewMountainDetail,
-              resources.getColor(R.color.red),
-              resources.getColor(R.color.group_detail_second_tab_temperature_min_color)
-            )
-          }
-        }
       }
     }
   }
+
 
   private fun drawPolylineOnMap(
     crewMountainDetail: CrewMountainDetail,
@@ -533,6 +522,24 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     val latLngBounds = boundsBuilder.build()
     naverMap.moveCamera(CameraUpdate.fitBounds(latLngBounds, 100))
   }
+
+  private fun observeCrewMountainDetail(){
+    groupDetailViewModel.crewMountainDetail.observe(viewLifecycleOwner) { crewMountainDetail ->
+      if (crewMountainDetail != null) {
+        Log.d(
+          TAG,
+          "observeOnGoingCrewId: stoneId = ${crewMountainDetail.mountainId}"
+        )
+        mountainPeakStoneViewModel.setStoneId(crewMountainDetail.mountainId)
+        drawPolylineOnMap(
+          crewMountainDetail,
+          resources.getColor(R.color.red),
+          resources.getColor(R.color.group_detail_second_tab_temperature_min_color)
+        )
+      }
+    }
+  }
+
 
   // 방장
   /**
@@ -619,7 +626,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
       when (status) {
         BANNED -> {
           deActivateRecordingService()
-          deleteSharedPreferences()
           resetChronometerTime()
           deleteSharedPreferences()
           hikingRecordingTabViewModel.deleteIsQRScanned()
@@ -668,7 +674,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                 makeHeaderByAccessToken(token.accessToken),
                 history
               )
-
             }
           }
         }
@@ -777,14 +782,13 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
    */
   private fun activateRecordingService(status: String) {
     val serviceIntent =
-      Intent(rootActivity, HikingRecordingService::class.java).apply {
+      intent.apply {
         putExtra("status", status)
         putExtra("crewId", hikingRecordingTabViewModel.onGoingCrewId.value)
       }
     Log.d(TAG, "activateRecordingService isService : 서비스 시작")
-    if (!isServiceRunning()) {
       startForegroundService(rootActivity, serviceIntent)
-    }
+
     sharedPreferencesUtil.saveRecordingServiceState(status)
     SingletonHandler.getHandler().removeCallbacks(runnable)
     SingletonHandler.getHandler().post(runnable)
@@ -795,7 +799,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
    * 기록 서비스를 비활성화 시키면서 status를 종료로 저장하고 동료의 위치를 불러오는 Handler를 종료하는 함수
    */
   private fun deActivateRecordingService() {
-    val serviceIntent = Intent(rootActivity, HikingRecordingService::class.java)
+    val serviceIntent = intent
     requireActivity().stopService(serviceIntent)
     sharedPreferencesUtil.saveRecordingServiceState("종료")
     SingletonHandler.getHandler().removeCallbacks(runnable)
@@ -820,7 +824,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   private fun tryRecordingServiceByStatus(status: String) {
     if (permissionChecker.checkPermission(rootActivity, PERMISSION)) {
       //권한있는 경우
-      if (checkRecordingService() == "종료" || !isServiceRunning()) {
+      if (checkRecordingService() == "종료") {
         activateRecordingService(status)
       }
       launchChronometer()
@@ -830,9 +834,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
       requestPermission {
         if (!isAllPermissionGranted(it)) {
           showToast("권한없이는 등산 서비스를 제대로 이용하실 수 없습니다!")
-        } else if (!isServiceRunning()) {
-          activateRecordingService(status)
-          launchChronometer()
         } else {
           if (checkRecordingService() == "종료") {
             activateRecordingService(status)
@@ -1067,7 +1068,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         )
         distance = min(distance, tmpDistance)
       }
-      if (distance >= ISOLATE_DISTANCE && !hikingRecordingTabViewModel.isAlertShow) {
+      if((distance != Double.MAX_VALUE && distance >= ISOLATE_DISTANCE) && !hikingRecordingTabViewModel.isAlertShow){
         hikingRecordingTabViewModel.setIsAlertShow(true)
         // FCM으로 경고 알림 보내는 코드
         lifecycleScope.launch {
@@ -1134,6 +1135,9 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   }
 
 }
+
+private const val TAG = "HikingRecordingTabFragment_싸피"
+
 
 
 object SingletonHandler {

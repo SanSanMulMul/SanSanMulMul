@@ -106,6 +106,7 @@ class HikingRecordingTabViewModel :
   }
 
   fun deleteOnGoingCrewId() {
+    setOnGoingCrewId(-1)
     ApplicationClass.sharedPreferencesUtil.deleteHikingRecordingOnGoingCrewId()
   }
 
@@ -115,6 +116,7 @@ class HikingRecordingTabViewModel :
   }
 
   fun deleteIsQRScanned() {
+    setIsQRScanned(false)
     ApplicationClass.sharedPreferencesUtil.deleteIsQRScanned()
   }
 
@@ -124,6 +126,7 @@ class HikingRecordingTabViewModel :
   }
 
   fun deleteIsQRCompleted() {
+    setIsQRCompleted(false)
     ApplicationClass.sharedPreferencesUtil.deleteIsQRCompleted()
   }
 

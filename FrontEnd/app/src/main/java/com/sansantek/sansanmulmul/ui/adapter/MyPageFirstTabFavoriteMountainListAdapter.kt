@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.sansantek.sansanmulmul.data.model.Crew
 import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.databinding.ListFavoriteMountainBinding
 
@@ -31,6 +32,9 @@ class MyPageFirstTabFavoriteMountainListAdapter() :
             val item = getItem(position)
             Glide.with(binding.root).load(item.mountainImg).into(binding.mountainImage)
             binding.mountainTitle.text = item.mountainName
+            binding.root.setOnClickListener {
+                itemClickListener.onClick(item)
+            }
         }
     }
 
@@ -49,5 +53,15 @@ class MyPageFirstTabFavoriteMountainListAdapter() :
 
     override fun onBindViewHolder(holder: MyPageFavoriteMountainListHolder, position: Int) {
         holder.bindInfo(position)
+    }
+
+    interface ItemClickListener {
+        fun onClick(mountain: Mountain)
+    }
+
+    private lateinit var itemClickListener: ItemClickListener
+
+    fun setItemClickListener(itemClickListener: ItemClickListener) {
+        this.itemClickListener = itemClickListener
     }
 }

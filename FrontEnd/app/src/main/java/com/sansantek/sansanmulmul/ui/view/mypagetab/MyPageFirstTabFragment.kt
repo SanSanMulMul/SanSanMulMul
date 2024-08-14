@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
+import com.sansantek.sansanmulmul.data.model.Mountain
 import com.sansantek.sansanmulmul.data.model.MountainHistory
 import com.sansantek.sansanmulmul.databinding.FragmentMyPageFirstTabBinding
 import com.sansantek.sansanmulmul.ui.adapter.MyPageFirstTabFavoriteMountainListAdapter
@@ -14,7 +15,9 @@ import com.sansantek.sansanmulmul.ui.adapter.MyPageFirstTabHistoryMountainListAd
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.SpaceItemDecoration
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.mountainService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.view.mountaindetail.MountainDetailFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
+import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
 import kotlinx.coroutines.launch
 import java.util.Date
 
@@ -23,6 +26,7 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
     R.layout.fragment_my_page_first_tab
 ) {
     private val activityViewModel: MainActivityViewModel by activityViewModels()
+    private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
     private var historyMountainList = mutableListOf(
         MountainHistory(R.drawable.dummy1, "가야산", Date()),
         MountainHistory(R.drawable.dummy2, "가리산", Date()),
@@ -43,7 +47,15 @@ class MyPageFirstTabFragment : BaseFragment<FragmentMyPageFirstTabBinding>(
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false).apply {
                     isMeasurementCacheEnabled = false
                 }
-            favoriteMountainAdapter = MyPageFirstTabFavoriteMountainListAdapter()
+            favoriteMountainAdapter = MyPageFirstTabFavoriteMountainListAdapter().apply {
+                setItemClickListener(object: MyPageFirstTabFavoriteMountainListAdapter.ItemClickListener{
+                    override fun onClick(mountain: Mountain) {
+                        mountainDetailViewModel.setMountainID(mountain.mountainId)
+                        changeFragmentWithPopUpAnimation(MountainDetailFragment())
+                    }
+
+                })
+            }
             loadMyFavoriteMountainList()
             adapter = favoriteMountainAdapter
             addItemDecoration(SpaceItemDecoration(30))

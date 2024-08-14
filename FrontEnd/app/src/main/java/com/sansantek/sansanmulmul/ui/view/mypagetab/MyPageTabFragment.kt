@@ -141,7 +141,7 @@ class MyPageTabFragment : BaseFragment<FragmentMyPageTabBinding>(
             val myPage = userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
             activityViewModel.setMyPageInfo(myPage)
             val user = userService.loadUserProfile(makeHeaderByAccessToken(it.accessToken))
-            if (user.code() == 200) {
+            if (user.isSuccessful) {
                 user.body()?.let { result ->
                     Log.d(TAG, "loadUserProfile 뷰모델에 결과 적용: user: $result")
                     activityViewModel.setUser(result)

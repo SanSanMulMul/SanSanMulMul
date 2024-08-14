@@ -7,6 +7,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo
 import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -20,6 +21,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
@@ -51,6 +53,11 @@ class HikingRecordingService : Service(), SensorEventListener {
     private val token = sharedPreferencesUtil.getKakaoLoginToken()
     companion object{
         var isRunning: Boolean = false
+
+    }
+
+    fun callDestory(){
+        this.stopSelf()
     }
 
     private val stepCounterRepository by lazy {
@@ -130,6 +137,7 @@ class HikingRecordingService : Service(), SensorEventListener {
         return null
     }
 
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand isRunning: 서비스 시작")
         isRunning = true
@@ -139,7 +147,7 @@ class HikingRecordingService : Service(), SensorEventListener {
             Log.d(TAG, "onStartCommand: status $status crewId $crewId")
         } else {
             isRunning = false
-            Log.d(TAG, "serviceStatus isRunning: ${isRunning}")
+            Log.d(TAG, "serviceStatus isRunning intent 없음: ${isRunning}")
             stopSelf()
         }
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -157,10 +165,9 @@ class HikingRecordingService : Service(), SensorEventListener {
         builder.setContentTitle("${status} 기록 서비스 가동")
         // 알림을 밀어서 지우지 못하도록 설정
         builder.setOngoing(true)
-
-        startForeground(111, builder.build()) // 서비스 가동시 알림 뜨고, 서비스 종료시 자동으로 사라짐 (종료 전엔 못 없앰)
-        Log.d(TAG, "onStartCommand: 서비스 진짜 시작 $status")
-        CoroutineScope(Dispatchers.IO).launch {
+        ServiceCompat.startForeground(this, 111, builder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION) // 서비스 가동시 알림 뜨고, 서비스 종료시 자동으로 사라짐 (종료 전엔 못 없앰)
+        Log.d(TAG, "onStartCommand: startForeground 실행 완료 $status")
+        CoroutineScope(Dispatchers.Default).launch {
             launch {
                 sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
                 stepCountSensor = sensorManager.getDefaultSensor(stepDetector)
@@ -237,6 +244,7 @@ class HikingRecordingService : Service(), SensorEventListener {
         if(::sensorManager.isInitialized){
             sensorManager.unregisterListener(this)
         }
+        stopForeground(STOP_FOREGROUND_REMOVE)
         super.onDestroy()
     }
 

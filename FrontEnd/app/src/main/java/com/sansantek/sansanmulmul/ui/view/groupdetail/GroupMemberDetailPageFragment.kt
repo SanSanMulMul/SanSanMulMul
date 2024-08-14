@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.sansantek.sansanmulmul.R
@@ -15,8 +16,10 @@ import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.config.Const.Companion.TITLE
 import com.sansantek.sansanmulmul.data.model.User
 import com.sansantek.sansanmulmul.databinding.FragmentGroupMemberDetailPageBinding
+import com.sansantek.sansanmulmul.ui.adapter.MemberFollowListAdapter
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.view.mypagetab.GroupMemberDetailSecondFragment
 import com.sansantek.sansanmulmul.ui.view.mypagetab.MyPageEditTabFragment
 import com.sansantek.sansanmulmul.ui.view.mypagetab.MyPageFirstTabFragment
@@ -89,7 +92,31 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
         }
         initClickListener()
 
+        // Follower 버튼 클릭 리스너
+        binding.layoutMyFollowerInfo.setOnClickListener {
+            memberUserId?.let { id ->
+                val activity = requireActivity() as MainActivity
+                val followerFragment = GroupMemberFollowListFragment.newInstance(id, true)
+                activity.changeAddToBackstackFragment(followerFragment)
+                Log.d(TAG, "팔로우 리스트로 이동완료 ")
+            } ?: run {
+                Log.e(TAG, "memberUserId가 null입니다.")
+            }
+        }
+
+        // Following 버튼 클릭 리스너
+        binding.layoutMyFollowingInfo.setOnClickListener {
+            memberUserId?.let { id ->
+                val activity = requireActivity() as MainActivity
+                val followingFragment = GroupMemberFollowListFragment.newInstance(id, false)
+                activity.changeAddToBackstackFragment(followingFragment)
+                Log.d(TAG, "팔로잉 리스트로 이동완료 ")
+            } ?: run {
+                Log.e(TAG, "memberUserId가 null입니다.")
+            }
+        }
     }
+
 
     override fun onDestroyView() {
         Log.d(TAG, "onDestroyView: 뷰 종료")
@@ -179,6 +206,7 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
                                         isFollowing = false
                                         updateFollowButton(isFollowing)
                                         loadMemberFollowingFollowerCount(memberUserId)
+                                        updateMyPageData()
                                     } else {
                                         Log.e(TAG, "언팔로우 실패: ${unfollowResponse.code()}")
                                         showToast("언팔로우 실패")
@@ -192,6 +220,7 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
                                         isFollowing = true
                                         updateFollowButton(isFollowing)
                                         loadMemberFollowingFollowerCount(memberUserId)
+                                        updateMyPageData()
                                     } else {
                                         Log.e(TAG, "팔로우 실패: ${followResponse.code()}")
                                         showToast("팔로우 실패")
@@ -238,5 +267,14 @@ class GroupMemberDetailPageFragment(userId: Int) : BaseFragment<FragmentGroupMem
         Log.d(TAG, "replaceFragment: 실행")
         childFragmentManager.beginTransaction().replace(binding.myPageFragmentView.id, view)
             .commit()
+    }
+
+    private suspend fun updateMyPageData() {
+        activityViewModel.token?.let {
+            // 마이 페이지 정보 다시 로드
+            val myPageInfo = userService.getMyPageInfo(makeHeaderByAccessToken(it.accessToken))
+            activityViewModel.setMyPageInfo(myPageInfo)
+
+        }
     }
 }

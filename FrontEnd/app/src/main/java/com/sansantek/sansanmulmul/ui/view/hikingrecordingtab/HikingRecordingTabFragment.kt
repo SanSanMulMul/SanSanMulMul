@@ -91,28 +91,31 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     StepCounterRepository.get()
   }
 
-  /**
-   * 버전에 따른 Permission 종류들
-   */
-  private val PERMISSION = if (Build.VERSION.SDK_INT >= 33) {
-    arrayOf(
-      Manifest.permission.ACTIVITY_RECOGNITION,
-      Manifest.permission.POST_NOTIFICATIONS,
-      Manifest.permission.ACCESS_FINE_LOCATION,
-      Manifest.permission.ACCESS_COARSE_LOCATION
-    )
-  } else if (Build.VERSION.SDK_INT >= 29) {
-    arrayOf(
-      Manifest.permission.ACTIVITY_RECOGNITION,
-      Manifest.permission.ACCESS_FINE_LOCATION,
-      Manifest.permission.ACCESS_COARSE_LOCATION
-    )
-  } else {
-    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-  }
-  private val requestPermissionLauncher = registerForActivityResult(
-    ActivityResultContracts.RequestMultiplePermissions()
-  ) { currentCallback?.onActivityResult(it) }
+    /**
+     * 버전에 따른 Permission 종류들
+     */
+    private val PERMISSION = if (Build.VERSION.SDK_INT >= 33) {
+        arrayOf(
+            Manifest.permission.ACTIVITY_RECOGNITION,
+            Manifest.permission.POST_NOTIFICATIONS,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    } else if (Build.VERSION.SDK_INT >= 29) {
+        arrayOf(
+            Manifest.permission.ACTIVITY_RECOGNITION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    } else {
+        arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    }
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { currentCallback?.onActivityResult(it) }
 
   private val mMessageReceiver = object : BroadcastReceiver() {
     override fun onReceive(p0: Context, intent: Intent) {
@@ -427,16 +430,19 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
           }
         }
 
-        groupDetailViewModel.fetchCrewMountainDetail(crewId)
-        groupDetailViewModel.crewMountainDetail.observe(viewLifecycleOwner) { crewMountainDetail ->
-          if (crewMountainDetail != null) {
-            Log.d(TAG, "observeOnGoingCrewId: stoneId = ${crewMountainDetail.mountainId}")
-            mountainPeakStoneViewModel.setStoneId(crewMountainDetail.mountainId)
-          }
+                groupDetailViewModel.fetchCrewMountainDetail(crewId)
+                groupDetailViewModel.crewMountainDetail.observe(viewLifecycleOwner) { crewMountainDetail ->
+                    if (crewMountainDetail != null) {
+                        Log.d(
+                            TAG,
+                            "observeOnGoingCrewId: stoneId = ${crewMountainDetail.mountainId}"
+                        )
+                        mountainPeakStoneViewModel.setStoneId(crewMountainDetail.mountainId)
+                    }
+                }
+            }
         }
-      }
     }
-  }
 
   // 방장
   /**

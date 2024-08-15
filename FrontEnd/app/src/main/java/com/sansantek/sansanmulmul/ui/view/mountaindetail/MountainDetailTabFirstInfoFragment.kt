@@ -52,20 +52,26 @@ class MountainDetailTabFirstInfoFragment : BaseFragment<FragmentMountainDetailTa
 
         mountainDetailViewModel.mountainDetail.observe(viewLifecycleOwner) { mountainDetail ->
             Log.d(TAG, "initMountainData: 옵저버1")
-            val mountainCourse = mountainDetailViewModel.mountainCourse.value
-            mountainDetail?.let { setMountainDetailInfo(it, mountainCourse) }
+            safeCall {
+                val mountainCourse = mountainDetailViewModel.mountainCourse.value
+                mountainDetail?.let { setMountainDetailInfo(it, mountainCourse) }
+            }
         }
 
         mountainDetailViewModel.mountainCourse.observe(viewLifecycleOwner) { mountainCourse ->
             Log.d(TAG, "initMountainData: 옵저버2")
             mountainDetailViewModel.mountainDetail.value?.let { mountainDetail ->
-                setMountainDetailInfo(mountainDetail, mountainCourse)
+                safeCall {
+                    setMountainDetailInfo(mountainDetail, mountainCourse)
+                }
             }
         }
 
         mountainDetailViewModel.mountainSunriseSunset.observe(viewLifecycleOwner) {
             mountainDetailViewModel.mountainSunriseSunset.value?.let {
-                setMountainSunriseSunsetInfo(it[0])
+                safeCall {
+                    setMountainSunriseSunsetInfo(it[0])
+                }
             }
         }
 

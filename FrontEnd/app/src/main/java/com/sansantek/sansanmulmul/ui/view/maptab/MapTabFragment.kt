@@ -140,11 +140,13 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
 
                 // initMountainData 함수를 사용해 코스 정보를 포함한 산 목록 생성
                 lifecycleScope.launch {
-                    val searchMountainListItems = initMountainData(mountains, mountainCourseMap)
-                    Log.d(TAG, "fetchMountainsWithinRadius: $searchMountainListItems")
+                    safeCall {
+                        val searchMountainListItems = initMountainData(mountains, mountainCourseMap)
+                        Log.d(TAG, "fetchMountainsWithinRadius: $searchMountainListItems")
 
-                    // 리사이클러뷰에 데이터 설정
-                    initMountainListRecyclerView(searchMountainListItems)
+                        // 리사이클러뷰에 데이터 설정
+                        initMountainListRecyclerView(searchMountainListItems)
+                    }
                 }
                 mapTapViewModel.markerList.forEach {
                     it.map = null

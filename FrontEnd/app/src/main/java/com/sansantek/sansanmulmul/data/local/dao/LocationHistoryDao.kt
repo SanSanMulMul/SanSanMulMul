@@ -9,8 +9,8 @@ import com.sansantek.sansanmulmul.data.local.entity.StepCount
 
 @Dao
 interface LocationHistoryDao {
-    @Query("select * from LocationHistory where crewId = (:crewId)")
-    suspend fun getRecordHistory(crewId: Int): List<LocationHistory>?
+    @Query("select * from LocationHistory where crewId = (:crewId) and status = (:status)")
+    suspend fun getRecordHistory(crewId: Int, status: String): List<LocationHistory>?
 
     @Insert
     suspend fun insertLocationHistory(locationHistory: LocationHistory)

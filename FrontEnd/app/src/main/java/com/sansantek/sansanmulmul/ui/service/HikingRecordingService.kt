@@ -97,9 +97,9 @@ class HikingRecordingService : Service(), SensorEventListener {
         // TODO: 위치 정보를 사용하세요.
         CoroutineScope(Dispatchers.IO).launch {
             launch {
-                Log.d(TAG, "onLocationChanged: 위치 변경 감지 ${LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude)} ")
+                Log.d(TAG, "onLocationChanged: 위치 변경 감지 ${LocationHistory(crewId, status, LocalDateTime.now().toString(), latitude, longitude, altitude)} ")
                 Log.d(TAG, "onLocationChanged: 서버로 위치 송신")
-                locationHistoryRepository.insertLocationHistory(LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude))
+                locationHistoryRepository.insertLocationHistory(LocationHistory(crewId, status, LocalDateTime.now().toString(), latitude, longitude, altitude))
                 token?.let {
                     val response = hikingRecordingService.saveMyCoord(makeHeaderByAccessToken(it.accessToken), HikingRecordingCoord(crewId, latitude,longitude))
                     if(response.isSuccessful){

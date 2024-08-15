@@ -21,6 +21,7 @@ import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.view.mypagetab.GroupMemberDetailSecondFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 private const val TAG = "GroupMemberDetailPageFr 싸피"
 
@@ -86,7 +87,9 @@ class GroupMemberDetailPageFragment(userId: Int) :
         val currentUserId = activityViewModel.user.userId
 
         if (memberUserId != null) {
-            loadMemberData(memberUserId, currentUserId, accessToken)
+            runBlocking {
+                loadMemberData(memberUserId, currentUserId, accessToken)
+            }
         } else {
             Log.e(TAG, "followUserId가 null입니다.")
         }
@@ -124,8 +127,8 @@ class GroupMemberDetailPageFragment(userId: Int) :
     }
 
     // 멤버 데이터 불러오기
-    private fun loadMemberData(memberUserId: Int, currentUserId: Int, accessToken: String?) {
-        lifecycleScope.launch {
+    private suspend fun loadMemberData(memberUserId: Int, currentUserId: Int, accessToken: String?) {
+
             try {
                 val response = userService.getMemberInfo(memberUserId)
                 if (response.isSuccessful) {
@@ -148,7 +151,7 @@ class GroupMemberDetailPageFragment(userId: Int) :
             } catch (e: Exception) {
                 Log.e(TAG, "에러 발생", e)
             }
-        }
+
     }
 
     // 멤버의 팔로잉 및 팔로워 수 불러오기

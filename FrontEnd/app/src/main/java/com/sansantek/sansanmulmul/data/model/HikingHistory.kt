@@ -5,7 +5,7 @@ data class HikingHistory(
   val recordDistance: Double,
   val recordElevation: Double,
   val recordEndTime: String,
-  val recordKcal: Double,
+  val recordKcal: Int,
   val recordStartTime: String,
   val recordSteps: Int
 )

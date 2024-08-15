@@ -12,10 +12,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Process.isIsolated
 import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
@@ -347,24 +349,10 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         BEFORE_HIKING -> {
           hikingRecordingTabViewModel.setHikingStartTime(getCurrentTimeInIsoFormat())
           hikingRecordingTabViewModel.setRecordingStatus(HIKING)
-//          groupDetailViewModel.crewMountainDetail.value?.let { it1 ->
-//            drawPolylineOnMap(
-//              it1,
-//              R.color.red,
-//              R.color.light_blue
-//            )
-//          }
         }
         // 상행 중이었을 때 => 하행으로 바뀜 버튼은 종료 버튼으로
         HIKING -> {
           hikingRecordingTabViewModel.setRecordingStatus(AFTER_HIKING)
-//          groupDetailViewModel.crewMountainDetail.value?.let { it1 ->
-//            drawPolylineOnMap(
-//              it1,
-//              R.color.my_page_edit_hiking_first_style_color,
-//              R.color.group_detail_second_tab_temperature_min_color
-//            )
-//          }
         }
 
         AFTER_HIKING -> {
@@ -657,32 +645,46 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
 
         FINISH -> {
           deActivateRecordingService()
-          val history = hikingRecordingTabViewModel.onGoingCrewId.value?.let {
-            hikingRecordingTabViewModel.hikingStartTime.value?.let { startTime ->
-              hikingRecordingTabViewModel.hikingEndTime.value?.let { endTime ->
-                HikingHistory(
-                  crewId = it,
-                  recordStartTime = startTime,
-                  recordEndTime = endTime,
-                  recordDistance = extractNumberFromText(binding.tvDistance.text.toString()),
-                  recordSteps = binding.tvStepCnt.text.toString().toInt(),
-                  recordElevation = extractNumberFromText(binding.tvHeight.text.toString()),
-                  recordKcal = extractNumberFromText(binding.tvCalorie.text.toString())
-                )
+          if(hikingRecordingTabViewModel.onGoingCrewId.value != -1) {
+            lifecycleScope.launch {
+              val stepCount = stepCounterRepository.getStepCount(hikingRecordingTabViewModel.onGoingCrewId.value!!)
+              stepCount?.let {
+                val history = hikingRecordingTabViewModel.onGoingCrewId.value?.let {
+                  hikingRecordingTabViewModel.hikingStartTime.value?.let { startTime ->
+                    hikingRecordingTabViewModel.hikingEndTime.value?.let { endTime ->
+                      HikingHistory(
+                        crewId = it,
+                        recordStartTime = startTime,
+                        recordEndTime = endTime,
+                        recordDistance = (0.74 * stepCount.stepCount) , // m 단위
+                        recordSteps = stepCount.stepCount,
+                        recordElevation = extractNumberFromText(binding.tvHeight.text.toString()),
+                        recordKcal = (46.62 * stepCount.stepCount).toInt() // cal 단위
+                      )
+                    }
+                  }
+                }
+                Log.d(TAG, "observeHikingStatus: history $history")
+                if (history != null) {
+                  hikingRecordingTabViewModel.setHikingHistory(history)
+                  activityViewModel.token?.let { token ->
+                    val result = hikingRecordingTabViewModel.addHikingHistory(
+                      makeHeaderByAccessToken(token.accessToken),
+                      history
+                    )
+                    if(result){
+                      deleteSharedPreferences()
+                      showToast("기록 저장에 성공했습니다!")
+                    }else{
+                      showToast("기록 저장에 실패했습니다!")
+                    }
+                  }
+                }
               }
             }
+          }else{
+            showToast("저장 실패 !crewId가 -1입니다!")
           }
-          Log.d(TAG, "observeHikingStatus: history $history")
-          if (history != null) {
-            hikingRecordingTabViewModel.setHikingHistory(history)
-            activityViewModel.token?.let { token ->
-              hikingRecordingTabViewModel.addHikingHistory(
-                makeHeaderByAccessToken(token.accessToken),
-                history
-              )
-            }
-          }
-          deleteSharedPreferences()
         }
       }
     }
@@ -1000,7 +1002,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                           safeCall {
                             tag = it.userNickname
                             position = LatLng(it.userLat, it.userLon)
-                            Glide.with(binding.root).asBitmap().load(it.userProfileImg).into(
+                            Glide.with(binding.root).asBitmap().load(it.userProfileImg).transform(RoundedCornersTransformation(20)).into(
                               object : CustomTarget<Bitmap>() {
                                 override fun onResourceReady(
                                   resource: Bitmap,
@@ -1099,6 +1101,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
 
   /**
    * 전달받은 StepCount 정보를 기반으로 지도 상단의 Info Data를 로딩하는 함수
+   * 기본적으로 m와 cal단위 => 그리고 1000이 넘어가면 km와 kcal로 단위 변환
    */
   private fun setHikingInfo(stepCount: StepCount) {
     binding.tvStepCnt.text = stepCount.stepCount.toString()

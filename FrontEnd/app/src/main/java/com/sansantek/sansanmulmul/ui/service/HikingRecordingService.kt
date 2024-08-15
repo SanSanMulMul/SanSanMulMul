@@ -4,7 +4,9 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.app.Service.START_REDELIVER_INTENT
 import android.content.Context
+import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
@@ -16,13 +18,25 @@ import android.hardware.SensorManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+
+import android.os.Build
 import android.os.IBinder
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
+import androidx.core.app.ServiceCompat.stopForeground
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+
+import com.google.android.gms.location.LocationServices
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.sansantek.sansanmulmul.data.local.entity.LocationHistory
@@ -31,6 +45,7 @@ import com.sansantek.sansanmulmul.data.model.DateInfo
 import com.sansantek.sansanmulmul.data.model.HikingRecordingCoord
 import com.sansantek.sansanmulmul.data.repository.LocationHistoryRepository
 import com.sansantek.sansanmulmul.data.repository.StepCounterRepository
+import com.sansantek.sansanmulmul.ui.service.HikingRecordingService.Companion.isRunning
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.hikingRecordingService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
 import kotlinx.coroutines.CoroutineScope
@@ -46,18 +61,24 @@ class HikingRecordingService : Service(), SensorEventListener {
     private var stepCountSensor: Sensor? = null
     private val gpsSensor: Sensor? = null
     private val stepDetector = Sensor.TYPE_STEP_DETECTOR //보행 계수기
+    private var fusedLocationClient: FusedLocationProviderClient? = null
     private lateinit var locationManager: LocationManager
     private lateinit var sensorManager: SensorManager
     private var crewId: Int = -1
     private var status = "undefined"
     private val token = sharedPreferencesUtil.getKakaoLoginToken()
+
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            for (location in locationResult.locations) {
+                // 위치 업데이트 처리
+                handleLocation(location)
+            }
+        }
+    }
     companion object{
         var isRunning: Boolean = false
 
-    }
-
-    fun callDestory(){
-        this.stopSelf()
     }
 
     private val stepCounterRepository by lazy {
@@ -67,62 +88,64 @@ class HikingRecordingService : Service(), SensorEventListener {
         LocationHistoryRepository.get()
     }
 
-    private val locationListener = object : LocationListener {
-        override fun onLocationChanged(location: Location) {
-            // 위치가 변경될 때마다 호출됩니다.
-            Log.d(TAG, "onLocationChanged: GPS 위치 변경 수신")
-            val latitude = location.latitude
-            val longitude = location.longitude
-            val altitude = location.altitude
-            // TODO: 위치 정보를 사용하세요.
-            CoroutineScope(Dispatchers.IO).launch {
-                launch {
-                    Log.d(TAG, "onLocationChanged: 위치 변경 감지 ${LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude)} ")
-                    Log.d(TAG, "onLocationChanged: 서버로 위치 송신")
-                    token?.let {
-                        val response = hikingRecordingService.saveMyCoord(makeHeaderByAccessToken(it.accessToken), HikingRecordingCoord(crewId, latitude,longitude))
-                        if(response.isSuccessful){
-                            Log.d(TAG, "onLocationChanged: 위치 전송 성공")
-                        }
+    private fun handleLocation(location: Location){
+        // 위치가 변경될 때마다 호출됩니다.
+        Log.d(TAG, "onLocationChanged: GPS 위치 변경 수신")
+        val latitude = location.latitude
+        val longitude = location.longitude
+        val altitude = location.altitude
+        // TODO: 위치 정보를 사용하세요.
+        CoroutineScope(Dispatchers.IO).launch {
+            launch {
+                Log.d(TAG, "onLocationChanged: 위치 변경 감지 ${LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude)} ")
+                Log.d(TAG, "onLocationChanged: 서버로 위치 송신")
+                token?.let {
+                    val response = hikingRecordingService.saveMyCoord(makeHeaderByAccessToken(it.accessToken), HikingRecordingCoord(crewId, latitude,longitude))
+                    if(response.isSuccessful){
+                        Log.d(TAG, "onLocationChanged: 위치 전송 성공")
                     }
                 }
-                launch {
-                    Log.d(TAG, "onLocationChanged: 위치 변경 감지 ${LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude)} ")
-                    locationHistoryRepository.insertLocationHistory(LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude))
-                    Log.d(TAG, "onLocationChanged: 위치 변경 감지 피니tl ${locationHistoryRepository.getLocationHistory(crewId)}")
-
-                }
-                Log.d(TAG, "onLocationChanged: stepCounter레포지토리 호출 직전")
-                val step = stepCounterRepository.getStepCount(crewId) ?: StepCount()
-                Log.d(TAG, "onLocationChanged: stepCounter레포지토리 호출 직전")
-                Log.d(TAG, "onSensorChanged: stepcount 확인 $step")
-                if (step.stepCount == 0 && step.elevation == -1.0) {
-
-                    step.crewId = crewId
-                    step.elevation = altitude
-                    Log.d(TAG, "onSensorChanged: insert")
-                    CoroutineScope(Dispatchers.IO).launch {
-                        stepCounterRepository.insertStepCount(step)
-                    }
-                }else{
-                    step.elevation = altitude
-                    Log.d(TAG, "onSensorChanged: update")
-                    CoroutineScope(Dispatchers.IO).launch {
-                        stepCounterRepository.updateStepCount(step)
-                    }
-                }
-
-                val intent = Intent().apply {
-                    action = "step"
-                    putExtra("value", step)
-                }
-
-                LocalBroadcastManager.getInstance(this@HikingRecordingService).sendBroadcast(intent)
             }
+            launch {
+                Log.d(TAG, "onLocationChanged: 위치 변경 감지 ${LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude)} ")
+                locationHistoryRepository.insertLocationHistory(LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude))
+                Log.d(TAG, "onLocationChanged: 위치 변경 감지 피니tl ${locationHistoryRepository.getLocationHistory(crewId)}")
+
+            }
+            Log.d(TAG, "onLocationChanged: stepCounter레포지토리 호출 직전")
+            val step = stepCounterRepository.getStepCount(crewId) ?: StepCount()
+            Log.d(TAG, "onLocationChanged: stepCounter레포지토리 호출 직전")
+            Log.d(TAG, "onSensorChanged: stepcount 확인 $step")
+            if (step.stepCount == 0 && step.elevation == -1.0) {
+
+                step.crewId = crewId
+                step.elevation = altitude
+                Log.d(TAG, "onSensorChanged: insert")
+                CoroutineScope(Dispatchers.IO).launch {
+                    stepCounterRepository.insertStepCount(step)
+                }
+            }else{
+                step.elevation = altitude
+                Log.d(TAG, "onSensorChanged: update")
+                CoroutineScope(Dispatchers.IO).launch {
+                    stepCounterRepository.updateStepCount(step)
+                }
+            }
+
+            val intent = Intent().apply {
+                action = "step"
+                putExtra("value", step)
+            }
+
+            LocalBroadcastManager.getInstance(this@HikingRecordingService).sendBroadcast(intent)
         }
 
-        override fun onProviderEnabled(provider: String) {}
-        override fun onProviderDisabled(provider: String) {}
+    }
+
+    private val locationListener = object : LocationListener {
+        override fun onLocationChanged(location: Location) {
+            handleLocation(location)
+        }
     }
 
     private fun getCurrentDateInfo(): DateInfo {
@@ -189,9 +212,7 @@ class HikingRecordingService : Service(), SensorEventListener {
                     }
                 } else {
                     launch(Dispatchers.Main) {
-                        Toast.makeText(this@HikingRecordingService, "기록이 시작됩니다", Toast.LENGTH_SHORT).show()
-                        locationManager.requestLocationUpdates(LocationManager.FUSED_PROVIDER, 500L, 1F, locationListener, )
-                        Log.d(TAG, "onStartCommand: GPS Listener 등록")
+                        startLocationUpdates()
                     }
                 }
             }
@@ -199,6 +220,34 @@ class HikingRecordingService : Service(), SensorEventListener {
         }
         Log.d(TAG, "serviceStatus isRunning: $isRunning")
         return START_REDELIVER_INTENT
+    }
+
+    fun startLocationUpdates() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            // API 31 이상에서는 FusedLocationProviderClient 사용
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            val locationRequest = LocationRequest.create().apply {
+                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                interval = 10000L  // 10초마다 업데이트
+                fastestInterval = 5000L  // 최소 5초 간격으로 업데이트
+            }
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                fusedLocationClient?.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+            }
+        } else {
+            // API 30 이하에서는 LocationManager 사용
+            locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationManager?.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    10000L,  // 10초마다 업데이트
+                    10f,  // 10미터 이동 시 업데이트
+                    locationListener
+                )
+            }
+        }
     }
 
     override fun onSensorChanged(event: SensorEvent?) {

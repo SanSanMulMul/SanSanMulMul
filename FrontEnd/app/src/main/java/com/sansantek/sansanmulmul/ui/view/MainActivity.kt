@@ -43,6 +43,7 @@ import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainPeakStoneViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.io.File
@@ -89,10 +90,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        runBlocking {
+            loadUserProfile()
+        }
         lifecycleScope.launch(Dispatchers.IO) {
-            launch(Dispatchers.IO) {
-                loadUserProfile()
-            }
             launch(Dispatchers.IO) {
                 loadUserHikingStyle()
             }
@@ -105,11 +106,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             launch(Dispatchers.IO) {
                 loadMyPageInfo()
             }
-
-            changeFragment(HomeTabFragment())
         }
         initFCM()
         initBottomNav()
+        binding.mainLayoutBottomNavigation.selectedItemId = R.id.home
 
         // QR코드 인식 후
         val intent = intent

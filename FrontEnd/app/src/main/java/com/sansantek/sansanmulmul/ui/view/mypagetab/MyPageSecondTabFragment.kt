@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
@@ -21,7 +22,7 @@ class MyPageSecondTabFragment : BaseFragment<FragmentMyPageSecondTabBinding>(
 ) {
     private var stoneList: MutableList<MountainPeakStone> = mutableListOf()
     private lateinit var mountainPeakStoneListAdapter: MountainPeakStoneListAdapter
-    private val mountainPeakStoneViewModel: MountainPeakStoneViewModel by activityViewModels()
+    private val mountainPeakStoneViewModel: MountainPeakStoneViewModel by viewModels()
     private val activityViewModel: MainActivityViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

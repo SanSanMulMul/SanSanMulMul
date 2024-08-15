@@ -1,5 +1,7 @@
 package com.sansantek.sansanmulmul.ui.viewmodel
 
+import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -145,10 +147,12 @@ class HikingRecordingTabViewModel :
     }
   }
 
-  fun addHikingHistory(accessToken: String, history: HikingHistory) {
-    viewModelScope.launch {
+  suspend fun addHikingHistory(accessToken: String, history: HikingHistory) : Boolean{
       try {
         val response = repository.addHikingHistory(accessToken, history)
+        if(response == true){
+          return response
+        }
         if (response != null) {
           _isHikingHistoryAddSuccess.postValue(response)
         } else {
@@ -157,7 +161,7 @@ class HikingRecordingTabViewModel :
       } catch (e: Exception) {
         _error.postValue("Error: ${e.message}")
       }
+      return false
     }
-  }
 
 }

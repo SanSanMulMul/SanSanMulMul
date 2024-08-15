@@ -67,8 +67,6 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
-    private lateinit var locationClient: FusedLocationProviderClient
-    private lateinit var mountainList: List<Mountain>
     private val activityViewModel: MainActivityViewModel by activityViewModels()
     private val mapTapViewModel: MapTapViewModel by viewModels()
     private val mountainDetailViewModel: MountainDetailViewModel by activityViewModels()
@@ -77,7 +75,7 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
     private lateinit var itemBottomSheetMountainBinding: ItemBottomSheetMountainBinding
 
     // 권한 코드
-    private val LOCATION_PERMISSION_REQUEST_CODE = 5000
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1000
 
     // 권한 받을 리스트
     private val PERMISSIONS = arrayOf(
@@ -127,17 +125,17 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
                 val mountains = mountainService.getMountainWithInRadius(CameraLocation(lat, lon,50.toDouble()))
                 // 코스 정보 가져오기
                 val mountainCourseMap = mutableMapOf<Int, MountainCourse>()
-                    mountains.forEach { mountain ->
+                mountains.forEach { mountain ->
 
-                            val response = mountainService.getMountainCourse(mountain.mountainId)
-                            if (response.isSuccessful) {
-                                val mountainCourseInfo = response.body()
-                                if (mountainCourseInfo != null) {
-                                    mountainCourseMap[mountain.mountainId] = mountainCourseInfo
-                                }
+                        val response = mountainService.getMountainCourse(mountain.mountainId)
+                        if (response.isSuccessful) {
+                            val mountainCourseInfo = response.body()
+                            if (mountainCourseInfo != null) {
+                                mountainCourseMap[mountain.mountainId] = mountainCourseInfo
                             }
+                        }
 
-                    }
+                }
 
 
                 // initMountainData 함수를 사용해 코스 정보를 포함한 산 목록 생성
@@ -338,7 +336,6 @@ class MapTabFragment : BaseFragment<FragmentMapTabBinding>(
 
     // 사용자 위치
     private fun initLocationSource() {
-        locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
         naverMap.locationSource = locationSource
     }

@@ -33,6 +33,9 @@ class MyPageHistoryMemberListAdapter():
         fun bindInfo(position: Int) {
             val item = getItem(position)
             Glide.with(binding.root).load(item.userProfileImg).into(binding.ivPicture)
+            binding.root.setOnClickListener {
+                itemClickListener.onClick(item)
+            }
         }
     }
 
@@ -49,4 +52,13 @@ class MyPageHistoryMemberListAdapter():
     override fun onBindViewHolder(holder: MyPageHistoryMemberListHolder, position: Int) {
         holder.bindInfo(position)
     }
+
+    interface ItemClickListener{
+        fun onClick(groupUser: GroupUser)
+    }
+    fun setItemClickListener(itemClickListener: ItemClickListener){
+        this.itemClickListener = itemClickListener
+    }
+
+    private lateinit var itemClickListener: ItemClickListener
 }

@@ -80,8 +80,8 @@ class DateTimePickerDialog(private val status: String) : DialogFragment() {
 
         datePicker.updateDate(year, month, day)
         datePicker.minDate = currentTimeMillis
-        timePicker.hour = 6
-        timePicker.minute =0
+        timePicker.hour = zonedDateTime.hour
+        timePicker.minute =zonedDateTime.minute
 
         positiveButton.setOnClickListener {
             val selectedYear = datePicker.year

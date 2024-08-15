@@ -99,6 +99,7 @@ class HikingRecordingService : Service(), SensorEventListener {
             launch {
                 Log.d(TAG, "onLocationChanged: 위치 변경 감지 ${LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude)} ")
                 Log.d(TAG, "onLocationChanged: 서버로 위치 송신")
+                locationHistoryRepository.insertLocationHistory(LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude))
                 token?.let {
                     val response = hikingRecordingService.saveMyCoord(makeHeaderByAccessToken(it.accessToken), HikingRecordingCoord(crewId, latitude,longitude))
                     if(response.isSuccessful){
@@ -106,18 +107,11 @@ class HikingRecordingService : Service(), SensorEventListener {
                     }
                 }
             }
-            launch {
-                Log.d(TAG, "onLocationChanged: 위치 변경 감지 ${LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude)} ")
-                locationHistoryRepository.insertLocationHistory(LocationHistory(crewId, LocalDateTime.now().toString(), latitude, longitude, altitude))
-                Log.d(TAG, "onLocationChanged: 위치 변경 감지 피니tl ${locationHistoryRepository.getLocationHistory(crewId)}")
-
-            }
             Log.d(TAG, "onLocationChanged: stepCounter레포지토리 호출 직전")
             val step = stepCounterRepository.getStepCount(crewId) ?: StepCount()
             Log.d(TAG, "onLocationChanged: stepCounter레포지토리 호출 직전")
             Log.d(TAG, "onSensorChanged: stepcount 확인 $step")
             if (step.stepCount == 0 && step.elevation == -1.0) {
-
                 step.crewId = crewId
                 step.elevation = altitude
                 Log.d(TAG, "onSensorChanged: insert")

@@ -27,6 +27,7 @@ import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.UiSettings
 import com.naver.maps.map.overlay.PolylineOverlay
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.data.model.GroupUser
 import com.sansantek.sansanmulmul.data.model.MountainHistory
 import com.sansantek.sansanmulmul.data.model.Track
 import com.sansantek.sansanmulmul.databinding.DialogMyPageHistoryBinding
@@ -34,6 +35,8 @@ import com.sansantek.sansanmulmul.ui.adapter.MyPageHistoryMemberListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.SpaceItemDecoration
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.recordService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.view.MainActivity
+import com.sansantek.sansanmulmul.ui.view.groupdetail.GroupMemberDetailPageFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -91,11 +94,26 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
                         val min = result.recordDuration % 60
 
 
-
-                        binding.tvHistoryInfo.text = "${result.recordDistance}km 등산 완료!\n완등까지 ${hour}시간 ${min}분 걸렸습니다."
+                        binding.tvHistoryInfo.text = if (result.recordDistance < 1000) {
+                            "${result.recordDistance.toInt()}m 등산 완료!\n완등까지 약 ${hour}시간 ${min}분 걸렸습니다."
+                        } else {
+                            "${String.format("%.2f", (result.recordDistance / 1000))}km 등산 완료!\n완등까지 약 ${hour}시간 ${min}분 걸렸습니다."
+                        }
                         binding.tvTotalWalkData.text = "${result.recordSteps}걸음"
-                        binding.tvTotalCalorieData.text = "${result.recordKcal}kcal"
-                        myPageHistoryMemberListAdapter.apply { submitList(result.crewMembers) }
+                        binding.tvTotalCalorieData.text = if (result.recordKcal < 1000) {
+                            "${result.recordKcal.toInt()} cal"
+                        } else {
+                            "${String.format("%.2f", (result.recordKcal / 1000))} kcal"
+                        }
+                        myPageHistoryMemberListAdapter.apply {
+                            setItemClickListener(object: MyPageHistoryMemberListAdapter.ItemClickListener{
+                                override fun onClick(groupUser: GroupUser) {
+                                    val activity = requireActivity() as MainActivity
+                                    activity.changeAddToBackstackFragment(GroupMemberDetailPageFragment.newInstance(groupUser.userId))
+                                }
+                            })
+                            submitList(result.crewMembers)
+                        }
                     }
                 }
 

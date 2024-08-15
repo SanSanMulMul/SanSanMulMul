@@ -8,6 +8,7 @@ import androidx.fragment.app.activityViewModels
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.PolylineOverlay
@@ -16,6 +17,7 @@ import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.CourseDetail
 import com.sansantek.sansanmulmul.databinding.FragmentCourseDetailBinding
 import com.sansantek.sansanmulmul.ui.util.Util
+import com.sansantek.sansanmulmul.ui.view.MainActivity
 import com.sansantek.sansanmulmul.ui.viewmodel.CourseDetailViewModel
 import com.sansantek.sansanmulmul.ui.viewmodel.MountainDetailViewModel
 
@@ -35,6 +37,9 @@ class CourseDetailFragment : BaseFragment<FragmentCourseDetailBinding>(
     }
 
     private fun init() {
+        binding.ibBackBtn.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
         activity?.let { hideBottomNav(it.findViewById(R.id.main_layout_bottom_navigation), true) }
         initCourseDetailData()
         initCourseMap()
@@ -114,7 +119,11 @@ class CourseDetailFragment : BaseFragment<FragmentCourseDetailBinding>(
     }
 
     private fun initCourseMap() {
-        binding.courseDetailMap.getMapAsync(this)
+        val mapFragment = childFragmentManager.findFragmentById(R.id.course_detail_map) as MapFragment?
+            ?: MapFragment.newInstance().also {
+                childFragmentManager.beginTransaction().add(R.id.course_detail_map, it).commit()
+            }
+        mapFragment.getMapAsync(this)
     }
 
     override fun onMapReady(naverMap: NaverMap) {

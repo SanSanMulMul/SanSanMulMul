@@ -145,8 +145,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     super.onResume()
     // 지금 기록 중이었는지 확인하고 상태에 따라 버튼 초기화
     Log.d(TAG, "onViewCreated: resume 시작")
-    syncRecordingStatus()
-    registerObserving()
+    //syncRecordingStatus()
     initClickListener()
     lifecycleScope.launch { loadMyCrewHistory() }
     Log.d(TAG, "onViewCreated: resume 종료")
@@ -170,6 +169,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     runBlocking {
       setInitialView()
     }
+    registerObserving()
     setPermissionChecker()
     registerLocalBroadCastReceiver()
     hideBottomNav(rootActivity.findViewById(R.id.main_layout_bottom_navigation), false)
@@ -369,7 +369,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         AFTER_HIKING -> {
           hikingRecordingTabViewModel.setHikingEndTime(getCurrentTimeInIsoFormat())
           hikingRecordingTabViewModel.setRecordingStatus(FINISH)
-          hikingRecordingTabViewModel.deleteOnGoingCrewId()
         }
       }
 
@@ -438,7 +437,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     observeIsQRScanned()
 
     observeIsQRCompleted()
-
 
     observeCrewMountainDetail()
 
@@ -681,6 +679,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
               )
             }
           }
+          hikingRecordingTabViewModel.deleteOnGoingCrewId()
         }
       }
     }

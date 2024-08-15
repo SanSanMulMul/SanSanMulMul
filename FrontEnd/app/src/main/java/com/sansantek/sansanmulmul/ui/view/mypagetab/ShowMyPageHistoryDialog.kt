@@ -58,6 +58,7 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
     private val downCoursePolylines: MutableList<PolylineOverlay> = mutableListOf() // 현재 그려진 polyline들
     private var upCourseList: List<Track> = mutableListOf()
     private var downCourseList: List<Track> = mutableListOf()
+    val boundsBuilder = LatLngBounds.Builder()
     private val locationHistoryRepository by lazy {
         LocationHistoryRepository.get()
     }
@@ -190,7 +191,6 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
     private fun drawUpPolyLineOnMap(courses: List<LocationHistory>, id:Int) {
         upCoursePolylines.forEach { it.map = null }
         upCoursePolylines.clear()
-        val boundsBuilder = LatLngBounds.Builder()
 
         if (courses.isEmpty()) return
         val path = courses.map { track ->
@@ -205,14 +205,11 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
         polyline.map = naverMap
         upCoursePolylines.add(polyline)
         path.forEach { latLng -> boundsBuilder.include(latLng) }
-        val latLngBounds = boundsBuilder.build()
-        naverMap.moveCamera(CameraUpdate.fitBounds(latLngBounds, 100))
     }
 
     private fun drawDownPolyLineOnMap(courses: List<LocationHistory>, id:Int) {
         downCoursePolylines.forEach { it.map = null }
         downCoursePolylines.clear()
-        val boundsBuilder = LatLngBounds.Builder()
 
         if (courses.isEmpty()) return
         val path = courses.map { track ->

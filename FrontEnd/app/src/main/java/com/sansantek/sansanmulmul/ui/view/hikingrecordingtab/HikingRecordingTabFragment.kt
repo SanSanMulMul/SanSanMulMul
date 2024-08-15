@@ -374,8 +374,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
    */
   private fun deleteSharedPreferences() {
     with(hikingRecordingTabViewModel) {
-      deleteState()
       deleteOnGoingCrewId()
+      deleteState()
       deleteIsQRScanned()
       deleteIsQRCompleted()
     }

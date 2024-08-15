@@ -17,6 +17,7 @@ private const val TAG = "MypageFollowListAdapter"
 class MypageFollowListAdapter(
     private var followList: List<FollowUser>,
     private val onFollowClick: (FollowUser, Boolean) -> Unit,
+    private val onUserClick:(FollowUser) -> Unit,
     private val followingNicknames: List<String?>, // 현재 사용자가 팔로우하고 있는 닉네임 목록
     private val currentUserNickName: String? // 현재 사용자의 닉네임
 ) : RecyclerView.Adapter<MypageFollowListAdapter.FollowViewHolder>() {
@@ -40,10 +41,12 @@ class MypageFollowListAdapter(
             // 현재 사용자가 이 유저를 팔로우하고 있는지 확인
             var isFollowing = followingNicknames.contains(user.nickName)
 
-//            // 프로필 클릭 리스너 추가
-//            binding.root.setOnClickListener {
-//                onProfileClick(user, user.nickName == currentUserNickName)
-//            }
+            // 프로필 클릭 리스너 추가
+            binding.root.setOnClickListener {
+                if(user.nickName != currentUserNickName){
+                    onUserClick(user)
+                }
+            }
 
             // 팔로우 버튼 텍스트 및 클릭 리스너 설정
             if (user.nickName == currentUserNickName) {

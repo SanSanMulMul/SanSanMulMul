@@ -9,11 +9,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.sansantek.sansanmulmul.R
 import com.sansantek.sansanmulmul.config.BaseFragment
 import com.sansantek.sansanmulmul.data.model.FollowUser
+import com.sansantek.sansanmulmul.data.model.GroupUser
 import com.sansantek.sansanmulmul.databinding.FragmentGroupMemberFollowListBinding
 import com.sansantek.sansanmulmul.ui.adapter.MemberFollowListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.MypageFollowListAdapter
 import com.sansantek.sansanmulmul.ui.util.RetrofiltUtil.Companion.userService
 import com.sansantek.sansanmulmul.ui.util.Util.makeHeaderByAccessToken
+import com.sansantek.sansanmulmul.ui.view.MainActivity
+import com.sansantek.sansanmulmul.ui.view.groupdetail.GroupMemberDetailPageFragment
 import com.sansantek.sansanmulmul.ui.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.launch
 
@@ -78,7 +81,12 @@ class MypageFollowListFragment : BaseFragment<FragmentGroupMemberFollowListBindi
                     // 어댑터 설정
                     val adapter = MypageFollowListAdapter(emptyList(), { user, isFollowing ->
                          handleFollowButtonClick(user, isFollowing, headerAccessToken)
-                    }, followingNicknames, currentUserNickName)
+                    }, {user ->
+                        run {
+                            val activity = requireActivity() as MainActivity
+                            activity.changeAddToBackstackFragment(GroupMemberDetailPageFragment.newInstance(user.userId))
+                        }
+                    },followingNicknames, currentUserNickName)
 
                     // RecyclerView에 어댑터와 레이아웃 매니저 설정
                     binding.rvFollowList.layoutManager = LinearLayoutManager(context)

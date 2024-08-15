@@ -105,6 +105,32 @@ object Util {
         }
     }
 
+    fun extractLeaderChange(context: Context, text: String): SpannableString? {
+        val regex = "방장이 (.*?)되었습니다".toRegex()
+        val spannableString = SpannableString(text)
+        var check = false
+
+        regex.findAll(text).forEach { matchResult ->
+            check = true
+            val start = matchResult.range.first
+            val end = matchResult.range.last
+            val leaderChangeStart = matchResult.groups[1]?.range?.first ?: start
+            val leaderChangeEnd = matchResult.groups[1]?.range?.last?.plus(1) ?: end
+            Log.d(TAG, "extractLeaderChange: $leaderChangeStart, $leaderChangeEnd")
+
+            spannableString.setSpan(
+                ForegroundColorSpan(context.getColor(R.color.group_detail_alarm_green_btn)),
+                leaderChangeStart,
+                leaderChangeEnd,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        return if (check) spannableString else {
+            null
+        }
+    }
+
     // 등산 코스가 ~ 로 변경되었습니다에서 ~에 해당하는 부분을 초록색으로 바꾸는 코드
     fun extractHikingCourse(context: Context, text: String): SpannableString? {
         Log.d(TAG, "extractHikingCourse: ")

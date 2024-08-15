@@ -63,6 +63,6 @@ class Const {
         const val COMPLETE = 2
         const val ALL = 3
 
-        const val ISOLATE_DISTANCE = 200
+        const val ISOLATE_DISTANCE = 3
     }
 }

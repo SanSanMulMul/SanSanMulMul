@@ -418,7 +418,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
    */
   private fun registerObserving() {
     Log.d(TAG, "registerObserving: register observing 시작")
-    observeHikingHistory()
 
     observeOnGoingCrewId()
 
@@ -675,6 +674,11 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                     )
                     if(result){
                       deleteSharedPreferences()
+                      resetChronometerTime()
+                      hikingRecordingTabViewModel.setHikingHistory(null)
+                      binding.tvBannedDescription.visibility = View.GONE
+                      binding.tvBannedDescriptionTime.visibility = View.GONE
+                      binding.fragmentHikingRecordingLayoutBanned.visibility = View.VISIBLE
                       showToast("기록 저장에 성공했습니다!")
                     }else{
                       showToast("기록 저장에 실패했습니다!")
@@ -691,27 +695,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
     }
   }
 
-  private fun observeHikingHistory() {
-//    hikingRecordingTabViewModel.hikingHistory.observe(viewLifecycleOwner) { history ->
-//      resetChronometerTime()
-//      hikingRecordingTabViewModel.setRecordingStatus(BANNED)
-//      Log.d(TAG, "observeHikingHistory: history = $history")
-//    }
-
-    hikingRecordingTabViewModel.isHikingHistoryAddSuccess.observe(viewLifecycleOwner) { isSucess ->
-      if (isSucess == true) {
-        Log.d(TAG, "observeHikingHistory: 등산기록 추가 성공")
-      } else {
-        Log.d(TAG, "observeHikingHistory: 등산기록 추가 실패")
-      }
-      resetChronometerTime()
-      hikingRecordingTabViewModel.setRecordingStatus(BANNED)
-      hikingRecordingTabViewModel.setHikingHistory(null)
-      binding.tvBannedDescription.visibility = View.GONE
-      binding.tvBannedDescriptionTime.visibility = View.GONE
-      binding.fragmentHikingRecordingLayoutBanned.visibility = View.VISIBLE
-    }
-  }
 
   private fun extractNumberFromText(text: String): Double {
     val numberString = text.filter { it.isDigit() }
@@ -1003,21 +986,23 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
                           safeCall {
                             tag = it.userNickname
                             position = LatLng(it.userLat, it.userLon)
-                            Glide.with(binding.root).asBitmap().load(it.userProfileImg).transform(RoundedCornersTransformation(20)).into(
-                              object : CustomTarget<Bitmap>() {
-                                override fun onResourceReady(
-                                  resource: Bitmap,
-                                  transition: Transition<in Bitmap>?
-                                ) {
-                                  // 이미지 로드 완료 후 마커 설정
-                                  val resizeBitmap =
-                                    Bitmap.createScaledBitmap(resource, 60, 60, true)
-                                  icon = OverlayImage.fromBitmap(resizeBitmap)   // 마커 아이콘 설정
-                                }
+                            runBlocking {
+                              Glide.with(binding.root).asBitmap().load(it.userProfileImg).into(
+                                object : CustomTarget<Bitmap>() {
+                                  override fun onResourceReady(
+                                    resource: Bitmap,
+                                    transition: Transition<in Bitmap>?
+                                  ) {
+                                    // 이미지 로드 완료 후 마커 설정
+                                    val resizeBitmap =
+                                      Bitmap.createScaledBitmap(resource, 60, 60, true)
+                                    icon = OverlayImage.fromBitmap(resizeBitmap)   // 마커 아이콘 설정
+                                  }
 
-                                override fun onLoadCleared(placeholder: Drawable?) {}
-                              }
-                            )
+                                  override fun onLoadCleared(placeholder: Drawable?) {}
+                                }
+                              )
+                            }
                             map = naverMap
                             if (it.userId == activityViewModel.user.userId && hikingRecordingTabViewModel.isTracking.value!!) {
                               naverMap.moveCamera(

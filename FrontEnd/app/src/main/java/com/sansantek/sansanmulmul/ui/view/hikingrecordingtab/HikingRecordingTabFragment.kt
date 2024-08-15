@@ -428,6 +428,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
    */
   private fun registerObserving() {
     Log.d(TAG, "registerObserving: register observing 시작")
+    observeHikingHistory()
+
     observeOnGoingCrewId()
 
     observeHikingStatus()
@@ -444,7 +446,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
 
     observeTracking()
 
-    observeHikingHistory()
   }
 
   /**
@@ -670,6 +671,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
               }
             }
           }
+          Log.d(TAG, "observeHikingStatus: history $history")
           if (history != null) {
             hikingRecordingTabViewModel.setHikingHistory(history)
             activityViewModel.token?.let { token ->
@@ -952,11 +954,6 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         hikingRecordingTabViewModel.setIsTracking(false)
       }
     }
-
-    hikingRecordingTabViewModel.onGoingCrewId.value?.let {
-      groupDetailViewModel.fetchCrewMountainDetail(it)
-    }
-
   }
 
 

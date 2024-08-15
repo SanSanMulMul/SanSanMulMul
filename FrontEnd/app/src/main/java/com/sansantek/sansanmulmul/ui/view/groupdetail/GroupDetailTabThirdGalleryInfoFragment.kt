@@ -61,8 +61,9 @@ class GroupDetailTabThirdGalleryInfoFragment(private val crew: Crew) :
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             if (isAllPermissionGranted(it)) {
                 openGallery()
-            } else
+            } else{
                 Log.d(TAG, "deny")
+                }
         }
 
     private fun isAllPermissionGranted(result: Map<String, Boolean>): Boolean {

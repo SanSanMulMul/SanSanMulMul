@@ -11,6 +11,7 @@ import com.sansantek.sansanmulmul.databinding.ListGroupDetailAlarmBinding
 import com.sansantek.sansanmulmul.ui.util.Util.extractHikingCourse
 import com.sansantek.sansanmulmul.ui.util.Util.extractHikingSchedule
 import com.sansantek.sansanmulmul.ui.util.Util.extractJoinRequests
+import com.sansantek.sansanmulmul.ui.util.Util.extractLeaderChange
 
 private const val TAG = "GroupDetailAlarmListAda 싸피"
 class GroupDetailAlarmListAdapter():
@@ -41,6 +42,10 @@ class GroupDetailAlarmListAdapter():
             else if(extractHikingSchedule(binding.root.context, binding.tvAlarmContent.text.toString()) != null){
                 Log.d(TAG, "bindInfo: 하이킹 계획 변경 실행")
                 extractHikingSchedule(binding.root.context, binding.tvAlarmContent.text.toString())
+            }
+            else if(extractLeaderChange(binding.root.context, binding.tvAlarmContent.text.toString()) != null){
+                Log.d(TAG, "bindInfo: 방장 변경 실행")
+                extractLeaderChange(binding.root.context, binding.tvAlarmContent.text.toString())
             }
             else {
                 Log.d(TAG, "bindInfo: 하이킹 코스 변경 실행")

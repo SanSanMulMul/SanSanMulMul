@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,9 +28,11 @@ import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.UiSettings
 import com.naver.maps.map.overlay.PolylineOverlay
 import com.sansantek.sansanmulmul.R
+import com.sansantek.sansanmulmul.data.local.entity.LocationHistory
 import com.sansantek.sansanmulmul.data.model.GroupUser
 import com.sansantek.sansanmulmul.data.model.MountainHistory
 import com.sansantek.sansanmulmul.data.model.Track
+import com.sansantek.sansanmulmul.data.repository.LocationHistoryRepository
 import com.sansantek.sansanmulmul.databinding.DialogMyPageHistoryBinding
 import com.sansantek.sansanmulmul.ui.adapter.MyPageHistoryMemberListAdapter
 import com.sansantek.sansanmulmul.ui.adapter.itemdecoration.SpaceItemDecoration
@@ -43,6 +46,7 @@ import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime.parse
 import java.time.format.DateTimeFormatter
 
+private const val TAG = "ShowMyPageHistoryDialog_싸피"
 class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : DialogFragment(), OnMapReadyCallback {
     // 뷰 바인딩 정의
     private var _binding: DialogMyPageHistoryBinding? = null
@@ -54,7 +58,9 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
     private val downCoursePolylines: MutableList<PolylineOverlay> = mutableListOf() // 현재 그려진 polyline들
     private var upCourseList: List<Track> = mutableListOf()
     private var downCourseList: List<Track> = mutableListOf()
-
+    private val locationHistoryRepository by lazy {
+        LocationHistoryRepository.get()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -160,15 +166,69 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
             isTiltGesturesEnabled =false
         }
         lifecycleScope.launch {
+            val up = locationHistoryRepository.getLocationHistory(mountainHistory.crewId, "상행")
+            val down = locationHistoryRepository.getLocationHistory(mountainHistory.crewId, "하행")
+            Log.d(TAG, "onMapReady: 상행 리스트 $up")
+            Log.d(TAG, "onMapReady: 하행 리스트 $down")
             launch {
-                drawUpcoursePolyLineOnMap(upCourseList, resources.getColor(R.color.chip_course_difficulty_easy))
+                up?.let {
+                    drawUpPolyLineOnMap(it, resources.getColor(R.color.chip_course_difficulty_easy))
+                    //drawUpcoursePolyLineOnMap(upCourseList, resources.getColor(R.color.chip_course_difficulty_easy))
+                }
             }
             launch {
-                drawDowncoursePolyLineOnMap(downCourseList, resources.getColor(R.color.chip_course_difficulty_medium))
+                down?.let {
+                    drawDownPolyLineOnMap(it, resources.getColor(R.color.chip_course_difficulty_medium))
+                    //drawDowncoursePolyLineOnMap(downCourseList, resources.getColor(R.color.chip_course_difficulty_medium))
+                }
             }
         }
         // 추가적으로 다른 설정을 할 수 있습니다.
 
+    }
+
+    private fun drawUpPolyLineOnMap(courses: List<LocationHistory>, id:Int) {
+        upCoursePolylines.forEach { it.map = null }
+        upCoursePolylines.clear()
+        val boundsBuilder = LatLngBounds.Builder()
+
+        if (courses.isEmpty()) return
+        val path = courses.map { track ->
+            LatLng(track.latitude, track.longitude)
+
+        }
+        val polyline = PolylineOverlay().apply {
+            coords = path
+            color = id
+            width = 20
+        }
+        polyline.map = naverMap
+        upCoursePolylines.add(polyline)
+        path.forEach { latLng -> boundsBuilder.include(latLng) }
+        val latLngBounds = boundsBuilder.build()
+        naverMap.moveCamera(CameraUpdate.fitBounds(latLngBounds, 100))
+    }
+
+    private fun drawDownPolyLineOnMap(courses: List<LocationHistory>, id:Int) {
+        downCoursePolylines.forEach { it.map = null }
+        downCoursePolylines.clear()
+        val boundsBuilder = LatLngBounds.Builder()
+
+        if (courses.isEmpty()) return
+        val path = courses.map { track ->
+            LatLng(track.latitude, track.longitude)
+
+        }
+        val polyline = PolylineOverlay().apply {
+            coords = path
+            color = id
+            width = 20
+        }
+        polyline.map = naverMap
+        downCoursePolylines.add(polyline)
+        path.forEach { latLng -> boundsBuilder.include(latLng) }
+        val latLngBounds = boundsBuilder.build()
+        naverMap.moveCamera(CameraUpdate.fitBounds(latLngBounds, 100))
     }
 
     private fun drawUpcoursePolyLineOnMap(courses: List<Track>, id:Int) {

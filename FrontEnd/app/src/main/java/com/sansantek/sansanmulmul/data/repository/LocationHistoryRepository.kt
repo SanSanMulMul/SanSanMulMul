@@ -14,8 +14,8 @@ class LocationHistoryRepository private constructor(context: Context) {
 
     private val locationHistoryDao = database.locationHistoryDao()
 
-    suspend fun getLocationHistory(crewId: Int): List<LocationHistory>? {
-        return locationHistoryDao.getRecordHistory(crewId)
+    suspend fun getLocationHistory(crewId: Int, status: String): List<LocationHistory>? {
+        return locationHistoryDao.getRecordHistory(crewId, status)
     }
 
     suspend fun insertLocationHistory(locationHistory: LocationHistory){

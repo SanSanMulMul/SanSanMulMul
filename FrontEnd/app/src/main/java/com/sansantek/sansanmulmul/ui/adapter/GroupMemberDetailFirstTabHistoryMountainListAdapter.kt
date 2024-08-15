@@ -37,9 +37,6 @@ class GroupMemberDetailFirstTabHistoryMountainListAdapter :
             }
             binding.tvMountainTitle.text = item.mountainName
             binding.tvHistoryDate.text = item.recordStartTime
-            binding.root.setOnClickListener {
-                itemClickListener.onHistoryClick(position)
-            }
         }
     }
 
@@ -55,20 +52,5 @@ class GroupMemberDetailFirstTabHistoryMountainListAdapter :
 
     override fun onBindViewHolder(holder: GroupMemberHistoryMountainListHolder, position: Int) {
         holder.bindInfo(position)
-    }
-
-    fun formatDate(date: Date): String {
-        val dateFormat = SimpleDateFormat("YYYY.MM.dd")
-        return dateFormat.format(date)
-    }
-
-    interface ItemClickListener {
-        fun onHistoryClick(position: Int)
-    }
-
-    private lateinit var itemClickListener: ItemClickListener
-
-    fun setItemClickListener(itemClickListener: ItemClickListener) {
-        this.itemClickListener = itemClickListener
     }
 }

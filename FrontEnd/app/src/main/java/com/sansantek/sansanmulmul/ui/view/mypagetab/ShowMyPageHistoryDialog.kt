@@ -197,14 +197,18 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
             LatLng(track.latitude, track.longitude)
 
         }
-        val polyline = PolylineOverlay().apply {
-            coords = path
-            color = id
-            width = 20
+        if(path.size >= 2){
+            val polyline = PolylineOverlay().apply {
+                coords = path
+                color = id
+                width = 20
+            }
+            polyline.map = naverMap
+            upCoursePolylines.add(polyline)
+            path.forEach { latLng -> boundsBuilder.include(latLng) }
+        }else{
+            drawUpcoursePolyLineOnMap(upCourseList, resources.getColor(R.color.chip_course_difficulty_easy))
         }
-        polyline.map = naverMap
-        upCoursePolylines.add(polyline)
-        path.forEach { latLng -> boundsBuilder.include(latLng) }
     }
 
     private fun drawDownPolyLineOnMap(courses: List<LocationHistory>, id:Int) {
@@ -216,22 +220,25 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
             LatLng(track.latitude, track.longitude)
 
         }
-        val polyline = PolylineOverlay().apply {
-            coords = path
-            color = id
-            width = 20
+        if(path.size >= 2){
+            val polyline = PolylineOverlay().apply {
+                coords = path
+                color = id
+                width = 20
+            }
+            polyline.map = naverMap
+            downCoursePolylines.add(polyline)
+            path.forEach { latLng -> boundsBuilder.include(latLng) }
+            val latLngBounds = boundsBuilder.build()
+            naverMap.moveCamera(CameraUpdate.fitBounds(latLngBounds, 100))
+        }else{
+            drawDowncoursePolyLineOnMap(downCourseList, resources.getColor(R.color.chip_course_difficulty_medium))
         }
-        polyline.map = naverMap
-        downCoursePolylines.add(polyline)
-        path.forEach { latLng -> boundsBuilder.include(latLng) }
-        val latLngBounds = boundsBuilder.build()
-        naverMap.moveCamera(CameraUpdate.fitBounds(latLngBounds, 100))
     }
 
     private fun drawUpcoursePolyLineOnMap(courses: List<Track>, id:Int) {
         upCoursePolylines.forEach { it.map = null }
         upCoursePolylines.clear()
-        val boundsBuilder = LatLngBounds.Builder()
 
         if (courses.isEmpty()) return
         courses.forEach { track ->
@@ -251,7 +258,6 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
     private fun drawDowncoursePolyLineOnMap(courses: List<Track>, id:Int) {
         downCoursePolylines.forEach { it.map = null }
         downCoursePolylines.clear()
-        val boundsBuilder = LatLngBounds.Builder()
 
         if (courses.isEmpty()) return
         courses.forEach { track ->

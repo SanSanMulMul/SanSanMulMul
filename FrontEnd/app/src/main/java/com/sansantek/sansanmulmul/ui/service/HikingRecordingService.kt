@@ -250,6 +250,14 @@ class HikingRecordingService : Service(), SensorEventListener {
         }
     }
 
+    fun stopLocationUpdates() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            fusedLocationClient?.removeLocationUpdates(locationCallback)
+        } else {
+            locationManager?.removeUpdates(locationListener)
+        }
+    }
+
     override fun onSensorChanged(event: SensorEvent?) {
         Log.d(TAG, "onSensorChanged: 센서 이벤트 수신")
 
@@ -293,6 +301,7 @@ class HikingRecordingService : Service(), SensorEventListener {
         if(::sensorManager.isInitialized){
             sensorManager.unregisterListener(this)
         }
+        stopLocationUpdates()
         stopForeground(STOP_FOREGROUND_REMOVE)
         super.onDestroy()
     }

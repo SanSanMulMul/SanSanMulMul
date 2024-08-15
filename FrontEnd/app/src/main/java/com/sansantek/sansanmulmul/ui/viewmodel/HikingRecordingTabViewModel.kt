@@ -63,7 +63,7 @@ class HikingRecordingTabViewModel :
 
   private val _hikingHistory = MutableLiveData<HikingHistory?>()
   val hikingHistory: LiveData<HikingHistory?> get() = _hikingHistory
-  fun setHikingHistory(history: HikingHistory) {
+  fun setHikingHistory(history: HikingHistory?) {
     _hikingHistory.value = history
   }
 

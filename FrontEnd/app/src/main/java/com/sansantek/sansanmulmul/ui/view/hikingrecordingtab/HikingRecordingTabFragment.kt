@@ -71,6 +71,7 @@ import com.sansantek.sansanmulmul.ui.viewmodel.MountainPeakStoneViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -91,7 +92,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
   private val activityViewModel: MainActivityViewModel by activityViewModels()
   private var currentCallback: ActivityResultCallback<Map<String, Boolean>>? = null
   private val hikingRecordingTabViewModel: HikingRecordingTabViewModel by activityViewModels()
-  private val mountainPeakStoneViewModel: MountainPeakStoneViewModel by activityViewModels()
+  private val mountainPeakStoneViewModel: MountainPeakStoneViewModel by viewModels()
   private val groupDetailViewModel: GroupDetailViewModel by viewModels()
   private val chronometerViewModel: ChronometerViewModel by viewModels()
   private val polylines: MutableList<PolylineOverlay> = mutableListOf()
@@ -681,26 +682,31 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
               )
             }
           }
-          hikingRecordingTabViewModel.deleteOnGoingCrewId()
+          deleteSharedPreferences()
         }
       }
     }
   }
 
   private fun observeHikingHistory() {
-    hikingRecordingTabViewModel.hikingHistory.observe(viewLifecycleOwner) { history ->
-      resetChronometerTime()
-      hikingRecordingTabViewModel.setRecordingStatus(BANNED)
-      Log.d(TAG, "observeHikingHistory: history = $history")
-    }
+//    hikingRecordingTabViewModel.hikingHistory.observe(viewLifecycleOwner) { history ->
+//      resetChronometerTime()
+//      hikingRecordingTabViewModel.setRecordingStatus(BANNED)
+//      Log.d(TAG, "observeHikingHistory: history = $history")
+//    }
 
     hikingRecordingTabViewModel.isHikingHistoryAddSuccess.observe(viewLifecycleOwner) { isSucess ->
       if (isSucess == true) {
         Log.d(TAG, "observeHikingHistory: 등산기록 추가 성공")
       } else {
         Log.d(TAG, "observeHikingHistory: 등산기록 추가 실패")
-
       }
+      resetChronometerTime()
+      hikingRecordingTabViewModel.setRecordingStatus(BANNED)
+      hikingRecordingTabViewModel.setHikingHistory(null)
+      binding.tvBannedDescription.visibility = View.GONE
+      binding.tvBannedDescriptionTime.visibility = View.GONE
+      binding.fragmentHikingRecordingLayoutBanned.visibility = View.VISIBLE
     }
   }
 
@@ -711,8 +717,8 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
 
 
   private fun getCurrentTimeInIsoFormat(): String {
-    val currentTime = ZonedDateTime.now(ZoneOffset.UTC)
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
+    val currentTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     return currentTime.format(formatter)
   }
 
@@ -733,6 +739,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
       Log.d(TAG, "setInitialView: amILeader = $amILeader")
       val currentStatus = hikingRecordingTabViewModel.recordingStatus.value
       if (currentStatus == BEFORE_HIKING && !isLeaderDialogShown) {
+        Log.d(TAG, "observeAmILeader: ${hikingRecordingTabViewModel.isQRCompleted.value}")
         if (amILeader == true &&
           (hikingRecordingTabViewModel.isQRCompleted.value == null || hikingRecordingTabViewModel.isQRCompleted.value == false)
         ) {

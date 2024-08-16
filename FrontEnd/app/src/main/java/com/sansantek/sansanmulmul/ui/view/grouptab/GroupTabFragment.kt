@@ -284,43 +284,44 @@ class GroupTabFragment : BaseFragment<FragmentGroupTabBinding>(
 
     private fun returnFilteringList(crewList: List<Crew>): List<Crew> {
         var list = crewList
-        if (binding.ageSpinner.selectedItemPosition != 0) {
-            list = list.filter {
-                it.crewMinAge <= binding.ageSpinner.selectedItemPosition * 10 && it.crewMaxAge >= (binding.ageSpinner.selectedItemPosition + 1) * 10 - 1
-            }
-        }
-        if (binding.styleSpinner.selectedItemPosition != 0) {
-            list = list.filter {
-                it.crewStyles.contains(binding.styleSpinner.selectedItemPosition)
-            }
-        }
-        if (binding.genderSpinner.selectedItemPosition != 0) {
-            if (binding.genderSpinner.selectedItemPosition == 1) {
+        safeCall {
+            if (binding.ageSpinner.selectedItemPosition != 0) {
                 list = list.filter {
-                    it.crewGender == "M"
-                }
-            } else {
-                list = list.filter {
-                    it.crewGender == "F"
+                    it.crewMinAge <= binding.ageSpinner.selectedItemPosition * 10 && it.crewMaxAge >= (binding.ageSpinner.selectedItemPosition + 1) * 10 - 1
                 }
             }
-        }
-        if (!binding.searchInputText.text.isNullOrBlank()) {
-            when (binding.searchSpinner.selectedItemPosition) {
-                0 -> {
+            if (binding.styleSpinner.selectedItemPosition != 0) {
+                list = list.filter {
+                    it.crewStyles.contains(binding.styleSpinner.selectedItemPosition)
+                }
+            }
+            if (binding.genderSpinner.selectedItemPosition != 0) {
+                if (binding.genderSpinner.selectedItemPosition == 1) {
                     list = list.filter {
-                        it.crewName == binding.searchInputText.text.toString()
+                        it.crewGender == "M"
                     }
-                }
-
-                1 -> {
+                } else {
                     list = list.filter {
-                        it.mountainName == binding.searchInputText.text.toString()
+                        it.crewGender == "F"
                     }
                 }
             }
-        }
+            if (!binding.searchInputText.text.isNullOrBlank()) {
+                when (binding.searchSpinner.selectedItemPosition) {
+                    0 -> {
+                        list = list.filter {
+                            it.crewName == binding.searchInputText.text.toString()
+                        }
+                    }
 
+                    1 -> {
+                        list = list.filter {
+                            it.mountainName == binding.searchInputText.text.toString()
+                        }
+                    }
+                }
+            }
+        }
         return list
     }
 

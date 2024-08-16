@@ -3,11 +3,15 @@ package com.sansantek.sansanmulmul.mountain.service;
 
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.domain.spot.MountainSpot;
+import com.sansantek.sansanmulmul.mountain.dto.request.FindByGeoReq;
+import com.sansantek.sansanmulmul.mountain.dto.response.MountainResponse;
+import com.sansantek.sansanmulmul.mountain.dto.response.NewsResponse;
 import com.sansantek.sansanmulmul.mountain.repository.MountainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +26,14 @@ public class MountainService {
     public List<Mountain> getAllMountains(){
 
         return mountainRepository.findAll();
+    }
+
+    public List<Mountain> getAllMountainsByGeo(FindByGeoReq geoDTO) {
+        double latitude = geoDTO.getLatitude();
+        double longitude = geoDTO.getLongitude();
+        double radius = geoDTO.getRadius();
+
+        return mountainRepository.findByGeo(latitude, longitude, radius);
     }
 
     public Mountain getMountainDetail(int mountain_id){
@@ -68,5 +80,20 @@ public class MountainService {
     }
     public List<Mountain> getWinter() {
         return mountainRepository.findByMountainWeatherIn(Arrays.asList("WINTER", "ALL"));
+    }
+
+    public List<NewsResponse> getMountainName() {
+        List<NewsResponse> mountainNameList = new ArrayList<>();
+
+        for (Mountain mountain : mountainRepository.findAll())
+            mountainNameList.add(new NewsResponse(mountain.getMountainName(), mountain.getMountainImg()));
+
+        return mountainNameList;
+    }
+
+    public NewsResponse getMountainName(String mountainName) {
+        Mountain mountain = mountainRepository.findByMountainName(mountainName);
+
+        return new NewsResponse(mountain.getMountainName(), mountain.getMountainImg());
     }
 }

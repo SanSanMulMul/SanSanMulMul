@@ -15,11 +15,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -126,16 +128,16 @@ public class LoginController {
         return new ResponseEntity<>(resultMap, status);
     }
 
-    @PostMapping("/signup")
+    @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "회원가입", description = "회원가입 + JWT 토큰 발급")
-    public ResponseEntity<Map<String, Object>> signUp(@Valid @RequestBody SignUpUserRequest request) {
+    public ResponseEntity<Map<String, Object>> signUp(@RequestPart(value="SignUpUserRequest") SignUpUserRequest SignUpUserRequest, @RequestPart(value="image") MultipartFile image) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
         try {
             // 회원가입 진행
             String password = "";
-            User user = userService.signUp(request, password);
+            User user = userService.signUp(SignUpUserRequest, password, image);
             log.info("회원가입 성공");
             log.info("sign-up user : {}", user);
 
@@ -147,8 +149,11 @@ public class LoginController {
             badgeService.setBasicBadge(user.getUserId());
 
             // 등산 스타일 추가
-            for (int hikingStyleId : request.getUserStyles())
+            for (int hikingStyleId : SignUpUserRequest.getUserStyles())
                 userStyleService.addStyle(user.getUserId(), hikingStyleId);
+
+            // chk_badge 테이블 추가
+            badgeService.setChkBadge(user.getUserId());
 
             // JSON 으로 token 전달
             resultMap.put("userId", user.getUserId());
@@ -173,7 +178,7 @@ public class LoginController {
         } catch (Exception e) {
 
             log.error("회원 가입 실패: {}", e.getMessage());
-            log.info("sign-up user : {}", request);
+            log.info("sign-up user : {}", SignUpUserRequest);
             status = HttpStatus.BAD_REQUEST; // 400
 
         }
@@ -199,11 +204,13 @@ public class LoginController {
             resultMap.put("accessToken", jwtToken.getAccessToken());
             resultMap.put("refreshToken", jwtToken.getRefreshToken());
 
+            status = HttpStatus.OK; // 200
+
         } catch (Exception e) {
 
             log.error("회원 인증 실패: {}", e.getMessage());
             resultMap.put("error", "Invalid or expired token");
-            status = HttpStatus.UNAUTHORIZED;
+            status = HttpStatus.UNAUTHORIZED; // 401
 
         }
 

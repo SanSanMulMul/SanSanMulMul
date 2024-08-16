@@ -2,6 +2,8 @@ package com.sansantek.sansanmulmul.mountain.controller;
 
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.domain.spot.MountainSpot;
+import com.sansantek.sansanmulmul.mountain.dto.request.FindByGeoReq;
+import com.sansantek.sansanmulmul.mountain.dto.response.MountainResponse;
 import com.sansantek.sansanmulmul.mountain.service.MountainService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -176,6 +178,19 @@ public class MountainController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (Exception e) {
             log.error("산 조회 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // 내 중심위치 기반 주변 n KM 반경 내의 산 리스트 불러오기
+    @PostMapping
+    @Operation(summary = "위치 기반 n KM 반경 내의 산 리스트 조회")
+    public ResponseEntity<List<Mountain>> getAllMountainsByGeo(@RequestBody FindByGeoReq geoDTO) {
+        try {
+            List<Mountain> mountains = mountainService.getAllMountainsByGeo(geoDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(mountains);
+        } catch (Exception e) {
+            log.error("주변 산 조회 실패: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

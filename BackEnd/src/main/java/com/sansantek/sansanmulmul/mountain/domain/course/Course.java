@@ -2,10 +2,13 @@ package com.sansantek.sansanmulmul.mountain.domain.course;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "course")
@@ -33,12 +36,13 @@ public class Course {
     private int courseUptime;
 
     @Column(name = "course_downtime", nullable = false)
-    @Schema(description = "하생 소요시간",example = "12")
+    @Schema(description = "하행 소요시간",example = "12")
     private int courseDowntime;
 
     @Column(name = "course_level", nullable = false)
     @Schema(description = "코스 난이도", example = "EASY")
-    private String courseLevel;
+    @Enumerated(EnumType.STRING)
+    private Level courseLevel;
 
     @Column(name = "course_best_track_id")
     @Schema(description = "코스대표구간",example = "")
@@ -49,6 +53,12 @@ public class Course {
     @JoinColumn(name = "mountain_code", referencedColumnName = "mountain_code")
     @JsonIgnore
     private Mountain mountain;
+
+    // 그룹(crew)의 상행/하행 코스 설정
+//    @OneToMany(mappedBy = "upCourse")
+//    private List<Crew> upCrews;
+//    @OneToMany(mappedBy = "downCourse")
+//    private List<Crew> downCrews;
 
 
 }

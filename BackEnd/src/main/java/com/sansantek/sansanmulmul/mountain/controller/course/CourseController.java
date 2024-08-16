@@ -1,6 +1,7 @@
 package com.sansantek.sansanmulmul.mountain.controller.course;
 
 import com.sansantek.sansanmulmul.mountain.service.course.CourseService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ public class CourseController {
     private CourseService courseService;
 
     @GetMapping("/{mountainId}/course")
+    @Operation(summary = "산 코스 조회", description = "코스Id+코스갯수+코스이름")
     public ResponseEntity<Map<String, Object>> getCoursesByMountainId(@PathVariable int mountainId) {
         try {
             Map<String, Object> result = courseService.getCoursesByMountainId(mountainId);
@@ -27,6 +29,7 @@ public class CourseController {
         }
     }
     @GetMapping("/{mountainId}/course/{courseId}")
+    @Operation(summary = "산 코스 조회", description = "코스이름+코스난이도+코스길이+하행시간+상행시간+베스트구간+코스Id+트랙위도경도")
     public ResponseEntity<Map<String, Object>> getCourseDetail(@PathVariable int mountainId, @PathVariable Long courseId) {
         try {
             Map<String, Object> result = courseService.getCourseDetail(mountainId, courseId);

@@ -1,7 +1,11 @@
 package com.sansantek.sansanmulmul.crew.domain;
 
+import com.sansantek.sansanmulmul.crew.domain.crewalarm.CrewAlarm;
+import com.sansantek.sansanmulmul.crew.domain.crewgallery.CrewGallery;
 import com.sansantek.sansanmulmul.crew.domain.style.CrewHikingStyle;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
+import com.sansantek.sansanmulmul.mountain.domain.course.Course;
+import com.sansantek.sansanmulmul.record.domain.HikingRecord;
 import com.sansantek.sansanmulmul.user.domain.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -30,21 +34,28 @@ public class Crew {
     @Schema(description = "그룹 고유 번호", example = "1")
     private int crewId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @Schema(description = "방장 유저id", example = "1")
     private User leader;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mountain_id", nullable = false)
+    @ColumnDefault("14")
+    @Schema(description = "산 고유 번호", example = "14")
     private Mountain mountain;
 
-//    @ManyToOne
-//    @JoinColumn(name = "course_id", nullable = false)
-//    private Course ascentCourse;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "course_id", nullable = false)
-//    private Course descentCourse;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Schema(description = "상행 코스 번호", example = "47190010101")
+    @ColumnDefault("47190010101")
+    @JoinColumn(name = "crew_up_course_id", nullable = false)
+    private Course upCourse;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Schema(description = "하행 코스 번호", example = "47190010102")
+    @ColumnDefault("47190010102")
+    @JoinColumn(name = "crew_down_course_id", nullable = false)
+    private Course downCourse;
 
     @Column(name = "crew_name", nullable = false)
     @Schema(description = "그룹 이름", example = "한사랑 산악회")
@@ -88,7 +99,7 @@ public class Crew {
     @ColumnDefault("false")
     private boolean crewIsDone;
 
-    @Column(name = "crew_link", nullable = false)
+    @Column(name = "crew_link")
     @ColumnDefault("link is yet")
     @Schema(description = "그룹 카카오톡 공유 링크", example = "")
     private String crewLink;
@@ -97,7 +108,7 @@ public class Crew {
     @Schema(description = "그룹 생성 일시", example = "2024-08-01 23:59:59")
     private LocalDateTime crewCreatedAt;
 
-    @Column(name = "crew_modified_at", nullable = false)
+    @Column(name = "crew_modified_at")
     @Schema(description = "그룹 수정 일시", example = "2024-08-01 23:59:59")
     private LocalDateTime crewModifiedAt;
 
@@ -110,13 +121,47 @@ public class Crew {
     @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CrewHikingStyle> crewStyles = new ArrayList<>();
 
-    public Crew(String crewName, String crewDescription, int crewMaxMembers, CrewRestriction crewGender, int crewMinAge, int crewMaxAge, Mountain mountain) {
+    // 그룹 기록
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HikingRecord> records = new ArrayList<>();
+
+    // 그룹 갤러리 사진
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CrewGallery> pictures = new ArrayList<>();
+
+    // 그룹 알림들
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CrewAlarm> alarms = new ArrayList<>();
+
+    // 그룹 방장 변경
+    public void changeLeader(User newLeader) {
+        if (this.leader != null) {
+            this.leader.getLeadingCrews().remove(this);
+        }
+        this.leader = newLeader;
+        if (newLeader != null) {
+            newLeader.getLeadingCrews().add(this);
+        }
+    }
+
+    // 그룹 생성 시 사용
+    public Crew(User leader, String crewName, String crewDescription, int crewMaxMembers, CrewRestriction crewGender, int crewMinAge, int crewMaxAge,
+                LocalDateTime crewStartDate, LocalDateTime crewEndDate, Mountain mountain, Course upCourse, Course downCourse) {
+        this.leader = leader;
         this.crewName = crewName;
         this.crewDescription = crewDescription;
         this.crewMaxMembers = crewMaxMembers;
         this.crewGender = crewGender;
         this.crewMinAge = crewMinAge;
         this.crewMaxAge = crewMaxAge;
+        this.crewStartDate = crewStartDate;
+        this.crewEndDate = crewEndDate;
         this.mountain = mountain;
+        this.upCourse = upCourse;
+        this.downCourse = downCourse;
+        //날짜
+        this.crewCreatedAt = LocalDateTime.now();
+        this.crewModifiedAt = LocalDateTime.now();
     }
+
 }

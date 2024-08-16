@@ -2,12 +2,14 @@ package com.sansantek.sansanmulmul.mountain.controller;
 
 import com.sansantek.sansanmulmul.exception.auth.InvalidTokenException;
 
+import com.sansantek.sansanmulmul.exception.auth.UserNotFoundException;
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
 import com.sansantek.sansanmulmul.mountain.service.UserMountainService;
 import com.sansantek.sansanmulmul.user.service.UserService;
 import com.sansantek.sansanmulmul.config.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -49,61 +51,52 @@ public class UserMountainController {
 
     @PostMapping("/{mountainId}")
     @Operation(summary = "회원 즐겨찾기 추가", description = "액세스 토큰을 사용해 회원 즐겨찾기 추가")
-    public ResponseEntity<Map<String, Object>> addLikedMountain
-            (Authentication authentication,
-             @PathVariable("mountainId") int mountainId) {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.ACCEPTED;
-
-
-
+    public ResponseEntity<String> addLikedMountain(
+            Authentication authentication,
+            @PathVariable("mountainId") int mountainId) {
         try {
             String userProviderId = authentication.getName();
-
             userMountainService.addLikedMountain(userProviderId, mountainId);
-            resultMap.put("message", "산 즐겨찾기 성공");
-            status = HttpStatus.OK;
-
+            return new ResponseEntity<>("산 즐겨찾기 성공", HttpStatus.OK);
         } catch (InvalidTokenException e) {
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
-            resultMap.put("error", "Invalid or expired token");
-            status = HttpStatus.UNAUTHORIZED;
+            return new ResponseEntity<>("Invalid or expired token", HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             log.error("회원 즐겨찾기 추가 실패: {}", e.getMessage());
-            resultMap.put("error", "An unexpected error occurred");
-            status = HttpStatus.BAD_REQUEST;
+            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<>(resultMap, status);
     }
 
     @DeleteMapping("/{mountainId}")
     @Operation(summary = "회원 즐겨찾기 삭제", description = "액세스 토큰을 사용해 회원 즐겨찾기 삭제")
-    public ResponseEntity<Map<String, Object>> removeLikedMountain
-            (Authentication authentication,
-             @PathVariable("mountainId") int mountainId) {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.ACCEPTED;
-
-
-
+    public ResponseEntity<String> removeLikedMountain(
+            Authentication authentication,
+            @PathVariable("mountainId") int mountainId) {
         try {
-            
             String userProviderId = authentication.getName();
             userMountainService.removeLikedMountain(userProviderId, mountainId);
-            resultMap.put("message", "즐겨찾기 제거");
-            status = HttpStatus.OK;
-
+            return new ResponseEntity<>("즐겨찾기 제거", HttpStatus.OK);
         } catch (InvalidTokenException e) {
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());
-            resultMap.put("error", "Invalid or expired token");
-            status = HttpStatus.UNAUTHORIZED;
+            return new ResponseEntity<>("Invalid or expired token", HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             log.error("회원 즐겨찾기 삭제 실패: {}", e.getMessage());
-            resultMap.put("error", "An unexpected error occurred");
-            status = HttpStatus.BAD_REQUEST;
+            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<>(resultMap, status);
     }
+    @GetMapping("/like/{userId}")
+    @Operation(summary = "회원 즐겨찾기 조회", description = "userId를 사용해 해당 회원의 즐겨찾기한 산 목록을 조회")
+    public ResponseEntity<List<Mountain>> getUserLikedMountainsById(@PathVariable int userId) {
+        try {
+            List<Mountain> likedMountains = userMountainService.getLikedMountainsByUserId(userId);
+            return ResponseEntity.ok(likedMountains);
+        } catch (EntityNotFoundException e) {
+            log.error("유저를 찾을 수 없습니다: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+        } catch (Exception e) {
+            log.error("회원 즐겨찾기 조회 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+        }
+    }
+
 }

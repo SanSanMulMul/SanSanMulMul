@@ -171,7 +171,7 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
             val down = locationHistoryRepository.getLocationHistory(mountainHistory.crewId, "하행")
             Log.d(TAG, "onMapReady: 상행 리스트 $up")
             Log.d(TAG, "onMapReady: 하행 리스트 $down")
-            if(up.isNullOrEmpty() || down.isNullOrEmpty()){
+            if(up.isNullOrEmpty() || down.isNullOrEmpty()|| up.size < 2 || down.size < 2 ){
                 launch {
                     drawUpcoursePolyLineOnMap(upCourseList, resources.getColor(R.color.chip_course_difficulty_easy))
                 }

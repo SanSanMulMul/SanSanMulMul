@@ -10,4 +10,5 @@ import java.util.Optional;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> findByMountain_MountainCode(int mountainCode);
+    Course findByCourseId(Long courseId);
 }

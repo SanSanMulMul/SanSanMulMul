@@ -1,17 +1,23 @@
 package com.sansantek.sansanmulmul.mountain.controller;
 
-import com.sansantek.sansanmulmul.mountain.dto.response.WeatherResponseDto;
+
 import com.sansantek.sansanmulmul.mountain.domain.Mountain;
+import com.sansantek.sansanmulmul.mountain.dto.response.WeatherResponseDto;
 import com.sansantek.sansanmulmul.mountain.service.MountainService;
-import com.sansantek.sansanmulmul.util.WeatherService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @RestController
@@ -22,7 +28,7 @@ public class WeatherController {
     private MountainService mountainService;
 
     @Autowired
-    private WeatherService weatherService;
+    private com.sansantek.sansanmulmul.util.WeatherService weatherService;
 
     @GetMapping("/weather/{mountain_id}")
     @Operation(summary = "산 날씨 조회", description = "산의 위도와 경도를 사용해 일주일 날씨를 조회")

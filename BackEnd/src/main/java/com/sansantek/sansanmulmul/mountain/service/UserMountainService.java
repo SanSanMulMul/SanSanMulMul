@@ -60,5 +60,19 @@ public class UserMountainService {
 
         return likedMountains;
     }
+    //userId를 통한 즐겨찾기 조회
+    public List<Mountain> getLikedMountainsByUserId(int userId) {
+        // userId를 사용하여 User 엔티티를 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        log.debug("User found: {}", user);
+
+        // 해당 유저가 즐겨찾기한 산 목록을 조회
+        List<Mountain> likedMountains = userMountainRepository.findMountainsByUser(user);
+        log.debug("Liked Mountains: {}", likedMountains);
+
+        return likedMountains;
+    }
 
 }

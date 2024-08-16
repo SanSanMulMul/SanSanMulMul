@@ -1,0 +1,48 @@
+package com.sansantek.sansanmulmul.crew.domain.crewuser;
+
+
+import com.sansantek.sansanmulmul.crew.domain.Crew;
+import com.sansantek.sansanmulmul.crew.domain.crewrequest.CrewRequestStatus;
+import com.sansantek.sansanmulmul.user.domain.User;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+
+@Entity
+@Table(name = "crew_user")
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
+@IdClass(CrewUserId.class)
+public class CrewUser {
+
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id" ,nullable = false)
+    private User user;
+
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "crew_id" ,nullable = false)
+    private Crew crew;
+
+    @Column(name = "is_leader",nullable = false)
+    @Schema(description = "사용자가 이 그룹의 방장인지 여부", example = "F")
+    private boolean isLeader;
+
+    @Column(name = "user_lat", nullable = true)
+    @Schema(description = "사용자 위도", example = "123.123456")
+    private Double userLat;
+
+    @Column(name = "user_lon", nullable = true)
+    @Schema(description = "사용자 경도", example = "123.123456")
+    private Double userLon;
+
+    public CrewUser(double userLat, double userLon) {
+        this.userLat = userLat;
+        this.userLon = userLon;
+    }
+}

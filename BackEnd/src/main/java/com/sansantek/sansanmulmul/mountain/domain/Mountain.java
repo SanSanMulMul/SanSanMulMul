@@ -2,6 +2,7 @@ package com.sansantek.sansanmulmul.mountain.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sansantek.sansanmulmul.crew.domain.Crew;
 import com.sansantek.sansanmulmul.mountain.domain.spot.MountainSpot;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -61,5 +62,9 @@ public class Mountain {
     @OneToMany(mappedBy = "mountain")
     @JsonManagedReference
     private List<MountainSpot> mountainSpots;
+
+    // 그룹이 선택한 산
+//    @OneToMany(mappedBy = "mountain")
+//    private List<Crew> crews;
 
 }

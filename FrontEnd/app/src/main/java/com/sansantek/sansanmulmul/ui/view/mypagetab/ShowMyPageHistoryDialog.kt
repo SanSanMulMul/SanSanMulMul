@@ -212,6 +212,7 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
                 coords = path
                 color = id
                 width = 20
+                capType = PolylineOverlay.LineCap.Round
             }
             polyline.map = naverMap
             upCoursePolylines.add(polyline)
@@ -235,6 +236,7 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
                 coords = path
                 color = id
                 width = 20
+                capType = PolylineOverlay.LineCap.Round
             }
             polyline.map = naverMap
             downCoursePolylines.add(polyline)
@@ -258,6 +260,7 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
                 coords = path
                 color = id
                 width = 20
+                capType = PolylineOverlay.LineCap.Round
             }
             polyline.map = naverMap
             upCoursePolylines.add(polyline)
@@ -277,6 +280,7 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
                 coords = path
                 color = id
                 width = 20
+                capType = PolylineOverlay.LineCap.Round
             }
             polyline.map = naverMap
             downCoursePolylines.add(polyline)

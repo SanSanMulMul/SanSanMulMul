@@ -231,6 +231,7 @@ class GroupDetailTabSecondHikingInfoFragment(private val crew: Crew) :
         coords = path
         color = getPolyLineColor(difficulty)
         width = 20
+        capType = PolylineOverlay.LineCap.Round
         zIndex = zIterator++
       }
       polyline.map = naverMap

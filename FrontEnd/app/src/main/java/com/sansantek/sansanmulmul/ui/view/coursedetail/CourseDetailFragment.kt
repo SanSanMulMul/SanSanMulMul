@@ -139,6 +139,7 @@ class CourseDetailFragment : BaseFragment<FragmentCourseDetailBinding>(
             map = null
             coords = trackPaths
             color = getPolyLineColor(course.courseLevel)
+            capType = PolylineOverlay.LineCap.Round
             width = 20
             zIndex = 1
         }

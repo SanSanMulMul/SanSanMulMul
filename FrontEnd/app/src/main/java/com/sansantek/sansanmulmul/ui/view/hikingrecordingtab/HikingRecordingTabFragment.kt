@@ -482,6 +482,7 @@ class HikingRecordingTabFragment : BaseFragment<FragmentHikingRecordingTabBindin
         coords = path
         color = upColor ?: resources.getColor(R.color.red)
         width = 20
+        capType = PolylineOverlay.LineCap.Round
         zIndex = zIterator++
       }
       polyline.map = naverMap

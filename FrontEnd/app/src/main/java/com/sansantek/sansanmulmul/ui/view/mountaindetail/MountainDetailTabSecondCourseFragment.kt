@@ -132,6 +132,7 @@ class MountainDetailTabSecondCourseFragment :
                     coords = path
                     color = getPolyLineColor(course.courseLevel)
                     width = 20
+                    capType = PolylineOverlay.LineCap.Round
                     zIndex = zIterator++
                 }
                 polyline.map = naverMap

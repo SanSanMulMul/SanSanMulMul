@@ -160,7 +160,7 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
         val uiSettings: UiSettings = naverMap.uiSettings
         uiSettings.isZoomControlEnabled = false
         this.naverMap = naverMap
-        naverMap.uiSettings.apply {
+        this.naverMap.uiSettings.apply {
             isZoomControlEnabled = false
             isScrollGesturesEnabled = false
             isRotateGesturesEnabled = false
@@ -171,16 +171,26 @@ class ShowMyPageHistoryDialog(private val mountainHistory: MountainHistory) : Di
             val down = locationHistoryRepository.getLocationHistory(mountainHistory.crewId, "하행")
             Log.d(TAG, "onMapReady: 상행 리스트 $up")
             Log.d(TAG, "onMapReady: 하행 리스트 $down")
-            launch {
-                up?.let {
-                    drawUpPolyLineOnMap(it, resources.getColor(R.color.chip_course_difficulty_easy))
-                    //drawUpcoursePolyLineOnMap(upCourseList, resources.getColor(R.color.chip_course_difficulty_easy))
+            if(up.isNullOrEmpty() || down.isNullOrEmpty()){
+                launch {
+                    drawUpcoursePolyLineOnMap(upCourseList, resources.getColor(R.color.chip_course_difficulty_easy))
+                }
+                launch {
+                    drawDowncoursePolyLineOnMap(downCourseList, resources.getColor(R.color.chip_course_difficulty_medium))
                 }
             }
-            launch {
-                down?.let {
-                    drawDownPolyLineOnMap(it, resources.getColor(R.color.chip_course_difficulty_medium))
-                    //drawDowncoursePolyLineOnMap(downCourseList, resources.getColor(R.color.chip_course_difficulty_medium))
+            else{
+                launch {
+                    up?.let {
+                        drawUpPolyLineOnMap(it, resources.getColor(R.color.chip_course_difficulty_easy))
+                        //drawUpcoursePolyLineOnMap(upCourseList, resources.getColor(R.color.chip_course_difficulty_easy))
+                    }
+                }
+                launch {
+                    down?.let {
+                        drawDownPolyLineOnMap(it, resources.getColor(R.color.chip_course_difficulty_medium))
+                        //drawDowncoursePolyLineOnMap(downCourseList, resources.getColor(R.color.chip_course_difficulty_medium))
+                    }
                 }
             }
         }

@@ -155,6 +155,7 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
                                 MultipartBody.Part.createFormData("image", file.name, requestBody)
                             }
                             Log.d(TAG, "onViewCreated: 여기도 실행")
+                            Log.d(TAG, "onViewCreated: ${makeHeaderByAccessToken(it.accessToken)}, ${styleList}")
                             userService.updateUserProfile(
                                 makeHeaderByAccessToken(it.accessToken),
                                 body,
@@ -164,6 +165,7 @@ class MyPageEditTabFragment : BaseFragment<FragmentMyPageEditBinding>(
                                     styleList
                                 )
                             )
+                            
                         }
 
                         lifecycleScope.launch {

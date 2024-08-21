@@ -74,7 +74,7 @@
 
   
 
-+ ## :pouting_man: :pouting_woman: Member
++ ## :man_technologist_tone1: :woman_technologist_tone2: Member <!-- 깃허브에선느 :pouting_man: :pouting_woman:-->
     |윤가희|노나현|박태우|신영민|정민선|곽대건|
     |:---:|:---:|:---:|:---:|:---:|:---:|
     |**Team Leader / BE**|**BE / CI,CD**|**BE**|**FE**|**FE / UI,UX**|**FE**|

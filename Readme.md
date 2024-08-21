@@ -1,12 +1,12 @@
-# :office:Team Sansantek
+# :office: Team Sansantek
 
-+ ## :mountain:Project SanSanMulMul
++ ## :mountain: Project SanSanMulMul
   바쁘거나, 아는 사람이 별로 없거나, 등산을 좋아하는 사람들이 없는 등의 이유로 같이 등산을 할 사람을 구하기가 어려운 사람들을 위한 어플 산산물물!
 
 
 
 
-+ ## :sparkles:Service Example
++ ## :sparkles: Service Example
   + 1️⃣ 홈 및 산 뉴스
     + 홈에서 날짜에 따른 계절별 산 추천 (봄이면 봄 여름 가을 겨울, 여름이면 여름 가을 겨울 봄 등의 순으로)
     + 상단 뉴스 탭에서 뉴스를 누를 시 해당 뉴스 링크로 이동
@@ -82,10 +82,10 @@
 
 <br>
 
-+ ## :date:Milestone
++ ## :date: Milestone
   ![image](/uploads/702902745bbf0045b218720e976c716e/image.png)
-+ ## :open_book:Stack
-  + ### :computer:Back Tech Stack
++ ## :open_book: Stack
+  + ### :computer: Back Tech Stack
     ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
     ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
     ![MYSQL](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)
@@ -94,7 +94,7 @@
     ![Stomp](https://img.shields.io/badge/stomp-EDBBAA?style=for-the-badge&logo=stomp&logoColor=white)
     ![TensorFlow](https://img.shields.io/badge/TensorFlow-F0B93A?style=for-the-badge&logo=tensorflow&logoColor=white)
 
-  + ### :iphone:Android Tech Stack
+  + ### :iphone: Android Tech Stack
     ![AndroidX](https://img.shields.io/badge/AndroidX-3BD580?style=for-the-badge&logo=androidx&logoColor=white)
     ![Kotlin](https://img.shields.io/badge/Kotlin-0095D5?&style=for-the-badge&logo=kotlin&logoColor=white)
     ![Naver_Map](https://img.shields.io/badge/naver_map-03C75A?style=for-the-badge&logo=naver&logoColor=white)
@@ -109,30 +109,30 @@
     ![TensorFlow](https://img.shields.io/badge/TensorFlow-F0B93A?style=for-the-badge&logo=tensorflow&logoColor=white)
     ![Glide](https://img.shields.io/badge/glide-1FB59E?style=for-the-badge&logo=&logoColor=white)
     
-  + ### :art:UI/UX
+  + ### :art: UI/UX
     ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
     
 
     
-  + ### :desktop_computer:CI/CD
+  + ### :desktop_computer: CI/CD
      ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
     ![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)
-  + ### :dart:Platform
+  + ### :dart: Platform
     ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
-  + ### :keyboard:IDE
+  + ### :keyboard: IDE
     ![Android Studio](https://img.shields.io/badge/Android_Studio-3DDC84?style=for-the-badge&logo=android-studio&logoColor=white)
     ![Intellij](https://img.shields.io/badge/IntelliJ_IDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white)
 
-  + ### :black_nib:Office
+  + ### :black_nib: Office
     ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white)
 
-  + ### :loudspeaker:Communication
+  + ### :loudspeaker: Communication
       ![Mattermost](https://img.shields.io/badge/Mattermost-0058CC?style=for-the-badge&logo=Mattermost&logoColor=white)
       ![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)
 
     
-+ ## :open_file_folder:Git Branch Strategy
-  + ### :bookmark_tabs:종류
++ ## :open_file_folder: Git Branch Strategy
+  + ### :bookmark_tabs: 종류
     + #### Master
       검증 완료 및 최종 배포 브랜치
     + #### Develop
@@ -151,11 +151,11 @@
 
         ex:) Front의 A라는 기능의 Branch면 FE/A branch
     
-  + ### :receipt:Flow
+  + ### :receipt: Flow
     **Other** => **Front/Back** => **Develop** => **Master**
     
     
-+ ## :label:External Link
++ ## :label: External Link
     + <img src="/img/Notion.png"  width="30" height="30"/>[Team Notion](https://www.notion.so/D111-f5fd36452f8d45da86aada62fde4b305)
     
     + <img src="/img/Figma.png"  width="30" height="30"/>[WireFrame](https://www.figma.com/design/p9QVBiLHZrebHPqpGt4sly/Wireframe?t=JOOE26FbI7fbxCuL-0)

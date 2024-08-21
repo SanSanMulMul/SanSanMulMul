@@ -74,7 +74,7 @@
 
   
 
-+ ## :man_technologist_tone1: :woman_technologist_tone2: Member <!-- 깃허브에선느 :pouting_man: :pouting_woman:-->
++ ## 👩‍💻👨‍💻 Member <!-- 깃허브에선느 :pouting_man: :pouting_woman:-->
     |윤가희|노나현|박태우|신영민|정민선|곽대건|
     |:---:|:---:|:---:|:---:|:---:|:---:|
     |**Team Leader / BE**|**BE / CI,CD**|**BE**|**FE**|**FE / UI,UX**|**FE**|
@@ -151,7 +151,7 @@
 
         ex:) Front의 A라는 기능의 Branch면 FE/A branch
     
-  + ### :page_with_curl: Flow <!--깃허브에서는 :receipt: 아이콘으로-->
+  + ### 🧾 Flow <!--깃허브에서는 :receipt: 아이콘으로-->
     **Other** => **Front/Back** => **Develop** => **Master**
     
     

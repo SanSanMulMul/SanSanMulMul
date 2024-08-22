@@ -12,10 +12,10 @@
 
 등산, 트레킹 국민 의식 실태조사 보고서에 따르면 많은 비등산인의 등산하지 않는 이유로
 
-1. 같이 살 사람이 없어서
-2. 시간이 없어서
-3. 산에 대해 잘 몰라서
-4. 위험해서
+1. **같이 살 사람이 없어서**
+2. **시간이 없어서**
+3. **산에 대해 잘 몰라서**
+4. **위험해서**
 
 위의 이유가 많은 부분을 차지했습니다.
 
@@ -23,18 +23,18 @@
 
 본 앱은 위와 같은 아쉬움을 해결하며, 등산을 완료하기까지 불편한 점을 해소하기 위해
 
-1. 그룹 매칭 시스템
-2. 등산 스타일 시스템
-3. 이탈 멤버 감지
-4. 개인 맞춤 등산 기록 제공
-5. 산과 관련된 뉴스 제공
-6. 산 추천 시스템
-7. 산마다 5일치 날씨 예보
-8. 코스 경로 안내 및 난이도 표시
-9. 자주 가는 산 즐겨찾기 기능
-10. 마음에 드는 멤버 팔로우 기능
-11. 현재 위치 및 지도 근방 50km 산 리스트 제공
-12. 칭호 시스템
+1. **그룹 매칭 시스템**
+2. **등산 스타일 시스템**
+3. **이탈 멤버 감지**
+4. **개인 맞춤 등산 기록 제공**
+5. **산과 관련된 뉴스 제공**
+6. **산 추천 시스템**
+7. **산마다 5일치 날씨 예보**
+8. **코스 경로 안내 및 난이도 표시**
+9. **자주 가는 산 즐겨찾기 기능**
+10. **마음에 드는 멤버 팔로우 기능**
+11. **현재 위치 및 지도 근방 50km 산 리스트 제공**
+12. **칭호 시스템**
 
 의 기능을 제공합니다
 
@@ -112,10 +112,10 @@
 
   
 ## 👩‍💻👨‍💻 Member <!-- 깃허브에선느 :pouting_man: :pouting_woman:-->
-    |윤가희|노나현|박태우|신영민|정민선|곽대건|
-    |:---:|:---:|:---:|:---:|:---:|:---:|
-    |**Team Leader / BE**|**BE / CI,CD**|**BE**|**FE**|**FE / UI,UX**|**FE**|
-    |![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>yungahee99@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>hyunstu16@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>twey163@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>2525sym@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>alstjs1516@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>eorjs7578@gmail.com|
+  |윤가희|노나현|박태우|신영민|정민선|곽대건|
+  |:---:|:---:|:---:|:---:|:---:|:---:|
+  |**Team Leader / BE**|**BE / CI,CD**|**BE**|**FE**|**FE / UI,UX**|**FE**|
+  |![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>yungahee99@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>hyunstu16@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>twey163@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>2525sym@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>alstjs1516@gmail.com|![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)<br>eorjs7578@gmail.com|
 
 <br>
 

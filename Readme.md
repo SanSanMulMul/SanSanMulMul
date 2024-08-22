@@ -1,12 +1,50 @@
-# :office: Team Sansantek
+<p align="middle" >
+  <img width="200px;" src="./img/sansanmulmul_logo.png"/>
+</p>
+<h1 align="middle">산산물물</h1>
+<h3 align="middle">등산의, 등산에 의한, 등산을 위한 <br> 등산 멤버 매칭 및 개인 맞춤 등산 기록 서비스</h3>
 
-+ ## :mountain: Project SanSanMulMul
-  바쁘거나, 아는 사람이 별로 없거나, 등산을 좋아하는 사람들이 없는 등의 이유로 같이 등산을 할 사람을 구하기가 어려운 사람들을 위한 어플 산산물물!
+<br/>
+
+## :mountain: Project SanSanMulMul
+
+등산 멤버 매칭 및 개인 맞춤 등산 기록 제공 서비스
+
+등산, 트레킹 국민 의식 실태조사 보고서에 따르면 많은 비등산인의 등산하지 않는 이유로
+
+1. 같이 살 사람이 없어서
+2. 시간이 없어서
+3. 산에 대해 잘 몰라서
+4. 위험해서
+
+위의 이유가 많은 부분을 차지했습니다.
+
+다만 등산 등 숲길 체험 국민 의식 실태조사에 따르면 점점 등산 등을 체험한 아웃도어 인구가 많아짐에도 불구하고 위와 같은 불편함을 해소시켜 줄 서비스가 부재했습니다.
+
+본 앱은 위와 같은 아쉬움을 해결하며, 등산을 완료하기까지 불편한 점을 해소하기 위해
+
+1. 그룹 매칭 시스템
+2. 등산 스타일 시스템
+3. 이탈 멤버 감지
+4. 개인 맞춤 등산 기록 제공
+5. 산과 관련된 뉴스 제공
+6. 산 추천 시스템
+7. 산마다 5일치 날씨 예보
+8. 코스 경로 안내 및 난이도 표시
+9. 자주 가는 산 즐겨찾기 기능
+10. 마음에 드는 멤버 팔로우 기능
+11. 현재 위치 및 지도 근방 50km 산 리스트 제공
+12. 칭호 시스템
+
+의 기능을 제공합니다
 
 
 
+## :office: Team Sansantek
+> **SSAFY 11TH** <br/> **개발기간: 2024.07 ~ 2024.08**
 
-+ ## :sparkles: Service Example
+
+## :sparkles: Service Example
   + ### 0️⃣ 홈 및 산 뉴스
     + 홈에서 날짜에 따른 계절별 산 추천 (봄이면 봄 여름 가을 겨울, 여름이면 여름 가을 겨울 봄 등의 순으로)
     + 상단 뉴스 탭에서 뉴스를 누를 시 해당 뉴스 링크로 이동
@@ -73,8 +111,7 @@
 
 
   
-
-+ ## 👩‍💻👨‍💻 Member <!-- 깃허브에선느 :pouting_man: :pouting_woman:-->
+## 👩‍💻👨‍💻 Member <!-- 깃허브에선느 :pouting_man: :pouting_woman:-->
     |윤가희|노나현|박태우|신영민|정민선|곽대건|
     |:---:|:---:|:---:|:---:|:---:|:---:|
     |**Team Leader / BE**|**BE / CI,CD**|**BE**|**FE**|**FE / UI,UX**|**FE**|
@@ -82,9 +119,10 @@
 
 <br>
 
-+ ## :date: Milestone
+## :date: Milestone
   ![image](/uploads/702902745bbf0045b218720e976c716e/image.png)
-+ ## :book: Stack
+
+## :book: Stack
   + ### :computer: Back Tech Stack
     ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
     ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
@@ -129,9 +167,11 @@
   + ### :loudspeaker: Communication
       ![Mattermost](https://img.shields.io/badge/Mattermost-0058CC?style=for-the-badge&logo=Mattermost&logoColor=white)
       ![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)
+  
+  ## ⚙ Architecture
+  ![아키텍쳐](./img/architecture.PNG)
 
-    
-+ ## :open_file_folder: Git Branch Strategy
+  ## :open_file_folder: Git Branch Strategy
   + ### :bookmark_tabs: 종류
     + #### Master
       검증 완료 및 최종 배포 브랜치
@@ -154,8 +194,7 @@
   + ### 🧾 Flow <!--깃허브에서는 :receipt: 아이콘으로-->
     **Other** => **Front/Back** => **Develop** => **Master**
     
-    
-+ ## :label: External Link
+  ## :label: External Link
     + <img src="/img/Notion.png"  width="30" height="30"/>[Team Notion](https://www.notion.so/D111-f5fd36452f8d45da86aada62fde4b305)
     
     + <img src="/img/Figma.png"  width="30" height="30"/>[WireFrame](https://www.figma.com/design/p9QVBiLHZrebHPqpGt4sly/Wireframe?t=JOOE26FbI7fbxCuL-0)
